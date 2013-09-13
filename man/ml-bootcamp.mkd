@@ -1,4 +1,4 @@
-<sup>[L-LDA](https://github.com/henry4j/-/blob/master/man/l-lda.mkd), [VW](http://en.wikipedia.org/wiki/Vowpal_Wabbit). [SGD bootcamp](http://tiny/4b1766v4/wamazindeMach), [ML-workflow](ml-workflow.mkd)</sup>
+<sup>["true" L-LDA](https://github.com/henry4j/-/blob/master/man/l-lda.mkd), [VW](http://en.wikipedia.org/wiki/Vowpal_Wabbit). [SGD bootcamp](http://tiny/4b1766v4/wamazindeMach), [ML-workflow](ml-workflow.mkd)</sup>
 
 ### ML SDE requirement -- <sub>[1](http://www.amazon.com/gp/jobs/232194/), [2](http://www.amazon.com/gp/jobs/180727/), [3](https://jobs.groupon.com/careers/engineering/software-development-engineer-senior-goods-seattle-wa-united-states/), [4](https://twitter.com/jobs/positions?jvi=oSAqXfwz,Job), [5](https://twitter.com/jobs/positions?jvi=oTAqXfwA,Job), [6](http://www.linkedin.com/jobs?viewJob=&jobId=6907673), [7](http://www.linkedin.com/jobs?viewJob=&jobId=6865716)</sub>
 
@@ -13,7 +13,7 @@
 ![x](http://www.manning.com/owen/owen_cover150.jpg)
 ![x](http://www.manning.com/pharrington/pharrington_cover150.jpg)
 
-### Table of Contents, Machine Learning SDE
+### Table of Contents / Machine Learning SDE
 
 * Set up machine learning SDE environment (Hadoop & Mahout)
 * Build LDA models from a corpus using Apache Mahout
