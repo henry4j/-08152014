@@ -1,4 +1,6 @@
-Reference: http://benoithamelin.tumblr.com/ruby1line
+Reference:
+* http://benoithamelin.tumblr.com/ruby1line
+* http://zenspider.com/Languages/Ruby/QuickRef.html#pre-defined-variables
 
 ```ruby
 ruby -ne 'print; puts' # double-spaces lines
