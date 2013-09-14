@@ -75,5 +75,6 @@ if l_field
   path = org.apache.hadoop.fs.Path.new("file:///#{File.join(ENV['MAHOUT_WORK'], 'corpus-priors')}")
   conf = org.apache.hadoop.conf.Configuration.new
   org.apache.mahout.math.MatrixUtils.write(path, conf, corpus_priors)
+  puts "INFO: done writing to 'corpus-priors' (#{corpus_priors.row_size} x #{corpus_priors.column_size})."
 end
 exit 0

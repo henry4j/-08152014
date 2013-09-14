@@ -34,7 +34,7 @@ $MAHOUT cvb \
   -mt ${MAHOUT_WORK}/${WORK_ID}-modeling \
   -dt ${MAHOUT_WORK}/${WORK_ID}/topics \
   -dtp ${MAHOUT_WORK}/${WORK_ID}/corpus-priors \
-  -k 20 -x 35 -cd 6e-4 -block 2 -tf 0.25 -seed 777
+  -k 14 -x 35 -cd 6e-4 -block 2 -tf 0.25 -seed 777
 for e in model topics; do resplit ${MAHOUT_WORK}/${WORK_ID}/$e; done
 for e in matrix docIndex wordcount frequency.file-0 tf-vectors; do $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}/$e; done
 
