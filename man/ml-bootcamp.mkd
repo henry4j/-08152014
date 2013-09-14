@@ -73,8 +73,8 @@ EOF
 
 ##### CHECKLIST
 
-- [x] `ruby -v # must be 1.9.3, 2.0.0, or newer`  
-- [x] `jruby -v # must be 1.7.4, or newer`  
+[x] `ruby -v # must be 1.9.3, 2.0.0, or newer`  
+[x] `jruby -v # must be 1.7.4, or newer`  
 [x] DO get S3 creds from https://console.aws.amazon.com/iam/home?#security_credential
 
 ```bash
