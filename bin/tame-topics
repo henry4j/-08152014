@@ -1,5 +1,5 @@
 #!/bin/bash # called `tame-corpus-basic`
-if [ -z $4 ]; then export ANALYZER='org.apache.lucene.analysis.en.EnglishAnalyzer'; else export ANALYZER=$4; fi
+if [ -z $4 ]; then export ANALYZER='com.henry4j.text.CommTextAnalyzer'; else export ANALYZER=$4; fi
 if [ -z $3 ]; then export MIN_LLR='120'; else export MIN_LLR=$3; fi
 if [ -z $2 ]; then export MAX_NGRAM='2'; else export MAX_NGRAM=$2; fi
 if [ -z $1 ]; then export WORK_ID='bigram-k'; else export WORK_ID=$1; fi
