@@ -121,7 +121,7 @@ stop-all.sh; hadoop namenode -format
 
 ```bash
 start-all.sh # starts up hadoop daemons: name, data, 2nd name nodes, and job & task tracker.
-ps aux | grep hadoop | grep -o 'org.apache.[^ ]\+$' # sees 5 lines for hadoop daemons.
+ps aux | grep hadoop | grep -o 'org.apache.[^ ]\+$' # sees 3 lines for hadoop daemons.
 hadoop jar $HADOOP_BASE/libexec/hadoop-examples-1.2.1.jar pi 10 100 # same as ruby -e 'p Math::PI'
 ```
 
