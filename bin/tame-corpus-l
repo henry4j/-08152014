@@ -2,7 +2,7 @@
 [ ! -e ${MAHOUT_WORK}/corpus-l.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/rrc_pro_2285_labeled_typos.csv ${MAHOUT_WORK}/corpus-l.csv
 
 rm -rf ${MAHOUT_WORK}/comm-text-ext-l
-prep-comm-text-l ${MAHOUT_WORK}/corpus-l.csv -d ${MAHOUT_WORK}/comm-text-ext-l -n 100
+prep-comm-text-l ${MAHOUT_WORK}/corpus-l.csv -d ${MAHOUT_WORK}/comm-text-ext-l -n 100 -l 8
 # $HADOOP dfs -rmr ${MAHOUT_WORK}/comm-text-ext-l ${MAHOUT_WORK}/comm-text-seq-l
 # $HADOOP dfs -put ${MAHOUT_WORK}/comm-text-ext-l ${MAHOUT_WORK}/comm-text-ext-l
 # $MAHOUT seqdirectory -i ${MAHOUT_WORK}/comm-text-ext-l -o ${MAHOUT_WORK}/comm-text-seq-l -ow -chunk 5
