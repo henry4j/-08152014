@@ -72,7 +72,7 @@ end
 if l_field
   corpus_priors = org.apache.mahout.math.SparseRowMatrix.new(labels_by_doc_id.size, label_ids.size, true) # true for random access
   labels_by_doc_id.sort.each_with_index { |(k, v), i| v.each { |l| corpus_priors.view_row(i).set_quick(l, 1.0/v.size) } }
-  path = org.apache.hadoop.fs.Path.new("file:///#{File.join(File.dirname(corpus), File.basename(corpus, '.*') + '-priors')}")
+  path = org.apache.hadoop.fs.Path.new("file:///#{File.join(ENV['MAHOUT_WORK'], 'corpus-priors')}")
   conf = org.apache.hadoop.conf.Configuration.new
   org.apache.mahout.math.MatrixUtils.write(path, conf, corpus_priors)
 end
