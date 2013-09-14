@@ -43,40 +43,37 @@ fields = ($options[:fields] || ['1', '3']).map { |e| e.to_i }
 stop_phrases = $options[:stop_phrases] || File.expand_path('../stop-comm-text', File.realpath(__FILE__))
 stop_phrases = File.exists?(stop_phrases) ? open(stop_phrases).readlines.reduce([]) { |a, l| l.start_with?('#') ? a : a << l.chomp } : nil
 stop_phrases = /#{stop_phrases.join('|')}/ if stop_phrases
-puts stop_phrases
 label_ids = {}
-corpus_topics = []
+labels_by_doc_id = {}
 
-ARGV.each do |e|
-  open(e, 'r:windows-1250') do |f|
-    skip_count = $options[:skip_count] || 1
-    CSV.new(f).each do |l|
-      next if (skip_count -= 1) >= 0
-      next if l_field && (labels = l[l_field]).nil?
-      break if max_entries && (max_entries -= 1) < 0
-      FileUtils.mkdir_p out_dir unless Dir.exists?(out_dir)
-      path = File.join(out_dir, (id = l[id_field].strip) + ".txt")
-      puts "WARN: will over-write '#{path}'!!!" if File.exists?(path)
-      open(path, 'w:UTF-8') do |w| 
-        fields.each do |f| 
-          begin
-            w.puts stop_phrases ? l[f].gsub(stop_phrases, '.') : l[f] if l[f]
-          rescue
-            raise 'Failed to process a line: %s.' % [l]
-          end
+fail "'corpus' must be specified." unless (corpus = ARGV[0])
+open(corpus, 'r:windows-1250') do |f|
+  skip_count = $options[:skip_count] || 1
+  FileUtils.rm_rf out_dir
+  FileUtils.mkdir_p out_dir
+  CSV.new(f).each do |l|
+    next if (skip_count -= 1) >= 0
+    next if l_field && (labels = l[l_field]).nil?
+    break if max_entries && (max_entries -= 1) < 0
+    path = File.join(out_dir, (id = l[id_field].strip) + ".txt")
+    open(path, 'w:UTF-8') do |w| 
+      fields.each do |f| 
+        begin
+          w.puts stop_phrases ? l[f].gsub(stop_phrases, '.') : l[f] if l[f]
+          labels_by_doc_id[id] = labels.split('|').map { |e| e.strip }.map { |e| label_ids[e] ||= label_ids.size } if l_field
+          puts "INFO: done writing to '#{path}'."
+        rescue
+          raise 'Failed to process a line: %s.' % [l]
         end
       end
-      corpus_topics << labels.split('|').map { |e| e.strip }.map { |e| label_ids[e] ||= label_ids.size } if l_field
-      puts "INFO: done writing to '#{path}'."
     end
   end
-  
-  if l_field
-    conf = org.apache.hadoop.conf.Configuration.new
-    corpus_priors = org.apache.mahout.math.DenseMatrix.new(corpus_topics.size, label_ids.size)
-    corpus_topics.each_with_index { |e, i| e.each { |t| corpus_priors.viewRow(i).setQuick(t, 1.0/e.size) } }
-    path = org.apache.hadoop.fs.Path.new("file:///#{File.join(File.dirname(e), File.basename(e, '.*') + '-priors')}")
-    org.apache.mahout.math.MatrixUtils.write(path, conf, corpus_priors)
-  end
+end
+if l_field
+  corpus_priors = org.apache.mahout.math.SparseRowMatrix.new(labels_by_doc_id.size, label_ids.size, true) # true for random access
+  labels_by_doc_id.sort.each_with_index { |(k, v), i| v.each { |l| corpus_priors.view_row(i).set_quick(l, 1.0/v.size) } }
+  path = org.apache.hadoop.fs.Path.new("file:///#{File.join(File.dirname(corpus), File.basename(corpus, '.*') + '-priors')}")
+  conf = org.apache.hadoop.conf.Configuration.new
+  org.apache.mahout.math.MatrixUtils.write(path, conf, corpus_priors)
 end
 exit 0
