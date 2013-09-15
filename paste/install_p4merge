@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 e='p4merge-mac-osx-01-2013.zip'
 
-[ ! -e "$HOME/downloads/$e" ] && curl -o "$HOME/downloads/$e" -kL "http://dl.dropbox.com/u/47820156/paste/$e"
+[ ! -e "$HOME/downloads/$e" ] && curl -o "$HOME/downloads/$e" -kL "http://dl.dropboxusercontent.com/u/47820156/paste/$e"
 rm -rf /Applications/p4merge.app && unzip -o "$HOME/downloads/$e" /Applications/
 
 curl  -o /usr/local/bin/p4merge -kL https://github.com/henry4j/-/raw/master/paste/p4merge && chmod +x /usr/local/bin/p4merge
