@@ -26,7 +26,7 @@ if ! $($HADOOP dfs -test -e "${MAHOUT_WORK}/${WORK_ID}/matrix"); then
   $HADOOP dfs -put /tmp/${WORK_ID}-tokenized-docs.txt ${MAHOUT_WORK}/${WORK_ID}
 fi
 
-$HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors" && CVB_OPTS="-k 14 -pidt -dtp ${MAHOUT_WORK}/${WORK_ID}/corpus-priors" || CVB_OPTS='-k 20'
+$HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors" && CVB_OPTS="-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/corpus-priors" || CVB_OPTS='-k 20'
 rm -rf ${MAHOUT_WORK}/${WORK_ID}-*
 $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}-modeling
 $MAHOUT cvb \
