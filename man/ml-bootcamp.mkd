@@ -144,6 +144,7 @@ v='0.8'; e="mahout-distribution-$v"
 rm -rf "/workspace/$e" && unzip -o "$HOME/Downloads/$e.zip" -d /workspace/
 ln -sf "/workspace/$e" /workspace/mahout
 curl -o "$MAHOUT_BASE/bin/#1" -kL 'http://raw.github.com/henry4j/-/master/paste/{mahout,mahout-d}'
+chmod +x $MAHOUT_BASE/bin/mahout*
 ```
 
 #### Checkout Mahout 0.9 Source (optionally, the last stable build)
