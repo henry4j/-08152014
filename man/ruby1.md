@@ -1,6 +1,9 @@
 Reference:
 * http://benoithamelin.tumblr.com/ruby1line
 * http://zenspider.com/Languages/Ruby/QuickRef.html#pre-defined-variables
+* https://gist.github.com/KL-7/1590797
+* https://github.com/JoshCheek/Play/blob/master/ruby-one-liners/Readme.md
+* http://www.ruby-doc.org/core-1.9.2/ARGF.html
 
 ```ruby
 ruby -ne 'print; puts' # double-spaces lines
