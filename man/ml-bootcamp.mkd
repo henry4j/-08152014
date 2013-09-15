@@ -138,7 +138,7 @@ chmod +x /usr/local/bin/restart-all
 #### Install [Mahout 0.8 Release](http://search.maven.org/#search%7Cga%7C1%7Cmahout)
 
 ```bash
-export e='mahout-distribution-0.8'
+export v='0.8'; export e="mahout-distribution-$v"
 [ ! -e "$HOME/Downloads/$e.zip" ] &&
   curl -o "$HOME/Downloads/$e.zip" -kL "http://mirrors.ibiblio.org/apache/mahout/0.8/$e.zip"
 unzip -o "$HOME/Downloads/$e.zip" -d /workspace/
