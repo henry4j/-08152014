@@ -128,7 +128,9 @@ hadoop jar $HADOOP_BASE/libexec/hadoop-examples-1.2.1.jar pi 10 100 # same as ru
 ```bash
 cat <<EOF >> /usr/local/bin/restart-all
 #!/bin/bash
-stop-all.sh; start-all.sh; hadoop dfsadmin -safemode leave
+stop-all.sh
+ps -ef | grep 'org.apache.hadoop.[^ ]\+$' | ruby -ane 'puts $F[1]' | xargs kill
+start-all.sh; hadoop dfsadmin -safemode leave
 EOF
 chmod +x /usr/local/bin/restart-all
 ```
