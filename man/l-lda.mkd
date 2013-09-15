@@ -93,7 +93,7 @@ cp $HOME/.m2/repository/com/henry4j/mahout/mahout-examples/0.8.2/mahout-examples
 ```bash
 # or, curl pre-built jars
 for e in core-0.8   core-0.8-job   examples-0.8   examples-0.8-job;
-  do mv $MAHOUT_BASE/mahout-$e.jar $MAHOUT_BASE/mahout-$e.jar.bak;
+  do [ -e "$MAHOUT_BASE/mahout-$e.jar" ] && mv $MAHOUT_BASE/mahout-$e.jar $MAHOUT_BASE/mahout-$e.jar.bak;
 done
 for e in core-0.8.2 core-0.8.2-job examples-0.8.2 examples-0.8.2-job;
   do [ ! -e "$MAHOUT_BASE/mahout-$e.jar" ] && curl -o "$MAHOUT_BASE/mahout-$e.jar" -kL "http://dl.dropboxusercontent.com/u/47820156/mahout/l-lda/mahout-$e.jar"; 
