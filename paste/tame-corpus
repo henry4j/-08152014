@@ -1,11 +1,11 @@
 #!/bin/bash # called `tame-corpus`
 case $1 in
   1) 
-    [ ! -e ${MAHOUT_WORK}/corpus-1.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/rrc_pro_22110.csv ${MAHOUT_WORK}/corpus.csv;
+    [ ! -e ${MAHOUT_WORK}/corpus-1.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/rrc_pro_22110.csv ${MAHOUT_WORK}/corpus-1.csv;
     prep-comm-text ${MAHOUT_WORK}/corpus-1.csv -d ${MAHOUT_WORK}/comm-text-ext -i 3 -f 4,11
     ;;
   2)
-    [ ! -e ${MAHOUT_WORK}/corpus-2.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/rrc_ind_31771.csv ${MAHOUT_WORK}/corpus.csv;
+    [ ! -e ${MAHOUT_WORK}/corpus-2.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/rrc_ind_31771.csv ${MAHOUT_WORK}/corpus-2.csv;
     prep-comm-text ${MAHOUT_WORK}/corpus-2.csv -d ${MAHOUT_WORK}/comm-text-ext -i 3 -f 4,11
     ;;
   3)
