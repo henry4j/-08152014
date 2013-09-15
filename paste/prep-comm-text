@@ -16,7 +16,7 @@ fail "'corpus' must be specified." unless (corpus = ARGV[0])
 
 skip_count = $options[:skip_count] || 1
 max_entries = $options[:max_entries]
-out_dir = $options[:out_dir] || '/tmp/comm-text-ext'
+out_dir = $options[:out_dir] || '/tmp'
 id_field = $options[:id_field] || 4
 l_field = $options[:l_field]
 fields = ($options[:fields] || ['1', '3']).map { |e| e.to_i }
@@ -55,14 +55,14 @@ label_ids = {}
 labels_by_doc_id = {}
 
 open(corpus, 'r:windows-1250') do |io|
-  FileUtils.rm_f File.join(out_dir, "*.txt")
+  FileUtils.rm_f File.join(out_dir, "corpus", "*.txt")
   FileUtils.rm_f File.join(out_dir, "corpus-priors")
   FileUtils.mkdir_p out_dir unless Dir.exists?(out_dir)
   CSV.new(io).each do |l|
     next if (skip_count -= 1) >= 0
     next if l_field && (labels = l[l_field]).nil?
     break if max_entries && (max_entries -= 1) < 0
-    path = File.join(out_dir, (id = l[id_field].strip) + ".txt")
+    path = File.join(out_dir, "corpus", (id = l[id_field].strip) + ".txt")
     open(path, 'w:UTF-8') do |w| 
       fields.each do |f| 
         begin
@@ -79,7 +79,7 @@ end
 if l_field
   priors = org.apache.mahout.math.SparseRowMatrix.new(labels_by_doc_id.size, label_ids.size, true) # true for random access
   labels_by_doc_id.sort.each_with_index { |(k, v), i| v.each { |l| priors.view_row(i).set_quick(l, 1.0/v.size) } }
-  path = org.apache.hadoop.fs.Path.new('file:///' + File.absolute_path(File.join(out_dir, 'corpus-priors')))
+  path = org.apache.hadoop.fs.Path.new('file:///' + File.absolute_path(File.join(out_dir, '.corpus-priors')))
   conf = org.apache.hadoop.conf.Configuration.new
   org.apache.mahout.math.MatrixUtils.write(path, conf, priors)
   puts 'INFO: done writing to %s (%d rows x %d columns)' % [path, priors.row_size, priors.column_size]
