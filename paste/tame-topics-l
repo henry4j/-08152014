@@ -26,21 +26,7 @@ if ! $($HADOOP dfs -test -e "${MAHOUT_WORK}/${WORK_ID}/matrix"); then
   $HADOOP dfs -put /tmp/${WORK_ID}-tokenized-docs.txt ${MAHOUT_WORK}/${WORK_ID}
 fi
 
-# $HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors" && CVB_OPTS="-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/corpus-priors -cd 6e-10" || CVB_OPTS='-k 20 -cd 6e-4'
-if $($HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors"); then
-  echo "Found corpus priors"
-  CVB_OPTS="-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/corpus-priors -cd 6e-10"
-  for e in core-0.8   core-0.8-job   examples-0.8   examples-0.8-job;
-    do [ -e "$MAHOUT_BASE/mahout-$e.jar" ] && mv $MAHOUT_BASE/mahout-$e.jar $MAHOUT_BASE/mahout-$e.jar.bak;
-    done
-  for e in core-0.8.2 core-0.8.2-job examples-0.8.2 examples-0.8.2-job;
-    do [ ! -e "$MAHOUT_BASE/mahout-$e.jar" ] && curl -o "$MAHOUT_BASE/mahout-$e.jar" -kL "http://dl.dropboxusercontent.com/u/47820156/mahout/l-lda/mahout-$e.jar"; 
-  done
-else
-  echo "Missing corpus priors"
-  CVB_OPTS='-k 20 -cd 6e-4'
-fi
-
+$HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors" && CVB_OPTS="-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/corpus-priors -cd 6e-10" || CVB_OPTS='-k 20 -cd 6e-4'
 rm -rf ${MAHOUT_WORK}/${WORK_ID}-*
 $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}/model
 $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}/topics
