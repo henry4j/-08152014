@@ -31,7 +31,7 @@ rm -rf ${MAHOUT_WORK}/${WORK_ID}-*
 $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}/model
 $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}/topics
 $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}-modeling
-mahout cvb \
+$MAHOUT cvb \
   -dict ${MAHOUT_WORK}/${WORK_ID}/dictionary.file-0 \
   -i  ${MAHOUT_WORK}/${WORK_ID}/matrix \
   -o  ${MAHOUT_WORK}/${WORK_ID}/model -ow \
