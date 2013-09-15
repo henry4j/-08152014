@@ -1,8 +1,8 @@
 #!/bin/bash # called `tame-hadoop`
-curl -o ${HADOOP_BASE}/libexec/lib/text-1.0-SNAPSHOT.jar -ksL http://raw.github.com/henry4j/-/master/bin/text-1.0-SNAPSHOT.jar
-ln -fs ${HADOOP_BASE}/libexec/lib/text-1.0-SNAPSHOT.jar ${MAHOUT_BASE}/lib/text-1.0-SNAPSHOT.jar
+curl -o ${HADOOP_BASE}/libexec/lib/text-1.0-SNAPSHOT.jar -ksL http://raw.github.com/henry4j/-/master/paste/text-1.0-SNAPSHOT.jar
+ln -sf ${HADOOP_BASE}/libexec/lib/text-1.0-SNAPSHOT.jar ${MAHOUT_BASE}/lib/text-1.0-SNAPSHOT.jar
  
 stop-all.sh
-jps | cut -d' ' -f1 | xargs kill -9
+ps -ef | grep 'org.apache.hadoop.[^ ]\+$' | ruby -ane 'puts $F[1]' | xargs kill
 start-all.sh
 $HADOOP dfsadmin -safemode leave
