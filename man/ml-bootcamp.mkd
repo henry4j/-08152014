@@ -160,8 +160,8 @@ svn checkout http://svn.apache.org/repos/asf/mahout/tags/mahout-0.8 /workspace/m
 
 ```bash
 for e in prep-comm-text stop-comm-text resplit pp-w,z pp-z,d tame-hadoop tame-corpus tame-topics-basic p-topics exam-comm-text; do
-  curl -o $MAHOUT_WORK/$e -kL https://raw.github.com/henry4j/-/master/paste/$e;
-  chmod +x $MAHOUT_WORK/$e;
+  curl -o /usr/local/bin/$e -kL https://raw.github.com/henry4j/-/master/paste/$e;
+  chmod +x /usr/local/bin/$e;
 done
 ```
 
@@ -169,7 +169,7 @@ done
 
 ```bash
 for e in prep-comm-text stop-comm-text resplit pp-w,z pp-z,d tame-hadoop tame-corpus tame-topics-basic p-topics exam-comm-text; do
-  ln -s /workspace/gits/henry4j/paste/$e /usr/local/bin/$e;
+  rm -f /usr/local/bin/$e; ln -s /workspace/gits/henry4j/paste/$e /usr/local/bin/$e;
 done
 ```
 
@@ -188,10 +188,10 @@ done
 ```bash
 #!/bin/bash # called `tame-hadoop`
 curl -o ${HADOOP_BASE}/libexec/lib/text-1.0-SNAPSHOT.jar -ksL http://raw.github.com/henry4j/-/master/paste/text-1.0-SNAPSHOT.jar
-ln -fs ${HADOOP_BASE}/libexec/lib/text-1.0-SNAPSHOT.jar ${MAHOUT_BASE}/lib/text-1.0-SNAPSHOT.jar
+ln -sf ${HADOOP_BASE}/libexec/lib/text-1.0-SNAPSHOT.jar ${MAHOUT_BASE}/lib/text-1.0-SNAPSHOT.jar
  
 stop-all.sh
-jps | cut -d' ' -f1 | xargs kill -9
+ps -ef | grep 'org.apache.hadoop.[^ ]\+$' | ruby -ane 'puts $F[1]' | xargs kill
 start-all.sh
 $HADOOP dfsadmin -safemode leave
 ```
