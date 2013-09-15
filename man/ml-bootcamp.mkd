@@ -128,18 +128,21 @@ hadoop jar $HADOOP_BASE/libexec/hadoop-examples-1.2.1.jar pi 10 100 # same as ru
 ```bash
 cat <<EOF >> /usr/local/bin/restart-all
 #!/bin/bash
-stop-all.sh; start-all.sh; hadoop dfsadmin -safemode leave
+stop-all.sh
+ps -ef | grep 'org.apache.hadoop.[^ ]\+$' | ruby -ane 'puts $F[1]' | xargs kill
+start-all.sh; hadoop dfsadmin -safemode leave
 EOF
 chmod +x /usr/local/bin/restart-all
 ```
 
 #### Install [Mahout 0.8 Release](http://search.maven.org/#search%7Cga%7C1%7Cmahout)
 
-```bah
-curl -o "$HOME/Downloads/mahout-distribution-0.8.zip" \
-  -kL http://mirrors.ibiblio.org/apache/mahout/0.8/mahout-distribution-0.8.zip
-unzip -o "$HOME/Downloads/mahout-distribution-0.8.zip" -d /workspace/
-ln -s /workspace/mahout-distribution-0.8 /workspace/mahout
+```bash
+v='0.8'; e="mahout-distribution-$v"
+[ ! -e "$HOME/Downloads/$e.zip" ] &&
+  curl -o "$HOME/Downloads/$e.zip" -kL "http://mirrors.ibiblio.org/apache/mahout/$v/$e.zip"
+rm -rf "/workspace/$e" && unzip -o "$HOME/Downloads/$e.zip" -d /workspace/
+ln -sf "/workspace/$e" /workspace/mahout
 ```
 
 #### Checkout Mahout 0.9 Source (optionally, the last stable build)
