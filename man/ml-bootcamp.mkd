@@ -161,7 +161,7 @@ svn checkout http://svn.apache.org/repos/asf/mahout/tags/mahout-0.8 /workspace/m
 * [p-topics](http://github.com/henry4j/-/blob/master/paste/p-topics) -- to see topic probability distribution of an arbitrary text document against a model.
 
 ```bash
-for e in prep-comm-text stop-comm-text resplit pp-w,z pp-z,d tame-hadoop tame-corpus tame-topics-basic p-topics exam-comm-text; do
+for e in prep-comm-text stop-comm-text resplit pp-w,z pp-z,d tame-hadoop tame-corpus tame-topics-l p-topics exam-comm-text; do
   curl -o /usr/local/bin/$e -kL https://raw.github.com/henry4j/-/master/paste/$e;
   chmod +x /usr/local/bin/$e;
 done
@@ -170,7 +170,7 @@ done
 #### ~~Set up utilities for Mahout work~~ -- no longer in use.
 
 ```bash
-for e in prep-comm-text stop-comm-text resplit pp-w,z pp-z,d tame-hadoop tame-corpus tame-topics-basic p-topics exam-comm-text; do
+for e in prep-comm-text stop-comm-text resplit pp-w,z pp-z,d tame-hadoop tame-corpus tame-topics-l p-topics exam-comm-text; do
   rm -f /usr/local/bin/$e; ln -s /workspace/gits/henry4j/paste/$e /usr/local/bin/$e;
 done
 ```
@@ -252,7 +252,7 @@ if [ ! -e ${MAHOUT_WORK}/reuters-ext ]; then
 fi
 ```
 
-#### [`tame-topics-basic`](https://raw.github.com/henry4j/-/master/paste/tame-topics-basic)
+#### [`tame-topics-l`](https://raw.github.com/henry4j/-/master/paste/tame-topics-l)
 
 * [!] this script is fragile, and subject to change without any notice; `*-advanced` script is coming soon.
 * args: work-id (default: bigram-k), max-ngram (default: 2), LLR, and analyzer (default: CommTextAnalyzer)
@@ -260,33 +260,50 @@ fi
 * [?] [`mahout seq2sparse --help`](http://raw.github.com/henry4j/-/master/man/seq2sparse.mkd), [`mahout cvb --help`](http://raw.github.com/henry4j/-/master/man/lda-cvb.mkd)
 
 ```bash
-#!/bin/bash
-if [ -z $4 ]; then export ANALYZER='com.henry4j.text.CommTextAnalyzer'; else export ANALYZER=$4; fi
-if [ -z $3 ]; then export MIN_LLR='120'; else export MIN_LLR=$3; fi
-if [ -z $2 ]; then export MAX_NGRAM='2'; else export MAX_NGRAM=$2; fi
-if [ -z $1 ]; then export WORK_ID='bigram-k'; else export WORK_ID=$1; fi
+#!/bin/bash # called `tame-topics`
+if [ -z $4 ]; then ANALYZER='com.henry4j.text.CommTextAnalyzer'; else ANALYZER=$4; fi
+if [ -z $3 ]; then MIN_LLR='120'; else export MIN_LLR=$3; fi
+if [ -z $2 ]; then MAX_NGRAM='1'; else export MAX_NGRAM=$2; fi
+if [ -z $1 ]; then WORK_ID='true-l-lda'; else export WORK_ID=$1; fi
 
 export HADOOP_CLASSPATH=${MAHOUT_BASE}/lib/text-1.0-SNAPSHOT.jar:${MAHOUT_BASE}/lib/lucene-analyzers-common-4.3.0.jar:${MAHOUT_BASE}/lib/lucene-core-4.3.0.jar
-$HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}*
-$MAHOUT seq2sparse \
-  -i ${MAHOUT_WORK}/comm-text-seq/ -o ${MAHOUT_WORK}/${WORK_ID} -ow --namedVector \
-  -s 80 -md 40 -x 65 \
-  -ng $MAX_NGRAM -ml $MIN_LLR \
-  -a $ANALYZER
 
-  # excludes terms of 80- DF & 65+ DF%
-  # -a com.henry4j.text.CommTextAnalyzer \
-  # -a org.apache.mahout.text.MailArchivesClusteringAnalyzer \
-  # -a org.apache.lucene.analysis.en.EnglishAnalyzer \
-  # -a org.apache.lucene.analysis.standard.StandardAnalyzer \
+if ! $($HADOOP dfs -test -e "${MAHOUT_WORK}/${WORK_ID}/matrix"); then
+  $MAHOUT seq2sparse \
+    -i ${MAHOUT_WORK}/comm-text-seq/ -o ${MAHOUT_WORK}/${WORK_ID} -ow --namedVector \
+    -s 80 -md 40 -x 65 \
+    -ng $MAX_NGRAM -ml $MIN_LLR \
+    -a $ANALYZER
+  
+    # excludes terms of 80- DF & 70+ DF%
+    # -a com.henry4j.text.CommTextAnalyzer \
+    # -a org.apache.mahout.text.MailArchivesClusteringAnalyzer \
+    # -a org.apache.lucene.analysis.en.EnglishAnalyzer \
+    # -a org.apache.lucene.analysis.standard.StandardAnalyzer \
 
-for e in matrix docIndex; do $HADOOP dfs -rm ${MAHOUT_WORK}/${WORK_ID}/$e; done
-$MAHOUT rowid -i ${MAHOUT_WORK}/${WORK_ID}/tfidf-vectors -o ${MAHOUT_WORK}/${WORK_ID}
-for e in df-count tokenized-documents tfidf-vectors; do resplit ${MAHOUT_WORK}/${WORK_ID}/$e; done
-$MAHOUT seqdumper -i ${MAHOUT_WORK}/${WORK_ID}/tokenized-documents-0 -o /tmp/${WORK_ID}-tokenized-docs.txt
-$HADOOP dfs -put /tmp/${WORK_ID}-tokenized-docs.txt ${MAHOUT_WORK}/${WORK_ID}
+  for e in matrix docIndex; do $HADOOP dfs -rm ${MAHOUT_WORK}/${WORK_ID}/$e; done
+  $MAHOUT rowid -i ${MAHOUT_WORK}/${WORK_ID}/tfidf-vectors -o ${MAHOUT_WORK}/${WORK_ID}
+  for e in df-count tokenized-documents tfidf-vectors; do resplit ${MAHOUT_WORK}/${WORK_ID}/$e; done
+  $MAHOUT seqdumper -i ${MAHOUT_WORK}/${WORK_ID}/tokenized-documents-0 -o /tmp/${WORK_ID}-tokenized-docs.txt
+  $HADOOP dfs -put /tmp/${WORK_ID}-tokenized-docs.txt ${MAHOUT_WORK}/${WORK_ID}
+fi
+
+# $HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors" && CVB_OPTS="-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/corpus-priors -cd 6e-10" || CVB_OPTS='-k 20 -cd 6e-4'
+if $($HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors"); then
+  CVB_OPTS="-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/corpus-priors -cd 6e-10"
+  for e in core-0.8   core-0.8-job   examples-0.8   examples-0.8-job;
+    do [ -e "$MAHOUT_BASE/mahout-$e.jar" ] && mv $MAHOUT_BASE/mahout-$e.jar $MAHOUT_BASE/mahout-$e.jar.bak;
+  done
+  for e in core-0.8.2 core-0.8.2-job examples-0.8.2 examples-0.8.2-job;
+    do [ ! -e "$MAHOUT_BASE/mahout-$e.jar" ] && curl -o "$MAHOUT_BASE/mahout-$e.jar" -kL "http://dl.dropboxusercontent.com/u/47820156/mahout/l-lda/mahout-$e.jar"; 
+  done
+else
+  CVB_OPTS='-k 20 -cd 6e-4'
+fi
 
 rm -rf ${MAHOUT_WORK}/${WORK_ID}-*
+$HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}/model
+$HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}/topics
 $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}-modeling
 $MAHOUT cvb \
   -dict ${MAHOUT_WORK}/${WORK_ID}/dictionary.file-0 \
@@ -294,7 +311,9 @@ $MAHOUT cvb \
   -o  ${MAHOUT_WORK}/${WORK_ID}/model -ow \
   -mt ${MAHOUT_WORK}/${WORK_ID}-modeling \
   -dt ${MAHOUT_WORK}/${WORK_ID}/topics \
-  -k 20 -x 35 -cd 6e-4 -block 2 -tf 0.25 -seed 777
+  -x 35 -block 2 -tf 0.25 -seed 777 \
+  $CVB_OPTS
+
 for e in model topics; do resplit ${MAHOUT_WORK}/${WORK_ID}/$e; done
 for e in matrix docIndex wordcount frequency.file-0 tf-vectors; do $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}/$e; done
 
@@ -303,10 +322,13 @@ $MAHOUT vectordump \
   -p true -sort ${MAHOUT_WORK}/${WORK_ID}/model-0 -vs 25 \
   -d ${MAHOUT_WORK}/${WORK_ID}/dictionary.file-0 -dt sequencefile
 $MAHOUT vectordump -i ${MAHOUT_WORK}/${WORK_ID}/topics-0 -o /tmp/${WORK_ID}-z,d-dump.txt
+$HADOOP dfs -put /tmp/${WORK_ID}-?,?-dump.txt ${MAHOUT_WORK}/${WORK_ID}
+
 pp-w,z /tmp/${WORK_ID}-w,z-dump.txt | tee /tmp/${WORK_ID}-w,z-topic-terms.txt
 pp-z,d /tmp/${WORK_ID}-z,d-dump.txt -n 10 | tee /tmp/${WORK_ID}-z,d-doc-topics.txt
-for e in w,z z,d; do $HADOOP dfs -put /tmp/${WORK_ID}-$e-*.txt ${MAHOUT_WORK}/${WORK_ID}
+for e in w,z z,d; do $HADOOP dfs -put /tmp/${WORK_ID}-$e-*.txt ${MAHOUT_WORK}/${WORK_ID}; done
 
+rm -rf ${MAHOUT_WORK}/${WORK_ID}
 $HADOOP dfs -get ${MAHOUT_WORK}/${WORK_ID} ${MAHOUT_WORK}/${WORK_ID}
 s3cmd put -r ${MAHOUT_WORK}/${WORK_ID} s3://${S3_BUCKET}
 s3cmd setacl -r --acl-public s3://${S3_BUCKET}/${WORK_ID}
