@@ -73,10 +73,10 @@ Then, we are ready to implement "true" L-LDA suggestion. See commits http://gith
 rm -rf /workspace/gits/mahout-0.8.x; git clone git@github.com:henry4j/mahout-0.8.x.git /workspace/gits/mahout-0.8.x
 ```
 
-##### [`true-l-lda`](https://raw.github.com/henry4j/-/master/paste/true-l-lda)
+##### Patch [`true-l-lda`](https://raw.github.com/henry4j/-/master/paste/true-l-lda)
 
 ```bash
-
+#!/bin/bash # called `true-l-lda`
 for e in core-0.8   core-0.8-job   examples-0.8   examples-0.8-job;
   do mv $MAHOUT_BASE/mahout-$e.jar $MAHOUT_BASE/mahout-$e.jar.bak;
 done
