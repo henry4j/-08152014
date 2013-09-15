@@ -1,4 +1,4 @@
-#!/bin/bash # called `tame-corpus`
+#!/bin/bash # called `true-l-lda`
 for e in core-0.8   core-0.8-job   examples-0.8   examples-0.8-job;
   do mv $MAHOUT_BASE/mahout-$e.jar $MAHOUT_BASE/mahout-$e.jar.bak;
 done
