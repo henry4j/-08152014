@@ -29,6 +29,7 @@ fi
 $HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors" && CVB_OPTS="-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/corpus-priors" || CVB_OPTS='-k 20'
 rm -rf ${MAHOUT_WORK}/${WORK_ID}-*
 $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}/model
+$HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}/topics
 $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}-modeling
 mahout cvb \
   -dict ${MAHOUT_WORK}/${WORK_ID}/dictionary.file-0 \
