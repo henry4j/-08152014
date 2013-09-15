@@ -1,4 +1,4 @@
-#!/bin/bash # called `tame-corpus-basic`
+#!/bin/bash # called `tame-topics`
 if [ -z $4 ]; then ANALYZER='com.henry4j.text.CommTextAnalyzer'; else ANALYZER=$4; fi
 if [ -z $3 ]; then MIN_LLR='120'; else export MIN_LLR=$3; fi
 if [ -z $2 ]; then MAX_NGRAM='1'; else export MAX_NGRAM=$2; fi
