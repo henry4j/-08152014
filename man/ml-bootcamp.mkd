@@ -143,6 +143,7 @@ v='0.8'; e="mahout-distribution-$v"
   curl -o "$HOME/Downloads/$e.zip" -kL "http://mirrors.ibiblio.org/apache/mahout/$v/$e.zip"
 rm -rf "/workspace/$e" && unzip -o "$HOME/Downloads/$e.zip" -d /workspace/
 ln -sf "/workspace/$e" /workspace/mahout
+curl -o "$MAHOUT_BASE/bin/#1" -kL 'http://raw.github.com/henry4j/-/master/paste/{mahout,mahout-d}'
 ```
 
 #### Checkout Mahout 0.9 Source (optionally, the last stable build)
