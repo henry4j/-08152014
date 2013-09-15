@@ -26,8 +26,6 @@ if ! $($HADOOP dfs -test -e "${MAHOUT_WORK}/${WORK_ID}/matrix"); then
   $HADOOP dfs -put /tmp/${WORK_ID}-tokenized-docs.txt ${MAHOUT_WORK}/${WORK_ID}
 fi
 
-exit -3
-
 $HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors" && CVB_OPTS="-k 14 -pidt -dtp ${MAHOUT_WORK}/${WORK_ID}/corpus-priors" || CVB_OPTS='-k 20'
 rm -rf ${MAHOUT_WORK}/${WORK_ID}-*
 $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}-modeling
@@ -40,6 +38,7 @@ $MAHOUT cvb \
   -x 35 -cd 6e-4 -block 2 -tf 0.25 -seed 777 \
   $CVB_OPTS
 
+exit -3
 for e in model topics; do resplit ${MAHOUT_WORK}/${WORK_ID}/$e; done
 for e in matrix docIndex wordcount frequency.file-0 tf-vectors; do $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}/$e; done
 
