@@ -169,7 +169,7 @@ done
 
 ```bash
 for e in prep-comm-text stop-comm-text resplit pp-w,z pp-z,d tame-hadoop tame-corpus tame-topics-basic p-topics exam-comm-text; do
-  ln -s /workspace/gits/henry4j/bin/$e /usr/local/bin/$e;
+  ln -s /workspace/gits/henry4j/paste/$e /usr/local/bin/$e;
 done
 ```
 
