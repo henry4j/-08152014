@@ -1,2 +1,2 @@
 #!/usr/bin/env ruby
-system "p4merge '#{ARGV[-2]}' '#{ARGV[-1]}'"
+system "p4merge '#{ARGV[-2]}' '#{ARGV[-1]}'" if ARGV[-2]
