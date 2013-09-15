@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-
-curl -o /tmp/diffmerge-3.3.2.zip -kL http://dl.dropbox.com/u/47820156/bin/diffmerge-3.3.2.zip
+curl -o /tmp/diffmerge-3.3.2.zip -kL http://dl.dropbox.com/u/47820156/paste/diffmerge-3.3.2.zip
 unzip -o /tmp/diffmerge-3.3.2.zip -d /tmp/
 
 cp -R /tmp/DiffMerge.app /Applications/
