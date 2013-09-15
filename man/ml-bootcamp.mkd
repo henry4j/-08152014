@@ -202,11 +202,11 @@ $HADOOP dfsadmin -safemode leave
 #!/bin/bash # called `tame-corpus`
 case $1 in
   1) 
-    [ ! -e ${MAHOUT_WORK}/corpus-1.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/rrc_pro_22110.csv ${MAHOUT_WORK}/corpus.csv;
+    [ ! -e ${MAHOUT_WORK}/corpus-1.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/rrc_pro_22110.csv ${MAHOUT_WORK}/corpus-1.csv;
     prep-comm-text ${MAHOUT_WORK}/corpus-1.csv -d ${MAHOUT_WORK}/comm-text-ext -i 3 -f 4,11
     ;;
   2)
-    [ ! -e ${MAHOUT_WORK}/corpus-2.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/rrc_ind_31771.csv ${MAHOUT_WORK}/corpus.csv;
+    [ ! -e ${MAHOUT_WORK}/corpus-2.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/rrc_ind_31771.csv ${MAHOUT_WORK}/corpus-2.csv;
     prep-comm-text ${MAHOUT_WORK}/corpus-2.csv -d ${MAHOUT_WORK}/comm-text-ext -i 3 -f 4,11
     ;;
   3)
@@ -216,8 +216,9 @@ case $1 in
 esac
 
 $HADOOP dfs -rmr ${MAHOUT_WORK}/comm-text-ext ${MAHOUT_WORK}/comm-text-seq
-$HADOOP dfs -put ${MAHOUT_WORK}/comm-text-ext ${MAHOUT_WORK}/comm-text-ext
-$MAHOUT seqdirectory -i ${MAHOUT_WORK}/comm-text-ext -o ${MAHOUT_WORK}/comm-text-seq -ow -chunk 5
+$HADOOP dfs -put ${MAHOUT_WORK}/comm-text-ext/corpus-priors ${MAHOUT_WORK}/comm-text-ext/corpus-priors
+$HADOOP dfs -put ${MAHOUT_WORK}/comm-text-ext/corpus ${MAHOUT_WORK}/comm-text-ext/corpus
+$MAHOUT seqdirectory -i ${MAHOUT_WORK}/comm-text-ext/corpus -o ${MAHOUT_WORK}/comm-text-seq -ow -chunk 5
 ```
 
 * this is a similar script that compiles a corpus of reuter mail archives that is well-known for lucene benchmark program.
