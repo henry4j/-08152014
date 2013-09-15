@@ -92,8 +92,11 @@ cp $HOME/.m2/repository/com/henry4j/mahout/mahout-examples/0.8.2/mahout-examples
 
 ```bash
 # or, curl pre-built jars
-for e in core-0.8.2 core-0.8.2-job examples-0.8.2 examples-0.8.2-job; 
-  do curl -o "$MAHOUT_BASE/mahout-$e.jar" -kL "http://dl.dropboxusercontent.com/u/47820156/mahout/l-lda/mahout-$e.jar"; 
+for e in core-0.8   core-0.8-job   examples-0.8   examples-0.8-job;
+  do mv $MAHOUT_BASE/mahout-$e.jar $MAHOUT_BASE/mahout-$e.jar.bak;
+done
+for e in core-0.8.2 core-0.8.2-job examples-0.8.2 examples-0.8.2-job;
+  do [ ! -e "$MAHOUT_BASE/mahout-$e.jar" ] && curl -o "$MAHOUT_BASE/mahout-$e.jar" -kL "http://dl.dropboxusercontent.com/u/47820156/mahout/l-lda/mahout-$e.jar"; 
 done
 ```
 
@@ -150,20 +153,5 @@ INFO: Converged! fractional error change: 0.000000, error 2.034721
   you take as a prior for p(topic) for this document to be not random (or uniform across all topics) but uniform across the known labels.
 
 ```java
-# something like this but with an useful set of command line options.
-sampledCorpus.numRows();
-Matrix sampledCorpusPriors = new DenseMatrix(sampledCorpus.numRows(), numGeneratingTopics);
-for(int docId = 0; docId < sampledCorpus.numRows(); docId++) {
-   Vector doc = sampledCorpus.viewRow(docId);
-   int term = mostProminentFeature(doc);
-   Vector prior = new DenseVector(numGeneratingTopics);
-   prior.assign(1.0/numGeneratingTopics);
-   if(term % (numTerms / numGeneratingTopics) == 0) {
-       int topic = expectedTopicForTerm(matrix, term);
-       //prior.set(numGeneratingTopics - (term/numGeneratingTopics) - 1, 1);
-       prior.set(topic, 1);
-       prior = prior.normalize(1);
-   }
-   sampledCorpusPriors.assignRow(docId, prior);
-}
+
 ```
