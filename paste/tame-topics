@@ -1,8 +1,8 @@
 #!/bin/bash # called `tame-corpus-basic`
-if [ -z $4 ]; then export ANALYZER='com.henry4j.text.CommTextAnalyzer'; else export ANALYZER=$4; fi
-if [ -z $3 ]; then export MIN_LLR='120'; else export MIN_LLR=$3; fi
-if [ -z $2 ]; then export MAX_NGRAM='2'; else export MAX_NGRAM=$2; fi
-if [ -z $1 ]; then export WORK_ID='bigram-k'; else export WORK_ID=$1; fi
+if [ -z $4 ]; then ANALYZER='com.henry4j.text.CommTextAnalyzer'; else ANALYZER=$4; fi
+if [ -z $3 ]; then MIN_LLR='120'; else export MIN_LLR=$3; fi
+if [ -z $2 ]; then MAX_NGRAM='1'; else export MAX_NGRAM=$2; fi
+if [ -z $1 ]; then WORK_ID='true-l-lda'; else export WORK_ID=$1; fi
 
 export HADOOP_CLASSPATH=${MAHOUT_BASE}/lib/text-1.0-SNAPSHOT.jar:${MAHOUT_BASE}/lib/lucene-analyzers-common-4.3.0.jar:${MAHOUT_BASE}/lib/lucene-core-4.3.0.jar
 $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}*
@@ -24,6 +24,7 @@ for e in df-count tokenized-documents tfidf-vectors; do resplit ${MAHOUT_WORK}/$
 $MAHOUT seqdumper -i ${MAHOUT_WORK}/${WORK_ID}/tokenized-documents-0 -o /tmp/${WORK_ID}-tokenized-docs.txt
 $HADOOP dfs -put /tmp/${WORK_ID}-tokenized-docs.txt ${MAHOUT_WORK}/${WORK_ID}
 
+$HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors" && CVB_OPTS="-k 14 -pidt -dtp ${MAHOUT_WORK}/${WORK_ID}/corpus-priors" || CVB_OPTS='-k 20'
 rm -rf ${MAHOUT_WORK}/${WORK_ID}-*
 $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}-modeling
 $MAHOUT cvb \
@@ -32,7 +33,9 @@ $MAHOUT cvb \
   -o  ${MAHOUT_WORK}/${WORK_ID}/model -ow \
   -mt ${MAHOUT_WORK}/${WORK_ID}-modeling \
   -dt ${MAHOUT_WORK}/${WORK_ID}/topics \
-  -k 20 -x 35 -cd 6e-4 -block 2 -tf 0.25 -seed 777
+  -x 35 -cd 6e-4 -block 2 -tf 0.25 -seed 777 \
+  $CVB_OPTS
+
 for e in model topics; do resplit ${MAHOUT_WORK}/${WORK_ID}/$e; done
 for e in matrix docIndex wordcount frequency.file-0 tf-vectors; do $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}/$e; done
 
