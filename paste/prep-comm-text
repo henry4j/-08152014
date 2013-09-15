@@ -55,9 +55,9 @@ label_ids = {}
 labels_by_doc_id = {}
 
 open(corpus, 'r:windows-1250') do |io|
-  FileUtils.rm_f File.join(out_dir, "corpus", "*.txt")
-  FileUtils.rm_f File.join(out_dir, "corpus-priors")
-  FileUtils.mkdir_p out_dir unless Dir.exists?(out_dir)
+  FileUtils.rm_rf File.join(out_dir, 'corpus')
+  FileUtils.rm_rf File.join(out_dir, 'corpus-priors')
+  FileUtils.mkdir_p File.join(out_dir, 'corpus')
   CSV.new(io).each do |l|
     next if (skip_count -= 1) >= 0
     next if l_field && (labels = l[l_field]).nil?

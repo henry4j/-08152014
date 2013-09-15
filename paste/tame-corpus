@@ -14,7 +14,7 @@ case $1 in
     ;;
 esac
 
-$HADOOP dfs -rmr ${MAHOUT_WORK}/comm-text-ext/corpus ${MAHOUT_WORK}/comm-text-seq
-$HADOOP dfs -put ${MAHOUT_WORK}/comm-text-ext/corpus ${MAHOUT_WORK}/comm-text-ext/corpus
+$HADOOP dfs -rmr ${MAHOUT_WORK}/comm-text-ext ${MAHOUT_WORK}/comm-text-seq
 $HADOOP dfs -put ${MAHOUT_WORK}/comm-text-ext/corpus-priors ${MAHOUT_WORK}/comm-text-ext/corpus-priors
+$HADOOP dfs -put ${MAHOUT_WORK}/comm-text-ext/corpus ${MAHOUT_WORK}/comm-text-ext/corpus
 $MAHOUT seqdirectory -i ${MAHOUT_WORK}/comm-text-ext/corpus -o ${MAHOUT_WORK}/comm-text-seq -ow -chunk 5
