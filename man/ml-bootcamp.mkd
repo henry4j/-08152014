@@ -141,8 +141,8 @@ chmod +x /usr/local/bin/restart-all
 v='0.8'; e="mahout-distribution-$v"
 [ ! -e "$HOME/Downloads/$e.zip" ] &&
   curl -o "$HOME/Downloads/$e.zip" -kL "http://mirrors.ibiblio.org/apache/mahout/0.8/$e.zip"
-unzip -o "$HOME/Downloads/$e.zip" -d /workspace/
-ln -s "/workspace/$e" /workspace/mahout
+rm -rf "/workspace/$e" && unzip -o "$HOME/Downloads/$e.zip" -d /workspace/
+ln -sf "/workspace/$e" /workspace/mahout
 ```
 
 #### Checkout Mahout 0.9 Source (optionally, the last stable build)
