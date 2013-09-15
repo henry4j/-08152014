@@ -7,11 +7,9 @@
 
 ### L-LDA topic modeling in 3 procedural steps
 
-```bash
-tame-hadoop
-tame-corpus 3
-tame-topics-l
-```
+1. [tame-hadoop](http://raw.github.com/henry4j/-/master/paste/tame-hadoop) 
+2. [tame-corpus 3](http://raw.github.com/henry4j/-/master/paste/tame-corpus) 
+3. [tame-topics-l](http://raw.github.com/henry4j/-/master/paste/tame-topics-l)
 
 ### L-LDA topic model in details
 
