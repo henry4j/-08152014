@@ -3,10 +3,10 @@ for e in core-0.8   core-0.8-job   examples-0.8   examples-0.8-job;
   do mv $MAHOUT_BASE/mahout-$e.jar $MAHOUT_BASE/mahout-$e.jar.bak;
 done
 
-cd /workspace/gits/mahout-l-lda/core;     mvn install -DskipTests
-cd /workspace/gits/mahout-l-lda/examples; mvn install -DskipTests # or mvn install -Dmaven.test.skip=true # skips compiling tests
+cd /workspace/gits/mahout-0.8.x/core;     mvn install -DskipTests
+cd /workspace/gits/mahout-0.8.x/examples; mvn install -DskipTests # or mvn install -Dmaven.test.skip=true # skips compiling tests
 
-cp $HOME/.m2/repository/com/henry4j/mahout/mahout-core/0.8.1/mahout-core-0.8.1.jar $MAHOUT_BASE
-cp $HOME/.m2/repository/com/henry4j/mahout/mahout-core/0.8.1/mahout-core-0.8.1-job.jar $MAHOUT_BASE
-cp $HOME/.m2/repository/com/henry4j/mahout/mahout-examples/0.8.1/mahout-examples-0.8.1.jar $MAHOUT_BASE
-cp $HOME/.m2/repository/com/henry4j/mahout/mahout-examples/0.8.1/mahout-examples-0.8.1-job.jar $MAHOUT_BASE
+cp $HOME/.m2/repository/com/henry4j/mahout/mahout-core/0.8.2/mahout-core-0.8.2.jar $MAHOUT_BASE
+cp $HOME/.m2/repository/com/henry4j/mahout/mahout-core/0.8.2/mahout-core-0.8.2-job.jar $MAHOUT_BASE
+cp $HOME/.m2/repository/com/henry4j/mahout/mahout-examples/0.8.2/mahout-examples-0.8.2.jar $MAHOUT_BASE
+cp $HOME/.m2/repository/com/henry4j/mahout/mahout-examples/0.8.2/mahout-examples-0.8.2-job.jar $MAHOUT_BASE
