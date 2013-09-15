@@ -79,7 +79,7 @@ end
 if l_field
   priors = org.apache.mahout.math.SparseRowMatrix.new(labels_by_doc_id.size, label_ids.size, true) # true for random access
   labels_by_doc_id.sort.each_with_index { |(k, v), i| v.each { |l| priors.view_row(i).set_quick(l, 1.0/v.size) } }
-  path = org.apache.hadoop.fs.Path.new('file:///' + File.absolute_path(File.join(out_dir, '.corpus-priors')))
+  path = org.apache.hadoop.fs.Path.new('file:///' + File.absolute_path(File.join(out_dir, 'corpus-priors')))
   conf = org.apache.hadoop.conf.Configuration.new
   org.apache.mahout.math.MatrixUtils.write(path, conf, priors)
   puts 'INFO: done writing to %s (%d rows x %d columns)' % [path, priors.row_size, priors.column_size]
