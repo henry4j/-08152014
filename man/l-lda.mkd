@@ -45,32 +45,32 @@ svn diff -r r1338501
 ```bash
 [ ! -d /workspace/gits/mahout-twitter ] && git clone https://github.com/twitter/mahout.git /workspace/gits/mahout-twitter
 if [ ! -d /workspace/gits/mahout-l-lda ]; then
-  svn checkout http://svn.apache.org/repos/asf/mahout/tags/mahout-0.8 /workspace/gits/mahout-0.8
+  svn checkout http://svn.apache.org/repos/asf/mahout/tags/mahout-0.8 /workspace/gits/mahout-0.8.x
   find /workspace/gits/mahout-l-lda -type d -name .svn | xargs rm -rf
-  cd /workspace/gits/mahout-0.8; git init; git add -f .; git commit -m 'mahout-0.8'
+  cd /workspace/gits/mahout-0.8.x; git init; git add -f .; git commit -m 'mahout-0.8'
 
   cp -R /workspace/gits/mahout-twitter/core/src/main/java/org/apache/mahout/clustering/lda/cvb/ \
-    /workspace/gits/mahout-0.8/core/src/main/java/org/apache/mahout/clustering/lda/cvb
+    /workspace/gits/mahout-0.8.x/core/src/main/java/org/apache/mahout/clustering/lda/cvb
   cp -R /workspace/gits/mahout-twitter/core/src/test/java/org/apache/mahout/clustering/lda/cvb/ \
-    /workspace/gits/mahout-0.8/core/src/test/java/org/apache/mahout/clustering/lda/cvb
-  cd /workspace/gits/mahout-0.8; git add -f .; git commit -m 'L-LDA from https://github.com/twitter/mahout/'
+    /workspace/gits/mahout-0.8.x/core/src/test/java/org/apache/mahout/clustering/lda/cvb
+  cd /workspace/gits/mahout-0.8.x; git add -f .; git commit -m 'L-LDA from https://github.com/twitter/mahout/'
 end
 ```
 
 ```bash
 opendiff /workspace/gits/mahout-twitter/core/src/main/java/org/apache/mahout/clustering/lda/cvb \
-  /workspace/gits/mahout-0.8/core/src/main/java/org/apache/mahout/clustering/lda/cvb
+  /workspace/gits/mahout-0.8.x/core/src/main/java/org/apache/mahout/clustering/lda/cvb
 
 diff -wr -x .svn \
   /workspace/gits/mahout-twitter/core/src/main/java/org/apache/mahout/clustering/lda/cvb \
-  /workspace/gits/mahout-0.8/core/src/main/java/org/apache/mahout/clustering/lda/cvb
+  /workspace/gits/mahout-0.8.x/core/src/main/java/org/apache/mahout/clustering/lda/cvb
 ```
 
-Then, we are ready to implement "true" L-LDA suggestion. See commits http://github.com/henry4j/mahout-l-lda/commits/master.
+Then, we are ready to implement "true" L-LDA suggestion. See commits http://github.com/henry4j/mahout-0.8.x/commits/master.
 
 ```bash
 # implement "true" L-LDA on your own, or clone this git repo.
-rm -rf /workspace/gits/mahout-0.8; git clone git@github.com:henry4j/mahout-0.8.git /workspace/gits/mahout-0.8
+rm -rf /workspace/gits/mahout-0.8.x; git clone git@github.com:henry4j/mahout-0.8.x.git /workspace/gits/mahout-0.8.x
 ```
 
 ##### [`true-l-lda`](https://raw.github.com/henry4j/-/master/paste/true-l-lda)
@@ -81,8 +81,8 @@ for e in core-0.8   core-0.8-job   examples-0.8   examples-0.8-job;
   do mv $MAHOUT_BASE/mahout-$e.jar $MAHOUT_BASE/mahout-$e.jar.bak;
 done
 
-cd /workspace/gits/mahout-0.8/core;     mvn install -DskipTests
-cd /workspace/gits/mahout-0.8/examples; mvn install -DskipTests # or mvn install -Dmaven.test.skip=true # skips compiling tests
+cd /workspace/gits/mahout-0.8.x/core;     mvn install -DskipTests
+cd /workspace/gits/mahout-0.8.x/examples; mvn install -DskipTests # or mvn install -Dmaven.test.skip=true # skips compiling tests
 
 cp $HOME/.m2/repository/com/henry4j/mahout/mahout-core/0.8.2/mahout-core-0.8.2.jar $MAHOUT_BASE
 cp $HOME/.m2/repository/com/henry4j/mahout/mahout-core/0.8.2/mahout-core-0.8.2-job.jar $MAHOUT_BASE
