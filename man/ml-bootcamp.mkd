@@ -28,7 +28,7 @@
 * Xcode, or CLI tools
   * Command Line tools only https://developer.apple.com/downloads/index.action?=command%20line%20tools
      * Install FileMerge w/ minimal Xcode
-         * `sudo bash < <(curl -ksL http://raw.github.com/henry4j/-/master/paste/install_filemerge)`
+         * `sudo bash < <(curl -ksL http://raw.github.com/henry4j/-/master/bin/install_filemerge)`
   * or, Xcode -- Launch **[App Store]** | Search by **'Xcode'** | **[FREE]** and then **[Install APP]**
      * Applications | Xcode | Install | Start Using Xcode  
        Xcode | **Preference...** | Downloads | Install **[Command Line Tools]**
@@ -52,7 +52,7 @@ gem install test-unit
 rbenv install 1.9.3-p448 && rbenv global 1.9.3-p448
 
 echo '[ -d $HOME/.rbenv ] && eval "$(rbenv init -)"' >> "$HOME/.profile"
-curl -o "$HOME/.irbrc" -ksL http://raw.github.com/henry4j/-/master/paste/.irbrc
+curl -o "$HOME/.irbrc" -ksL http://raw.github.com/henry4j/-/master/bin/.irbrc
 ```
 
 ##### Install Mac VIM (optional)
@@ -87,9 +87,9 @@ cat <<EOF >> "$HOME/.profile"
 [ ! -e "$HOME/.s3bucket" ] && curl -o "$HOME/.s3bucket" -ksL http://tiny/1bbxr2hio/impramazs3fis3getext
 export S3_BUCKET=$(<"$HOME/.s3bucket")
 export HADOOP_BASE=$(ruby -e "puts File.dirname(File.dirname(File.realpath(%x(which hadoop).chomp)))")
-export HADOOP=$HADOOP_BASE/paste/hadoop
+export HADOOP=$HADOOP_BASE/bin/hadoop
 export MAHOUT_BASE=/workspace/mahout
-export MAHOUT=$MAHOUT_BASE/paste/mahout
+export MAHOUT=$MAHOUT_BASE/bin/mahout
 export PATH=$MAHOUT_BASE/bin:$PATH
 
 export HADOOP_WORK=/workspace/hadoop-work
@@ -114,7 +114,7 @@ sudo mkdir /workspace; sudo chown $USER /workspace
 ```bash
 brew install hadoop
 curl -o "$HADOOP_BASE/libexec/conf/#1" \
-  -kL 'http://raw.github.com/henry4j/-/master/paste/{hadoop-env.sh,core-site.xml,hdfs-site.xml,mapred-site.xml}'
+  -kL 'http://raw.github.com/henry4j/-/master/bin/{hadoop-env.sh,core-site.xml,hdfs-site.xml,mapred-site.xml}'
 rm -rf $HADOOP_WORK; mkdir -p $HADOOP_WORK
 stop-all.sh; hadoop namenode -format
 ```
@@ -126,13 +126,13 @@ hadoop jar $HADOOP_BASE/libexec/hadoop-examples-1.2.1.jar pi 10 100 # same as ru
 ```
 
 ```bash
-cat <<EOF >> /usr/local/paste/restart-all
-#!/paste/bash
+cat <<EOF >> /usr/local/bin/restart-all
+#!/bin/bash
 stop-all.sh
 ps -ef | grep 'org.apache.hadoop.[^ ]\+$' | ruby -ane 'puts $F[1]' | xargs kill
 start-all.sh; hadoop dfsadmin -safemode leave
 EOF
-chmod +x /usr/local/paste/restart-all
+chmod +x /usr/local/bin/restart-all
 ```
 
 #### Install [Mahout 0.8 Release](http://search.maven.org/#search%7Cga%7C1%7Cmahout)
@@ -154,13 +154,13 @@ svn checkout http://svn.apache.org/repos/asf/mahout/tags/mahout-0.8 /workspace/m
 
 #### Set up utilities for Mahout work
 
-* [prep-comm-text](http://github.com/henry4j/-/blob/master/paste/prep-comm-text), [stop-comm-text](http://github.com/henry4j/-/blob/master/paste/stop-comm-text) -- to prep a corpus.
-* [resplit](http://github.com/henry4j/-/blob/master/paste/resplit) -- to resplit splits into 1 that is easier to put into Amazon S3.
-* [p-topics](http://github.com/henry4j/-/blob/master/paste/p-topics) -- to see topic probability distribution of an arbitrary text document against a model.
+* [prep-comm-text](http://github.com/henry4j/-/blob/master/bin/prep-comm-text), [stop-comm-text](http://github.com/henry4j/-/blob/master/bin/stop-comm-text) -- to prep a corpus.
+* [resplit](http://github.com/henry4j/-/blob/master/bin/resplit) -- to resplit splits into 1 that is easier to put into Amazon S3.
+* [p-topics](http://github.com/henry4j/-/blob/master/bin/p-topics) -- to see topic probability distribution of an arbitrary text document against a model.
 
 ```bash
 for e in prep-comm-text stop-comm-text resplit pp-w,z pp-z,d tame-hadoop tame-corpus tame-topics-basic p-topics exam-comm-text; do
-  curl -o $MAHOUT_WORK/$e -kL https://raw.github.com/henry4j/-/master/paste/$e;
+  curl -o $MAHOUT_WORK/$e -kL https://raw.github.com/henry4j/-/master/bin/$e;
   chmod +x $MAHOUT_WORK/$e;
 done
 ```
@@ -169,25 +169,25 @@ done
 
 ```bash
 for e in prep-comm-text stop-comm-text resplit pp-w,z pp-z,d tame-hadoop tame-corpus tame-topics-basic p-topics exam-comm-text; do
-  ln -s /workspace/gits/henry4j/paste/$e /usr/local/paste/$e;
+  ln -s /workspace/gits/henry4j/bin/$e /usr/local/bin/$e;
 done
 ```
 
 ### Building LDA models
 
 * three macro steps: `tame-hadoop`, `tame-corpus`, and `tame-topics`
-  * feature selection/reduction: [`stop-phrases`](http://raw.github.com/henry4j/-/master/paste/stop-comm-text), and [`text analyzer`](https://github.com/henry4j/-/blob/master/sources/text/src/main/java/com/henry4j/text/CommTextAnalyzer.java) (w/ [english.stop](http://jmlr.org/papers/volume5/lewis04a/a11-smart-stop-list/english.stop))
+  * feature selection/reduction: [`stop-phrases`](http://raw.github.com/henry4j/-/master/bin/stop-comm-text), and [`text analyzer`](https://github.com/henry4j/-/blob/master/sources/text/src/main/java/com/henry4j/text/CommTextAnalyzer.java) (w/ [english.stop](http://jmlr.org/papers/volume5/lewis04a/a11-smart-stop-list/english.stop))
   * series of LDA tune ups w/ max n-gram and LLR, min & max DF%, [perflexity](http://en.wikipedia.org/wiki/Perplexity), and the like.
 
-#### [`tame-hadoop`](https://raw.github.com/henry4j/-/master/paste/tame-hadoop), or step-by-step at the terminal
+#### [`tame-hadoop`](https://raw.github.com/henry4j/-/master/bin/tame-hadoop), or step-by-step at the terminal
 
 * this script installs a custome text analyzer [`comm text analyzer`](http://github.com/henry4j/-/blob/master/sources/text/src/main/java/com/henry4j/text/CommTextAnalyzer.java), that builds a token stream through a pipeline of
   * html stripper char filter, standard tokenizer, lower case filter, stop-word filter for english, and porter-stemmer.
   * fyi: for n-gram analysis (n >= 1), [shingle filter](http://lucene.apache.org/core/4_0_0/analyzers-common/org/apache/lucene/analysis/shingle/ShingleFilter.html) takes this token stream and returns a token stream of max. n-grams.
 
 ```bash
-#!/paste/bash # called `tame-hadoop`
-curl -o ${HADOOP_BASE}/libexec/lib/text-1.0-SNAPSHOT.jar -ksL http://raw.github.com/henry4j/-/master/paste/text-1.0-SNAPSHOT.jar
+#!/bin/bash # called `tame-hadoop`
+curl -o ${HADOOP_BASE}/libexec/lib/text-1.0-SNAPSHOT.jar -ksL http://raw.github.com/henry4j/-/master/bin/text-1.0-SNAPSHOT.jar
 ln -fs ${HADOOP_BASE}/libexec/lib/text-1.0-SNAPSHOT.jar ${MAHOUT_BASE}/lib/text-1.0-SNAPSHOT.jar
  
 stop-all.sh
@@ -196,10 +196,10 @@ start-all.sh
 $HADOOP dfsadmin -safemode leave
 ```
 
-#### [`tame-corpus`](http://raw.github.com/henry4j/-/master/paste/tame-corpus), or step-by-step at the terminal
+#### [`tame-corpus`](http://raw.github.com/henry4j/-/master/bin/tame-corpus), or step-by-step at the terminal
 
 ```bash
-#!/paste/bash # called `tame-corpus`
+#!/bin/bash # called `tame-corpus`
 [ ! -e ${MAHOUT_WORK}/corpus.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/rrc_pro_22110.csv ${MAHOUT_WORK}/corpus.csv
 
 rm -rf ${MAHOUT_WORK}/comm-text-ext
@@ -238,7 +238,7 @@ if [ ! -e ${MAHOUT_WORK}/reuters-ext ]; then
 fi
 ```
 
-#### [`tame-topics-basic`](https://raw.github.com/henry4j/-/master/paste/tame-topics-basic)
+#### [`tame-topics-basic`](https://raw.github.com/henry4j/-/master/bin/tame-topics-basic)
 
 * [!] this script is fragile, and subject to change without any notice; `*-advanced` script is coming soon.
 * args: work-id (default: bigram-k), max-ngram (default: 2), LLR, and analyzer (default: CommTextAnalyzer)
@@ -246,7 +246,7 @@ fi
 * [?] [`mahout seq2sparse --help`](http://raw.github.com/henry4j/-/master/man/seq2sparse.mkd), [`mahout cvb --help`](http://raw.github.com/henry4j/-/master/man/lda-cvb.mkd)
 
 ```bash
-#!/paste/bash
+#!/bin/bash
 if [ -z $4 ]; then export ANALYZER='com.henry4j.text.CommTextAnalyzer'; else export ANALYZER=$4; fi
 if [ -z $3 ]; then export MIN_LLR='120'; else export MIN_LLR=$3; fi
 if [ -z $2 ]; then export MAX_NGRAM='2'; else export MAX_NGRAM=$2; fi
@@ -298,7 +298,7 @@ s3cmd put -r ${MAHOUT_WORK}/${WORK_ID} s3://${S3_BUCKET}
 s3cmd setacl -r --acl-public s3://${S3_BUCKET}/${WORK_ID}
 ```
 
-### Test and evaluate LDA models <sub>using  [exam-comm-text](https://raw.github.com/henry4j/-/master/paste/exam-comm-text) & [p-topics](https://raw.github.com/henry4j/-/master/paste/p-topics) (jruby script)</sub>
+### Test and evaluate LDA models <sub>using  [exam-comm-text](https://raw.github.com/henry4j/-/master/bin/exam-comm-text) & [p-topics](https://raw.github.com/henry4j/-/master/bin/p-topics) (jruby script)</sub>
 
 * Dependencies: `jruby`, `mvn`, `S3_BUCKET` shell variable, the Internet to S3; works locally once getting models from S3.
   * this test & eval. scripts do not depend on any external Java web services or databases; no need for VPN/corporate net.
@@ -348,26 +348,26 @@ sudo java -jar "$HOME/.m2/repository/org/projectlombok/lombok/0.12.0/lombok-0.12
 3. Expand `Programming Languages`, and then select `Dynamic Lanauges Toolkit - Ruby`
 4. Next | Next | Accept EULA | Finish, and then **[Restart Now]**
 5. Eclipse | Preferences... | Ruby
-   * Debug | Engines, and then select `Ruby Built-in Debugger` # [x] `/usr/local/paste/gem install test-unit`
-   * Interpreters | Add... | Interpreter executable: `/usr/local/paste/ruby` as `ruby 2`
+   * Debug | Engines, and then select `Ruby Built-in Debugger` # [x] `/usr/local/bin/gem install test-unit`
+   * Interpreters | Add... | Interpreter executable: `/usr/local/bin/ruby` as `ruby 2`
 
 ##### Config M2, P4merge, SVN and Git with aliases
 
 
 ```bash
-curl -o "$HOME/.m2/settings.xml" -ksL https://raw.github.com/henry4j/-/master/paste/.m2-settings.xml
+curl -o "$HOME/.m2/settings.xml" -ksL https://raw.github.com/henry4j/-/master/bin/.m2-settings.xml
 
-bash < <(curl -ksL http://raw.github.com/henry4j/-/master/paste/install_p4merge)
+bash < <(curl -ksL http://raw.github.com/henry4j/-/master/bin/install_p4merge)
 
 git config --global user.name  henry4j # your name instead
 git config --global user.email henry4js@gmail.com # your email address instead
-curl -ksL http://raw.github.com/henry4j/-/master/paste/.gitconfig >> "$HOME/.gitconfig" # uses p4merge
-curl -o "$HOME/.gitignore" -ksL http://raw.github.com/henry4j/-/master/paste/.gitignore
+curl -ksL http://raw.github.com/henry4j/-/master/bin/.gitconfig >> "$HOME/.gitconfig" # uses p4merge
+curl -o "$HOME/.gitignore" -ksL http://raw.github.com/henry4j/-/master/bin/.gitignore
 
 [ ! -d "$HOME/.subversion" ] && mkdir -p "$HOME/.subversion"
-curl -ksL http://raw.github.com/henry4j/-/master/paste/.svn-config >> "$HOME/.subversion/config" # uses p4merge
+curl -ksL http://raw.github.com/henry4j/-/master/bin/.svn-config >> "$HOME/.subversion/config" # uses p4merge
 
-curl -o "$HOME/.git-alias" -ksL http://raw.github.com/henry4j/-/master/paste/.git-aliases
+curl -o "$HOME/.git-alias" -ksL http://raw.github.com/henry4j/-/master/bin/.git-aliases
 echo 'source .git-aliases' >> "$HOME/.profile"
 ```
 
