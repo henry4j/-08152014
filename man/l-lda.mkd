@@ -1,3 +1,20 @@
+### L-LDA topic modeling implementation
+
+* In Mahout, http://github.com/henry4j/mahout-0.8.x/commits/master.
+* In Scripts, build doc-topic priors from corpus and feed the CVB program w/ priors.
+  * [prep-comm-text](http://raw.github.com/henry4j/-/master/paste/prep-comm-text)/[tame-corpus 3](http://raw.github.com/henry4j/-/master/paste/tame-corpus) writes out corpus-priors in vector iterables.
+  * [tame-topics-l](http://raw.github.com/henry4j/-/master/paste/tame-topics-l) feeds L-LDA with corpus priors for labeled corpus.
+
+### L-LDA topic modeling in 3 procedural steps
+
+```bash
+tame-hadoop
+tame-corpus 3
+tame-topics-l
+```
+
+### L-LDA topic model in details
+
 #### ["true" Labeled-LDA](http://markmail.org/message/cm2a6rnxblj5azuh) -- not published, but a close variant at http://github.com/twitter/mahout
 
 * Since 0.7, for training, we can specify a seed model to start with (i.e. a matrix of latent topic to term counts);  
@@ -155,10 +172,3 @@ INFO: Converged! fractional error change: 0.000000, error 2.034721
   * [prep-comm-text](http://raw.github.com/henry4j/-/master/paste/prep-comm-text)/[tame-corpus 3](http://raw.github.com/henry4j/-/master/paste/tame-corpus) writes out corpus-priors in vector iterables.
   * [tame-topics-l](http://raw.github.com/henry4j/-/master/paste/tame-topics-l) feeds L-LDA with corpus priors for labeled corpus.
 
-### L-LDA topic modeling in 3 procedural steps
-
-```bash
-tame-hadoop
-tame-corpus 3
-tame-topics-l
-```
