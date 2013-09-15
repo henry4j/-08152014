@@ -39,10 +39,13 @@ mahout cvb \
   -dt ${MAHOUT_WORK}/${WORK_ID}/topics \
   -x 35 -cd 6e-4 -block 2 -tf 0.25 -seed 777 \
   $CVB_OPTS
+echo "test"
 
-exit -3
 for e in model topics; do resplit ${MAHOUT_WORK}/${WORK_ID}/$e; done
 for e in matrix docIndex wordcount frequency.file-0 tf-vectors; do $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}/$e; done
+
+echo "test"
+exit -3
 
 $MAHOUT vectordump \
   -i ${MAHOUT_WORK}/${WORK_ID}/model-0 -o /tmp/${WORK_ID}-w,z-dump.txt \
