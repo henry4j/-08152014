@@ -200,10 +200,21 @@ $HADOOP dfsadmin -safemode leave
 
 ```bash
 #!/bin/bash # called `tame-corpus`
-[ ! -e ${MAHOUT_WORK}/corpus.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/rrc_pro_22110.csv ${MAHOUT_WORK}/corpus.csv
+case $1 in
+  1) 
+    [ ! -e ${MAHOUT_WORK}/corpus-1.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/rrc_pro_22110.csv ${MAHOUT_WORK}/corpus.csv;
+    prep-comm-text ${MAHOUT_WORK}/corpus-1.csv -d ${MAHOUT_WORK}/comm-text-ext -i 3 -f 4,11
+    ;;
+  2)
+    [ ! -e ${MAHOUT_WORK}/corpus-2.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/rrc_ind_31771.csv ${MAHOUT_WORK}/corpus.csv;
+    prep-comm-text ${MAHOUT_WORK}/corpus-2.csv -d ${MAHOUT_WORK}/comm-text-ext -i 3 -f 4,11
+    ;;
+  3)
+    [ ! -e ${MAHOUT_WORK}/corpus-l.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/rrc_pro_2285_labeled_typos.csv ${MAHOUT_WORK}/corpus-l.csv;
+    prep-comm-text ${MAHOUT_WORK}/corpus-l.csv -d ${MAHOUT_WORK}/comm-text-ext -i 4 -l 8 -f 1,3
+    ;;
+esac
 
-rm -rf ${MAHOUT_WORK}/comm-text-ext
-prep-comm-text ${MAHOUT_WORK}/corpus.csv -d ${MAHOUT_WORK}/comm-text-ext
 $HADOOP dfs -rmr ${MAHOUT_WORK}/comm-text-ext ${MAHOUT_WORK}/comm-text-seq
 $HADOOP dfs -put ${MAHOUT_WORK}/comm-text-ext ${MAHOUT_WORK}/comm-text-ext
 $MAHOUT seqdirectory -i ${MAHOUT_WORK}/comm-text-ext -o ${MAHOUT_WORK}/comm-text-seq -ow -chunk 5
