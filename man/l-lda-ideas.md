@@ -1,4 +1,4 @@
-# l-lda
+### l-lda ideas
 
 Ref: http://aclweb.org/anthology//D/D09/D09-1026.pdf
 
