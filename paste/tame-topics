@@ -20,16 +20,15 @@ if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitst
   x! [
     'export HADOOP_CLASSPATH=${MAHOUT_BASE}/lib/text-1.0-SNAPSHOT.jar:${MAHOUT_BASE}/lib/lucene-analyzers-common-4.3.0.jar:${MAHOUT_BASE}/lib/lucene-core-4.3.0.jar',
     "$MAHOUT seq2sparse -i ${MAHOUT_WORK}/comm-text-seq/ -o ${MAHOUT_WORK}/#{work_id} -ow --namedVector -s 80 -md 40 -x 65 -ng %s -ml %s -a %s" % [max_ngram, min_llr, analyzer]
-  ].join(';') # excludes terms of 80- DF & 70+ DF%
+  ].join('; ') # excludes terms of 80- DF & 70+ DF%
   # -a org.apache.mahout.text.MailArchivesClusteringAnalyzer \
   # -a org.apache.lucene.analysis.en.EnglishAnalyzer \
   # -a org.apache.lucene.analysis.standard.StandardAnalyzer \
 
-  %w(matrix docIndex).each { |e| x! "$HADOOP dfs -rm ${MAHOUT_WORK}/#{work_id}/#{e}" do end }
   x! "$MAHOUT rowid -i ${MAHOUT_WORK}/#{work_id}/tfidf-vectors -o ${MAHOUT_WORK}/#{work_id}"
   %w(df-count tokenized-documents tfidf-vectors).each { |e| x! "resplit ${MAHOUT_WORK}/#{work_id}/#{e}" do end }
-  x! "$MAHOUT seqdumper -i ${MAHOUT_WORK}/#{work_id}/tokenized-documents-0 -o /tmp/#{work_id}-tokenized-docs.txt"
-  x! "$HADOOP dfs -put /tmp/#{work_id}-tokenized-docs.txt ${MAHOUT_WORK}/#{work_id}"
+  x! "$MAHOUT seqdumper -i ${MAHOUT_WORK}/#{work_id}/tokenized-documents-0 -o /tmp/#{work_id}-tokenized-documents.txt"
+  x! "$HADOOP dfs -put /tmp/#{work_id}-tokenized-documents.txt ${MAHOUT_WORK}/#{work_id}/tokenized-documents.txt"
 end
 
 if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors") && 0 == $?.exitstatus
