@@ -65,17 +65,19 @@ open(corpus, 'r:windows-1250') do |io|
     next if l_field && (labels = l[l_field]).nil?
     break if max_entries && (max_entries -= 1) < 0
     path = File.join(out_dir, "corpus", (id = l[id_field].strip) + ".txt")
-    open(path, 'w:UTF-8') do |w| 
-      fields.each do |f| 
-        begin
-          w.puts stop_phrases ? l[f].gsub(stop_phrases, '.') : l[f] if l[f]
-        rescue
-          raise 'Failed to process a line: %s.' % [l]
+    unless File.exist?(path)
+      open(path, 'w:UTF-8') do |w| 
+        fields.each do |f| 
+          begin
+            w.puts stop_phrases ? l[f].gsub(stop_phrases, '.') : l[f] if l[f]
+          rescue
+            raise 'Failed to process a line: %s.' % [l]
+          end
         end
       end
+      puts "INFO: done writing to '#{path}'."
     end
     labels_by_doc_id[id] = labels.split('|').map { |e| e.strip }.map { |e| label_ids[e] ||= label_ids.size } if l_field
-    puts "INFO: done writing to '#{path}'."
   end
 end
 if l_field
