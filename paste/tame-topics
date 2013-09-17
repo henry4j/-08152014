@@ -16,7 +16,7 @@ work_id = $options[:work_id] || 'true-l-lda'
 
 def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
 
-if %x('$HADOOP dfs -test -e "${MAHOUT_WORK}/${WORK_ID}/matrix"' do; end) && $?.exitstatus
+if %x('$HADOOP dfs -test -e "${MAHOUT_WORK}/${WORK_ID}/matrix"') && $?.exitstatus
   x! [
     'export HADOOP_CLASSPATH=${MAHOUT_BASE}/lib/text-1.0-SNAPSHOT.jar:${MAHOUT_BASE}/lib/lucene-analyzers-common-4.3.0.jar:${MAHOUT_BASE}/lib/lucene-core-4.3.0.jar',
     '$MAHOUT seq2sparse -i ${MAHOUT_WORK}/comm-text-seq/ -o ${MAHOUT_WORK}/${WORK_ID} -ow --namedVector -s 80 -md 40 -x 65 -ng %s -ml %s -a %s' % [max_ngram, min_llr, analyzer]
@@ -34,15 +34,16 @@ end
 
 if %x('$HADOOP dfs -test -e "${MAHOUT_WORK}/${WORK_ID}/matrix"' do; end) && $?.exitstatus
   cvb_opts = '-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/corpus-priors -cd 6e-10'
-  %w(core-0.8 core-0.8-job examples-0.8 examples-0.8-job).map { |e| File.join(ENV['MAHOUT_BASE'], "mahout-%s.jar" % e) }
-    FileUtils.mv(e, "#{e.dirname}/#{e.basename}.bak}") if File.exit?(e)
-  }
-  %w(core-0.8.2 core-0.8.2-job examples-0.8.2 examples-0.8.2-job).map { |e|
-    x! 'curl -o "$MAHOUT_BASE/mahout-%s.jar" -kL "http://dl.dropbox.com/u/47820156/mahout/l-lda/mahout-%s.jar' % [e, e] unless File.exist?(e)
-  }
+  %w(core-0.8 core-0.8-job examples-0.8 examples-0.8-job)
+    .map { |e| File.join(ENV['MAHOUT_BASE'], "mahout-%s.jar" % e) }
+    .each { FileUtils.mv(e, "#{e.dirname}/#{e.basename}.bak}") if File.exit?(e) }
+  %w(core-0.8.2 core-0.8.2-job examples-0.8.2 examples-0.8.2-job)
+    .map { |e| 'mahout-%s.jar' % e }
+    .each { |e| x! 'curl -o "$MAHOUT_BASE/%s" -kL "http://dl.dropbox.com/u/47820156/mahout/l-lda/%s' % [e, e] unless File.exist?(File.join(ENV['MAHOUT_BASE'], e)) }
 else
   cvb_opts ='-k 20 -cd 6e-4'
 end
+puts cvb_opts
 
 # if $($HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors"); then
 #   CVB_OPTS="-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/corpus-priors -cd 6e-10"
