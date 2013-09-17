@@ -31,7 +31,7 @@ if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitst
   x! "$HADOOP dfs -put /tmp/#{work_id}-tokenized-documents.txt ${MAHOUT_WORK}/#{work_id}/tokenized-documents.txt"
 end
 
-if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors") && 0 != $?.exitstatus
+if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors") && 0 == $?.exitstatus
   cvb_opts = '-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/corpus-priors -cd 6e-10'
   %w(core-0.8 core-0.8-job examples-0.8 examples-0.8-job)
     .map { |e| File.join(ENV['MAHOUT_BASE'], "mahout-%s.jar" % e) }
@@ -43,22 +43,9 @@ if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors") && 0 !=
 else
   cvb_opts ='-k 20 -cd 6e-4'
 end
-puts cvb_opts
 
-# if $($HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors"); then
-#   CVB_OPTS="-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/corpus-priors -cd 6e-10"
-#   for e in core-0.8   core-0.8-job   examples-0.8   examples-0.8-job;
-#     do [ -e "$MAHOUT_BASE/mahout-$e.jar" ] && mv $MAHOUT_BASE/mahout-$e.jar $MAHOUT_BASE/mahout-$e.jar.bak;
-#   done
-#   for e in core-0.8.2 core-0.8.2-job examples-0.8.2 examples-0.8.2-job;
-#     do [ ! -e "$MAHOUT_BASE/mahout-$e.jar" ] && curl -o "$MAHOUT_BASE/mahout-$e.jar" -kL "http://dl.dropboxusercontent.com/u/47820156/mahout/l-lda/mahout-$e.jar"; 
-#   done
-# else
-#   CVB_OPTS='-k 20 -cd 6e-4'
-# fi
-# 
-# rm -rf ${MAHOUT_WORK}/${WORK_ID}-*
-# $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}/model
+x! "rm -rf ${MAHOUT_WORK}/#{work_id}-*"
+x! "$HADOOP dfs -rmr ${MAHOUT_WORK}/#{work_id}/model"
 # $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}/topics
 # $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}-modeling
 # $MAHOUT cvb \
