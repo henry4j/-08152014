@@ -31,11 +31,11 @@ if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitst
   x! "$HADOOP dfs -put /tmp/#{work_id}-tokenized-documents.txt ${MAHOUT_WORK}/#{work_id}/tokenized-documents.txt"
 end
 
-if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors") && 0 == $?.exitstatus
+if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors") && 0 != $?.exitstatus
   cvb_opts = '-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/corpus-priors -cd 6e-10'
   %w(core-0.8 core-0.8-job examples-0.8 examples-0.8-job)
     .map { |e| File.join(ENV['MAHOUT_BASE'], "mahout-%s.jar" % e) }
-    .each { FileUtils.mv(e, "#{e.dirname}/#{e.basename}.bak}") if File.exit?(e) }
+    .each { |e| FileUtils.mv_f(e, "#{File.dirname(e)}/#{File.basename(e)}.bak}") if File.exist?(e) }
   %w(core-0.8.2 core-0.8.2-job examples-0.8.2 examples-0.8.2-job)
     .map { |e| 'mahout-%s.jar' % e }
     .each { |e| x! 'curl -o "$MAHOUT_BASE/%s" -kL "http://dl.dropbox.com/u/47820156/mahout/l-lda/%s' % [e, e] unless File.exist?(File.join(ENV['MAHOUT_BASE'], e)) }
