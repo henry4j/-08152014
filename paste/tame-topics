@@ -19,7 +19,7 @@ def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (
 if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 == $?.exitstatus
   x! [
     'export HADOOP_CLASSPATH=${MAHOUT_BASE}/lib/text-1.0-SNAPSHOT.jar:${MAHOUT_BASE}/lib/lucene-analyzers-common-4.3.0.jar:${MAHOUT_BASE}/lib/lucene-core-4.3.0.jar',
-    '$MAHOUT seq2sparse -i ${MAHOUT_WORK}/comm-text-seq/ -o ${MAHOUT_WORK}/${WORK_ID} -ow --namedVector -s 80 -md 40 -x 65 -ng %s -ml %s -a %s' % [max_ngram, min_llr, analyzer]
+    "$MAHOUT seq2sparse -i ${MAHOUT_WORK}/comm-text-seq/ -o ${MAHOUT_WORK}/#{work_id} -ow --namedVector -s 80 -md 40 -x 65 -ng %s -ml %s -a %s" % [max_ngram, min_llr, analyzer]
   ].join(';') # excludes terms of 80- DF & 70+ DF%
   # -a org.apache.mahout.text.MailArchivesClusteringAnalyzer \
   # -a org.apache.lucene.analysis.en.EnglishAnalyzer \
