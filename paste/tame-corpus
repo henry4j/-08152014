@@ -7,7 +7,6 @@ c = ARGV[0].to_i
 
 sh %W(s3cmd get s3://${S3_BUCKET}-private/resources/#{s3[c]} #{corpora[c]}) unless File.exist?(corpora[c])
 sh %W(prep-comm-text #{corpora[c]} -d ${MAHOUT_WORK}/comm-text-ext + #{fields[c]}).join(' ')
-exit -1
 sh '$HADOOP dfs -rmr ${MAHOUT_WORK}/comm-text-ext ${MAHOUT_WORK}/comm-text-seq' do end
 sh '$HADOOP dfs -put ${MAHOUT_WORK}/comm-text-ext/corpus-priors ${MAHOUT_WORK}/comm-text-ext/corpus-priors'
 sh '$HADOOP dfs -put ${MAHOUT_WORK}/comm-text-ext/corpus ${MAHOUT_WORK}/comm-text-ext/corpus'
