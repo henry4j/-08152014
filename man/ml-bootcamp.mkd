@@ -198,7 +198,7 @@ start-all.sh
 $HADOOP dfsadmin -safemode leave
 ```
 
-#### [`tame-corpus 1`](http://raw.github.com/henry4j/-/master/paste/tame-corpus), or step-by-step at the terminal
+#### [`tame-corpus 0`](http://raw.github.com/henry4j/-/master/paste/tame-corpus), or step-by-step at the terminal
 
 ```bash
 #!/bin/bash # called `tame-corpus`
