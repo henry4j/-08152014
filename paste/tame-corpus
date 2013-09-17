@@ -9,7 +9,7 @@ c = Integer(ARGV[0]) - 1 # expects 1 or greater.
 def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
 
 x! "s3cmd get s3://${S3_BUCKET}-private/resources/#{sources[c]} #{corpora[c]}" unless File.exist?(corpora[c])
-x! "prep-comm-text #{corpora[c]} -d #{extract} #{options[c]}"
+x! "prep-comm-text #{corpora[c]} -d #{extract} #{options[c]} -o"
 x! "$HADOOP dfs -rmr #{extract} ${MAHOUT_WORK}/comm-text-seq" do end # rescue on errors.
 x! "$HADOOP dfs -put #{extract}/corpus-priors ${MAHOUT_WORK}/comm-text-ext/corpus-priors" do end # rescue on errors.
 x! "$HADOOP dfs -put #{extract}/corpus ${MAHOUT_WORK}/comm-text-ext/corpus"
