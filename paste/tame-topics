@@ -45,10 +45,10 @@ else
 end
 
 io = %w(matrix dictionary.file-0 matrix modeling model topics).map { |e| "$MAHOUT_WORK/#{work_id}/#{e}" }
-io[-3..-1].each { |e| x! "$HADOOP dfs -rmr #{e}" do end }
+x! "$HADOOP dfs -rmr #{io[-3..-1].join(' ')}" do end
 x! "rm -rf ${MAHOUT_WORK}/#{work_id}/modeling" do end
-x! "$MAHOUT cvb -i %s -dict %s -ow -o %s -mt %s -dt %s -x 35 -block 2 -tf 0.25 -seed 777 #{cvb_opts}" % [io]
-io[-2..-1].each { |e| x! "resplit #{e}" }
+x! "$MAHOUT cvb -i %s -dict %s -ow -o %s -mt %s -dt %s -x 35 -block 2 -tf 0.25 -seed 777 #{cvb_opts}" % io
+x! "resplit #{io[-2..-1].join(' ')}"
 
 # $MAHOUT vectordump \
 #   -i ${MAHOUT_WORK}/${WORK_ID}/model-0 -o /tmp/${WORK_ID}-w,z-dump.txt \
