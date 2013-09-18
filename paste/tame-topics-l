@@ -13,6 +13,7 @@ analyzer = $options[:analyzer] || 'com.henry4j.text.CommTextAnalyzer'
 min_llr = $options[:min_llr] || 120
 max_ngram = $options[:max_ngram] || 1
 work_id = $options[:work_id] || 'true-l-lda'
+vectors = $options[:vectors] || 'tf-vectors'
 
 def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
 
@@ -25,8 +26,8 @@ if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitst
   # -a org.apache.lucene.analysis.en.EnglishAnalyzer \
   # -a org.apache.lucene.analysis.standard.StandardAnalyzer \
 
-  x! "$MAHOUT rowid -i ${MAHOUT_WORK}/#{work_id}/tfidf-vectors -o ${MAHOUT_WORK}/#{work_id}"
-  %w(df-count tfidf-vectors tokenized-documents).each { |e| x! "resplit ${MAHOUT_WORK}/#{work_id}/#{e}" do end }
+  x! "$MAHOUT rowid -i ${MAHOUT_WORK}/#{work_id}/#{vectors} -o ${MAHOUT_WORK}/#{work_id}"
+  %w(df-count tf-vectors tfidf-vectors tokenized-documents).each { |e| x! "resplit ${MAHOUT_WORK}/#{work_id}/#{e}" do end }
   x! "$MAHOUT seqdumper -i ${MAHOUT_WORK}/#{work_id}/tokenized-documents-0 -o /tmp/#{work_id}-tokenized-documents.txt"
   x! "$HADOOP dfs -put /tmp/#{work_id}-tokenized-documents.txt ${MAHOUT_WORK}/#{work_id}/tokenized-documents.txt"
 end
@@ -41,27 +42,28 @@ if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors") && 0 ==
     .reject { |e| File.exist?(e) }
     .each { |e| x! 'curl -o %s -kL http://dl.dropbox.com/u/47820156/mahout/l-lda/%s' % [e, File.basename(e)] }
 else
-  cvb_opts ='-k 20 -cd 6e-4'
+  cvb_opts ='-k 20 -pidt -cd 6e-4'
 end
 
-io = %w(matrix dictionary.file-0 modeling model topics).map { |e| "$MAHOUT_WORK/#{work_id}/#{e}" }
-x! "$HADOOP dfs -rmr #{io[-3..-1].join(' ')}" do end
-x! "rm -rf ${MAHOUT_WORK}/#{work_id}/modeling" do end
-x! "$MAHOUT cvb -i %s -dict %s -ow -o %s -mt %s -dt %s -x 35 -block 2 -tf 0.25 -seed 777 #{cvb_opts}" % io
-x! "resplit #{io[-2..-1].join(' ')}"
+io = %w(matrix dictionary.file-0 model topics modeling).map { |e| "$MAHOUT_WORK/#{work_id}/#{e}" }
+if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/model-0") && 0 != $?.exitstatus
+  x! "$HADOOP dfs -rmr #{io[-3..-1].join(' ')}" do end
+  x! "rm -rf ${MAHOUT_WORK}/#{work_id}/modeling" do end
+  x! "$MAHOUT cvb -i %s -dict %s -ow -o %s -dt %s -mt %s -x 3 -block 2 -tf 0.25 -seed 777 #{cvb_opts}" % io
+  x! "resplit #{io[2, 2].join(' ')}"
+end  
 
-# $MAHOUT vectordump \
-#   -i ${MAHOUT_WORK}/${WORK_ID}/model-0 -o /tmp/${WORK_ID}-w,z-dump.txt \
-#   -p true -sort ${MAHOUT_WORK}/${WORK_ID}/model-0 -vs 25 \
-#   -d ${MAHOUT_WORK}/${WORK_ID}/dictionary.file-0 -dt sequencefile
-# $MAHOUT vectordump -i ${MAHOUT_WORK}/${WORK_ID}/topics-0 -o /tmp/${WORK_ID}-z,d-dump.txt
-# $HADOOP dfs -put /tmp/${WORK_ID}-?,?-dump.txt ${MAHOUT_WORK}/${WORK_ID}
-# 
-# pp-w,z /tmp/${WORK_ID}-w,z-dump.txt | tee /tmp/${WORK_ID}-w,z-topic-terms.txt
-# pp-z,d /tmp/${WORK_ID}-z,d-dump.txt -n 10 | tee /tmp/${WORK_ID}-z,d-doc-topics.txt
-# for e in w,z z,d; do $HADOOP dfs -put /tmp/${WORK_ID}-$e-*.txt ${MAHOUT_WORK}/${WORK_ID}; done
-# 
-# rm -rf ${MAHOUT_WORK}/${WORK_ID}
-# $HADOOP dfs -get ${MAHOUT_WORK}/${WORK_ID} ${MAHOUT_WORK}/${WORK_ID}
-# s3cmd put -r ${MAHOUT_WORK}/${WORK_ID} s3://${S3_BUCKET}
-# s3cmd setacl -r --acl-public s3://${S3_BUCKET}/${WORK_ID}
+x! "$MAHOUT vectordump -i %s-0 -sort %s-0 -d %s -o /tmp/#{work_id}-w,z-dump.txt -p true -vs 25 -dt sequencefile" % io.values_at(-3, -3, 1)
+x! "$MAHOUT vectordump -i %s-0 -o /tmp/#{work_id}-z,d-dump.txt" % io[-2]
+x! "$HADOOP dfs -put /tmp/#{work_id}-*-dump.txt ${MAHOUT_WORK}/#{work_id}" do end
+ 
+x! "pp-w,z /tmp/#{work_id}-w,z-dump.txt       | tee /tmp/#{work_id}-w,z-topic-terms.txt"
+x! "pp-z,d /tmp/#{work_id}-z,d-dump.txt -n 10 | tee /tmp/#{work_id}-z,d-doc-topics.txt"
+%w(w,z z,d).map { |e| x! "$HADOOP dfs -put /tmp/#{work_id}-#{e}-*.txt ${MAHOUT_WORK}/#{work_id}" do end }
+ 
+x! "rm -rf ${MAHOUT_WORK}/#{work_id}"
+x! "$HADOOP dfs -get $MAHOUT_WORK/#{work_id} ${MAHOUT_WORK}/#{work_id}"
+%w(df-count-0 dictionary.file-0 model-0 tf-vectors-0 tfidf-vectors-0 tokenized-documents.txt topic-0).each { |e| x! "s3cmd put $MAHOUT_WORK/#{work_id}/#{e} s3://${S3_BUCKET}/#{work_id}/" }
+%w(w,z-dump.txt w,z-topic-terms.txt doc-topics.txt z,d-dump.txt).each { |e| x! "s3cmd put $MAHOUT_WORK/#{work_id}/#{work_id}-#{e} s3://${S3_BUCKET}/#{work_id}/" }
+x! "s3cmd setacl -r --acl-public s3://${S3_BUCKET}/#{work_id}"
+
