@@ -56,11 +56,12 @@ x! "$MAHOUT vectordump -i %s-0 -sort %s-0 -d %s -o /tmp/#{work_id}-w,z-dump.txt 
 x! "$MAHOUT vectordump -i %s-0 -o /tmp/#{work_id}-z,d-dump.txt" % io[-2]
 x! "$HADOOP dfs -put /tmp/#{work_id}-*-dump.txt ${MAHOUT_WORK}/#{work_id}"
  
-# pp-w,z /tmp/${WORK_ID}-w,z-dump.txt | tee /tmp/${WORK_ID}-w,z-topic-terms.txt
-# pp-z,d /tmp/${WORK_ID}-z,d-dump.txt -n 10 | tee /tmp/${WORK_ID}-z,d-doc-topics.txt
-# for e in w,z z,d; do $HADOOP dfs -put /tmp/${WORK_ID}-$e-*.txt ${MAHOUT_WORK}/${WORK_ID}; done
-# 
-# rm -rf ${MAHOUT_WORK}/${WORK_ID}
-# $HADOOP dfs -get ${MAHOUT_WORK}/${WORK_ID} ${MAHOUT_WORK}/${WORK_ID}
-# s3cmd put -r ${MAHOUT_WORK}/${WORK_ID} s3://${S3_BUCKET}
-# s3cmd setacl -r --acl-public s3://${S3_BUCKET}/${WORK_ID}
+x! "pp-w,z /tmp/#{work_id}-w,z-dump.txt       | tee /tmp/#{work_id}-w,z-topic-terms.txt"
+x! "pp-z,d /tmp/#{work_id}-z,d-dump.txt -n 10 | tee /tmp/#{work_id}-z,d-doc-topics.txt"
+%w(w,z z,d).map { |e| x! "$HADOOP dfs -put /tmp/#{work_id}-#{e}-*.txt ${MAHOUT_WORK}/#{work_id}" }
+ 
+x! "rm -rf ${MAHOUT_WORK}/#{work_id}"
+x! "$HADOOP dfs -get ${MAHOUT_WORK}/#{work_id} ${MAHOUT_WORK}/#{work_id}"
+x! "s3cmd put -r ${MAHOUT_WORK}/#{work_id} s3://${S3_BUCKET}"
+x! "s3cmd setacl -r --acl-public s3://${S3_BUCKET}/#{work_id}"
+
