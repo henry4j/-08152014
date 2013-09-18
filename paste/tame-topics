@@ -14,16 +14,16 @@ analyzer = $options[:analyzer] || 'com.henry4j.text.CommTextAnalyzer'
 min_llr = $options[:min_llr] || 120
 max_ngram = $options[:max_ngram] || 1
 work_id = $options[:work_id] || 'true-l-lda'
-overwrite = $options[:overwrite]
+x! "$HADOOP dfs -rmr '${MAHOUT_WORK}/#{work_id}'" do end if $options[:overwrite]
 vectors = $options[:vectors] || 'tf-vectors'
 
 def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
 
-x! "$HADOOP dfs -rmr '${MAHOUT_WORK}/#{work_id}'" do end if overwrite
+
 if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitstatus
   x! [
     'export HADOOP_CLASSPATH=${MAHOUT_BASE}/lib/text-1.0-SNAPSHOT.jar:${MAHOUT_BASE}/lib/lucene-analyzers-common-4.3.0.jar:${MAHOUT_BASE}/lib/lucene-core-4.3.0.jar',
-    "$MAHOUT seq2sparse -i ${MAHOUT_WORK}/comm-text-seq/ -o ${MAHOUT_WORK}/#{work_id} -ow --namedVector -s 80 -md 40 -x 65 -ng %s -ml %s -a %s" % [max_ngram, min_llr, analyzer]
+    "$MAHOUT seq2sparse -i ${MAHOUT_WORK}/comm-text-seq/ -o ${MAHOUT_WORK}/#{work_id} -ow --namedVector -s 20 -md 10 -x 65 -ng %s -ml %s -a %s" % [max_ngram, min_llr, analyzer]
   ].join('; ') # excludes terms of 80- DF & 70+ DF%
   # -a org.apache.mahout.text.MailArchivesClusteringAnalyzer \
   # -a org.apache.lucene.analysis.en.EnglishAnalyzer \
@@ -35,20 +35,37 @@ if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitst
   x! "$HADOOP dfs -put /tmp/#{work_id}-tokenized-documents.txt ${MAHOUT_WORK}/#{work_id}/tokenized-documents.txt"
 end
 
-if doc_topic_priors = %x($HADOOP dfs -ls "${MAHOUT_WORK}/comm-text-ext/doc-topic-priors-*") && 0 == $?
-  cvb_opts = '-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/corpus-priors -cd 6e-10'
-  puts 'hello'
+if (doc_topic_priors = %x($HADOOP dfs -ls "${MAHOUT_WORK}/comm-text-ext/doc-topic-priors-*")) && 0 == $?
 
-  # TODO:
-  # hadoop dfs -ls /workspace/mahout-work/comm-text-ext/corpus-priors-*
-  # /workspace/mahout-work/true-l-lda/df-count-0
-  # rows = ?
-  # columns = ?
+  %w(
+    com.google.guava:guava:14.0.1
+    commons-configuration:commons-configuration:1.6
+    commons-logging:commons-logging:1.1.1
+    commons-lang:commons-lang:2.5
+    log4j:log4j:1.2.17
+    org.apache.avro:avro:1.5.3
+    org.apache.commons:commons-math3:3.2
+    org.apache.hadoop:hadoop-common:2.0.5-alpha
+    org.apache.hadoop:hadoop-annotations:2.0.5-alpha
+    org.apache.hadoop:hadoop-auth:2.0.5-alpha
+    org.apache.lucene:lucene-analyzers-common:4.3.0
+    org.apache.lucene:lucene-core:4.3.0
+    org.apache.mahout:mahout-core:0.8
+    org.apache.mahout:mahout-math:0.8
+    org.slf4j:slf4j-api:1.6.1
+    org.slf4j:slf4j-log4j12:1.6.1
+  ).map do |e|
+    g, a, v = e.split(':')
+    jar = "#{ENV['HOME']}/.m2/repository/#{g.gsub(/\./, '/')}/#{a}/#{v}/#{a}-#{v}.jar"
+    system "mvn dependency:get -DremoteRepositories=http://download.java.net/maven2 -Dartifact=#{e}" unless File.exist?(jar)
+    require jar
+  end
 
-  # topic_term_weights = {}
-  # topic_size?
-
-  # priors = org.apache.mahout.math.SparseRowMatrix.new(labels_by_doc_id.size, label_ids.size, true) # true for random access
+  df_count = %x(mahout seqdumper -i /workspace/mahout-work/#{work_id}/df-count-0)
+  rows = /\d+\z/.match(doc_topic_priors).to_i
+  columns = /\d+\z/.match(df_count).to_i
+  term_topic_priors = org.apache.mahout.math.SparseRowMatrix.new(rows, columns, true) # true for random access
+  p rows, columns, term_topic_priors
 
   %w(core-0.8 core-0.8-job examples-0.8 examples-0.8-job)
     .map { |e| File.join(ENV['MAHOUT_BASE'], "mahout-%s.jar" % e) }
@@ -57,6 +74,7 @@ if doc_topic_priors = %x($HADOOP dfs -ls "${MAHOUT_WORK}/comm-text-ext/doc-topic
     .map { |e| File.join(ENV['MAHOUT_BASE'], "mahout-%s.jar" % e) }
     .reject { |e| File.exist?(e) }
     .each { |e| x! 'curl -o %s -kL http://dl.dropbox.com/u/47820156/mahout/l-lda/%s' % [e, File.basename(e)] }
+  cvb_opts = '-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/corpus-priors -cd 6e-10'
 else
   cvb_opts ='-k 20 -pidt -cd 6e-4'
 end
