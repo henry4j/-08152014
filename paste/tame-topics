@@ -47,7 +47,7 @@ end
 io = %w(matrix dictionary.file-0 modeling model topics).map { |e| "$MAHOUT_WORK/#{work_id}/#{e}" }
 x! "$HADOOP dfs -rmr #{io[-3..-1].join(' ')}" do end
 x! "rm -rf ${MAHOUT_WORK}/#{work_id}/modeling" do end
-x! "$MAHOUT cvb -i %s -dict %s -ow -o %s -mt %s -dt %s -x 35 -block 2 -tf 0.25 -seed 777 #{cvb_opts}" % io
+x! "$MAHOUT cvb -i %s -dict %s -ow -o %s -mt %s -dt %s -x 3 -block 2 -tf 0.25 -seed 777 #{cvb_opts}" % io
 x! "resplit #{io[-2..-1].join(' ')}"
 
 # $MAHOUT vectordump \
