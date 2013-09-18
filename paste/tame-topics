@@ -26,7 +26,7 @@ if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitst
   # -a org.apache.lucene.analysis.standard.StandardAnalyzer \
 
   x! "$MAHOUT rowid -i ${MAHOUT_WORK}/#{work_id}/tfidf-vectors -o ${MAHOUT_WORK}/#{work_id}"
-  %w(df-count tokenized-documents tfidf-vectors).each { |e| x! "resplit ${MAHOUT_WORK}/#{work_id}/#{e}" do end }
+  %w(df-count tfidf-vectors tokenized-documents).each { |e| x! "resplit ${MAHOUT_WORK}/#{work_id}/#{e}" do end }
   x! "$MAHOUT seqdumper -i ${MAHOUT_WORK}/#{work_id}/tokenized-documents-0 -o /tmp/#{work_id}-tokenized-documents.txt"
   x! "$HADOOP dfs -put /tmp/#{work_id}-tokenized-documents.txt ${MAHOUT_WORK}/#{work_id}/tokenized-documents.txt"
 end
