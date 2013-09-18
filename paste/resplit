@@ -11,6 +11,6 @@ def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (
 
 ARGV.each do |e|
   x! %Q(hadoop dfs -rmr #{e}/_logs #{e}/_SUCCESS) do end
-  x! %Q(mahout resplit -i #{e} -o #{e} -ns #{n})
-  x! %Q(hadoop dfs -rmr #{e})
+  x! %Q(mahout resplit -i #{e} -o #{e} -ns #{n}) do end
+  x! %Q(hadoop dfs -rmr #{e}) do end
 end
