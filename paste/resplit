@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-%w{optparse open-uri json}.each { |e| require e }
+%w{rake optparse open-uri json}.each { |e| require e }
 
 $options = {}
 OptionParser.new do |p|
@@ -7,8 +7,10 @@ OptionParser.new do |p|
 end.parse!
 n = $options[:n] || 1
 
+def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
+
 ARGV.each do |e|
-  system %Q(hadoop dfs -rmr #{e}/_logs #{e}/_SUCCESS)
-  system %Q(mahout resplit -i #{e} -o #{e} -ns #{n})
-  system %Q(hadoop dfs -rmr #{e})
+  x! %Q(hadoop dfs -rmr #{e}/_logs #{e}/_SUCCESS) do end
+  x! %Q(mahout resplit -i #{e} -o #{e} -ns #{n})
+  x! %Q(hadoop dfs -rmr #{e})
 end
