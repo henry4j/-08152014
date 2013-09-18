@@ -20,7 +20,7 @@ vectors = $options[:vectors] || 'tf-vectors'
 def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
 
 x! "$HADOOP dfs -rmr '${MAHOUT_WORK}/#{work_id}'" do end if overwrite
-if %x($HADOOP dfs -test -e '${MAHOUT_WORK}/#{work_id}/matrix') && 0 != $?.exitstatus
+if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitstatus
   x! [
     'export HADOOP_CLASSPATH=${MAHOUT_BASE}/lib/text-1.0-SNAPSHOT.jar:${MAHOUT_BASE}/lib/lucene-analyzers-common-4.3.0.jar:${MAHOUT_BASE}/lib/lucene-core-4.3.0.jar',
     "$MAHOUT seq2sparse -i ${MAHOUT_WORK}/comm-text-seq/ -o ${MAHOUT_WORK}/#{work_id} -ow --namedVector -s 80 -md 40 -x 65 -ng %s -ml %s -a %s" % [max_ngram, min_llr, analyzer]
@@ -35,9 +35,9 @@ if %x($HADOOP dfs -test -e '${MAHOUT_WORK}/#{work_id}/matrix') && 0 != $?.exitst
   x! "$HADOOP dfs -put /tmp/#{work_id}-tokenized-documents.txt ${MAHOUT_WORK}/#{work_id}/tokenized-documents.txt"
 end
 
-exit -10
-if %x($HADOOP dfs -test -e '${MAHOUT_WORK}/comm-text-ext/corpus-priors-*') && 0 == $?.exitstatus
+if doc_topic_priors = %x($HADOOP dfs -ls "${MAHOUT_WORK}/comm-text-ext/doc-topic-priors-*") && 0 == $?
   cvb_opts = '-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/corpus-priors -cd 6e-10'
+  puts 'hello'
 
   # TODO:
   # hadoop dfs -ls /workspace/mahout-work/comm-text-ext/corpus-priors-*
@@ -60,6 +60,7 @@ if %x($HADOOP dfs -test -e '${MAHOUT_WORK}/comm-text-ext/corpus-priors-*') && 0 
 else
   cvb_opts ='-k 20 -pidt -cd 6e-4'
 end
+puts 'world'
 exit -10
 
 io = %w(matrix dictionary.file-0 model topics modeling).map { |e| "$MAHOUT_WORK/#{work_id}/#{e}" }
