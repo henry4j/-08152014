@@ -13,8 +13,16 @@
   <classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.1/activation-1.1.jar" sourcepath="M2_REPO/javax/activation/activation/1.1/activation-1.1-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/servlet/jsp/jsp-api/2.1/jsp-api-2.1.jar" sourcepath="M2_REPO/javax/servlet/jsp/jsp-api/2.1/jsp-api-2.1-sources.jar"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/hadoop/hadoop-common/2.0.5-alpha/hadoop-common-2.0.5-alpha.jar" sourcepath="M2_REPO/org/apache/hadoop/hadoop-common/2.0.5-alpha/hadoop-common-2.0.5-alpha-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/hadoop/hadoop-annotations/2.0.5-alpha/hadoop-annotations-2.0.5-alpha.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/hadoop/hadoop-common/2.1.0-beta/hadoop-common-2.1.0-beta.jar" sourcepath="M2_REPO/org/apache/hadoop/hadoop-common/2.1.0-beta/hadoop-common-2.1.0-beta-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/Users/hylee/.m2/repository/org/apache/hadoop/hadoop-common/2.1.0-beta/hadoop-common-2.1.0-beta-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/org/apache/hadoop/hadoop-annotations/2.1.0-beta/hadoop-annotations-2.1.0-beta.jar" sourcepath="M2_REPO/org/apache/hadoop/hadoop-annotations/2.1.0-beta/hadoop-annotations-2.1.0-beta-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/Users/hylee/.m2/repository/org/apache/hadoop/hadoop-annotations/2.1.0-beta/hadoop-annotations-2.1.0-beta-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
   <classpathentry kind="var" path="M2_REPO/com/google/guava/guava/14.0.1/guava-14.0.1.jar" sourcepath="M2_REPO/com/google/guava/guava/14.0.1/guava-14.0.1-sources.jar">
     <attributes>
       <attribute value="jar:file:/Users/hylee/.m2/repository/com/google/guava/guava/14.0.1/guava-14.0.1-javadoc.jar!/" name="javadoc_location"/>
@@ -149,17 +157,40 @@
       <attribute value="jar:file:/Users/hylee/.m2/repository/org/xerial/snappy/snappy-java/1.0.3.2/snappy-java-1.0.3.2-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/net/sf/kosmosfs/kfs/0.3/kfs-0.3.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/google/protobuf/protobuf-java/2.4.0a/protobuf-java-2.4.0a.jar" sourcepath="M2_REPO/com/google/protobuf/protobuf-java/2.4.0a/protobuf-java-2.4.0a-sources.jar">
+  <classpathentry kind="var" path="M2_REPO/com/google/protobuf/protobuf-java/2.5.0/protobuf-java-2.5.0.jar" sourcepath="M2_REPO/com/google/protobuf/protobuf-java/2.5.0/protobuf-java-2.5.0-sources.jar">
     <attributes>
-      <attribute value="jar:file:/Users/hylee/.m2/repository/com/google/protobuf/protobuf-java/2.4.0a/protobuf-java-2.4.0a-javadoc.jar!/" name="javadoc_location"/>
+      <attribute value="jar:file:/Users/hylee/.m2/repository/com/google/protobuf/protobuf-java/2.5.0/protobuf-java-2.5.0-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/apache/hadoop/hadoop-auth/2.0.5-alpha/hadoop-auth-2.0.5-alpha.jar" sourcepath="M2_REPO/org/apache/hadoop/hadoop-auth/2.0.5-alpha/hadoop-auth-2.0.5-alpha-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/hadoop/hadoop-auth/2.1.0-beta/hadoop-auth-2.1.0-beta.jar" sourcepath="M2_REPO/org/apache/hadoop/hadoop-auth/2.1.0-beta/hadoop-auth-2.1.0-beta-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/Users/hylee/.m2/repository/org/apache/hadoop/hadoop-auth/2.1.0-beta/hadoop-auth-2.1.0-beta-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
   <classpathentry kind="var" path="M2_REPO/com/jcraft/jsch/0.1.42/jsch-0.1.42.jar" sourcepath="M2_REPO/com/jcraft/jsch/0.1.42/jsch-0.1.42-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/zookeeper/zookeeper/3.4.2/zookeeper-3.4.2.jar" sourcepath="M2_REPO/org/apache/zookeeper/zookeeper/3.4.2/zookeeper-3.4.2-sources.jar">
     <attributes>
       <attribute value="jar:file:/Users/hylee/.m2/repository/org/apache/zookeeper/zookeeper/3.4.2/zookeeper-3.4.2-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-compress/1.4/commons-compress-1.4.jar" sourcepath="M2_REPO/org/apache/commons/commons-compress/1.4/commons-compress-1.4-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/Users/hylee/.m2/repository/org/apache/commons/commons-compress/1.4/commons-compress-1.4-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/org/tukaani/xz/1.0/xz-1.0.jar" sourcepath="M2_REPO/org/tukaani/xz/1.0/xz-1.0-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/Users/hylee/.m2/repository/org/tukaani/xz/1.0/xz-1.0-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/org/apache/hadoop/hadoop-hdfs/2.1.0-beta/hadoop-hdfs-2.1.0-beta.jar" sourcepath="M2_REPO/org/apache/hadoop/hadoop-hdfs/2.1.0-beta/hadoop-hdfs-2.1.0-beta-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/Users/hylee/.m2/repository/org/apache/hadoop/hadoop-hdfs/2.1.0-beta/hadoop-hdfs-2.1.0-beta-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/commons-daemon/commons-daemon/1.0.13/commons-daemon-1.0.13.jar" sourcepath="M2_REPO/commons-daemon/commons-daemon/1.0.13/commons-daemon-1.0.13-sources.jar">
+    <attributes>
+      <attribute value="jar:file:/Users/hylee/.m2/repository/commons-daemon/commons-daemon/1.0.13/commons-daemon-1.0.13-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
   <classpathentry kind="var" path="M2_REPO/org/springframework/spring-beans/3.2.4.RELEASE/spring-beans-3.2.4.RELEASE.jar" sourcepath="M2_REPO/org/springframework/spring-beans/3.2.4.RELEASE/spring-beans-3.2.4.RELEASE-sources.jar">
@@ -295,11 +326,6 @@
     </attributes>
   </classpathentry>
   <classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.9.1/xercesImpl-2.9.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-compress/1.4.1/commons-compress-1.4.1.jar" sourcepath="M2_REPO/org/apache/commons/commons-compress/1.4.1/commons-compress-1.4.1-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/Users/hylee/.m2/repository/org/apache/commons/commons-compress/1.4.1/commons-compress-1.4.1-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
   <classpathentry kind="var" path="M2_REPO/org/mongodb/mongo-java-driver/2.11.1/mongo-java-driver-2.11.1.jar" sourcepath="M2_REPO/org/mongodb/mongo-java-driver/2.11.1/mongo-java-driver-2.11.1-sources.jar">
     <attributes>
       <attribute value="jar:file:/Users/hylee/.m2/repository/org/mongodb/mongo-java-driver/2.11.1/mongo-java-driver-2.11.1-javadoc.jar!/" name="javadoc_location"/>

@@ -8,10 +8,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 
-import lombok.SneakyThrows;
 import lombok.val;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.charfilter.HTMLStripCharFilter;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -38,6 +39,16 @@ public class TopicModelingTest {
         this.topicModeling = new TopicModeling(asFileIS("/dictionary-0"), asFileIS("/model-0"), "com.henry4j.text.CommTextAnalyzer", asFileIS("/df-count-0"));
         this.topicModelingTF = new TopicModeling(asFileIS("/dictionary-0"), asFileIS("/model-0"), "com.henry4j.text.CommTextAnalyzer");
     }
+
+//    @Test
+//    public void testDF() throws IOException {
+//        val conf = new Configuration();
+//        // conf.addResource(new Path("/usr/local/Cellar/hadoop/1.2.1/libexec/conf/core-site.xml"));
+//        conf.set("fs.default.name", "hdfs://192.168.1.123:9000");
+//        FileSystem fs = FileSystem.get(conf);
+//        long[] df = TopicModeling.readDFs(new Path("hdfs://192.168.1.123:9000/workspace/mahout-work/true-l-lda/df-count-0"), conf);
+//        assert null != df;
+//    }
 
     @Test
     public void testFindPTopic() {

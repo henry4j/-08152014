@@ -22,6 +22,8 @@ import lombok.extern.log4j.Log4j;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PositionedReadable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
@@ -252,6 +254,36 @@ public class TopicModeling {
             termToIdMappings.put(terms[i], i);
         }
         return termToIdMappings.build();
+    }
+
+    @SneakyThrows({ IOException.class })
+    static long[] readDFs(Path path, Configuration conf) {
+        @Cleanup val is = FileSystem.get(conf).open(path);
+        return readDFs(is, conf);
+    }
+
+    @SneakyThrows({ IOException.class })
+    static long[] readDFs(InputStream is, Configuration conf) {
+        val id = new IntWritable();
+        val frequency = new LongWritable();
+        @Cleanup val reader = new SequenceFile.Reader(conf, asReaderOptions(asFSDataIS(is)));
+        val idFrequencies = ImmutableList.<Pair<Integer, Long>> builder();
+        int maxId = -1;
+        long numDocs = 0;
+        while (reader.next(id, frequency)) {
+            if (-1 == id.get()) {
+                numDocs = frequency.get();
+            } else {
+                idFrequencies.add(Pair.of(id.get(), frequency.get()));
+                maxId = max(maxId, id.get());
+            }
+        }
+        val dfs = new long[maxId + 2];
+        for (val idFrequency : idFrequencies.build()) {
+            dfs[idFrequency.getFirst().intValue()] = idFrequency.getSecond().longValue();
+        }
+        dfs[maxId + 1] = numDocs;
+        return dfs;
     }
 
     @SneakyThrows({ IOException.class })
