@@ -13,6 +13,7 @@ analyzer = $options[:analyzer] || 'com.henry4j.text.CommTextAnalyzer'
 min_llr = $options[:min_llr] || 120
 max_ngram = $options[:max_ngram] || 1
 work_id = $options[:work_id] || 'true-l-lda'
+vectors = $options[:vectors] || 'tf-vectors'
 
 def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
 
@@ -25,8 +26,8 @@ if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitst
   # -a org.apache.lucene.analysis.en.EnglishAnalyzer \
   # -a org.apache.lucene.analysis.standard.StandardAnalyzer \
 
-  x! "$MAHOUT rowid -i ${MAHOUT_WORK}/#{work_id}/tfidf-vectors -o ${MAHOUT_WORK}/#{work_id}"
-  %w(df-count tfidf-vectors tokenized-documents).each { |e| x! "resplit ${MAHOUT_WORK}/#{work_id}/#{e}" do end }
+  x! "$MAHOUT rowid -i ${MAHOUT_WORK}/#{work_id}/#{vectors} -o ${MAHOUT_WORK}/#{work_id}"
+  %w(df-count tf-vectors tfidf-vectors tokenized-documents).each { |e| x! "resplit ${MAHOUT_WORK}/#{work_id}/#{e}" do end }
   x! "$MAHOUT seqdumper -i ${MAHOUT_WORK}/#{work_id}/tokenized-documents-0 -o /tmp/#{work_id}-tokenized-documents.txt"
   x! "$HADOOP dfs -put /tmp/#{work_id}-tokenized-documents.txt ${MAHOUT_WORK}/#{work_id}/tokenized-documents.txt"
 end
@@ -62,7 +63,7 @@ x! "pp-z,d /tmp/#{work_id}-z,d-dump.txt -n 10 | tee /tmp/#{work_id}-z,d-doc-topi
  
 x! "rm -rf ${MAHOUT_WORK}/#{work_id}"
 x! "$HADOOP dfs -get $MAHOUT_WORK/#{work_id} ${MAHOUT_WORK}/#{work_id}"
-%w(df-count-0 dictionary.file-0 model tfidf-vectors-0 tokenized-documents.txt topic-0).each { |e| x! "s3cmd put $MAHOUT_WORK/#{work_id}/#{e} s3://${S3_BUCKET}" }
-%w(w,z-dump.txt w,z-topic-terms.txt doc-topics.txt z,d-dump.txt).each { |e| x! "s3cmd put $MAHOUT_WORK/#{work_id}/#{work_id}-#{e} s3://${S3_BUCKET}" }
+%w(df-count-0 dictionary.file-0 model-0 tf-vectors-0 tfidf-vectors-0 tokenized-documents.txt topic-0).each { |e| x! "s3cmd put $MAHOUT_WORK/#{work_id}/#{e} s3://${S3_BUCKET}/#{work_id}/" }
+%w(w,z-dump.txt w,z-topic-terms.txt doc-topics.txt z,d-dump.txt).each { |e| x! "s3cmd put $MAHOUT_WORK/#{work_id}/#{work_id}-#{e} s3://${S3_BUCKET}/#{work_id}/" }
 x! "s3cmd setacl -r --acl-public s3://${S3_BUCKET}/#{work_id}"
 
