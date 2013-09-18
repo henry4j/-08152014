@@ -7,17 +7,20 @@ OptionParser.new do |p|
   p.on('-k', '--min-llr INTEGER', Integer, 'Specifies the min-LLR (default: 120)') { |v| $options[:min_llr] = v }
   p.on('-g', '--max-ngram INTEGER', Integer, 'Specifies the max N gram (default: 1)') { |v| $options[:max_ngram] = v }
   p.on('-w', '--work-id STRING', String, "Specifies the topic modeling work id (default: 'true-l-lda')") { |v| $options[:work_id] = v }
+  p.on('-o', '--overwrite', 'Whether to overwrite existing corpus and corpus-priors.') { |v| $options[:overwrite] = v }
 end.parse!
 
 analyzer = $options[:analyzer] || 'com.henry4j.text.CommTextAnalyzer'
 min_llr = $options[:min_llr] || 120
 max_ngram = $options[:max_ngram] || 1
 work_id = $options[:work_id] || 'true-l-lda'
+overwrite = $options[:overwrite]
 vectors = $options[:vectors] || 'tf-vectors'
 
 def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
 
-if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitstatus
+x! "$HADOOP dfs -rmr '${MAHOUT_WORK}/#{work_id}'" do end if overwrite
+if %x($HADOOP dfs -test -e '${MAHOUT_WORK}/#{work_id}/matrix') && 0 != $?.exitstatus
   x! [
     'export HADOOP_CLASSPATH=${MAHOUT_BASE}/lib/text-1.0-SNAPSHOT.jar:${MAHOUT_BASE}/lib/lucene-analyzers-common-4.3.0.jar:${MAHOUT_BASE}/lib/lucene-core-4.3.0.jar',
     "$MAHOUT seq2sparse -i ${MAHOUT_WORK}/comm-text-seq/ -o ${MAHOUT_WORK}/#{work_id} -ow --namedVector -s 80 -md 40 -x 65 -ng %s -ml %s -a %s" % [max_ngram, min_llr, analyzer]
@@ -32,8 +35,21 @@ if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitst
   x! "$HADOOP dfs -put /tmp/#{work_id}-tokenized-documents.txt ${MAHOUT_WORK}/#{work_id}/tokenized-documents.txt"
 end
 
-if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors") && 0 == $?.exitstatus
+exit -10
+if %x($HADOOP dfs -test -e '${MAHOUT_WORK}/comm-text-ext/corpus-priors-*') && 0 == $?.exitstatus
   cvb_opts = '-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/corpus-priors -cd 6e-10'
+
+  # TODO:
+  # hadoop dfs -ls /workspace/mahout-work/comm-text-ext/corpus-priors-*
+  # /workspace/mahout-work/true-l-lda/df-count-0
+  # rows = ?
+  # columns = ?
+
+  # topic_term_weights = {}
+  # topic_size?
+
+  # priors = org.apache.mahout.math.SparseRowMatrix.new(labels_by_doc_id.size, label_ids.size, true) # true for random access
+
   %w(core-0.8 core-0.8-job examples-0.8 examples-0.8-job)
     .map { |e| File.join(ENV['MAHOUT_BASE'], "mahout-%s.jar" % e) }
     .each { |e| FileUtils.mv(e, "#{File.dirname(e)}/#{File.basename(e)}.bak") if File.exist?(e) }
@@ -44,6 +60,7 @@ if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors") && 0 ==
 else
   cvb_opts ='-k 20 -pidt -cd 6e-4'
 end
+exit -10
 
 io = %w(matrix dictionary.file-0 model topics modeling).map { |e| "$MAHOUT_WORK/#{work_id}/#{e}" }
 if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/model-0") && 0 != $?.exitstatus
