@@ -44,22 +44,12 @@ else
   cvb_opts ='-k 20 -cd 6e-4'
 end
 
-x! "rm -rf ${MAHOUT_WORK}/#{work_id}-*"
-x! "$HADOOP dfs -rmr ${MAHOUT_WORK}/#{work_id}/model"
-# $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}/topics
-# $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}-modeling
-# $MAHOUT cvb \
-#   -dict ${MAHOUT_WORK}/${WORK_ID}/dictionary.file-0 \
-#   -i  ${MAHOUT_WORK}/${WORK_ID}/matrix \
-#   -o  ${MAHOUT_WORK}/${WORK_ID}/model -ow \
-#   -mt ${MAHOUT_WORK}/${WORK_ID}-modeling \
-#   -dt ${MAHOUT_WORK}/${WORK_ID}/topics \
-#   -x 35 -block 2 -tf 0.25 -seed 777 \
-#   $CVB_OPTS
-# 
-# for e in model topics; do resplit ${MAHOUT_WORK}/${WORK_ID}/$e; done
-# for e in matrix docIndex wordcount frequency.file-0 tf-vectors; do $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}/$e; done
-# 
+io = %w(matrix dictionary.file-0 matrix modeling model topics).map { |e| "$MAHOUT_WORK/#{work_id}/#{e}" }
+io[-3..-1].each { |e| x! "$HADOOP dfs -rmr #{e}" }
+x! "rm -rf ${MAHOUT_WORK}/#{work_id}-modeling"
+x! "$MAHOUT cvb -i %s -dict %s -ow -o %s -mt %s -dt %s -x 35 -block 2 -tf 0.25 -seed 777 #{cvb_opts}" % [io]
+io[-2..-1].each { |e| x! "resplit #{e}" }
+
 # $MAHOUT vectordump \
 #   -i ${MAHOUT_WORK}/${WORK_ID}/model-0 -o /tmp/${WORK_ID}-w,z-dump.txt \
 #   -p true -sort ${MAHOUT_WORK}/${WORK_ID}/model-0 -vs 25 \
