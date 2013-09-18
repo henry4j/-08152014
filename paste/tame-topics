@@ -42,7 +42,7 @@ if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors") && 0 ==
     .reject { |e| File.exist?(e) }
     .each { |e| x! 'curl -o %s -kL http://dl.dropbox.com/u/47820156/mahout/l-lda/%s' % [e, File.basename(e)] }
 else
-  cvb_opts ='-k 20 -cd 6e-4'
+  cvb_opts ='-k 20 -pidt -cd 6e-4'
 end
 
 io = %w(matrix dictionary.file-0 model topics modeling).map { |e| "$MAHOUT_WORK/#{work_id}/#{e}" }
