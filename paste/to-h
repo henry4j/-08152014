@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+require 'json'
+
+def to_h(l)
+  JSON[l.gsub(%r(([^,{]+)\s*:), %q("\1":))]
+end
+
+if __FILE__ == $0
+  h = to_h($stdin.read)
+  puts; j h
+end
