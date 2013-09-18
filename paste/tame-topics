@@ -45,18 +45,17 @@ else
 end
 
 io = %w(matrix dictionary.file-0 model topics modeling).map { |e| "$MAHOUT_WORK/#{work_id}/#{e}" }
-x! "$HADOOP dfs -rmr #{io[-3..-1].join(' ')}" do end
-x! "rm -rf ${MAHOUT_WORK}/#{work_id}/modeling" do end
-x! "$MAHOUT cvb -i %s -dict %s -ow -o %s -dt %s -mt %s -x 3 -block 2 -tf 0.25 -seed 777 #{cvb_opts}" % io
-x! "resplit #{io[-2..-1].join(' ')}"
+if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/model-0") && 0 != $?.exitstatus
+  x! "$HADOOP dfs -rmr #{io[-3..-1].join(' ')}" do end
+  x! "rm -rf ${MAHOUT_WORK}/#{work_id}/modeling" do end
+  x! "$MAHOUT cvb -i %s -dict %s -ow -o %s -dt %s -mt %s -x 3 -block 2 -tf 0.25 -seed 777 #{cvb_opts}" % io
+  x! "resplit #{io[2, 2].join(' ')}"
+end  
 
-# $MAHOUT vectordump \
-#   -i ${MAHOUT_WORK}/${WORK_ID}/model-0 -o /tmp/${WORK_ID}-w,z-dump.txt \
-#   -p true -sort ${MAHOUT_WORK}/${WORK_ID}/model-0 -vs 25 \
-#   -d ${MAHOUT_WORK}/${WORK_ID}/dictionary.file-0 -dt sequencefile
-# $MAHOUT vectordump -i ${MAHOUT_WORK}/${WORK_ID}/topics-0 -o /tmp/${WORK_ID}-z,d-dump.txt
-# $HADOOP dfs -put /tmp/${WORK_ID}-?,?-dump.txt ${MAHOUT_WORK}/${WORK_ID}
-# 
+x! "$MAHOUT vectordump -i %s-0 -sort %s-0 -d %s -o /tmp/#{work_id}-w,z-dump.txt -p true -vs 25 -dt sequencefile" % io.values_at(-3, -3, 1)
+x! "$MAHOUT vectordump -i %s-0 -o /tmp/#{work_id}-z,d-dump.txt" % io[-2]
+x! "$HADOOP dfs -put /tmp/#{work_id}-*-dump.txt ${MAHOUT_WORK}/#{work_id}"
+ 
 # pp-w,z /tmp/${WORK_ID}-w,z-dump.txt | tee /tmp/${WORK_ID}-w,z-topic-terms.txt
 # pp-z,d /tmp/${WORK_ID}-z,d-dump.txt -n 10 | tee /tmp/${WORK_ID}-z,d-doc-topics.txt
 # for e in w,z z,d; do $HADOOP dfs -put /tmp/${WORK_ID}-$e-*.txt ${MAHOUT_WORK}/${WORK_ID}; done
