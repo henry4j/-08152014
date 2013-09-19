@@ -35,7 +35,7 @@ q2cc = docs.reduce({}) do |h, e| # comm. texts keyed by FAQ.
   h
 end
 
-puts "INFO: " + p_topics = "jruby #{%x(which p-topics).chomp} -m #{model_id}"
+puts "INFO: " + p_topics = "jruby #{%x(which p-topics).chomp} -m #{model_id} --debug"
 i, o, e = Open3.popen3(p_topics)
 2.times { puts e.gets }
 z2qf = q2cc.reduce({}) do |h, (q, cc)| # topic frequencies keyed by FAQ.
