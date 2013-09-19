@@ -93,6 +93,15 @@ def load_doc_vectors(work_id)
   read_vectors b
 end
 
+def patch_mahout
+  %w(core-0.8 core-0.8-job examples-0.8 examples-0.8-job)
+    .map { |e| File.join(ENV['MAHOUT_BASE'], "mahout-%s.jar" % e) }
+    .each { |e| FileUtils.mv(e, "#{File.dirname(e)}/#{File.basename(e)}.bak") if File.exist?(e) }
+  %w(core-0.8.2 core-0.8.2-job examples-0.8.2 examples-0.8.2-job)
+    .map { |e| File.join(ENV['MAHOUT_BASE'], "mahout-%s.jar" % e) }
+    .reject { |e| File.exist?(e) }
+    .each { |e| x! 'curl -o %s -kL http://dl.dropbox.com/u/47820156/mahout/l-lda/%s' % [e, File.basename(e)] }
+end
 
 if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitstatus
   x! [
@@ -121,21 +130,11 @@ if doc_topic_priors = load_doc_topic_priors(work_id)
     end
   end
   store_topic_term_priors(work_id, topic_term_priors)
-  exit -1000
-
-  %w(core-0.8 core-0.8-job examples-0.8 examples-0.8-job)
-    .map { |e| File.join(ENV['MAHOUT_BASE'], "mahout-%s.jar" % e) }
-    .each { |e| FileUtils.mv(e, "#{File.dirname(e)}/#{File.basename(e)}.bak") if File.exist?(e) }
-  %w(core-0.8.2 core-0.8.2-job examples-0.8.2 examples-0.8.2-job)
-    .map { |e| File.join(ENV['MAHOUT_BASE'], "mahout-%s.jar" % e) }
-    .reject { |e| File.exist?(e) }
-    .each { |e| x! 'curl -o %s -kL http://dl.dropbox.com/u/47820156/mahout/l-lda/%s' % [e, File.basename(e)] }
-  cvb_opts = '-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/corpus-priors -cd 6e-10'
+  patch_mahout
+  cvb_opts = '-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/doc-topic-priors -cd 6e-10'
 else
   cvb_opts ='-k 20 -pidt -cd 6e-4'
 end
-puts 'world'
-exit -10
 
 io = %w(matrix dictionary.file-0 model topics modeling).map { |e| "$MAHOUT_WORK/#{work_id}/#{e}" }
 if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/model-0") && 0 != $?.exitstatus
@@ -144,6 +143,7 @@ if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/model-0") && 0 != $?.exits
   x! "$MAHOUT cvb -i %s -dict %s -ow -o %s -dt %s -mt %s -x 3 -block 2 -tf 0.25 -seed 777 #{cvb_opts}" % io
   x! "resplit #{io[2, 2].join(' ')}"
 end  
+exit -1
 
 x! "$MAHOUT vectordump -i %s-0 -sort %s-0 -d %s -o /tmp/#{work_id}-w,z-dump.txt -p true -vs 25 -dt sequencefile" % io.values_at(-3, -3, 1)
 x! "$MAHOUT vectordump -i %s-0 -o /tmp/#{work_id}-z,d-dump.txt" % io[-2]
