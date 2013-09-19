@@ -30,7 +30,6 @@ def require_jars
     org.apache.commons:commons-math3:3.2
     org.apache.hadoop:hadoop-common:2.0.5-alpha
     org.apache.hadoop:hadoop-annotations:2.0.5-alpha
-    org.apache.hadoop:hadoop-auth:2.0.5-alpha
     org.apache.lucene:lucene-analyzers-common:4.3.0
     org.apache.lucene:lucene-core:4.3.0
     org.apache.mahout:mahout-core:0.8
@@ -46,7 +45,7 @@ def require_jars
 end
 
 def write_vectors(path, vectors, conf = org.apache.hadoop.conf.Configuration.new)
-  path = org.apache.hadoop.fs.Path.new('file://' + File.abosolute.path(path)) if path.is_a? String
+  path = org.apache.hadoop.fs.Path.new('file://' + File.absolute.path(path)) if path.is_a? String
   org.apache.mahout.math.MatrixUtils.write(path, conf, vectors)
 end
 
