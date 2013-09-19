@@ -53,33 +53,35 @@ end
 stop_phrases = File.exists?(stop_phrases) ? open(stop_phrases).readlines.reduce([]) { |a, l| l.start_with?('#') ? a : a << l.chomp } : nil
 stop_phrases = /#{stop_phrases.join('|')}/ if stop_phrases
 
-label_ids = {}
-labels_by_doc_id = {}
-
+FileUtils.rm_rf File.join(out_dir, 'corpus') if overwrite
+FileUtils.rm_rf File.join(out_dir, 'corpus-priors') if overwrite
+FileUtils.mkdir_p File.join(out_dir, 'corpus')
+ 
+lines_by_id = {}
 open(corpus, 'r:windows-1250') do |io|
-  FileUtils.rm_rf File.join(out_dir, 'corpus') if overwrite
-  FileUtils.rm_rf File.join(out_dir, 'corpus-priors') if overwrite
-  FileUtils.mkdir_p File.join(out_dir, 'corpus')
   CSV.new(io).each do |l|
     next if (skip_count -= 1) >= 0
-    next if l_field && (labels = l[l_field]).nil?
+    next if l_field && l[l_field].nil?
     break if max_entries && (max_entries -= 1) < 0
-    path = File.join(out_dir, "corpus", (id = l[id_field].strip) + ".txt")
-    unless File.exist?(path)
-      open(path, 'w:UTF-8') do |w| 
-        fields.each do |f| 
-          begin
-            w.puts stop_phrases ? l[f].gsub(stop_phrases, '.') : l[f] if l[f]
-          rescue
-            raise 'Failed to process a line: %s.' % [l]
-          end
-        end
-      end
-      puts "INFO: done writing to '#{path}'."
-    end
-    labels_by_doc_id[id] = labels.split('|').map { |e| e.strip }.map { |e| label_ids[e] ||= label_ids.size } if l_field
+    lines_by_id[l[id_field].strip] = l
   end
 end
+
+label_ids = {}
+labels_by_doc_id = {}
+lines_by_id.sort.each do |id, l|
+  path = File.join(out_dir, "corpus", id + ".txt")
+  open(path, 'w:UTF-8') do |w| 
+    begin
+      fields.map { |f| l[f] }.compact { |f| w.puts stop_phrases ? l[f].gsub(stop_phrases, '.') : l[f] }
+    rescue
+      raise 'Failed to process a line: %s.' % [l]
+    end
+    puts "INFO: done writing to '#{path}'."
+  end
+  labels_by_doc_id[id] = l[l_field].split('|').map { |e| e.strip }.map { |e| label_ids[e] ||= label_ids.size } if l_field
+end
+
 if l_field
   rows, columns = labels_by_doc_id.size, label_ids.size
   doc_topic_priors = org.apache.mahout.math.SparseRowMatrix.new(rows, columns, true) # true for random access
