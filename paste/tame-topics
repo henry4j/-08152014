@@ -50,16 +50,14 @@ def write_vectors(path, vectors, conf = org.apache.hadoop.conf.Configuration.new
   org.apache.mahout.math.MatrixUtils.write(path, conf, vectors)
 end
 
-def store_term_topic_priors(work_id, vectors)
-  a, b = "file:///tmp/#{work_id}-topic-term-priors", "${MAHOUT_WORK}/#{work_id}/topic-term-priors"
+def store_topic_term_priors(work_id, vectors)
+  a, b = "/tmp/#{work_id}-topic-term-priors", "${MAHOUT_WORK}/#{work_id}/topic-term-priors"
   write_vectors(a, vectors)
   x! "$HADOOP dfs -put #{a} #{b}" do end
 end
 
 def read_vectors(path, conf = org.apache.hadoop.conf.Configuration.new)
-  p conf
-  exit -1
-  path = org.apache.hadoop.fs.Path.new(path) if path.is_a? String
+  path = org.apache.hadoop.fs.Path.new('file://' + path) if path.is_a? String
   fs = org.apache.hadoop.fs.FileSystem.get(conf)
   reader = org.apache.hadoop.io.SequenceFile::Reader.new(fs, path, conf)
   key, value = reader.key_class.new_instance, reader.value_class.new_instance
@@ -122,7 +120,7 @@ if doc_topic_priors = load_doc_topic_priors(work_id)
       # p row.to_s
     end
   end
-  store_vectors(work_id, topic_term_priors)
+  store_topic_term_priors(work_id, topic_term_priors)
   exit -1000
 
   %w(core-0.8 core-0.8-job examples-0.8 examples-0.8-job)
