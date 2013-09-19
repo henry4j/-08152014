@@ -31,6 +31,7 @@ q2cc = docs.reduce({}) do |h, e| # comm. texts keyed by FAQ.
       next if (skip_count -= 1) >= 0
       break unless max_lines.nil? || (max_lines -= 1) >= 0
       q = q_fields.map { |f| line[f] }.compact.map { |e| e.gsub(/\A\s+|\s+\Z/, '') }.join('; ')
+      next if q == 'Others'
       (h[q] ||= []) << c = fields.map { |f| line[f] }.join('; ') unless q.empty?
     end
   end
@@ -65,4 +66,5 @@ puts "### Frequency sum keyed by FAQ: (#{q2cc.values.map { |cc| cc.size }.reduce
 jj q2cc.reduce({}) { |h, (l, cc)| h[l] = cc.size; h }
 
 puts '### Overall topic modeling accuracy: '
-p (100.0 * z2qf_max.values.reduce(:+) / z2qf_sum.values.reduce(:+)).round(1)
+a, b = z2qf_max.values.reduce(:+), z2qf_sum.values.reduce(:+)
+puts '%s / %s = %s%' % [a, b, (100.0 * a / b).round(1)]
