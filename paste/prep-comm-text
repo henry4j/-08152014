@@ -84,6 +84,10 @@ lines_by_id.sort.each do |id, l|
 end
 puts
 
+open(File.join(out_dir, 'label_ids.json')) do |w|
+  w.puts JSON[label_ids]
+end
+
 if l_field
   rows, columns = labels.size, label_ids.size
   doc_topic_priors = org.apache.mahout.math.SparseRowMatrix.new(rows, columns, true) # true for random access
