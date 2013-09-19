@@ -118,7 +118,7 @@ if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitst
   x! "$HADOOP dfs -put /tmp/#{work_id}-tokenized-documents.txt ${MAHOUT_WORK}/#{work_id}/tokenized-documents.txt"
 end
 
-io = %w(matrix dictionary.file-0 model topics modeling).map { |e| "$MAHOUT_WORK/#{work_id}/#{e}" }
+io = %w(matrix dictionary.file-0 topic-terms doc-topics modeling).map { |e| "$MAHOUT_WORK/#{work_id}/#{e}" }
 x! "$HADOOP dfs -rmr #{io[-3..-1].join(' ')}" do end
 
 if doc_topic_priors = load_doc_topic_priors(work_id)
