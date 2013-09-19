@@ -142,7 +142,7 @@ else
 end
 
 x! "rm -rf ${MAHOUT_WORK}/#{work_id}/modeling" do end
-x! "$MAHOUT cvb -i %s -dict %s -ow -o %s -dt %s -mt %s -x 3 -block 2 -tf 0.25 -seed 777 #{cvb_opts}" % io
+x! "$MAHOUT cvb -i %s -dict %s -ow -o %s -dt %s -mt %s -x 35 -block 2 -tf 0.25 -seed 777 #{cvb_opts}" % io
 x! "resplit #{io[2, 2].join(' ')}"
 
 x! "$MAHOUT vectordump -i %s-0 -sort %s-0 -d %s -o /tmp/#{work_id}-w,z-dump.txt -p true -vs 25 -dt sequencefile" % io.values_at(-3, -3, 1)
