@@ -118,6 +118,9 @@ if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitst
   x! "$HADOOP dfs -put /tmp/#{work_id}-tokenized-documents.txt ${MAHOUT_WORK}/#{work_id}/tokenized-documents.txt"
 end
 
+io = %w(matrix dictionary.file-0 model topics modeling).map { |e| "$MAHOUT_WORK/#{work_id}/#{e}" }
+x! "$HADOOP dfs -rmr #{io[-3..-1].join(' ')}" do end
+
 if doc_topic_priors = load_doc_topic_priors(work_id)
   doc_vectors = load_doc_vectors(work_id)
   rows, columns = doc_topic_priors[0].size, doc_vectors[0].size
@@ -130,19 +133,18 @@ if doc_topic_priors = load_doc_topic_priors(work_id)
     end
   end
   store_topic_term_priors(work_id, topic_term_priors)
+  x! "$HADOOP dfs -cp ${MAHOUT_WORK}/#{work_id}/topic-term-priors #{io[-1]}/model-1" do end
   patch_mahout
   cvb_opts = '-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/doc-topic-priors -cd 6e-10'
 else
   cvb_opts ='-k 20 -pidt -cd 6e-4'
 end
 
-io = %w(matrix dictionary.file-0 model topics modeling).map { |e| "$MAHOUT_WORK/#{work_id}/#{e}" }
-if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/model-0") && 0 != $?.exitstatus
-  x! "$HADOOP dfs -rmr #{io[-3..-1].join(' ')}" do end
+# if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/model-0") && 0 != $?.exitstatus
   x! "rm -rf ${MAHOUT_WORK}/#{work_id}/modeling" do end
   x! "$MAHOUT cvb -i %s -dict %s -ow -o %s -dt %s -mt %s -x 3 -block 2 -tf 0.25 -seed 777 #{cvb_opts}" % io
   x! "resplit #{io[2, 2].join(' ')}"
-end  
+# end  
 exit -1
 
 x! "$MAHOUT vectordump -i %s-0 -sort %s-0 -d %s -o /tmp/#{work_id}-w,z-dump.txt -p true -vs 25 -dt sequencefile" % io.values_at(-3, -3, 1)
