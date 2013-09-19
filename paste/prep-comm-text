@@ -69,18 +69,20 @@ end
 
 label_ids = {}
 labels_by_doc_id = {}
+puts 'Writing documents: '
 lines_by_id.sort.each do |id, l|
   path = File.join(out_dir, "corpus", id + ".txt")
   open(path, 'w:UTF-8') do |w| 
     begin
-      fields.map { |f| l[f] }.compact { |f| w.puts stop_phrases ? l[f].gsub(stop_phrases, '.') : l[f] }
+      fields.map { |f| l[f] }.compact.each { |f| w.puts stop_phrases ? f.gsub(stop_phrases, '.') : f }
     rescue
       raise 'Failed to process a line: %s.' % [l]
     end
-    puts "INFO: done writing to '#{path}'."
+    print id, ' '
   end
   labels_by_doc_id[id] = l[l_field].split('|').map { |e| e.strip }.map { |e| label_ids[e] ||= label_ids.size } if l_field
 end
+puts
 
 if l_field
   rows, columns = labels_by_doc_id.size, label_ids.size
