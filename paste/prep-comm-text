@@ -86,6 +86,7 @@ puts
 
 open(File.join(out_dir, 'label_ids.json')) do |w|
   w.puts JSON[label_ids]
+  puts 'INFO: done writing to .json'
 end
 
 if l_field
