@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-%w{optparse open-uri csv json open3}.each { |e| require e }
+%w{rake optparse open-uri csv json open3}.each { |e| require e }
+def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
 
 $options = {}
 OptionParser.new do |p|
@@ -13,12 +14,13 @@ end.parse!
 
 max_lines = $options[:max_lines]
 q_fields = ($options[:q_fields] || ['8']).map { |e| e.to_i }
-fields = ($options[:fields] || ['1', '3']).map { |e| e.to_i }
+fields = ($options[:fields] || ['4', '5']).map { |e| e.to_i }
 model_id = $options[:model_id] || 'unigram-rrc-pro-22k'
 docs = ARGV
 if docs.empty?
-  docs = ["#{ENV['MAHOUT_WORK']}/test-set-2285-labeled_typos.csv"]
-  system "s3cmd get 's3://#{ENV['S3_BUCKET']}-private/resources/rrc_pro_2285_labeled_typos.csv' '#{docs[0]}'" unless File.exists?(docs[0]) # rrc_pro_2285_labeled_typos
+  docs = ["#{ENV['MAHOUT_WORK']}/test-set-2285-1266-labeled.csv"]
+  x! "s3cmd get 's3://#{ENV['S3_BUCKET']}-private/resources/rrc_pro_2285_1266_labeled.csv' '#{docs[0]}'" unless File.exists?(docs[0]) # rrc_pro_2285_labeled_typos
+  # system "s3cmd get 's3://#{ENV['S3_BUCKET']}-private/resources/rrc_pro_2285_labeled_typos.csv' '#{docs[0]}'" unless File.exists?(docs[0]) # rrc_pro_2285_labeled_typos
   # s3cmd get "s3://#{ENV['S3_BUCKET']}-private/resources/rrc_pro_1241_labeled.csv" "#{docs[0]}" unless File.exists?(docs[0]) # rrc_pro_2285_labeled_typos
 end
 
@@ -35,7 +37,7 @@ q2cc = docs.reduce({}) do |h, e| # comm. texts keyed by FAQ.
   h
 end
 
-puts "INFO: " + p_topics = "jruby #{%x(which p-topics).chomp} -m #{model_id}"
+puts "INFO: " + p_topics = "jruby #{%x(which p-topics).chomp} -m #{model_id} --debug"
 i, o, e = Open3.popen3(p_topics)
 2.times { puts e.gets }
 z2qf = q2cc.reduce({}) do |h, (q, cc)| # topic frequencies keyed by FAQ.
