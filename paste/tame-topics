@@ -19,23 +19,7 @@ vectors = $options[:vectors] || 'tf-vectors'
 
 def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
 
-
-if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitstatus
-  x! [
-    'export HADOOP_CLASSPATH=${MAHOUT_BASE}/lib/text-1.0-SNAPSHOT.jar:${MAHOUT_BASE}/lib/lucene-analyzers-common-4.3.0.jar:${MAHOUT_BASE}/lib/lucene-core-4.3.0.jar',
-    "$MAHOUT seq2sparse -i ${MAHOUT_WORK}/comm-text-seq/ -o ${MAHOUT_WORK}/#{work_id} -ow --namedVector -s 20 -md 10 -x 65 -ng %s -ml %s -a %s" % [max_ngram, min_llr, analyzer]
-  ].join('; ') # excludes terms of 80- DF & 70+ DF%
-  # -a org.apache.mahout.text.MailArchivesClusteringAnalyzer \
-  # -a org.apache.lucene.analysis.en.EnglishAnalyzer \
-  # -a org.apache.lucene.analysis.standard.StandardAnalyzer \
-
-  x! "$MAHOUT rowid -i ${MAHOUT_WORK}/#{work_id}/#{vectors} -o ${MAHOUT_WORK}/#{work_id}"
-  %w(df-count tf-vectors tfidf-vectors tokenized-documents).each { |e| x! "resplit ${MAHOUT_WORK}/#{work_id}/#{e}" do end }
-  x! "$MAHOUT seqdumper -i ${MAHOUT_WORK}/#{work_id}/tokenized-documents-0 -o /tmp/#{work_id}-tokenized-documents.txt"
-  x! "$HADOOP dfs -put /tmp/#{work_id}-tokenized-documents.txt ${MAHOUT_WORK}/#{work_id}/tokenized-documents.txt"
-end
-
-if (doc_topic_priors = %x($HADOOP dfs -ls "${MAHOUT_WORK}/comm-text-ext/doc-topic-priors-*")) && 0 == $?
+def require_jars
   %w(
     com.google.guava:guava:14.0.1
     commons-configuration:commons-configuration:1.6
@@ -59,12 +43,66 @@ if (doc_topic_priors = %x($HADOOP dfs -ls "${MAHOUT_WORK}/comm-text-ext/doc-topi
     system "mvn dependency:get -DremoteRepositories=http://download.java.net/maven2 -Dartifact=#{e}" unless File.exist?(jar)
     require jar
   end
+end
 
-  df_count = %x(mahout seqdumper -i /workspace/mahout-work/#{work_id}/df-count-0)
+def read_vectors(path, conf = org.apache.hadoop.conf.Configuration.new, vectors = {})
+  path = org.apache.hadoop.fs.Path.new(path) if path.is_a? String
+  fs = org.apache.hadoop.fs.FileSystem.get(conf)
+  reader = org.apache.hadoop.io.SequenceFile::Reader.new(fs, path, conf)
+  key, value = reader.key_class.new_instance, reader.value_class.new_instance
+  vectors[key.get] = value.get while reader.next(key, value) 
+  vectors
+end
+
+def read_df_vectors(path, conf = org.apache.hadoop.conf.Configuration.new)
+  h = read_vectors(path, conf)
+  a = h.reduce([]) { |a, (k, v)| a[k] = v unless k < 0 }
+  a << h[-1]
+end
+
+def load_df_vectors(work_id)
+  x! '$HADOOP dfs -get "${MAHOUT_WORK}/#{work_id}/df-count-0" %s' % e = "/tmp/#{work_id}-df-count-0" do end
+  read_vectors e
+end
+
+def load_doc_topic_priors(work_id)
+  a = '${MAHOUT_WORK}/comm-text-ext/doc-topic-priors'
+  b = "/tmp/#{work_id}-doc-topic-priors"
+  if %x($HADOOP dfs -ls #{a}) && 0 == $?
+    x! "$HADOOP dfs -get #{a} #{b}" do end
+    require_jars
+    read_vectors b
+  end
+end
+
+def load_doc_vectors(work_id)
+  x! "$HADOOP dfs -get /workspace/mahout-work/#{work_id}/matrix2 /tmp/#{work_id}-matrix" do end
+  read_vectors "/tmp/#{work_id}-matrix"
+end
+
+
+if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitstatus
+  x! [
+    'export HADOOP_CLASSPATH=${MAHOUT_BASE}/lib/text-1.0-SNAPSHOT.jar:${MAHOUT_BASE}/lib/lucene-analyzers-common-4.3.0.jar:${MAHOUT_BASE}/lib/lucene-core-4.3.0.jar',
+    "$MAHOUT seq2sparse -i ${MAHOUT_WORK}/comm-text-seq/ -o ${MAHOUT_WORK}/#{work_id} -ow --namedVector -s 20 -md 10 -x 65 -ng %s -ml %s -a %s" % [max_ngram, min_llr, analyzer]
+  ].join('; ') # excludes terms of 80- DF & 70+ DF%
+  # -a org.apache.mahout.text.MailArchivesClusteringAnalyzer \
+  # -a org.apache.lucene.analysis.en.EnglishAnalyzer \
+  # -a org.apache.lucene.analysis.standard.StandardAnalyzer \
+
+  x! "$MAHOUT rowid -i ${MAHOUT_WORK}/#{work_id}/#{vectors} -o ${MAHOUT_WORK}/#{work_id}"
+  %w(df-count tf-vectors tfidf-vectors tokenized-documents).each { |e| x! "resplit ${MAHOUT_WORK}/#{work_id}/#{e}" do end }
+  x! "$MAHOUT seqdumper -i ${MAHOUT_WORK}/#{work_id}/tokenized-documents-0 -o /tmp/#{work_id}-tokenized-documents.txt"
+  x! "$HADOOP dfs -put /tmp/#{work_id}-tokenized-documents.txt ${MAHOUT_WORK}/#{work_id}/tokenized-documents.txt"
+end
+
+if doc_topic_priors = load_doc_topic_priors(work_id)
+  doc_topic_priors = load_doc_topic_priors(work_id)
+  jj doc_vectors
+
   rows = /\d+$/.match(doc_topic_priors)[0].to_i
-  columns = /\d+\z/.match(df_count).to_i
+  columns = load_df_vectors(work_id).size - 1 # at -1, it contains the # of documents other than doc-frequencies.
   term_topic_priors = org.apache.mahout.math.SparseRowMatrix.new(rows, columns, true) # true for random access
-  p rows, columns, term_topic_priors
 
   %w(core-0.8 core-0.8-job examples-0.8 examples-0.8-job)
     .map { |e| File.join(ENV['MAHOUT_BASE'], "mahout-%s.jar" % e) }
