@@ -45,11 +45,25 @@ def require_jars
   end
 end
 
-def read_vectors(path, conf = org.apache.hadoop.conf.Configuration.new, vectors = {})
+def write_vectors(path, vectors, conf = org.apache.hadoop.conf.Configuration.new)
+  path = org.apache.hadoop.fs.Path.new(path) if path.is_a? String
+  org.apache.mahout.math.MatrixUtils.write(path, conf, vectors)
+end
+
+def store_term_topic_priors(work_id, vectors)
+  a, b = "file:///tmp/#{work_id}-topic-term-priors", "${MAHOUT_WORK}/#{work_id}/topic-term-priors"
+  write_vectors(a, vectors)
+  x! "$HADOOP dfs -put #{a} #{b}" do end
+end
+
+def read_vectors(path, conf = org.apache.hadoop.conf.Configuration.new)
+  p conf
+  exit -1
   path = org.apache.hadoop.fs.Path.new(path) if path.is_a? String
   fs = org.apache.hadoop.fs.FileSystem.get(conf)
   reader = org.apache.hadoop.io.SequenceFile::Reader.new(fs, path, conf)
   key, value = reader.key_class.new_instance, reader.value_class.new_instance
+  vectors = {}
   vectors[key.get] = value.get while reader.next(key, value) 
   vectors
 end
@@ -61,23 +75,24 @@ def read_df_vectors(path, conf = org.apache.hadoop.conf.Configuration.new)
 end
 
 def load_df_vectors(work_id)
-  x! '$HADOOP dfs -get "${MAHOUT_WORK}/#{work_id}/df-count-0" %s' % e = "/tmp/#{work_id}-df-count-0" do end
-  read_vectors e
+  a, b = "${MAHOUT_WORK}/#{work_id}/df-count-0", "/tmp/#{work_id}-df-count-0"
+  x! "$HADOOP dfs -get #{a} #{b}" do end
+  read_vectors b
 end
 
 def load_doc_topic_priors(work_id)
-  a = '${MAHOUT_WORK}/comm-text-ext/doc-topic-priors'
-  b = "/tmp/#{work_id}-doc-topic-priors"
+  a, b = '${MAHOUT_WORK}/comm-text-ext/doc-topic-priors', "/tmp/#{work_id}-doc-topic-priors"
   if %x($HADOOP dfs -ls #{a}) && 0 == $?
-    x! "$HADOOP dfs -get #{a} #{b}" do end
+    x! "$HADOOP dfs -get #{a} #{b}" do end unless File.exist?(b)
     require_jars
     read_vectors b
   end
 end
 
 def load_doc_vectors(work_id)
-  x! "$HADOOP dfs -get /workspace/mahout-work/#{work_id}/matrix2 /tmp/#{work_id}-matrix" do end
-  read_vectors "/tmp/#{work_id}-matrix"
+  a, b = "${MAHOUT_WORK}/#{work_id}/matrix", "/tmp/#{work_id}-matrix"
+  x! "$HADOOP dfs -get #{a} #{b}" do end unless File.exist?(b)
+  read_vectors b
 end
 
 
@@ -97,12 +112,18 @@ if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitst
 end
 
 if doc_topic_priors = load_doc_topic_priors(work_id)
-  doc_topic_priors = load_doc_topic_priors(work_id)
-  jj doc_vectors
-
-  rows = /\d+$/.match(doc_topic_priors)[0].to_i
-  columns = load_df_vectors(work_id).size - 1 # at -1, it contains the # of documents other than doc-frequencies.
-  term_topic_priors = org.apache.mahout.math.SparseRowMatrix.new(rows, columns, true) # true for random access
+  doc_vectors = load_doc_vectors(work_id)
+  rows, columns = doc_topic_priors[0].size, doc_vectors[0].size
+  topic_term_priors = org.apache.mahout.math.SparseRowMatrix.new(rows, columns, true) # true for random access
+  doc_vectors.each do |(d, v)|
+    doc_topic_priors[d].non_zeroes.each do |z_d|
+      row = topic_term_priors.view_row(z_d.index)
+      v.non_zeroes.each { |w| row.set_quick(w.index, row.get_quick(w.index) + w.get * z_d.get) }
+      # p row.to_s
+    end
+  end
+  store_vectors(work_id, topic_term_priors)
+  exit -1000
 
   %w(core-0.8 core-0.8-job examples-0.8 examples-0.8-job)
     .map { |e| File.join(ENV['MAHOUT_BASE'], "mahout-%s.jar" % e) }
