@@ -136,7 +136,7 @@ if doc_topic_priors = load_doc_topic_priors(work_id)
   store_topic_term_priors(work_id, topic_term_priors)
   x! "$HADOOP dfs -cp ${MAHOUT_WORK}/#{work_id}/topic-term-priors #{io[-1]}/model-0/part-r-00000" do end
   patch_mahout
-  cvb_opts = '-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/doc-topic-priors -cd 6e-20'
+  cvb_opts = '-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/doc-topic-priors -cd 6e-24'
 else
   cvb_opts ='-k 20 -pidt -cd 6e-4'
 end
