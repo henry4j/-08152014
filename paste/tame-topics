@@ -46,7 +46,7 @@ def require_jars
 end
 
 def write_vectors(path, vectors, conf = org.apache.hadoop.conf.Configuration.new)
-  path = org.apache.hadoop.fs.Path.new(path) if path.is_a? String
+  path = org.apache.hadoop.fs.Path.new('file://' + File.abosolute.path(path)) if path.is_a? String
   org.apache.mahout.math.MatrixUtils.write(path, conf, vectors)
 end
 
@@ -57,7 +57,7 @@ def store_topic_term_priors(work_id, vectors)
 end
 
 def read_vectors(path, conf = org.apache.hadoop.conf.Configuration.new)
-  path = org.apache.hadoop.fs.Path.new('file://' + path) if path.is_a? String
+  path = org.apache.hadoop.fs.Path.new('file://' + File.absolute_path(path)) if path.is_a? String
   fs = org.apache.hadoop.fs.FileSystem.get(conf)
   reader = org.apache.hadoop.io.SequenceFile::Reader.new(fs, path, conf)
   key, value = reader.key_class.new_instance, reader.value_class.new_instance
