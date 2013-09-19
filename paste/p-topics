@@ -26,15 +26,17 @@ OptionParser.new do |p|
   p.on('-m', '--model_id STRING', String, 'Specifies optional model id.') { |v| $options[:model_id] = v }
   p.on('-s', '--sort',                    'Sorts out topic probability values.') { $options[:sort] = true }
   p.on('-k', '--min-value FLOAT', Float,  'Yields fields of values no smaller than specified (default 2.0).') { |v| $options[:min_value] = v }
+  p.on('-d', '--debug') { |v| $options[:debug] = v }
 end.parse!
 
+debug = $options[:debug]
 sort = $options[:sort] || false
 min_value = $options[:min_value] || 2.0
 model_id = $options[:model_id] || 'unigram-rrc-pro-22k'
 # system "rm -rf /tmp/#{model_id}"
 system "curl -o '/tmp/#{model_id}/#1' -ksL 'http://s3.amazonaws.com/#{ENV['S3_BUCKET']}/#{model_id}/{dictionary.file-0,model-0,df-count-0}' --create-dirs" unless Dir.exist?("/tmp/#{model_id}")
 
-$stderr.puts "DEBUG: openning model files (id: #{model_id})"
+$stderr.puts "DEBUG: openning model files (id: #{model_id})" if debug
 org.apache.log4j.Logger.root_logger.level = org.apache.log4j.Level::OFF
 dictionary, model, df = %w(dictionary.file-0 model-0 df-count-0).map { |e| open("/tmp/#{model_id}/#{e}").to_inputstream }
 begin
@@ -49,9 +51,9 @@ p_topic = lambda do |s|
 end
 
 if ARGV.empty?
-  $stderr.puts 'DEBUG: begins reading lines'
+  $stderr.puts 'DEBUG: begins reading lines' if debug
   p_topic.call($_) while gets
-  $stderr.puts 'DEBUG: ends reading lines'
+  $stderr.puts 'DEBUG: ends reading lines' if debug
 else
   ARGV.each { |e| p_topic.call(e) }
 end
