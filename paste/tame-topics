@@ -118,7 +118,7 @@ if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitst
   x! "$HADOOP dfs -put /tmp/#{work_id}-tokenized-documents.txt ${MAHOUT_WORK}/#{work_id}/tokenized-documents.txt"
 end
 
-io = %w(matrix dictionary.file-0 topic-terms doc-topics modeling).map { |e| "$MAHOUT_WORK/#{work_id}/#{e}" }
+io = %w(matrix dictionary.file-0 model doc-topics modeling).map { |e| "$MAHOUT_WORK/#{work_id}/#{e}" }
 x! "$HADOOP dfs -rmr #{io[-3..-1].join(' ')}" do end
 
 if doc_topic_priors = load_doc_topic_priors(work_id)
@@ -149,7 +149,7 @@ x! "$MAHOUT vectordump -i %s-0 -o /tmp/#{work_id}-z,d-dump.txt" % io[-2]
 x! "$HADOOP dfs -put /tmp/#{work_id}-*-dump.txt ${MAHOUT_WORK}/#{work_id}" do end
  
 x! "pp-w,z /tmp/#{work_id}-w,z-dump.txt       | tee /tmp/#{work_id}-w,z-topic-terms.txt"
-x! "pp-z,d /tmp/#{work_id}-z,d-dump.txt -n 10 | tee /tmp/#{work_id}-z,d-doc-topics.txt"
+x! "pp-z,d /tmp/#{work_id}-z,d-dump.txt -n 30 | tee /tmp/#{work_id}-z,d-doc-topics.txt"
 %w(w,z z,d).map { |e| x! "$HADOOP dfs -put /tmp/#{work_id}-#{e}-*.txt ${MAHOUT_WORK}/#{work_id}" do end }
  
 x! "rm -rf ${MAHOUT_WORK}/#{work_id}"
