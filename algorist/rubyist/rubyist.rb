@@ -3376,12 +3376,10 @@ class SNode
       n += 1; p1 = p1.next_
     end
 
-    pk = pn_1 = head
-    pn_1 = pn_1.next(n-1)
+    pk = head; pn_1 = head.next(n-1)
     until pk == pn_1.next
       pk = pk.next; pn_1 = pn_1.next
     end
-
     pn_1
   end
 
