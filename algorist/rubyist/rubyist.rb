@@ -72,6 +72,9 @@ class BinaryHeap # min-heap by default, http://en.wikipedia.org/wiki/Binary_heap
   # http://docs.oracle.com/javase/7/docs/api/java/util/PriorityQueue.html
   # a binary heap is a complete binary tree, where all levels but the last one are fully filled, and
   # each node is smaller than or equal to each of its children according to a comparer specified.
+  # In Java, new PriorityQueue<Node>(capacity, new Comparator<Node>() {
+  #     public int compare(Node a, Node b) { return a.compareTo(b) }
+  # });
   def initialize(comparer = lambda { |a, b| a <=> b }) # min-heap by default
     @heap = []
     @comparer = comparer
@@ -1321,6 +1324,15 @@ module Strings
 end
 
 class BNode
+  attr_accessor :value, :left, :right, :parent
+
+  def initialize(value = nil, left = nil, right = nil, parent = nil)
+    @value = value
+    @left = left
+    @right = right
+    @parent = parent
+  end
+
   def self.max_sum_of_path(node)
     if node
       lsum, lmax_sum = max_sum_of_path(node.left)
@@ -1598,15 +1610,6 @@ class BNode
     bfs(v, nil, exit)
     head
   end
-
-  def initialize(value = nil, left = nil, right = nil, parent = nil)
-    @value = value
-    @left = left
-    @right = right
-    @parent = parent
-  end
-
-  attr_accessor :value, :left, :right, :parent
 end
 
 class Graph
@@ -1815,13 +1818,13 @@ class Graph
 end
 
 class Edge
+  attr_accessor :y, :weight
+
   def initialize(y, weight = 1)
-    @y = y
-    @weight = weight
+    @y = y; @weight = weight
   end
 
   def to_s() y end
-  attr_accessor :y, :weight
 end
 
 module Partitions
@@ -1963,19 +1966,15 @@ module Search
     (n/2).times { |j| ary[j], ary[n-1-j] = ary[n-1-j], ary[j] }
   end
 
+  # http://www.youtube.com/watch?v=p4_QnaTIxkQ
   def self.queens_in_peace(n)
-    # http://www.youtube.com/watch?v=p4_QnaTIxkQ
     answers = []
     peaceful_at = lambda do |queens, c|
-      queens.size.times.all? { |k|
-        (queens[k] != c) && (queens.size - k).abs != (queens[k] - c).abs
-      }
+      queens.size.times.all? { |i| (queens[i] != c) && (queens.size - i).abs != (queens[i] - c).abs }
     end
 
     expand_out = lambda do |queens|
-      n.times.select { |c|
-        peaceful_at.call(queens, c)
-      }
+      n.times.select { |c| peaceful_at.call(queens, c) }
     end
 
     reduce_off = lambda do |queens|
@@ -3354,8 +3353,7 @@ class SNode
       @value = next_.value
       @next_ = next_.next_
     else
-      @value = value
-      @next_ = next_
+      @value = value; @next_ = next_
     end
   end
 
@@ -3437,10 +3435,10 @@ class SNode
 end
 
 class DNode
+  attr_accessor :value, :prev_, :next_
+
   def initialize(value, next_ = nil, prev_ = nil)
-    @value = value
-    @prev_ = prev_
-    @next_ = next_
+    @value = value; @prev_ = prev_; @next_ = next_
   end
 
   def to_a
@@ -3450,8 +3448,6 @@ class DNode
   def to_s
     "#{[value, next_ ? next_.to_s: 'nil'].join(' -> ')}"
   end
-
-  attr_accessor :value, :prev_, :next_
 end
 
 class MedianBag
@@ -3694,8 +3690,8 @@ module Numbers # discrete maths and bit twiddling http://graphics.stanford.edu/~
     reversed
   end
 
-  def self.fibonacci(n, memos = [0, 1])
-    memos[n] ||= fibonacci(n - 1) + fibonacci(n - 2)
+  def self.fibonacci(k, memos = [0, 1])
+    memos[k] ||= fibonacci(k - 1) + fibonacci(k - 2)
   end
 end
 
