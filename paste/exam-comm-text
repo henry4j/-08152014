@@ -36,19 +36,13 @@ q2cc = docs.reduce({}) do |h, e| # comm. texts keyed by FAQ.
   h
 end
 
-# puts "INFO: " + p_topics = "jruby #{%x(which p-topics).chomp} -m #{model_id} --debug"
-# i, o, e = Open3.popen3(p_topics)
-# 2.times { puts e.gets }
 modeling = TopicModeling.new(model_id, true)
 z2qf = q2cc.reduce({}) do |h, (q, cc)| # topic frequencies keyed by FAQ.
-  cc.map { |c| modeling.p_topics(c) }.
-  # cc.map { |c| i.puts c.tr("\n", '  '); putc '.'; JSON[o.readline] }.
+  cc.map { |c| putc '.'; modeling.p_topics(c) }.
     map { |p| p[0].nan?? -1 : p.each_with_index.max[1] }.
     reduce({}) { |zf, z| zf[z] = (zf[z] || 0) + 1 unless z == -1; zf }.
     reduce(h) { |h, (z, f)| (h[z] ||= {})[q] = f; h }
 end
-# i.close
-# 1.times { puts e.gets }
 
 z2qf_max = z2qf.reduce({}) { |h, (z, qf)| h[z] = qf.values.max; h }
 z2qf_sum = z2qf.reduce({}) { |h, (z, qf)| h[z] = qf.values.reduce(:+); h }
