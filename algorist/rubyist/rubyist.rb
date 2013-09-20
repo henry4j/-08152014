@@ -3690,8 +3690,8 @@ module Numbers # discrete maths and bit twiddling http://graphics.stanford.edu/~
     reversed
   end
 
-  def self.fibonacci(k, memos = [0, 1])
-    memos[k] ||= fibonacci(k - 1) + fibonacci(k - 2)
+  def self.fibonacci(k, memos = [0, 1]) # F0 = 0, F1 = 1, ...
+    memos[k] ||= fibonacci(k - 1, memos) + fibonacci(k - 2, memos)
   end
 end
 
