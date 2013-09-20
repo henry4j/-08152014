@@ -1,1 +1,1 @@
-moved to https://github.com/henry4j/-/edit/master/man/fiber.md
+moved to http://github.com/henry4j/-/blob/master/man/fiber.md
