@@ -1,4 +1,5 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env jruby
+require File.realpath('p-topics')
 %w{optparse open-uri csv json open3}.each { |e| require e }
 
 $options = {}
@@ -35,17 +36,19 @@ q2cc = docs.reduce({}) do |h, e| # comm. texts keyed by FAQ.
   h
 end
 
-puts "INFO: " + p_topics = "jruby #{%x(which p-topics).chomp} -m #{model_id} --debug"
-i, o, e = Open3.popen3(p_topics)
-2.times { puts e.gets }
+# puts "INFO: " + p_topics = "jruby #{%x(which p-topics).chomp} -m #{model_id} --debug"
+# i, o, e = Open3.popen3(p_topics)
+# 2.times { puts e.gets }
+modeling = TopicModeling.new(model_id, true)
 z2qf = q2cc.reduce({}) do |h, (q, cc)| # topic frequencies keyed by FAQ.
-  cc.map { |c| i.puts c.tr("\n", '  '); putc '.'; JSON[o.readline] }.
+  cc.map { |c| modeling.p_topics(c) }.
+  # cc.map { |c| i.puts c.tr("\n", '  '); putc '.'; JSON[o.readline] }.
     map { |p| p[0].nan?? -1 : p.each_with_index.max[1] }.
     reduce({}) { |zf, z| zf[z] = (zf[z] || 0) + 1 unless z == -1; zf }.
     reduce(h) { |h, (z, f)| (h[z] ||= {})[q] = f; h }
 end
-i.close
-1.times { puts e.gets }
+# i.close
+# 1.times { puts e.gets }
 
 z2qf_max = z2qf.reduce({}) { |h, (z, qf)| h[z] = qf.values.max; h }
 z2qf_sum = z2qf.reduce({}) { |h, (z, qf)| h[z] = qf.values.reduce(:+); h }
@@ -65,3 +68,5 @@ jj q2cc.reduce({}) { |h, (l, cc)| h[l] = cc.size; h }
 puts '### Overall topic modeling accuracy: '
 a, b = z2qf_max.values.reduce(:+), z2qf_sum.values.reduce(:+)
 puts '%s / %s = %s%' % [a, b, (100.0 * a / b).round(1)]
+
+exit 0
