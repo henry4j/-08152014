@@ -161,7 +161,7 @@ svn checkout http://svn.apache.org/repos/asf/mahout/tags/mahout-0.8 /workspace/m
 * [p-topics](http://github.com/henry4j/-/blob/master/paste/p-topics) -- to see topic probability distribution of an arbitrary text document against a model.
 
 ```bash
-for e in prep-comm-text stop-comm-text resplit pp-w,z pp-z,d tame-hadoop tame-corpus tame-topics-l p-topics exam-comm-text; do
+for e in prep-comm-text stop-comm-text resplit pp-w,z pp-z,d tame-hadoop tame-corpus tame-topics-l p-topics p-topics.rb exam-comm-text; do
   curl -o /usr/local/bin/$e -kL https://raw.github.com/henry4j/-/master/paste/$e;
   chmod +x /usr/local/bin/$e;
 done
@@ -339,6 +339,7 @@ s3cmd setacl -r --acl-public s3://${S3_BUCKET}/${WORK_ID}
 * `exam-comm-text -m unigram-rrc-pro-22k ###### 52.3% accuracy`; see [unigram-rrc-pro-22k.log](http://raw.github.com/henry4j/-/master/modeling/unigram-rrc-pro-22k.log)
   * feeds p-topics with test docs (a line per doc); IPC happens through STDIN & STDOUT.
 * `exam-comm-text -m bigram-rrc-pro-22k-107ml # 52.3% accuracy`; see [bigram-rrc-pro-22k-107ml.log](http://raw.github.com/henry4j/-/master/modeling/bigram-rrc-pro-22k-107ml.log)
+* `exam-comm-text -m true-l-lda # 78.8%`; see [true-l-lda.log](http://raw.github.com/henry4j/-/master/modeling/bigram-rrc-pro-22k-107ml.log)
 
 ![Bob the builder?](http://upload.wikimedia.org/wikipedia/en/thumb/c/c5/Bob_the_builder.jpg/220px-Bob_the_builder.jpg "Under Construction")
 
