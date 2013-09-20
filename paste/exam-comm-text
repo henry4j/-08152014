@@ -43,6 +43,7 @@ z2qf = q2cc.reduce({}) do |h, (q, cc)| # topic frequencies keyed by FAQ.
     reduce({}) { |zf, z| zf[z] = (zf[z] || 0) + 1 unless z == -1; zf }.
     reduce(h) { |h, (z, f)| (h[z] ||= {})[q] = f; h }
 end
+puts
 
 z2qf_max = z2qf.reduce({}) { |h, (z, qf)| h[z] = qf.values.max; h }
 z2qf_sum = z2qf.reduce({}) { |h, (z, qf)| h[z] = qf.values.reduce(:+); h }
