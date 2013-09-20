@@ -1,5 +1,5 @@
 #!/usr/bin/env jruby
-require File.realpath('p-topics')
+require_relative 'p-topics'
 %w{optparse open-uri csv json open3}.each { |e| require e }
 
 $options = {}
