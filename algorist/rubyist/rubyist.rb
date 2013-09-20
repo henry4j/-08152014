@@ -3344,16 +3344,32 @@ module Kernel
 end
 
 class SNode
+  attr_accessor :value, :next_
+
+  def initialize(value, next_ = nil)
+    if value.is_a?(Array)
+      value.reverse_each do |v|
+        next_ = SNode.new(v, next_)
+      end
+      @value = next_.value
+      @next_ = next_.next_
+    else
+      @value = value
+      @next_ = next_
+    end
+  end
+
   # Given a list (where k = 7, and n = 5), 1 2 3 4 5 6 7 a b c d e a.
   # 1. do find the length of the loop, i.e. n = 5.
   # 2. begin w/ u = 1, v = 6; advance them k times until they collide.
   def self.find_cycle(head)
     p1 = p2 = head
-    return unless while p2 && p2.next_
+    while p2 && p2.next_
       p1 = p1.next_
       p2 = p2.next_.next_
-      break p1 if p1.equal?(p2)
+      break if p1 == p2
     end
+    return unless p1 == p2
 
     n = 1; p1 = p1.next_
     until p1 == p2
@@ -3420,21 +3436,6 @@ class SNode
   def to_s
     "#{[value, next_.nil? ? '⏚' : next_].join(' → ')}"
   end
-
-  def initialize(value, next_ = nil)
-    if value.is_a?(Array)
-      value.reverse_each do |v|
-        next_ = SNode.new(v, next_)
-      end
-      @value = next_.value
-      @next_ = next_.next_
-    else
-      @value = value
-      @next_ = next_
-    end
-  end
-
-  attr_accessor :value, :next_
 end
 
 class DNode
