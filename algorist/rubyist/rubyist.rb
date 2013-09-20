@@ -3384,7 +3384,6 @@ class SNode
       head = current
       current = save
     end
-
     head
   end
 
