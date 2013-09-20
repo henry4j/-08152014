@@ -11,8 +11,8 @@ module Mahout
       log4j:log4j:1.2.17
       org.apache.avro:avro:1.5.3
       org.apache.commons:commons-math3:3.2
-      #org.apache.hadoop:hadoop-common:2.0.5-alpha
-      org.apache.hadoop:hadoop-core:1.2.1
+      org.apache.hadoop:hadoop-common:2.0.5-alpha
+      #org.apache.hadoop:hadoop-core:1.2.1
       org.apache.lucene:lucene-analyzers-common:4.3.0
       org.apache.lucene:lucene-core:4.3.0
       org.apache.mahout:mahout-core:0.8

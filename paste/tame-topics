@@ -45,6 +45,7 @@ end
 def load_doc_topic_priors(work_id)
   a, b = '${MAHOUT_WORK}/comm-text-ext/doc-topic-priors', "/tmp/#{work_id}-doc-topic-priors"
   x! "$HADOOP dfs -get #{a} #{b}" do end unless File.exist?(b)
+  Mahout.require_jars
   Mahout.read_vectors b
 end
 
