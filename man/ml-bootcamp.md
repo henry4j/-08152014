@@ -380,7 +380,8 @@ sudo java -jar "$HOME/.m2/repository/org/projectlombok/lombok/0.12.0/lombok-0.12
 3. Expand `Programming Languages`, and then select `Dynamic Lanauges Toolkit - Ruby`
 4. Next | Next | Accept EULA | Finish, and then **[Restart Now]**
 5. Eclipse | Preferences... | Ruby
-   * Debug | Engines, and then select `Ruby Built-in Debugger` # [x] `/usr/local/bin/gem install test-unit`
+   * Debug | Engines, and then select `Ruby Built-in Debugger`
+     # [x] `/usr/local/bin/gem install test-unit debugger`
    * Interpreters | Add... | Interpreter executable: `/usr/local/bin/ruby` as `ruby 2`
 
 ##### Config M2, P4merge, SVN and Git with aliases
