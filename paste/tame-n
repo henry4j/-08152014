@@ -1,9 +1,0 @@
-#!/bin/bash
-tame-topics unigram-rrc-pro-22k-b
-tame-topics bigram-rrc-pro-22k-90
-tame-topics bigram-rrc-pro-22k-95
-tame-topics bigram-rrc-pro-22k-100
-tame-topics bigram-rrc-pro-22k-105
-tame-topics bigram-rrc-pro-22k-110
-tame-topics bigram-rrc-pro-22k-115
-tame-topics bigram-rrc-pro-22k-120
