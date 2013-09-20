@@ -41,7 +41,7 @@
   * hashmap design questions: cf. open-addressing vs. chaining, 
      * Java's HashMap class has **0.75** default load factor threshold for table expansion ([dynamic resizing](http://en.wikipedia.org/wiki/Hash_table#Dynamic_resizing)).
      * how do you deal with collisions? Open addressing can lead to more concise tables with better cache performance than bucketing, but performance will be more brittle as the load factor starts to get high.
-     * how big should the table be? With bucketing, m should be about the same as the maximum number of items you expect to put in the table. With open addressing, make it (say) 30% larger or more.
+     * how big should the hash table be? With bucketing, m should be about the same as the maximum number of items you expect to put in the table. With open addressing, make it (say) 30% larger or more.
 * BST operations: search, insert, delete, find minimum & maximum, traverse in in-order, pre-order, and post-order.
 * balanced search tree implementations: red-black trees, and splay trees.
 * how to sort in O(<i>n log n</i>)
