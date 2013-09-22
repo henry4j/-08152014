@@ -12,4 +12,5 @@ x! "s3cmd get s3://${S3_BUCKET}-private/resources/#{sources[c]} #{corpora[c]}" u
 x! "$HADOOP dfs -rmr #{extract} ${MAHOUT_WORK}/comm-text-seq" do end # rescue on errors.
 x! "prep-comm-text #{corpora[c]} -d #{extract} #{options[c]} -o"
 x! "$HADOOP dfs -put #{extract}/corpus ${MAHOUT_WORK}/comm-text-ext/corpus"
+x! "$HADOOP dfs -put #{extract}/doc-topic-priors ${MAHOUT_WORK}/comm-text-ext/doc-topic-priors"
 x! "$MAHOUT seqdirectory -i #{extract}/corpus -o ${MAHOUT_WORK}/comm-text-seq -ow -chunk 5"
