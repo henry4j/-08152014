@@ -33,7 +33,7 @@ module Vectors
     end
   end
 
-  def self.write(path, vectors, conf = Vectors.conf)
+  def self.write(vectors, path, conf = Vectors.conf)
     fail "vectors must be 'VectorIterable'." unless vectors.is_a? org.apache.mahout.math.VectorIterable
     path = org.apache.hadoop.fs.Path.new(File.absolute_path(path)) if path.is_a?(String)
     fs = org.apache.hadoop.fs.FileSystem.get(conf)
@@ -76,8 +76,8 @@ def run!
   vectors = org.apache.mahout.math.SparseRowMatrix.new(3, 4, true)
   vectors.view_row(0).set_quick(2, 4)
   vectors.view_row(1).set_quick(3, 5)
-  Vectors.write(org.apache.hadoop.fs.Path.new('/tmp/matrix-11.txt'), vectors)
-  p Vectors.read('/tmp/matrix-11.txt').map { |(k, v)| Vectors.to_a(v) }
+  Vectors.write(vectors, ARGV[0])
+  p Vectors.read(ARGV[0]).map { |(k, v)| Vectors.to_a(v) }
 end
 
 run! if __FILE__==$0

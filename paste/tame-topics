@@ -20,39 +20,19 @@ vectors = $options[:vectors] || 'tf-vectors'
 def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
 
 def store_topic_term_priors(work_id, vectors)
-  a, b = "/tmp/#{work_id}-topic-term-priors", "${MAHOUT_WORK}/#{work_id}/topic-term-priors"
-  write_vectors(a, vectors)
-  x! "$HADOOP dfs -put #{a} #{b}" do end
-end
-
-def read_df_vectors(path, conf = org.apache.hadoop.conf.Configuration.new)
-  h = read_vectors(path, conf)
-  a = h.reduce([]) { |a, (k, v)| a[k] = v unless k < 0 }
-  a << h[-1]
-end
-
-def load_df_vectors(work_id)
-  a, b = "${MAHOUT_WORK}/#{work_id}/df-count-0", "/tmp/#{work_id}-df-count-0"
-  x! "$HADOOP dfs -get #{a} #{b}" do end
-  read_vectors b
+  Vectors.write vectors, "#{ENV['MAHOUT_WORK']}/#{work_id}/topic-term-priors"
 end
 
 def doc_topic_priors_exist?
-  a = '${MAHOUT_WORK}/comm-text-ext/doc-topic-priors'
-  %x($HADOOP dfs -ls #{a}) && 0 == $?
+  %x($HADOOP dfs -ls ${MAHOUT_WORK}/comm-text-ext/doc-topic-priors) && 0 == $?
 end
 
 def load_doc_topic_priors(work_id)
-  a, b = '${MAHOUT_WORK}/comm-text-ext/doc-topic-priors', "/tmp/#{work_id}-doc-topic-priors"
-  x! "$HADOOP dfs -get #{a} #{b}" do end unless File.exist?(b)
-  Mahout.require_jars
-  Mahout.read_vectors b
+  Vectors.read "#{ENV['MAHOUT_WORK']}/comm-text-ext/doc-topic-priors"
 end
 
 def load_doc_vectors(work_id)
-  a, b = "${MAHOUT_WORK}/#{work_id}/matrix", "/tmp/#{work_id}-matrix"
-  x! "$HADOOP dfs -get #{a} #{b}" do end unless File.exist?(b)
-  read_vectors b
+  Vectors.read "#{ENV['MAHOUT_WORK']}/#{work_id}/matrix"
 end
 
 def patch_mahout
@@ -84,7 +64,8 @@ io = %w(matrix dictionary.file-0 model doc-topics modeling).map { |e| "$MAHOUT_W
 x! "$HADOOP dfs -rmr #{io[-3..-1].join(' ')}" do end
 
 if doc_topic_priors_exist? 
-  require_relative 'mahout'
+  p 'hello'
+  require_relative 'vectors'
   doc_topic_priors = load_doc_topic_priors(work_id)
   doc_vectors = load_doc_vectors(work_id)
   rows, columns = doc_topic_priors[0].size, doc_vectors[0].size
