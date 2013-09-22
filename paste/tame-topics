@@ -64,7 +64,6 @@ io = %w(matrix dictionary.file-0 model doc-topics modeling).map { |e| "$MAHOUT_W
 x! "$HADOOP dfs -rmr #{io[-3..-1].join(' ')}" do end
 
 if doc_topic_priors_exist? 
-  p 'hello'
   require_relative 'vectors'
   doc_topic_priors = load_doc_topic_priors(work_id)
   doc_vectors = load_doc_vectors(work_id)

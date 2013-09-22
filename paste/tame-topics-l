@@ -19,79 +19,20 @@ vectors = $options[:vectors] || 'tf-vectors'
 
 def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
 
-def require_jars
-  %w(
-    com.google.guava:guava:14.0.1
-    commons-configuration:commons-configuration:1.6
-    commons-logging:commons-logging:1.1.1
-    commons-lang:commons-lang:2.5
-    log4j:log4j:1.2.17
-    org.apache.avro:avro:1.5.3
-    org.apache.commons:commons-math3:3.2
-    org.apache.hadoop:hadoop-core:1.2.1
-    #org.apache.hadoop:hadoop-common:2.0.5-alpha
-    #org.apache.hadoop:hadoop-auth:2.0.5-alpha
-    org.apache.lucene:lucene-analyzers-common:4.3.0
-    org.apache.lucene:lucene-core:4.3.0
-    org.apache.mahout:mahout-core:0.8
-    org.apache.mahout:mahout-math:0.8
-    org.slf4j:slf4j-api:1.6.1
-    org.slf4j:slf4j-log4j12:1.6.1
-  ).map do |e|
-    next if e[0] == '#'
-    g, a, v = e.split(':')
-    jar = "#{ENV['HOME']}/.m2/repository/#{g.gsub(/\./, '/')}/#{a}/#{v}/#{a}-#{v}.jar"
-    system "mvn dependency:get -DremoteRepositories=http://download.java.net/maven2 -Dartifact=#{e}" unless File.exist?(jar)
-    require jar
-  end
-end
-
-def write_vectors(path, vectors, conf = org.apache.hadoop.conf.Configuration.new)
-  path = org.apache.hadoop.fs.Path.new('file://' + File.absolute_path(path)) if path.is_a? String
-  org.apache.mahout.math.MatrixUtils.write(path, conf, vectors)
-end
-
 def store_topic_term_priors(work_id, vectors)
-  a, b = "/tmp/#{work_id}-topic-term-priors", "${MAHOUT_WORK}/#{work_id}/topic-term-priors"
-  write_vectors(a, vectors)
-  x! "$HADOOP dfs -put #{a} #{b}" do end
+  Vectors.write vectors, "#{ENV['MAHOUT_WORK']}/#{work_id}/topic-term-priors"
 end
 
-def read_vectors(path, conf = org.apache.hadoop.conf.Configuration.new)
-  path = org.apache.hadoop.fs.Path.new('file://' + File.absolute_path(path)) if path.is_a? String
-  fs = org.apache.hadoop.fs.FileSystem.get(conf)
-  reader = org.apache.hadoop.io.SequenceFile::Reader.new(fs, path, conf)
-  key, value = reader.key_class.new_instance, reader.value_class.new_instance
-  vectors = {}
-  vectors[key.get] = value.get while reader.next(key, value) 
-  vectors
-end
-
-def read_df_vectors(path, conf = org.apache.hadoop.conf.Configuration.new)
-  h = read_vectors(path, conf)
-  a = h.reduce([]) { |a, (k, v)| a[k] = v unless k < 0 }
-  a << h[-1]
-end
-
-def load_df_vectors(work_id)
-  a, b = "${MAHOUT_WORK}/#{work_id}/df-count-0", "/tmp/#{work_id}-df-count-0"
-  x! "$HADOOP dfs -get #{a} #{b}" do end
-  read_vectors b
+def doc_topic_priors_exist?
+  %x($HADOOP dfs -ls ${MAHOUT_WORK}/comm-text-ext/doc-topic-priors) && 0 == $?
 end
 
 def load_doc_topic_priors(work_id)
-  a, b = '${MAHOUT_WORK}/comm-text-ext/doc-topic-priors', "/tmp/#{work_id}-doc-topic-priors"
-  if %x($HADOOP dfs -ls #{a}) && 0 == $?
-    x! "$HADOOP dfs -get #{a} #{b}" do end unless File.exist?(b)
-    require_jars
-    read_vectors b
-  end
+  Vectors.read "#{ENV['MAHOUT_WORK']}/comm-text-ext/doc-topic-priors"
 end
 
 def load_doc_vectors(work_id)
-  a, b = "${MAHOUT_WORK}/#{work_id}/matrix", "/tmp/#{work_id}-matrix"
-  x! "$HADOOP dfs -get #{a} #{b}" do end unless File.exist?(b)
-  read_vectors b
+  Vectors.read "#{ENV['MAHOUT_WORK']}/#{work_id}/matrix"
 end
 
 def patch_mahout
@@ -122,7 +63,9 @@ end
 io = %w(matrix dictionary.file-0 model doc-topics modeling).map { |e| "$MAHOUT_WORK/#{work_id}/#{e}" }
 x! "$HADOOP dfs -rmr #{io[-3..-1].join(' ')}" do end
 
-if doc_topic_priors = load_doc_topic_priors(work_id)
+if doc_topic_priors_exist? 
+  require_relative 'vectors'
+  doc_topic_priors = load_doc_topic_priors(work_id)
   doc_vectors = load_doc_vectors(work_id)
   rows, columns = doc_topic_priors[0].size, doc_vectors[0].size
   topic_term_priors = org.apache.mahout.math.SparseRowMatrix.new(rows, columns, true) # true for random access
