@@ -35,7 +35,9 @@ module Vectors
 
   def self.write(vectors, path, conf = Vectors.conf)
     fail "vectors must be 'VectorIterable'." unless vectors.is_a? org.apache.mahout.math.VectorIterable
+    p path
     path = org.apache.hadoop.fs.Path.new(File.absolute_path(path)) if path.is_a?(String)
+    p path
     fs = org.apache.hadoop.fs.FileSystem.get(conf)
     fs.delete(path)
     writer = org.apache.hadoop.io.SequenceFile::Writer.new(fs, conf, path, org.apache.hadoop.io.IntWritable.java_class, org.apache.mahout.math.VectorWritable.java_class)
@@ -73,11 +75,12 @@ end
 Vectors.require_jars
 
 def run!
+  path = ARGV[0] || '/tmp/matrix.seq'
   vectors = org.apache.mahout.math.SparseRowMatrix.new(3, 4, true)
   vectors.view_row(0).set_quick(2, 4)
   vectors.view_row(1).set_quick(3, 5)
-  Vectors.write(vectors, ARGV[0])
-  p Vectors.read(ARGV[0]).map { |(k, v)| Vectors.to_a(v) }
+  Vectors.write(vectors, path)
+  p Vectors.read(path).map { |(k, v)| Vectors.to_a(v) }
 end
 
 run! if __FILE__==$0
