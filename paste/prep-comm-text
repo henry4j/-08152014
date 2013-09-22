@@ -70,7 +70,7 @@ if l_field
   doc_topic_priors = org.apache.mahout.math.SparseRowMatrix.new(rows, columns, true) # true for random access
   labels.each_with_index { |e, i| e.each { |l| doc_topic_priors.view_row(i).set_quick(l, 1.0/e.size) } }
   path = File.absolute_path(File.join(out_dir, 'doc-topic-priors'))
-  conf = org.apache.hadoop.conf.Configuration.new.tamp { |e| e.set('fs.default.name', 'file:///') }
+  conf = org.apache.hadoop.conf.Configuration.new.tap { |e| e.set('fs.default.name', 'file:///') }
   Vectors.write(doc_topic_priors, path, conf)
   puts 'INFO: done writing to %s (%d rows x %d columns)' % [path, rows, columns]
 end
