@@ -615,6 +615,12 @@ library('ggplot2')
 qplot(data=income, x=age,main="Histogram of Age",binwidth=3)
 ```
 
+### Experiments
+
+```bash
+cat 1.txt | ruby -e 'srand 1234; a = readlines; n = a.size; (1...n).each { |i| j = i + rand(n - i); a[i], a[j] = a[j], a[i] }; puts a'
+```
+
 ### References
 
 * [Mahout on Amazon EMR: Elastic MapReduce](https://cwiki.apache.org/confluence/display/MAHOUT/Mahout+on+Elastic+MapReduce)
