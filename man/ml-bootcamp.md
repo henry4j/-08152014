@@ -619,6 +619,8 @@ qplot(data=income, x=age,main="Histogram of Age",binwidth=3)
 
 ```bash
 cat 1.txt | ruby -e 'srand 1234; a = readlines; n = a.size; (1...n).each { |i| j = i + rand(n - i); a[i], a[j] = a[j], a[i] }; puts a'
+
+cat 2.txt | ruby -e 'a = readlines; n = s.size; sum = ARGV.'
 ```
 
 ### References
