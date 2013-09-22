@@ -25,29 +25,7 @@ fields = ($options[:fields] || ['1', '3']).map { |e| e.to_i }
 stop_phrases = $options[:stop_phrases] || File.expand_path('../stop-comm-text', File.realpath(__FILE__))
 
 if l_field
-  %w(
-    com.google.guava:guava:14.0.1
-    commons-configuration:commons-configuration:1.6
-    commons-logging:commons-logging:1.1.1
-    commons-lang:commons-lang:2.5
-    log4j:log4j:1.2.17
-    org.apache.avro:avro:1.5.3
-    org.apache.commons:commons-math3:3.2
-    org.apache.hadoop:hadoop-common:2.0.5-alpha
-    org.apache.hadoop:hadoop-annotations:2.0.5-alpha
-    org.apache.hadoop:hadoop-auth:2.0.5-alpha
-    org.apache.lucene:lucene-analyzers-common:4.3.0
-    org.apache.lucene:lucene-core:4.3.0
-    org.apache.mahout:mahout-core:0.8
-    org.apache.mahout:mahout-math:0.8
-    org.slf4j:slf4j-api:1.6.1
-    org.slf4j:slf4j-log4j12:1.6.1
-  ).map do |e|
-    g, a, v = e.split(':')
-    jar = "#{ENV['HOME']}/.m2/repository/#{g.gsub(/\./, '/')}/#{a}/#{v}/#{a}-#{v}.jar"
-    system "mvn dependency:get -DremoteRepositories=http://download.java.net/maven2 -Dartifact=#{e}" unless File.exist?(jar)
-    require jar
-  end
+  require 'vectors'
 end
 
 stop_phrases = File.exists?(stop_phrases) ? open(stop_phrases).readlines.reduce([]) { |a, l| l.start_with?('#') ? a : a << l.chomp } : nil
@@ -91,9 +69,8 @@ if l_field
   rows, columns = labels.size, label_ids.size
   doc_topic_priors = org.apache.mahout.math.SparseRowMatrix.new(rows, columns, true) # true for random access
   labels.each_with_index { |e, i| e.each { |l| doc_topic_priors.view_row(i).set_quick(l, 1.0/e.size) } }
-  path = org.apache.hadoop.fs.Path.new('file://' + File.absolute_path(File.join(out_dir, 'doc-topic-priors')))
-  conf = org.apache.hadoop.conf.Configuration.new
-  org.apache.mahout.math.MatrixUtils.write(path, conf, doc_topic_priors)
+  path = File.absolute_path(File.join(out_dir, 'doc-topic-priors'))
+  Vectors.write(doc_topic_priors, path)
   puts 'INFO: done writing to %s (%d rows x %d columns)' % [path, rows, columns]
 end
 exit 0
