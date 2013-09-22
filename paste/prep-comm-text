@@ -25,7 +25,7 @@ fields = ($options[:fields] || ['1', '3']).map { |e| e.to_i }
 stop_phrases = $options[:stop_phrases] || File.expand_path('../stop-comm-text', File.realpath(__FILE__))
 
 if l_field
-  require 'vectors'
+  require_relative 'vectors'
 end
 
 stop_phrases = File.exists?(stop_phrases) ? open(stop_phrases).readlines.reduce([]) { |a, l| l.start_with?('#') ? a : a << l.chomp } : nil
