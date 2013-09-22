@@ -35,9 +35,7 @@ module Vectors
 
   def self.write(vectors, path, conf = Vectors.conf)
     fail "vectors must be 'VectorIterable'." unless vectors.is_a? org.apache.mahout.math.VectorIterable
-    p path
     path = org.apache.hadoop.fs.Path.new(File.absolute_path(path)) if path.is_a?(String)
-    p path
     fs = org.apache.hadoop.fs.FileSystem.get(conf)
     fs.delete(path)
     writer = org.apache.hadoop.io.SequenceFile::Writer.new(fs, conf, path, org.apache.hadoop.io.IntWritable.java_class, org.apache.mahout.math.VectorWritable.java_class)
