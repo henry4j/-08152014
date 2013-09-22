@@ -18,12 +18,8 @@ module Vectors
       org.apache.avro:avro:1.5.3
       org.apache.commons:commons-math3:3.2
       org.apache.hadoop:hadoop-core:1.2.1
-      org.apache.lucene:lucene-analyzers-common:4.3.0
-      org.apache.lucene:lucene-core:4.3.0
       org.apache.mahout:mahout-core:0.8
       org.apache.mahout:mahout-math:0.8
-      org.slf4j:slf4j-api:1.6.1
-      org.slf4j:slf4j-log4j12:1.6.1
     ).map do |e|
       next false if e[0] == '#'
       g, a, v = e.split(':')
