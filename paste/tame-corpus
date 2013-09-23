@@ -2,7 +2,7 @@
 require 'rake'
 sources = %w(rrc_pro_22110.csv rrc_ind_31771.csv rrc_pro_2285_labeled_1.0.csv rrc_pro_2285_labeled_0.75.csv rrc_pro_2285_1266_1.0.csv)
 corpora = %w(corpus-1.csv corpus-2.csv corpus-l-1.0.csv corpus-l-0.75.csv corpus-l-2285+1266.csv).map { |e| File.join(ENV['MAHOUT_WORK'], e) }
-options = ["-i 3 -f 4,11", "-i 3 -f 4,11", "-i 4 -l 8 -f 1,3", "-i 4 -l 8 -f 1,3", "-i 4 -l 8 -f 1,3"]
+options = ["-i 3 -f 4,11", "-i 3 -f 4,11", "-i 4 -l 8 -f 1,3", "-i 4 -l 8 -f 1,3", "-i 0 -l 8 -f 4,5"]
 extract = '${MAHOUT_WORK}/comm-text-ext'
 c = Integer(ARGV[0]) - 1 # expects 1 or greater.
 
