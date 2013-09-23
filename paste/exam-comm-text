@@ -15,7 +15,7 @@ end.parse!
 max_lines = $options[:max_lines]
 q_fields = ($options[:q_fields] || ['8']).map { |e| e.to_i }
 fields = ($options[:fields] || ['1', '3']).map { |e| e.to_i }
-model_id = $options[:model_id] || 'l-lda-0.75'
+model_id = $options[:model_id] || 'l-lda-others'
 docs = ARGV
 if docs.empty?
   docs = ["#{ENV['MAHOUT_WORK']}/test-set-2285-others.0.csv"]
@@ -43,6 +43,10 @@ z2qf = q2cc.reduce({}) do |h, (q, cc)| # topic frequencies keyed by FAQ.
 end
 puts
 
+a, b = "http://s3.amazonaws.com/#{ENV['S3_BUCKET']}/#{model_id}/label_ids.json", "/tmp/#{model_id}/label_ids.json"
+%x(curl -o #{b} -ksL #{a} --create-dirs) unless File.exist?(b)
+label_ids = JSON[open(b).read]
+
 z2qf_max = z2qf.reduce({}) { |h, (z, qf)| h[z] = qf.values.max; h }
 z2qf_sum = z2qf.reduce({}) { |h, (z, qf)| h[z] = qf.values.reduce(:+); h }
 
@@ -60,6 +64,7 @@ jj q2cc.reduce({}) { |h, (l, cc)| h[l] = cc.size; h }
 
 puts '### Overall topic modeling accuracy: '
 a = z2qf_max.values.reduce(:+)
+a = z2qf.reduce({}) { |h, (z, qf)| h[z] = qf[label_ids[z]] }
 puts '%s%% (%s / %s)' % [(100.0 * a / b).round(1), a, b]
 
 exit 0
