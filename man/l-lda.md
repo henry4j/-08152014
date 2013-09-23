@@ -1,5 +1,7 @@
-### 
+### split-comm-text that shuffles lines and splits into fractions
 
+split-comm-text -f 0.75,0.25 $MAHOUT_WORK/test-set-2285-labeled_typos.csv
+split-comm-text -f 1 $MAHOUT_WORK/test-set-2285-labeled_typos.csv
 
 ### l-lda ideas
 
