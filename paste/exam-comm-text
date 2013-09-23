@@ -24,14 +24,12 @@ if docs.empty?
 end
 
 q2cc = docs.reduce({}) do |h, e| # comm. texts keyed by FAQ.
-  open(e, 'r:windows-1250') do |f|
-    skip_count = $options[:skip_count] || 1
-    CSV.new(f).each do |line|
-      next if (skip_count -= 1) >= 0
-      break unless max_lines.nil? || (max_lines -= 1) >= 0
-      q = q_fields.map { |f| line[f] }.compact.map { |e| e.gsub(/\A\s+|\s+\Z/, '') }.join('; ')
-      (h[q] ||= []) << c = fields.map { |f| line[f] }.join('; ') unless q.empty?
-    end
+  skip_count = $options[:skip_count] || 1
+  CSV.open(e, 'r:windows-1250').each do |line|
+    next if (skip_count -= 1) >= 0
+    break unless max_lines.nil? || (max_lines -= 1) >= 0
+    q = q_fields.map { |f| line[f] }.compact.map { |e| e.gsub(/\A\s+|\s+\Z/, '') }.join('; ')
+    (h[q] ||= []) << c = fields.map { |f| line[f] }.join('; ') unless q.empty?
   end
   h
 end
