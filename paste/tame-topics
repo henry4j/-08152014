@@ -98,7 +98,7 @@ x! "pp-z,d /tmp/#{work_id}-z,d-dump.txt -n 30 | tee /tmp/#{work_id}-z,d-doc-topi
  
 x! "rm -rf ${MAHOUT_WORK}/#{work_id}"
 x! "$HADOOP dfs -get $MAHOUT_WORK/#{work_id} ${MAHOUT_WORK}/#{work_id}"
-%w(df-count-0 dictionary.file-0 model-0 tf-vectors-0 tfidf-vectors-0 tokenized-documents.txt topic-0).each { |e| x! "s3cmd put $MAHOUT_WORK/#{work_id}/#{e} s3://${S3_BUCKET}/#{work_id}/" }
+%w(df-count-0 dictionary.file-0 model-0 label_ids.json tf-vectors-0 tfidf-vectors-0 tokenized-documents.txt topic-0).each { |e| x! "s3cmd put $MAHOUT_WORK/#{work_id}/#{e} s3://${S3_BUCKET}/#{work_id}/" }
 %w(w,z-dump.txt w,z-topic-terms.txt doc-topics.txt z,d-dump.txt).each { |e| x! "s3cmd put $MAHOUT_WORK/#{work_id}/#{work_id}-#{e} s3://${S3_BUCKET}/#{work_id}/" }
 x! "s3cmd setacl -r --acl-public s3://${S3_BUCKET}/#{work_id}"
 
