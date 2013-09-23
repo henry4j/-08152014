@@ -11,15 +11,14 @@ fractions = ($options[:fractions] || ['0.75', '0.25']).map { |e| e.to_f }
 
 ARGV.each do |e|
   srand 1234
-  skip_count = $options[:skip_count] || 1
   lines = CSV.read(e, 'r:windows-1250')
-  range = skip_count..n = lines.size
+  min, max = $options[:skip_count] || 1, (n = lines.size) - 1
+  range = min..max
   range.each { |i| j = i + rand(n - i); lines[i], lines[j] = lines[j], lines[i] }
   fractions.each do |f|
-    min = min ? range.min : min + 1
-    max = min + range.size * f
-    f = CSV.open(e + f, 'w:windows-1250')
-    (0...skip_count).each { |i| f << lines[i] }
-    (0...max.to_i).each { |i| f << lines[i] }
+    max = min + (range.size * f).to_i
+    f = CSV.open("%s-%s" % [e, f], 'w:windows-1250')
+    (0...range.min).each { |i| f << lines[i] }
+    (min...max).each { |i| f << lines[i] }
   end
 end
