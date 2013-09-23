@@ -73,10 +73,10 @@ if doc_topic_priors_exist?
     doc_topic_priors[d].non_zeroes.each do |z_d|
       row = topic_term_priors.view_row(z_d.index)
       v.non_zeroes.each { |w| row.set_quick(w.index, row.get_quick(w.index) + w.get * z_d.get) }
-      # p row.to_s
     end
   end
   store_topic_term_priors(work_id, topic_term_priors)
+  x! "$HADOOP dfs -cp ${MAHOUT_WORK}/comm-text-ext/label_ids.json ${MAHOUT_WORK}/#{work_id}"
   x! "$HADOOP dfs -cp ${MAHOUT_WORK}/#{work_id}/topic-term-priors #{io[-1]}/model-0/part-r-00000" do end
   patch_mahout
   cvb_opts = "-k #{rows} -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/doc-topic-priors -cd 6e-24"
