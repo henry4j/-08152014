@@ -60,6 +60,6 @@ jj q2cc.reduce({}) { |h, (l, cc)| h[l] = cc.size; h }
 
 puts '### Overall topic modeling accuracy: '
 a = z2qf_max.values.reduce(:+)
-puts '%s / %s = %s%' % [a, b, (100.0 * a / b).round(1)]
+puts '%s% (%s / %s)' % [(100.0 * a / b).round(1), a, b]
 
 exit 0
