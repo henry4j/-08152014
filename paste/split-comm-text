@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+%w{optparse open-uri csv json open3}.each { |e| require e }
+
+$options = {}
+OptionParser.new do |p|
+  p.on('-s', '--skip-lines INTEGER', Integer, 'Skips processing as many lines as specified (default: 1).') { |v| $options[:skip_count] = v }
+  p.on('-f', '--fractions i,j,k',    Array,   'Specifies required fractions (0.75,0.25).') { |v| $options[:fractions] = v }
+end.parse!
+
+fractions = ($options[:fractions] || ['0.75', '0.25']).map { |e| e.to_f }
+
+ARGV.each do |e|
+  srand 1234
+  skip_count = $options[:skip_count] || 1
+  lines = CSV.read(e, 'r:windows-1250')
+  range = skip_count..n = lines.size
+  range.each { |i| j = i + rand(n - i); lines[i], lines[j] = lines[j], lines[i] }
+  fractions.each do |f|
+    min = min ? range.min : min + 1
+    max = min + range.size * f
+    f = CSV.open(e + f, 'w:windows-1250')
+    (0...skip_count).each { |i| f << lines[i] }
+    (0...max.to_i).each { |i| f << lines[i] }
+  end
+end
