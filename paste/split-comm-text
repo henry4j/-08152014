@@ -20,5 +20,7 @@ ARGV.each do |e|
     f = CSV.open("%s-%s" % [e, f], 'w:windows-1250')
     (0...range.min).each { |i| f << lines[i] }
     (min...max).each { |i| f << lines[i] }
+    p [min, max]
+    min = max
   end
 end
