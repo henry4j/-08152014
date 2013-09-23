@@ -4,12 +4,14 @@
 
 tc# | train dataset | test dataset | accuracy
 --- | --- | --- | ---
-tc1 | rrc_pro_2285_labeled_1.0.csv (2285 x 284) | rrc_pro_2285_labeled_1.0.csv | 8.8% (1800 / 2285)
+tc1 | rrc_pro_2285_labeled_1.0.csv (2285 x 284) | rrc_pro_2285_labeled_1.0.csv | 78.8% (1800 / 2285)
 tc2 | rrc_pro_2285_labeled_1.0.csv (2285 x 284) | rrc_pro_2285_labeled_0.75.csv | 78.5% (1349 / 1719)
 tc3 | rrc_pro_2285_labeled_1.0.csv (2285 x 284) | rrc_pro_2285_labeled_0.25.csv | 79.8% (451 / 565)
 tc4 | rrc_pro_2285_labeled_0.75.csv (1718 x 236) | rrc_pro_2285_labeled_1.0.csv | 45.1% (1031 / 2285)
 tc5 | rrc_pro_2285_labeled_0.75.csv (1718 x 236) | rrc_pro_2285_labeled_0.75.csv | 45.3% (779 / 1719)
 tc6 | rrc_pro_2285_labeled_0.75.csv (1718 x 236) | rrc_pro_2285_labeled_0.25.csv | 46.2% (261 / 565)
+
+### corpus: 2285 + 1266 others
 
 
 
