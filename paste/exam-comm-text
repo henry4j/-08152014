@@ -38,7 +38,7 @@ modeling = TopicModeling.new(model_id, true)
 z2qf = q2cc.reduce({}) do |h, (q, cc)| # topic frequencies keyed by FAQ.
   cc.map { |c| putc '.'; modeling.p_topics(c) }.
     map { |p| p[0].nan?? -1 : p.each_with_index.max[1] }.
-    reduce({}) { |zf, z| zf[z] = (zf[z] || 0) + 1; zf }.
+    reduce({}) { |zf, z| zf[z] = (zf[z] || 0) + 1 unless z == -1; zf }.
     reduce(h) { |h, (z, f)| (h[z] ||= {})[q] = f; h }
 end
 puts
@@ -55,11 +55,11 @@ jj z2qf_max
 puts '### Frequency sum keyed by topic: '
 jj z2qf_sum
 
-puts "### Frequency sum keyed by FAQ: (#{q2cc.values.map { |cc| cc.size }.reduce(:+)} communications/#{q2cc.keys.size} questions)"
+puts "### Frequency sum keyed by FAQ: (#{b = q2cc.values.map { |cc| cc.size }.reduce(:+)} communications/#{q2cc.keys.size} questions)"
 jj q2cc.reduce({}) { |h, (l, cc)| h[l] = cc.size; h }
 
 puts '### Overall topic modeling accuracy: '
-a, b = z2qf_max.values.reduce(:+), z2qf_sum.values.reduce(:+)
+a = z2qf_max.values.reduce(:+)
 puts '%s / %s = %s%' % [a, b, (100.0 * a / b).round(1)]
 
 exit 0
