@@ -13,5 +13,5 @@ x! "$HADOOP dfs -rmr #{extract} ${MAHOUT_WORK}/comm-text-seq" do end # rescue on
 x! "prep-comm-text #{corpora[c]} -d #{extract} #{options[c]} -o"
 x! "$HADOOP dfs -put #{extract}/corpus ${MAHOUT_WORK}/comm-text-ext/corpus"
 x! "$HADOOP dfs -put #{extract}/doc-topic-priors ${MAHOUT_WORK}/comm-text-ext/doc-topic-priors"
-x! "$HADOOP dfs -put #{extract}/label_ids.json ${MAHOUT_WORK}/comm-text-ext/label_ids.json"
+x! "$HADOOP dfs -put #{extract}/labels.json ${MAHOUT_WORK}/comm-text-ext/labels.json"
 x! "$MAHOUT seqdirectory -i #{extract}/corpus -o ${MAHOUT_WORK}/comm-text-seq -ow -chunk 5"

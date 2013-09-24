@@ -63,8 +63,8 @@ end
 puts
 
 if l_field
-  open(File.join(out_dir, 'label_ids.json'), 'w') do |w|
-    w.puts JSON.pretty_generate(label_ids)
+  open(File.join(out_dir, 'labels.json'), 'w') do |w|
+    w.puts JSON[label_ids.reduce([]) { |a, (k, v)| a[v] = k; a }]
   end
   rows, columns = labels.size, label_ids.size
   doc_topic_priors = org.apache.mahout.math.SparseRowMatrix.new(rows, columns, true) # true for random access
