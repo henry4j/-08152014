@@ -1103,6 +1103,10 @@ module Arrays
     (0...ary.size).reduce([]) { |a,i| a + [(i > 0 ? prefix_products[i-1] : 1) * (postfix_products[i+1] || 1)] }
   end
 
+  def self.find_odd(ary)
+    ary.group_by { |e| e }.detect { |k, v| v.size % 2 == 1 }[0]
+  end
+
   def self.missing_numbers(ary)
     minmax = ary.minmax # by divide and conquer in O(log N)
     h = ary.reduce({}) { |h,e| h.merge(e => 1 + (h[e] || 0)) }
