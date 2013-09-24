@@ -10,12 +10,15 @@ OptionParser.new do |p|
   p.on('-q', '--q-field INTEGER',    Integer, 'Specifies required FAQ field.') { |v| $options[:q_field] = v }
   p.on('-f', '--fields i,j,k',       Array,   'Specifies required field indices to put into computation.') { |v| $options[:fields] = v }
   p.on('-m', '--model_id STRING',    String,  'Specifies optional model id.') { |v| $options[:model_id] = v }
+  p.on('-x', '--excludes x,y,z',     Array,   'Specifies labels to exclude.') { |v| $options[:excludes] = v }
 end.parse!
 
 max_lines = $options[:max_lines]
 q_fields = ($options[:q_fields] || ['8']).map { |e| e.to_i }
 fields = ($options[:fields] || ['1', '3']).map { |e| e.to_i }
 model_id = $options[:model_id] || 'l-lda-others'
+excludes = $options[:excludes] || []
+
 docs = ARGV
 if docs.empty?
   docs = ["#{ENV['MAHOUT_WORK']}/test-set-2285-others.0.csv"]
@@ -29,7 +32,7 @@ q2cc = docs.reduce({}) do |h, e| # comm. texts keyed by FAQ.
     next if (skip_count -= 1) >= 0
     break unless max_lines.nil? || (max_lines -= 1) >= 0
     q = q_fields.map { |f| line[f] }.compact.map { |e| e.gsub(/\A\s+|\s+\Z/, '') }.join('; ')
-    (h[q] ||= []) << c = fields.map { |f| line[f] }.join('; ') unless q.empty?
+    (h[q] ||= []) << c = fields.map { |f| line[f] }.join('; ') unless q.empty? or excludes.include?(q)
   end
   h
 end
@@ -43,11 +46,17 @@ z2qf = q2cc.reduce({}) do |h, (q, cc)| # topic frequencies keyed by FAQ.
 end
 puts
 
-a, b = "http://s3.amazonaws.com/#{ENV['S3_BUCKET']}/#{model_id}/label_ids.json", "/tmp/#{model_id}/label_ids.json"
-%x(curl -o #{b} -ksL #{a} --create-dirs) unless File.exist?(b)
-label_ids = JSON[open(b).read]
+a, b = "http://s3.amazonaws.com/#{ENV['S3_BUCKET']}/#{model_id}/labels.json", "/tmp/#{model_id}/labels.json"
+%x(curl -o #{b} -fksL #{a} --create-dirs) unless File.exist?(b)
+labels = JSON[open(b).read] if File.exist?(b)
 
-z2qf_max = z2qf.reduce({}) { |h, (z, qf)| h[z] = qf.values.max; h }
+z2qf_max = if labels
+  puts '### Labels: '
+  jj labels
+  z2qf.reduce({}) { |h, (z, qf)| h[z] = qf[labels[z]]; h }
+else
+  z2qf.reduce({}) { |h, (z, qf)| h[z] = qf.values.max; h }
+end
 z2qf_sum = z2qf.reduce({}) { |h, (z, qf)| h[z] = qf.values.reduce(:+); h }
 
 puts '### Frequences keyed by topic & FAQ: '
@@ -63,8 +72,7 @@ puts "### Frequency sum keyed by FAQ: (#{b = q2cc.values.map { |cc| cc.size }.re
 jj q2cc.reduce({}) { |h, (l, cc)| h[l] = cc.size; h }
 
 puts '### Overall topic modeling accuracy: '
-a = z2qf_max.values.reduce(:+)
-a = z2qf.reduce({}) { |h, (z, qf)| h[z] = qf[label_ids[z]] }
+a = z2qf_max.values.map { |e| e.to_i }.reduce(:+)
 puts '%s%% (%s / %s)' % [(100.0 * a / b).round(1), a, b]
 
 exit 0
