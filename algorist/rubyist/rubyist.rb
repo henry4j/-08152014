@@ -646,7 +646,7 @@ module DP # http://basicalgos.blogspot.com/search/label/dynamic%20programming
 end
 
 class Array
-  def bsearch_range(&block)
+  def bsearch_range_by(&block)
     if first = bsearch_first_by(&block)
       first..bsearch_last_by(first...self.size, &block)
     end
