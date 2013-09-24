@@ -9,8 +9,9 @@ OptionParser.new do |p|
   p.on('-i', '--id-field INTEGER', Integer, 'Specifies required field index for document id.') { |v| $options[:id_field] = v }
   p.on('-l', '--l-field INTEGER', Integer, 'Specifies required field index for label(s).') { |v| $options[:l_field] = v }
   p.on('-f', '--fields i,j,k', Array, 'Specifies required field indices for feature(s).') { |v| $options[:fields] = v }
-  p.on('-x', '--stop-phrases PATH', String, 'Specifies optional file paths for stop-phrases.') { |v| $options[:stop_phrases] = v }
+  p.on('-r', '--stop-phrases PATH', String, 'Specifies optional file paths for stop-phrases.') { |v| $options[:stop_phrases] = v }
   p.on('-o', '--overwrite', 'Whether to overwrite existing corpus and corpus-priors.') { |v| $options[:overwrite] = v }
+  p.on('-x', '--excludes x,y,z', Array, 'Specifies labels to exclude.') { |v| $options[:excludes] = v }
 end.parse!
 
 fail "'corpus' must be specified." unless (corpus = ARGV[0])
@@ -23,6 +24,7 @@ id_field = $options[:id_field] || 4
 l_field = $options[:l_field]
 fields = ($options[:fields] || ['1', '3']).map { |e| e.to_i }
 stop_phrases = $options[:stop_phrases] || File.expand_path('../stop-comm-text', File.realpath(__FILE__))
+excludes = $options[:excludes] || []
 
 if l_field
   require_relative 'vectors'
@@ -40,6 +42,7 @@ open(corpus, 'r:windows-1250') do |io|
   CSV.new(io).each do |l|
     next if (skip_count -= 1) >= 0
     next if l_field && l[l_field].nil?
+    next if excludes.any? { |e| l[l_field].include?(e) }
     break if max_entries && (max_entries -= 1) < 0
     lines_by_id[l[id_field].strip] = l
   end
