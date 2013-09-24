@@ -2617,6 +2617,22 @@ HERE
     assert_equal [0, 2, 3, 5, 6, 8, 9], Arrays.merge_sort!([3, 6, 9, 2, 5, 8, 0])
   end
 
+  def test_bsearch
+    a = [1, 1, 2, 3, 3, 3, 4, 4, 4, 4]
+    assert_equal 5, a.bsearch_last_by { |e| 3 <=> e }
+    assert_equal nil, a.bsearch_last_by { |e| 5 <=> e }
+    assert_equal 9, a.bsearch_last_by { |e| 4 <=> e }
+    assert_equal 2, a.bsearch_last_by { |e| 2 <=> e }
+    assert_equal 1, a.bsearch_last_by { |e| 1 <=> e }
+    assert_equal nil, a.bsearch_last_by { |e| 0 <=> e }
+    assert_equal nil, a.bsearch_range_by { |e| 5 <=> e }
+    assert_equal 6..9, a.bsearch_range_by { |e| 4 <=> e }
+    assert_equal 3..5, a.bsearch_range_by { |e| 3 <=> e }
+    assert_equal 2..2, a.bsearch_range_by { |e| 2 <=> e }
+    assert_equal 0..1, a.bsearch_range_by { |e| 1 <=> e }
+    assert_equal nil, a.bsearch_range_by { |e| 0 <=> e }
+  end
+
   def test_bracket_n_wildcard_match?
     assert !Strings.regex_match?('c', 'a')
     assert !Strings.regex_match?('aa', 'a')
