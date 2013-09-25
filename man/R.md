@@ -25,4 +25,5 @@
 * `help(rnorm)`  
 * `example(rnorm)`  
 * `help.start()`  
+* `source("foo.R")`  
 * 
