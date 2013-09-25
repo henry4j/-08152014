@@ -6,6 +6,6 @@
   * M http://cran.r-project.org/doc/contrib/Paradis-rdebuts_en.pdf
   * S http://cran.r-project.org/doc/contrib/Torfs+Brauer-Short-R-Intro.pdf
 
-* Session or Tools | Set Working Directory...
-* What are packages, or libraries?
+* Session or Tools | Set Working Directory... `setwd("/workspace/R-work")`
+* What are packages, or libraries? `library()`
 * 
