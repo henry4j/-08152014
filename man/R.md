@@ -7,4 +7,5 @@
   * S http://cran.r-project.org/doc/contrib/Torfs+Brauer-Short-R-Intro.pdf
 
 * Session or Tools | Set Working Directory...
+* What are packages, or libraries?
 * 
