@@ -174,3 +174,21 @@ INFO: Converged! fractional error change: 0.000000, error 2.034721
   * [prep-comm-text](http://raw.github.com/henry4j/-/master/paste/prep-comm-text)/[tame-corpus 3](http://raw.github.com/henry4j/-/master/paste/tame-corpus) writes out corpus-priors in vector iterables.
   * [tame-topics-l](http://raw.github.com/henry4j/-/master/paste/tame-topics-l) feeds L-LDA with corpus priors for labeled corpus.
 
+
+
+
+**Markdown Extra** has a special syntax for tables:
+
+Item      | Value
+--------- | -----
+Computer  | \$1600
+Phone     | \$12
+Pipe      | \$1
+
+You can specify column alignment with one or two colons:
+
+| Item      |  Value | Qty  |
+| :-------- | ------:| :--: |
+| Computer  | \$1600 |  5   |
+| Phone     |   \$12 |  12  |
+| Pipe      |    \$1 | 234  |
