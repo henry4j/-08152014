@@ -6,5 +6,5 @@
   * M http://cran.r-project.org/doc/contrib/Paradis-rdebuts_en.pdf
   * S http://cran.r-project.org/doc/contrib/Torfs+Brauer-Short-R-Intro.pdf
 
-* Tools | Set Working Directory...
+* Session or Tools | Set Working Directory...
 * 
