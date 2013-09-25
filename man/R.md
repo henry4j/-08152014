@@ -15,4 +15,7 @@
 * `a`
 * `a = a + 1`
 * `rm(list=ls())`
+* scalar, vectors, and matrices
+* `b=c(3,4,5) # concatenate`
+* `(3+4+5)/3`
 * 
