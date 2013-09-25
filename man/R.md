@@ -20,8 +20,9 @@
 * `(3+4+5)/3`  
 * `rnorm(10)`  
 * `rnorm(10, mean=1.2, sd=3.4)`  
-* `rnorm [TAB]`  
-* `x = random(100) # random numbers from normal distribution; normal random numbers`  
+* `rnorm [TAB] # random numbers from normal distribution`  
+* `x = rnorm(100) # normal random numbers`  
 * `help(rnorm)`  
 * `example(rnorm)`  
+* `help.start()`  
 * 
