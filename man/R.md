@@ -18,5 +18,5 @@
 * scalar, vectors, and matrices  
 * `b=c(3,4,5) # concatenate`  
 * `(3+4+5)/3`  
-* `rnorm(10)`
-* 
+* `rnorm(10)`  
+* `rnorm(10, mean=1.2, sd=3.4)`  
