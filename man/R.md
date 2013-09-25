@@ -20,3 +20,6 @@
 * `(3+4+5)/3`  
 * `rnorm(10)`  
 * `rnorm(10, mean=1.2, sd=3.4)`  
+* `rnorm [TAB]`  
+* `x = random(100) # random numbers from normal distribution; normal random numbers`  
+* 
