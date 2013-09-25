@@ -3623,9 +3623,9 @@ module Numbers # discrete maths and bit twiddling http://graphics.stanford.edu/~
     x > 0 && (0 == x & x - 1)
   end
 
-  def self.knuth_suffle!(ary)
+  def self.knuth_suffle!(ary, n = ary.size)
     ary.each_index do |i|
-      j = i + rand(ary.size - i) # to index: i + ary.size - i - 1
+      j = i + rand(n - i) # to index: i + ary.size - i - 1
       ary[j], ary[i] = ary[i], ary[j]
     end
     ary
