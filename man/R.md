@@ -10,4 +10,9 @@
 
 * Session or Tools | Set Working Directory... `setwd("/workspace/R-work")`
 * What are packages, or libraries? `library()`
+* `install.packages("geometry")`, or `geometry`
+* `a = 4`
+* `a`
+* `a = a + 1`
+* `rm(list=ls())`
 * 
