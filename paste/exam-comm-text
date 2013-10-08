@@ -16,7 +16,7 @@ end.parse!
 max_lines = $options[:max_lines]
 q_fields = ($options[:q_fields] || ['8']).map { |e| e.to_i }
 fields = ($options[:fields] || ['4', '5']).map { |e| e.to_i }
-model_id = $options[:model_id] || 'l-lda-others'
+model_id = $options[:model_id] || '3055_plus'
 excludes = $options[:excludes] || []
 
 docs = ARGV
