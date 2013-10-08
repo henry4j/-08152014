@@ -15,7 +15,7 @@ end.parse!
 
 max_lines = $options[:max_lines]
 q_fields = ($options[:q_fields] || ['8']).map { |e| e.to_i }
-fields = ($options[:fields] || ['1', '3']).map { |e| e.to_i }
+fields = ($options[:fields] || ['4', '5']).map { |e| e.to_i }
 model_id = $options[:model_id] || 'l-lda-others'
 excludes = $options[:excludes] || []
 
@@ -33,6 +33,7 @@ q2cc = docs.reduce({}) do |h, e| # comm. texts keyed by FAQ.
     break unless max_lines.nil? || (max_lines -= 1) >= 0
     q = q_fields.map { |f| line[f] }.compact.map { |e| e.gsub(/\A\s+|\s+\Z/, '') }.join('; ')
     (h[q] ||= []) << c = fields.map { |f| line[f] }.join('; ') unless q.empty? or excludes.include?(q)
+    # p h; exit -2
   end
   h
 end
