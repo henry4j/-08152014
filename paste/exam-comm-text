@@ -21,9 +21,8 @@ excludes = $options[:excludes] || []
 
 docs = ARGV
 if docs.empty?
-  docs = ["#{ENV['MAHOUT_WORK']}/test-set-2285-others.0.csv"]
-  system "s3cmd get 's3://#{ENV['S3_BUCKET']}-private/resources/rrc_pro_2285_others_1.0.csv' '#{docs[0]}'" unless File.exists?(docs[0]) # rrc_pro_2285_labeled_typos
-  # s3cmd get "s3://#{ENV['S3_BUCKET']}-private/resources/rrc_pro_1241_labeled.csv" "#{docs[0]}" unless File.exists?(docs[0]) # rrc_pro_2285_labeled_typos
+  docs = ["#{ENV['MAHOUT_WORK']}/test-set-3055-799.csv"]
+  system "s3cmd get 's3://#{ENV['S3_BUCKET']}-private/resources/rrc_pro_3055_799.csv' '#{docs[0]}'" unless File.exists?(docs[0])
 end
 
 q2cc = docs.reduce({}) do |h, e| # comm. texts keyed by FAQ.
