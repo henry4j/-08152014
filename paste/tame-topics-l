@@ -73,13 +73,13 @@ if doc_topic_priors_exist?
     doc_topic_priors[d].non_zeroes.each do |z_d|
       row = topic_term_priors.view_row(z_d.index)
       v.non_zeroes.each { |w| row.set_quick(w.index, row.get_quick(w.index) + w.get * z_d.get) }
-      # p row.to_s
     end
   end
   store_topic_term_priors(work_id, topic_term_priors)
+  x! "$HADOOP dfs -cp ${MAHOUT_WORK}/comm-text-ext/labels.json ${MAHOUT_WORK}/#{work_id}"
   x! "$HADOOP dfs -cp ${MAHOUT_WORK}/#{work_id}/topic-term-priors #{io[-1]}/model-0/part-r-00000" do end
   patch_mahout
-  cvb_opts = '-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/doc-topic-priors -cd 6e-24'
+  cvb_opts = "-k #{rows} -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/doc-topic-priors -cd 6e-24"
 else
   cvb_opts ='-k 20 -pidt -cd 6e-4'
 end
@@ -98,7 +98,7 @@ x! "pp-z,d /tmp/#{work_id}-z,d-dump.txt -n 30 | tee /tmp/#{work_id}-z,d-doc-topi
  
 x! "rm -rf ${MAHOUT_WORK}/#{work_id}"
 x! "$HADOOP dfs -get $MAHOUT_WORK/#{work_id} ${MAHOUT_WORK}/#{work_id}"
-%w(df-count-0 dictionary.file-0 model-0 tf-vectors-0 tfidf-vectors-0 tokenized-documents.txt topic-0).each { |e| x! "s3cmd put $MAHOUT_WORK/#{work_id}/#{e} s3://${S3_BUCKET}/#{work_id}/" }
+%w(df-count-0 dictionary.file-0 model-0 labels.json tf-vectors-0 tfidf-vectors-0 tokenized-documents.txt topic-0).each { |e| x! "s3cmd put $MAHOUT_WORK/#{work_id}/#{e} s3://${S3_BUCKET}/#{work_id}/" }
 %w(w,z-dump.txt w,z-topic-terms.txt doc-topics.txt z,d-dump.txt).each { |e| x! "s3cmd put $MAHOUT_WORK/#{work_id}/#{work_id}-#{e} s3://${S3_BUCKET}/#{work_id}/" }
 x! "s3cmd setacl -r --acl-public s3://${S3_BUCKET}/#{work_id}"
 
