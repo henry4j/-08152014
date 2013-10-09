@@ -1,7 +1,4 @@
 #!/usr/bin/env jruby
-require 'rake'
-
-def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
 
 module Vectors
   def self.conf
@@ -24,7 +21,7 @@ module Vectors
       next false if e[0] == '#'
       g, a, v = e.split(':')
       jar = "#{ENV['HOME']}/.m2/repository/#{g.gsub(/\./, '/')}/#{a}/#{v}/#{a}-#{v}.jar"
-      x! "mvn dependency:get -DremoteRepositories=http://download.java.net/maven2 -Dartifact=#{e}" unless File.exist?(jar)
+      system "mvn dependency:get -DremoteRepositories=http://download.java.net/maven2 -Dartifact=#{e}" unless File.exist?(jar)
       require jar
     end
   end
