@@ -1,7 +1,5 @@
 #!/usr/bin/env jruby
-%W(rake optparse json #{ENV['HADOOP_BASE']}/libexec/lib/text-1.0-SNAPSHOT.jar).each { |e| require e }
-
-def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
+%W(optparse json #{ENV['HADOOP_BASE']}/libexec/lib/text-1.0-SNAPSHOT.jar).each { |e| require e }
 
 class TopicModeling
   def self.require_jars
@@ -21,7 +19,7 @@ class TopicModeling
     ).map do |e|
       g, a, v = e.split(':')
       jar = "#{ENV['HOME']}/.m2/repository/#{g.gsub(/\./, '/')}/#{a}/#{v}/#{a}-#{v}.jar"
-      x! "mvn dependency:get -DremoteRepositories=http://download.java.net/maven2 -Dartifact=#{e}" unless File.exist?(jar)
+      system "mvn dependency:get -DremoteRepositories=http://download.java.net/maven2 -Dartifact=#{e}" unless File.exist?(jar)
       require jar
     end
   end
@@ -29,7 +27,7 @@ class TopicModeling
   def initialize(model_id, debug = false)
     @@jars ||= TopicModeling.require_jars
     a, b = "http://s3.amazonaws.com/#{ENV['S3_BUCKET']}/#{model_id}/{dictionary.file-0,model-0,df-count-0}", "/tmp/#{model_id}"
-    x! "curl -o '#{b}/#1' -ksL '#{a}' --create-dirs" unless Dir.exist?(b)
+    system "curl -o '#{b}/#1' -ksL '#{a}' --create-dirs" unless Dir.exist?(b)
     $stderr.puts "DEBUG: openning model files (id: #{model_id})" if debug
     org.apache.log4j.Logger.root_logger.level = org.apache.log4j.Level::OFF
     dictionary, model, df = %w(dictionary.file-0 model-0 df-count-0).map { |e| open("#{b}/#{e}").to_inputstream }
