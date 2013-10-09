@@ -19,7 +19,7 @@ q_fields = ($options[:q_fields] || ['8']).map { |e| e.to_i }
 fields = ($options[:fields] || ['4', '5']).map { |e| e.to_i }
 model_id = $options[:model_id] || '3055_plus'
 excludes = $options[:excludes] || []
-threshold = $options[:threshold] || 0.3
+threshold = $options[:threshold] || 0.47
 
 docs = ARGV
 if docs.empty?
