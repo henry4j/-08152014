@@ -10,7 +10,7 @@ def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (
 
 x! "s3cmd get s3://${S3_BUCKET}-private/resources/#{sources[c]} #{corpora[c]}" unless File.exist?(corpora[c])
 x! "$HADOOP dfs -rmr #{extract} ${MAHOUT_WORK}/comm-text-seq" do end # rescue on errors.
-x! "prep-comm-text #{corpora[c]} -d #{extract} #{options[c]} -e Others -o"
+x! "prep-comm-text #{corpora[c]} --out-dir #{extract} --excludes Others --overwrite #{options[c]}"
 x! "$HADOOP dfs -put #{extract}/corpus ${MAHOUT_WORK}/comm-text-ext/corpus"
 x! "$HADOOP dfs -put #{extract}/doc-topic-priors ${MAHOUT_WORK}/comm-text-ext/doc-topic-priors"
 x! "$HADOOP dfs -put #{extract}/labels.json ${MAHOUT_WORK}/comm-text-ext/labels.json"
