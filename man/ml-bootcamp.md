@@ -199,7 +199,7 @@ start-all.sh
 $HADOOP dfsadmin -safemode leave
 ```
 
-#### [`tame-corpus 1`](http://raw.github.com/henry4j/-/master/paste/tame-corpus), or step-by-step at the terminal
+#### [`tame-corpus 6`](http://raw.github.com/henry4j/-/master/paste/tame-corpus), or step-by-step at the terminal
 
 ```bash
 #!/usr/bin/env jruby # called `tame-corpus`
@@ -248,7 +248,7 @@ if [ ! -e ${MAHOUT_WORK}/reuters-ext ]; then
 fi
 ```
 
-#### [`tame-topics-l`](https://raw.github.com/henry4j/-/master/paste/tame-topics-l)
+#### [`tame-topics`](https://raw.github.com/henry4j/-/master/paste/tame-topics-l)
 
 * [!] this script is fragile, and subject to change without any notice; `*-advanced` script is coming soon.
 * args: work-id (default: bigram-k), max-ngram (default: 2), LLR, and analyzer (default: CommTextAnalyzer)
