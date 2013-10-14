@@ -189,14 +189,19 @@ done
   * fyi: for n-gram analysis (n >= 1), [shingle filter](http://lucene.apache.org/core/4_0_0/analyzers-common/org/apache/lucene/analysis/shingle/ShingleFilter.html) takes this token stream and returns a token stream of max. n-grams.
 
 ```bash
-#!/bin/bash # called `tame-hadoop`
-curl -o ${HADOOP_BASE}/libexec/lib/text-1.0-SNAPSHOT.jar -ksL http://raw.github.com/henry4j/-/master/paste/text-1.0-SNAPSHOT.jar
-ln -sf ${HADOOP_BASE}/libexec/lib/text-1.0-SNAPSHOT.jar ${MAHOUT_BASE}/lib/text-1.0-SNAPSHOT.jar
+#!/usr/bin/env jruby # called `tame-hadoop`
+require 'rake' # sudo gem install rake
+
+def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
+
+jar = 'text-1.0-SNAPSHOT.jar'
+x! "curl -o ${HADOOP_BASE}/libexec/lib/#{jar} -ksL http://raw.github.com/henry4j/-/master/paste/#{jar}"
+x! "ln -sf ${HADOOP_BASE}/libexec/lib/#{jar} ${MAHOUT_BASE}/lib/#{jar}"
  
-stop-all.sh
-ps -ef | grep 'org.apache.hadoop.[^ ]\+$' | ruby -ane 'puts $F[1]' | xargs kill
-start-all.sh
-$HADOOP dfsadmin -safemode leave
+x! 'stop-all.sh' do end # rescue on errors.
+x! 'ps -ef | grep "org.apache.hadoop.[^ ]\+$" | ruby -ane "puts $F[1]" | xargs kill' do end
+x! 'start-all.sh'
+x! '$HADOOP dfsadmin -safemode leave' do end
 ```
 
 #### [`tame-corpus 6`](http://raw.github.com/henry4j/-/master/paste/tame-corpus), or step-by-step at the terminal
