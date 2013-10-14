@@ -209,19 +209,21 @@ x! '$HADOOP dfsadmin -safemode leave' do end
 ```bash
 #!/usr/bin/env jruby # called `tame-corpus`
 require 'rake'
-sources = %w(rrc_pro_22110.csv rrc_ind_31771.csv rrc_pro_2285_labeled_typos.csv)
-corpora = %w(corpus-1.csv corpus-2.csv corpus-l.csv).map { |e| File.join(ENV['MAHOUT_WORK'], e) }
-options = [%w(-i 3 -f 4,11), %w(-i 3 -f 4,11), %w(-i 4 -l 8 -f 1,3)]
+sources = %w(rrc_pro_22110.csv rrc_ind_31771.csv rrc_pro_2285_labeled_1.0.csv rrc_pro_2285_labeled_0.75.csv rrc_pro_2285_others_1.0.csv rrc_pro_3055_799.csv)
+corpora = %w(corpus-1.csv corpus-2.csv corpus-l-1.0.csv corpus-l-0.75.csv corpus-l-2285+others.csv corpus-3055+799.csv).map { |e| File.join(ENV['MAHOUT_WORK'], e) }
+options = ["-i 3 -f 4,11", "-i 3 -f 4,11", "-i 4 -l 8 -f 1,3", "-i 4 -l 8 -f 1,3", "-i 0 -l 8 -f 4,5", "-i 0 -l 8 -f 4,5"]
+extract = '${MAHOUT_WORK}/comm-text-ext'
 c = Integer(ARGV[0]) - 1 # expects 1 or greater.
 
 def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
 
-x! %W(s3cmd get s3://${S3_BUCKET}-private/resources/#{sources[c]} #{corpora[c]}) unless File.exist?(corpora[c])
-x! %W(prep-comm-text #{corpora[c]} -d ${MAHOUT_WORK}/comm-text-ext) + options[c]
-x! '$HADOOP dfs -rmr ${MAHOUT_WORK}/comm-text-ext ${MAHOUT_WORK}/comm-text-seq' do end # rescue on errors.
-x! '$HADOOP dfs -put ${MAHOUT_WORK}/comm-text-ext/corpus-priors ${MAHOUT_WORK}/comm-text-ext/corpus-priors'
-x! '$HADOOP dfs -put ${MAHOUT_WORK}/comm-text-ext/corpus ${MAHOUT_WORK}/comm-text-ext/corpus'
-x! '$MAHOUT seqdirectory -i ${MAHOUT_WORK}/comm-text-ext/corpus -o ${MAHOUT_WORK}/comm-text-seq -ow -chunk 5'
+x! "s3cmd get s3://${S3_BUCKET}-private/resources/#{sources[c]} #{corpora[c]}" unless File.exist?(corpora[c])
+x! "$HADOOP dfs -rmr #{extract} ${MAHOUT_WORK}/comm-text-seq" do end # rescue on errors.
+x! "prep-comm-text #{corpora[c]} --out-dir #{extract} --excludes Others --overwrite #{options[c]}"
+x! "$HADOOP dfs -put #{extract}/corpus ${MAHOUT_WORK}/comm-text-ext/corpus"
+x! "$HADOOP dfs -put #{extract}/doc-topic-priors ${MAHOUT_WORK}/comm-text-ext/doc-topic-priors"
+x! "$HADOOP dfs -put #{extract}/labels.json ${MAHOUT_WORK}/comm-text-ext/labels.json"
+x! "$MAHOUT seqdirectory -i #{extract}/corpus -o ${MAHOUT_WORK}/comm-text-seq -ow -chunk 5"
 ```
 
 * this is a similar script that compiles a corpus of reuter mail archives that is well-known for lucene benchmark program.
