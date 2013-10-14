@@ -190,7 +190,7 @@ done
 
 ```bash
 #!/usr/bin/env jruby # called `tame-hadoop`
-require 'rake' # sudo gem install rake
+require 'rake' # sudo /usr/local/bin/gem install rake
 
 def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
 
