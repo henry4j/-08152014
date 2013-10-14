@@ -48,8 +48,7 @@
 
 ```bash
 brew install git ruby jruby rbenv ruby-build maven colordiff wget unrar p7zip s3cmd
-gem install test-unit debugger
-gem install rake
+sudo gem install test-unit debugger rake
 rbenv install 1.9.3-p448 && rbenv global 1.9.3-p448
 
 echo '[ -d $HOME/.rbenv ] && eval "$(rbenv init -)"' >> "$HOME/.profile"
@@ -114,6 +113,7 @@ sudo mkdir /workspace; sudo chown $USER /workspace
 
 ```bash
 brew install hadoop
+export HADOOP_BASE=$(ruby -e "puts File.dirname(File.dirname(File.realpath(%x(which hadoop).chomp)))")
 curl -o "$HADOOP_BASE/libexec/conf/#1" \
   -kL 'http://raw.github.com/henry4j/-/master/paste/{hadoop-env.sh,core-site.xml,hdfs-site.xml,mapred-site.xml}'
 rm -rf $HADOOP_WORK; mkdir -p $HADOOP_WORK
@@ -162,7 +162,7 @@ svn checkout http://svn.apache.org/repos/asf/mahout/tags/mahout-0.8 /workspace/m
 * [p-topics](http://github.com/henry4j/-/blob/master/paste/p-topics) -- to see topic probability distribution of an arbitrary text document against a model.
 
 ```bash
-for e in prep-comm-text stop-comm-text resplit pp-w,z pp-z,d tame-hadoop tame-corpus tame-topics-l p-topics p-topics.rb vectors.rb exam-comm-text; do
+for e in prep-comm-text stop-comm-text resplit pp-w,z pp-z,d tame-hadoop tame-corpus tame-topics tame-topics-l p-topics p-topics.rb vectors.rb exam-comm-text; do
   curl -o /usr/local/bin/$e -kL https://raw.github.com/henry4j/-/master/paste/$e;
   chmod +x /usr/local/bin/$e;
 done
@@ -199,7 +199,7 @@ start-all.sh
 $HADOOP dfsadmin -safemode leave
 ```
 
-#### [`tame-corpus 1`](http://raw.github.com/henry4j/-/master/paste/tame-corpus), or step-by-step at the terminal
+#### [`tame-corpus 6`](http://raw.github.com/henry4j/-/master/paste/tame-corpus), or step-by-step at the terminal
 
 ```bash
 #!/usr/bin/env jruby # called `tame-corpus`
@@ -248,7 +248,7 @@ if [ ! -e ${MAHOUT_WORK}/reuters-ext ]; then
 fi
 ```
 
-#### [`tame-topics-l`](https://raw.github.com/henry4j/-/master/paste/tame-topics-l)
+#### [`tame-topics`](https://raw.github.com/henry4j/-/master/paste/tame-topics-l)
 
 * [!] this script is fragile, and subject to change without any notice; `*-advanced` script is coming soon.
 * args: work-id (default: bigram-k), max-ngram (default: 2), LLR, and analyzer (default: CommTextAnalyzer)
