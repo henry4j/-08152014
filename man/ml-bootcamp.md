@@ -162,7 +162,7 @@ svn checkout http://svn.apache.org/repos/asf/mahout/tags/mahout-0.8 /workspace/m
 * [p-topics](http://github.com/henry4j/-/blob/master/paste/p-topics) -- to see topic probability distribution of an arbitrary text document against a model.
 
 ```bash
-for e in prep-comm-text stop-comm-text resplit pp-w,z pp-z,d tame-hadoop tame-corpus tame-topics-l p-topics p-topics.rb vectors.rb exam-comm-text; do
+for e in prep-comm-text stop-comm-text resplit pp-w,z pp-z,d tame-hadoop tame-corpus tame-topics tame-topics-l p-topics p-topics.rb vectors.rb exam-comm-text; do
   curl -o /usr/local/bin/$e -kL https://raw.github.com/henry4j/-/master/paste/$e;
   chmod +x /usr/local/bin/$e;
 done
