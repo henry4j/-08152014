@@ -114,6 +114,7 @@ sudo mkdir /workspace; sudo chown $USER /workspace
 
 ```bash
 brew install hadoop
+export HADOOP_BASE=$(ruby -e "puts File.dirname(File.dirname(File.realpath(%x(which hadoop).chomp)))")
 curl -o "$HADOOP_BASE/libexec/conf/#1" \
   -kL 'http://raw.github.com/henry4j/-/master/paste/{hadoop-env.sh,core-site.xml,hdfs-site.xml,mapred-site.xml}'
 rm -rf $HADOOP_WORK; mkdir -p $HADOOP_WORK
