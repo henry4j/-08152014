@@ -206,6 +206,8 @@ x! '$HADOOP dfsadmin -safemode leave' do end
 
 #### [`tame-corpus 6`](http://raw.github.com/henry4j/-/master/paste/tame-corpus), or step-by-step at the terminal
 
+* `6` is the id for the latest corpus (or an excel spreadsheet).
+
 ```bash
 #!/usr/bin/env jruby # called `tame-corpus`
 require 'rake'
@@ -256,7 +258,7 @@ if [ ! -e ${MAHOUT_WORK}/reuters-ext ]; then
 fi
 ```
 
-#### [`tame-topics`](https://raw.github.com/henry4j/-/master/paste/tame-topics-l)
+#### [`tame-topics`](https://raw.github.com/henry4j/-/master/paste/tame-topics)
 
 * [!] this script is fragile, and subject to change without any notice; `*-advanced` script is coming soon.
 * args: work-id (default: bigram-k), max-ngram (default: 2), LLR, and analyzer (default: CommTextAnalyzer)
@@ -264,78 +266,109 @@ fi
 * [?] [`mahout seq2sparse --help`](http://raw.github.com/henry4j/-/master/man/seq2sparse.mkd), [`mahout cvb --help`](http://raw.github.com/henry4j/-/master/man/lda-cvb.mkd)
 
 ```bash
-#!/bin/bash # called `tame-topics`
-if [ -z $4 ]; then ANALYZER='com.henry4j.text.CommTextAnalyzer'; else ANALYZER=$4; fi
-if [ -z $3 ]; then MIN_LLR='120'; else export MIN_LLR=$3; fi
-if [ -z $2 ]; then MAX_NGRAM='1'; else export MAX_NGRAM=$2; fi
-if [ -z $1 ]; then WORK_ID='true-l-lda'; else export WORK_ID=$1; fi
+#!/usr/bin/env jruby # called `tame-topics`
+%w{rake optparse open-uri csv json open3}.each { |e| require e }
 
-export HADOOP_CLASSPATH=${MAHOUT_BASE}/lib/text-1.0-SNAPSHOT.jar:${MAHOUT_BASE}/lib/lucene-analyzers-common-4.3.0.jar:${MAHOUT_BASE}/lib/lucene-core-4.3.0.jar
+$options = {}
+OptionParser.new do |p|
+  p.on('-a', '--analyzer STRING', String, "Specifies the analyzer (default: 'com.henry4j.text.CommTextAnalyzer')") { |v| $options[:analyzer] = v }
+  p.on('-k', '--min-llr INTEGER', Integer, 'Specifies the min-LLR (default: 120)') { |v| $options[:min_llr] = v }
+  p.on('-g', '--max-ngram INTEGER', Integer, 'Specifies the max N gram (default: 1)') { |v| $options[:max_ngram] = v }
+  p.on('-w', '--work-id STRING', String, "Specifies the topic modeling work id (default: 'true-l-lda')") { |v| $options[:work_id] = v }
+  p.on('-o', '--overwrite', 'Whether to overwrite existing corpus and corpus-priors.') { |v| $options[:overwrite] = v }
+end.parse!
 
-if ! $($HADOOP dfs -test -e "${MAHOUT_WORK}/${WORK_ID}/matrix"); then
-  $MAHOUT seq2sparse \
-    -i ${MAHOUT_WORK}/comm-text-seq/ -o ${MAHOUT_WORK}/${WORK_ID} -ow --namedVector \
-    -s 80 -md 40 -x 65 \
-    -ng $MAX_NGRAM -ml $MIN_LLR \
-    -a $ANALYZER
-  
-    # excludes terms of 80- DF & 70+ DF%
-    # -a com.henry4j.text.CommTextAnalyzer \
-    # -a org.apache.mahout.text.MailArchivesClusteringAnalyzer \
-    # -a org.apache.lucene.analysis.en.EnglishAnalyzer \
-    # -a org.apache.lucene.analysis.standard.StandardAnalyzer \
+analyzer = $options[:analyzer] || 'com.henry4j.text.CommTextAnalyzer'
+min_llr = $options[:min_llr] || 120
+max_ngram = $options[:max_ngram] || 1
+work_id = $options[:work_id] || 'true-l-lda'
+x! "$HADOOP dfs -rmr '${MAHOUT_WORK}/#{work_id}'" do end if $options[:overwrite]
+vectors = $options[:vectors] || 'tf-vectors'
 
-  for e in matrix docIndex; do $HADOOP dfs -rm ${MAHOUT_WORK}/${WORK_ID}/$e; done
-  $MAHOUT rowid -i ${MAHOUT_WORK}/${WORK_ID}/tfidf-vectors -o ${MAHOUT_WORK}/${WORK_ID}
-  for e in df-count tokenized-documents tfidf-vectors; do resplit ${MAHOUT_WORK}/${WORK_ID}/$e; done
-  $MAHOUT seqdumper -i ${MAHOUT_WORK}/${WORK_ID}/tokenized-documents-0 -o /tmp/${WORK_ID}-tokenized-docs.txt
-  $HADOOP dfs -put /tmp/${WORK_ID}-tokenized-docs.txt ${MAHOUT_WORK}/${WORK_ID}
-fi
+def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
 
-# $HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors" && CVB_OPTS="-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/corpus-priors -cd 6e-10" || CVB_OPTS='-k 20 -cd 6e-4'
-if $($HADOOP dfs -test -e "${MAHOUT_WORK}/comm-text-ext/corpus-priors"); then
-  CVB_OPTS="-k 14 -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/corpus-priors -cd 6e-10"
-  for e in core-0.8   core-0.8-job   examples-0.8   examples-0.8-job;
-    do [ -e "$MAHOUT_BASE/mahout-$e.jar" ] && mv $MAHOUT_BASE/mahout-$e.jar $MAHOUT_BASE/mahout-$e.jar.bak;
-  done
-  for e in core-0.8.2 core-0.8.2-job examples-0.8.2 examples-0.8.2-job;
-    do [ ! -e "$MAHOUT_BASE/mahout-$e.jar" ] && curl -o "$MAHOUT_BASE/mahout-$e.jar" -kL "http://dl.dropboxusercontent.com/u/47820156/mahout/l-lda/mahout-$e.jar"; 
-  done
+def store_topic_term_priors(work_id, vectors)
+  Vectors.write vectors, "#{ENV['MAHOUT_WORK']}/#{work_id}/topic-term-priors"
+end
+
+def doc_topic_priors_exist?
+  %x($HADOOP dfs -ls ${MAHOUT_WORK}/comm-text-ext/doc-topic-priors) && 0 == $?
+end
+
+def load_doc_topic_priors(work_id)
+  Vectors.read "#{ENV['MAHOUT_WORK']}/comm-text-ext/doc-topic-priors"
+end
+
+def load_doc_vectors(work_id)
+  Vectors.read "#{ENV['MAHOUT_WORK']}/#{work_id}/matrix"
+end
+
+def patch_mahout
+  %w(core-0.8 core-0.8-job examples-0.8 examples-0.8-job)
+    .map { |e| File.join(ENV['MAHOUT_BASE'], "mahout-%s.jar" % e) }
+    .each { |e| FileUtils.mv(e, "#{File.dirname(e)}/#{File.basename(e)}.bak") if File.exist?(e) }
+  %w(core-0.8.2 core-0.8.2-job examples-0.8.2 examples-0.8.2-job)
+    .map { |e| File.join(ENV['MAHOUT_BASE'], "mahout-%s.jar" % e) }
+    .reject { |e| File.exist?(e) }
+    .each { |e| x! 'curl -o %s -kL http://dl.dropbox.com/u/47820156/mahout/l-lda/%s' % [e, File.basename(e)] }
+end
+
+if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitstatus
+  x! [
+    'export HADOOP_CLASSPATH=${MAHOUT_BASE}/lib/text-1.0-SNAPSHOT.jar:${MAHOUT_BASE}/lib/lucene-analyzers-common-4.3.0.jar:${MAHOUT_BASE}/lib/lucene-core-4.3.0.jar',
+    "$MAHOUT seq2sparse -i ${MAHOUT_WORK}/comm-text-seq/ -o ${MAHOUT_WORK}/#{work_id} -ow --namedVector -s 20 -md 10 -x 65 -ng %s -ml %s -a %s" % [max_ngram, min_llr, analyzer]
+  ].join('; ') # excludes terms of 80- DF & 70+ DF%
+  # -a org.apache.mahout.text.MailArchivesClusteringAnalyzer \
+  # -a org.apache.lucene.analysis.en.EnglishAnalyzer \
+  # -a org.apache.lucene.analysis.standard.StandardAnalyzer \
+
+  x! "$MAHOUT rowid -i ${MAHOUT_WORK}/#{work_id}/#{vectors} -o ${MAHOUT_WORK}/#{work_id}"
+  %w(df-count tf-vectors tfidf-vectors tokenized-documents).each { |e| x! "resplit ${MAHOUT_WORK}/#{work_id}/#{e}" do end }
+  x! "$MAHOUT seqdumper -i ${MAHOUT_WORK}/#{work_id}/tokenized-documents-0 -o /tmp/#{work_id}-tokenized-documents.txt"
+  x! "$HADOOP dfs -put /tmp/#{work_id}-tokenized-documents.txt ${MAHOUT_WORK}/#{work_id}/tokenized-documents.txt"
+end
+
+io = %w(matrix dictionary.file-0 model doc-topics modeling).map { |e| "$MAHOUT_WORK/#{work_id}/#{e}" }
+x! "$HADOOP dfs -rmr #{io[-3..-1].join(' ')}" do end
+
+if doc_topic_priors_exist? 
+  require_relative 'vectors'
+  doc_topic_priors = load_doc_topic_priors(work_id)
+  doc_vectors = load_doc_vectors(work_id)
+  rows, columns = doc_topic_priors[0].size, doc_vectors[0].size
+  topic_term_priors = org.apache.mahout.math.SparseRowMatrix.new(rows, columns, true) # true for random access
+  doc_vectors.each do |(d, v)|
+    doc_topic_priors[d].non_zeroes.each do |z_d|
+      row = topic_term_priors.view_row(z_d.index)
+      v.non_zeroes.each { |w| row.set_quick(w.index, row.get_quick(w.index) + w.get * z_d.get) }
+    end
+  end
+  store_topic_term_priors(work_id, topic_term_priors)
+  x! "$HADOOP dfs -cp ${MAHOUT_WORK}/comm-text-ext/labels.json ${MAHOUT_WORK}/#{work_id}"
+  x! "$HADOOP dfs -cp ${MAHOUT_WORK}/#{work_id}/topic-term-priors #{io[-1]}/model-0/part-r-00000" do end
+  patch_mahout
+  cvb_opts = "-k #{rows} -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/doc-topic-priors -cd 6e-24"
 else
-  CVB_OPTS='-k 20 -cd 6e-4'
-fi
+  cvb_opts ='-k 20 -pidt -cd 6e-4'
+end
 
-rm -rf ${MAHOUT_WORK}/${WORK_ID}-*
-$HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}/model
-$HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}/topics
-$HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}-modeling
-$MAHOUT cvb \
-  -dict ${MAHOUT_WORK}/${WORK_ID}/dictionary.file-0 \
-  -i  ${MAHOUT_WORK}/${WORK_ID}/matrix \
-  -o  ${MAHOUT_WORK}/${WORK_ID}/model -ow \
-  -mt ${MAHOUT_WORK}/${WORK_ID}-modeling \
-  -dt ${MAHOUT_WORK}/${WORK_ID}/topics \
-  -x 35 -block 2 -tf 0.25 -seed 777 \
-  $CVB_OPTS
+x! "rm -rf ${MAHOUT_WORK}/#{work_id}/modeling" do end
+x! "$MAHOUT cvb -i %s -dict %s -ow -o %s -dt %s -mt %s -x 35 -block 2 -tf 0.25 -seed 777 #{cvb_opts}" % io
+x! "resplit #{io[2, 2].join(' ')}"
 
-for e in model topics; do resplit ${MAHOUT_WORK}/${WORK_ID}/$e; done
-for e in matrix docIndex wordcount frequency.file-0 tf-vectors; do $HADOOP dfs -rmr ${MAHOUT_WORK}/${WORK_ID}/$e; done
-
-$MAHOUT vectordump \
-  -i ${MAHOUT_WORK}/${WORK_ID}/model-0 -o /tmp/${WORK_ID}-w,z-dump.txt \
-  -p true -sort ${MAHOUT_WORK}/${WORK_ID}/model-0 -vs 25 \
-  -d ${MAHOUT_WORK}/${WORK_ID}/dictionary.file-0 -dt sequencefile
-$MAHOUT vectordump -i ${MAHOUT_WORK}/${WORK_ID}/topics-0 -o /tmp/${WORK_ID}-z,d-dump.txt
-$HADOOP dfs -put /tmp/${WORK_ID}-?,?-dump.txt ${MAHOUT_WORK}/${WORK_ID}
-
-pp-w,z /tmp/${WORK_ID}-w,z-dump.txt | tee /tmp/${WORK_ID}-w,z-topic-terms.txt
-pp-z,d /tmp/${WORK_ID}-z,d-dump.txt -n 10 | tee /tmp/${WORK_ID}-z,d-doc-topics.txt
-for e in w,z z,d; do $HADOOP dfs -put /tmp/${WORK_ID}-$e-*.txt ${MAHOUT_WORK}/${WORK_ID}; done
-
-rm -rf ${MAHOUT_WORK}/${WORK_ID}
-$HADOOP dfs -get ${MAHOUT_WORK}/${WORK_ID} ${MAHOUT_WORK}/${WORK_ID}
-s3cmd put -r ${MAHOUT_WORK}/${WORK_ID} s3://${S3_BUCKET}
-s3cmd setacl -r --acl-public s3://${S3_BUCKET}/${WORK_ID}
+x! "$MAHOUT vectordump -i %s-0 -sort %s-0 -d %s -o /tmp/#{work_id}-w,z-dump.txt -p true -vs 25 -dt sequencefile" % io.values_at(-3, -3, 1)
+x! "$MAHOUT vectordump -i %s-0 -o /tmp/#{work_id}-z,d-dump.txt" % io[-2]
+x! "$HADOOP dfs -put /tmp/#{work_id}-*-dump.txt ${MAHOUT_WORK}/#{work_id}" do end
+ 
+x! "pp-w,z /tmp/#{work_id}-w,z-dump.txt       | tee /tmp/#{work_id}-w,z-topic-terms.txt"
+x! "pp-z,d /tmp/#{work_id}-z,d-dump.txt -n 30 | tee /tmp/#{work_id}-z,d-doc-topics.txt"
+%w(w,z z,d).map { |e| x! "$HADOOP dfs -put /tmp/#{work_id}-#{e}-*.txt ${MAHOUT_WORK}/#{work_id}" do end }
+ 
+x! "rm -rf ${MAHOUT_WORK}/#{work_id}"
+x! "$HADOOP dfs -get $MAHOUT_WORK/#{work_id} ${MAHOUT_WORK}/#{work_id}"
+%w(df-count-0 dictionary.file-0 model-0 labels.json tf-vectors-0 tfidf-vectors-0 tokenized-documents.txt topic-0).each { |e| x! "s3cmd put $MAHOUT_WORK/#{work_id}/#{e} s3://${S3_BUCKET}/#{work_id}/" }
+%w(w,z-dump.txt w,z-topic-terms.txt doc-topics.txt z,d-dump.txt).each { |e| x! "s3cmd put $MAHOUT_WORK/#{work_id}/#{work_id}-#{e} s3://${S3_BUCKET}/#{work_id}/" }
+x! "s3cmd setacl -r --acl-public s3://${S3_BUCKET}/#{work_id}"
 ```
 
 ### Test and evaluate LDA models <sub>using  [exam-comm-text](https://raw.github.com/henry4j/-/master/paste/exam-comm-text) & [p-topics](https://raw.github.com/henry4j/-/master/paste/p-topics) (jruby script)</sub>
