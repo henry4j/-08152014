@@ -9,7 +9,7 @@ OptionParser.new do |p|
   p.on('-i', '--id-field INTEGER',   Integer, 'Specifies required comm. text id field.') { |v| $options[:id_field] = v }
   p.on('-q', '--q-field INTEGER',    Integer, 'Specifies required FAQ field.') { |v| $options[:q_field] = v }
   p.on('-f', '--fields i,j,k',       Array,   'Specifies required field indices to put into computation.') { |v| $options[:fields] = v }
-  p.on('-m', '--model_id STRING',    String,  'Specifies optional model id.') { |v| $options[:model_id] = v }
+  p.on('-m', '--model-id STRING',    String,  'Specifies optional model id.') { |v| $options[:model_id] = v }
   p.on('-x', '--excludes x,y,z',     Array,   'Specifies labels to exclude.') { |v| $options[:excludes] = v }
   p.on('-t', '--threshold FLOAT',    Float,   'Sepcifies a threshold for classification.') { |v| $options[:threshold] = v }
 end.parse!
