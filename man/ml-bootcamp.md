@@ -229,6 +229,15 @@ x! "$HADOOP dfs -put #{extract}/labels.json ${MAHOUT_WORK}/comm-text-ext/labels.
 x! "$MAHOUT seqdirectory -i #{extract}/corpus -o ${MAHOUT_WORK}/comm-text-seq -ow -chunk 5"
 ```
 
+* See also: doc-topics and labels that `tame-corpus 6` yields.
+
+```bash
+hadoop dfs -ls /workspace/mahout-work/comm-text-ext
+Found n items
+-rw-r--r--   1 hylee supergroup      74137 2013-10-15 09:35 /workspace/mahout-work/comm-text-ext/doc-topic-priors
+-rw-r--r--   1 hylee supergroup        819 2013-10-15 09:35 /workspace/mahout-work/comm-text-ext/labels.json
+```
+
 * this is a similar script that compiles a corpus of reuter mail archives that is well-known for lucene benchmark program.
 
 ```
