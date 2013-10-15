@@ -387,6 +387,8 @@ x! "s3cmd setacl -r --acl-public s3://${S3_BUCKET}/#{work_id}"
 * DO RUN `p-topics` before `exam-comm-text` to get Java dependencies from maven repositories.
 * `p-topics -s -m l-lda-6 'how do i cancel refund since the item is shipped?'`
   * output: `{"2":61.4,"4":32.4,"17":6.0}` -- it belongs to topic 2 with 61.4% probability.
+* `exam-comm-text -t 0.47 # 58.5%`
+* `exam-comm-text -x Others -t 0.01 # 71.6%`
 * `exam-comm-text -m unigram-rrc-pro-22k ###### 52.3% accuracy`; see [unigram-rrc-pro-22k.log](http://raw.github.com/henry4j/-/master/modeling/unigram-rrc-pro-22k.log)
   * feeds p-topics with test docs (a line per doc); IPC happens through STDIN & STDOUT.
 * `exam-comm-text -m bigram-rrc-pro-22k-107ml # 52.3% accuracy`; see [bigram-rrc-pro-22k-107ml.log](http://raw.github.com/henry4j/-/master/modeling/bigram-rrc-pro-22k-107ml.log)
