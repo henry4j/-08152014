@@ -10,13 +10,6 @@ OptionParser.new do |p|
   p.on('-o', '--overwrite', 'Whether to overwrite existing doc-topics and model.') { |v| $options[:overwrite] = v }
 end.parse!
 
-analyzer = $options[:analyzer] || 'com.henry4j.text.CommTextAnalyzer'
-min_llr = $options[:min_llr] || 120
-max_ngram = $options[:max_ngram] || 1
-work_id = $options[:work_id] || 'true-l-lda'
-x! "$HADOOP dfs -rmr '${MAHOUT_WORK}/#{work_id}'" do end if $options[:overwrite]
-vectors = $options[:vectors] || 'tf-vectors'
-
 def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
 
 def store_topic_term_priors(work_id, vectors)
@@ -44,6 +37,13 @@ def patch_mahout
     .reject { |e| File.exist?(e) }
     .each { |e| x! 'curl -o %s -kL http://dl.dropbox.com/u/47820156/mahout/l-lda/%s' % [e, File.basename(e)] }
 end
+
+analyzer = $options[:analyzer] || 'com.henry4j.text.CommTextAnalyzer'
+min_llr = $options[:min_llr] || 120
+max_ngram = $options[:max_ngram] || 1
+work_id = $options[:work_id] || 'true-l-lda'
+vectors = $options[:vectors] || 'tf-vectors'
+x! "$HADOOP dfs -rmr '${MAHOUT_WORK}/#{work_id}'" do end if $options[:overwrite]
 
 if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitstatus
   x! [
