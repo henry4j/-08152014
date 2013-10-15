@@ -7,7 +7,7 @@ OptionParser.new do |p|
   p.on('-k', '--min-llr INTEGER', Integer, 'Specifies the min-LLR (default: 120)') { |v| $options[:min_llr] = v }
   p.on('-g', '--max-ngram INTEGER', Integer, 'Specifies the max N gram (default: 1)') { |v| $options[:max_ngram] = v }
   p.on('-w', '--work-id STRING', String, "Specifies the topic modeling work id (default: 'true-l-lda')") { |v| $options[:work_id] = v }
-  p.on('-o', '--overwrite', 'Whether to overwrite existing corpus and corpus-priors.') { |v| $options[:overwrite] = v }
+  p.on('-o', '--overwrite', 'Whether to overwrite existing doc-topics and model.') { |v| $options[:overwrite] = v }
 end.parse!
 
 analyzer = $options[:analyzer] || 'com.henry4j.text.CommTextAnalyzer'
