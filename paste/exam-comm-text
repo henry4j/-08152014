@@ -23,8 +23,8 @@ threshold = $options[:threshold] || 0.47
 
 docs = ARGV
 if docs.empty?
-  docs = ["#{ENV['MAHOUT_WORK']}/test-set-3055+799.csv"]
-  system "s3cmd get 's3://#{ENV['S3_BUCKET']}-private/resources/rrc_pro_3055_799.csv' '#{docs[0]}'" unless File.exists?(docs[0])
+  docs = ["#{ENV['MAHOUT_WORK']}/test-set-3492-876.csv"]
+  system "s3cmd get 's3://#{ENV['S3_BUCKET']}-private/resources/rrc_pro_3492_876.csv' '#{docs[0]}'" unless File.exists?(docs[0])
 end
 
 q2cc = docs.reduce({}) do |h, e| # comm. texts keyed by FAQ.
