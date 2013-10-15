@@ -229,6 +229,15 @@ x! "$HADOOP dfs -put #{extract}/labels.json ${MAHOUT_WORK}/comm-text-ext/labels.
 x! "$MAHOUT seqdirectory -i #{extract}/corpus -o ${MAHOUT_WORK}/comm-text-seq -ow -chunk 5"
 ```
 
+* **see also:** `doc-topics` and `labels` that `tame-corpus 6` had yielded.
+
+```bash
+hadoop dfs -ls /workspace/mahout-work/comm-text-ext
+Found n items
+-rw-r--r--   1 hylee   74137 2013-10-15 09:35 /workspace/mahout-work/comm-text-ext/doc-topic-priors
+-rw-r--r--   1 hylee     819 2013-10-15 09:35 /workspace/mahout-work/comm-text-ext/labels.json
+```
+
 * this is a similar script that compiles a corpus of reuter mail archives that is well-known for lucene benchmark program.
 
 ```
@@ -263,7 +272,7 @@ fi
 * [!] this script is fragile, and subject to change without any notice; `*-advanced` script is coming soon.
 * args: work-id (default: bigram-k), max-ngram (default: 2), LLR, and analyzer (default: CommTextAnalyzer)
   * e.g. `tame-topics bigram-rrc-pro-22k-200ml 2 200 # uses 22109 rows and 864 columns`; see [tame-topics-bigram.log](https://raw.github.com/henry4j/-/master/modeling/tame-topics-bigram.log).
-* [?] [`mahout seq2sparse --help`](http://raw.github.com/henry4j/-/master/man/seq2sparse.mkd), [`mahout cvb --help`](http://raw.github.com/henry4j/-/master/man/lda-cvb.mkd)
+* [?] [`mahout seq2sparse --help`](http://raw.github.com/henry4j/-/master/man/seq2sparse.mkd), [`mahout cvb --help`](https://raw.github.com/henry4j/-/master/man/l-lda-cvb.mkd)
 
 ```bash
 #!/usr/bin/env jruby # called `tame-topics`
