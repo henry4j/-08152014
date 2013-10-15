@@ -81,7 +81,7 @@ if doc_topic_priors_exist?
   patch_mahout
   cvb_opts = "-k #{rows} -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/doc-topic-priors -cd 6e-24"
 else
-  cvb_opts ='-k 20 -pidt -cd 6e-4'
+  cvb_opts = '-k 20 -pidt -cd 6e-4'
 end
 
 x! "rm -rf ${MAHOUT_WORK}/#{work_id}/modeling" do end
