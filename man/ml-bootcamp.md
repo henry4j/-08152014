@@ -267,7 +267,7 @@ if [ ! -e ${MAHOUT_WORK}/reuters-ext ]; then
 fi
 ```
 
-#### [`tame-topics`](https://raw.github.com/henry4j/-/master/paste/tame-topics)
+#### [`tame-topics`](https://raw.github.com/henry4j/-/master/paste/tame-topics) <sub>-o -w l-lda-6</sub>
 
 * [!] this script is fragile, and subject to change without any notice; `*-advanced` script is coming soon.
 * args: work-id (default: bigram-k), max-ngram (default: 2), LLR, and analyzer (default: CommTextAnalyzer)
