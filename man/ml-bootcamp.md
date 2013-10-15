@@ -272,7 +272,7 @@ fi
 * [!] this script is fragile, and subject to change without any notice; `*-advanced` script is coming soon.
 * args: work-id (default: bigram-k), max-ngram (default: 2), LLR, and analyzer (default: CommTextAnalyzer)
   * e.g. `tame-topics bigram-rrc-pro-22k-200ml 2 200 # uses 22109 rows and 864 columns`; see [tame-topics-bigram.log](https://raw.github.com/henry4j/-/master/modeling/tame-topics-bigram.log).
-* [?] [`mahout seq2sparse --help`](http://raw.github.com/henry4j/-/master/man/seq2sparse.mkd), [`mahout cvb --help`](http://raw.github.com/henry4j/-/master/man/lda-cvb.mkd)
+* [?] [`mahout seq2sparse --help`](http://raw.github.com/henry4j/-/master/man/seq2sparse.mkd), [`mahout cvb --help`](https://raw.github.com/henry4j/-/master/man/l-lda-cvb.mkd)
 
 ```bash
 #!/usr/bin/env jruby # called `tame-topics`
