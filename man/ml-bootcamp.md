@@ -229,7 +229,7 @@ x! "$HADOOP dfs -put #{extract}/labels.json ${MAHOUT_WORK}/comm-text-ext/labels.
 x! "$MAHOUT seqdirectory -i #{extract}/corpus -o ${MAHOUT_WORK}/comm-text-seq -ow -chunk 5"
 ```
 
-* See also: `doc-topics` and `labels` that `tame-corpus 6` yields.
+* See also: `doc-topics` and `labels` that `tame-corpus 6` had yielded.
 
 ```bash
 hadoop dfs -ls /workspace/mahout-work/comm-text-ext
