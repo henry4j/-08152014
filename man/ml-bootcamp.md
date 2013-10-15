@@ -387,8 +387,8 @@ x! "s3cmd setacl -r --acl-public s3://${S3_BUCKET}/#{work_id}"
 * DO RUN `p-topics` before `exam-comm-text` to get Java dependencies from maven repositories.
 * `p-topics -s -m l-lda-6 'how do i cancel refund since the item is shipped?'`
   * output: `{"6":45.4,"14":32.8,"15":18.0,"4":2.2}` -- it belongs to topic 6 with 45.4% probability.
-* `exam-comm-text --model-id l-lda-6 --threshold 0.47 | tail -n 2 # 58.5%`
-* `exam-comm-text --model-id l-lda-6 --excludes Others --threshold 0.01 | tail -n 2 # 71.6%`
+* `exam-comm-text --model-id l-lda-6 --threshold 0.39 | tail -n 2 # 53.4% (2332 / 4368)`
+* `exam-comm-text --model-id l-lda-6 --excludes Others --threshold 0.01 | tail -n 2 # 65.0% (2271 / 3492)`
 * `exam-comm-text --model-id l-lda-7 --threshold 0.42 | tail -n 2 # 56.0% (2445 / 4368)`
 * `exam-comm-text --model-id l-lda-7 --excludes Others --threshold 0.01 | tail -n 2 # 66.6% (2326 / 3492)`
 * `exam-comm-text -m unigram-rrc-pro-22k ###### 52.3% accuracy`; see [unigram-rrc-pro-22k.log](http://raw.github.com/henry4j/-/master/modeling/unigram-rrc-pro-22k.log)
