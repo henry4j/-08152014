@@ -12,6 +12,7 @@ OptionParser.new do |p|
   p.on('-m', '--model-id STRING',    String,  'Specifies optional model id.') { |v| $options[:model_id] = v }
   p.on('-x', '--excludes x,y,z',     Array,   'Specifies labels to exclude.') { |v| $options[:excludes] = v }
   p.on('-t', '--threshold FLOAT',    Float,   'Sepcifies a threshold for classification.') { |v| $options[:threshold] = v }
+  p.on('-d', '--dataset-id STRING',  String,  'Specifies optional dataset id.') { |v| $options[:dataset_id] = v }
 end.parse!
 
 max_lines = $options[:max_lines]
@@ -20,12 +21,10 @@ fields = ($options[:fields] || ['4', '5']).map { |e| e.to_i }
 model_id = $options[:model_id] || 'l-lda-7'
 excludes = $options[:excludes] || []
 threshold = $options[:threshold] || 0.47
+dataset_id = $options[:dataset_id] || 'rrc_pro_3492_876.csv'
 
-docs = ARGV
-if docs.empty?
-  docs = ["#{ENV['MAHOUT_WORK']}/test-set-3492-876.csv"]
-  system "s3cmd get 's3://#{ENV['S3_BUCKET']}-private/resources/rrc_pro_3492_876.csv' '#{docs[0]}'" unless File.exists?(docs[0])
-end
+docs = ["#{ENV['MAHOUT_WORK']}/#{dataset_id}"]
+system "s3cmd get 's3://#{ENV['S3_BUCKET']}-private/resources/#{dataset_id}.csv' '#{docs[0]}'" unless File.exists?(docs[0])
 
 q2cc = docs.reduce({}) do |h, e| # comm. texts keyed by FAQ.
   skip_count = $options[:skip_count] || 1
