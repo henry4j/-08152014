@@ -24,7 +24,7 @@ Note Mahout has algorithms on 3C: collaborative filtering, classification, and c
 #### Supervised ML
 
 We can formulate many of ML problems in terms of prediction of a desired target property of an object, e.g. if a website is e-commerce or not, given other known properties of the object (e.g. text, hyperlinks).
-Supervised ML approach consists of two key phases - (1) training, and (2) prediction -- training or model building involves learning a model or patterns from historical data (e.g. postive & negative examples of e-commerce sites), and prediction uses the learned model to determine the target property.  
+Supervised ML approach consists of two key phases - (1) training, and (2) prediction -- training or model building involves learning a model or patterns from historical data (e.g. positive & negative examples of e-commerce sites), and prediction uses the learned model to determine the target property.  
 
 ##### Classification vs. Regression
 
