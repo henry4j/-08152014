@@ -21,7 +21,7 @@ fields = ($options[:fields] || ['4', '5']).map { |e| e.to_i }
 model_id = $options[:model_id] || 'l-lda-7'
 excludes = $options[:excludes] || []
 threshold = $options[:threshold] || 0.47
-dataset_id = $options[:dataset_id] || 'rrc_pro_3492_876.csv'
+dataset_id = $options[:dataset_id] || 'rrc_pro_3492_876'
 
 docs = ["#{ENV['MAHOUT_WORK']}/#{dataset_id}"]
 system "s3cmd get 's3://#{ENV['S3_BUCKET']}-private/resources/#{dataset_id}.csv' '#{docs[0]}'" unless File.exists?(docs[0])
