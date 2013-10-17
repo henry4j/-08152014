@@ -16,8 +16,8 @@ ML algorithms constructs mathematical models of data to discover patterns.
 ML models are subsequently used to make decisions or predictions on unseen data.
 e.g. we use ML models out of purchase, browsing, and search histories to predict if a buyer will purchase a product.
 
-Why ML? handwriting & speech recognizations cannot be adequately solved by rule-based algorithms.
-ML by patterns in data is much more effective/scalable when data/patterns are personalized, large in volume, or changing in time, 
+Why ML? handwriting & speech recognitions cannot be adequately solved by rule-based algorithms.
+ML by patterns in data is much more effective/scalable when data/patterns are personalized, large in volume, or changing in time dynamically.
 
 Note Mahout has algorithms on 3C: collaborative filtering, classification, and clustering that are also called recommender, supervised learning, and unsupervised learning.
 
