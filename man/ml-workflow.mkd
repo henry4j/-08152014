@@ -85,7 +85,7 @@ Below are the features with their data types:
 
 Feature | Description | Data Type
 --- | --- | ---
-income class id (Label) | Whether income is greater or less than $50,000. | Binary {"<50K" or ">=50K"}
+income class id (Label) | Whether income is greater or less than $50,000. | Binary {`<50K` or `>=50K`}
 age	| Age of the individual. |	Numeric
 workclass | Working class of the individual. |	Categorical {Private, Self-emp-not-inc, Self-emp-inc, Federal-gov, Local-gov, State-gov, Without-pay, Never-worked}
 final-weight | Weighted estimate across different socio-economic characteristics. |	Numeric
