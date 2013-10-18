@@ -101,7 +101,7 @@ capital-loss | Capital loss. |	Numeric
 hours-per-week | Number of hours worked per week. |	Numeric
 native-country | Individual's native country. | Categorical { US, ... }
 
-Below are two observations from the data set:
+Below are two observations from the dataset:
 
 Label	| Age	| Work class	| Education	| Years of education	| Marital status	| Occupation	| Relationship	| Race	| Sex	| Capital gain	| Capital loss	| Hours per week	| Native country
 --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
@@ -119,7 +119,7 @@ Such a process has fixed, predetermined steps which can be programmed without an
 
 #### Data collection
 
-* income classification data sets for training & test from UCI machine learning repository
+* income classification datasets for training & test from UCI machine learning repository
 
 ```bash
 [ ! -e "$MAHOUT_WORK/adult.data" ] curl -o "$MAHOUT_WORK/adult.data" -kL http://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data
@@ -155,7 +155,7 @@ Attribute values for some instances might be missing from the training and test 
 
 Note the missing value script computes the mean (for numeric features), and mode (for categorical features), based only on examples in the training file. These values are then used to fill in missing values in both the training and the test data. The above strategy for dealing with missing values may not be appropriate for all applications and you should choose an appropriate strategy based on the specific application needs.
 
-##### Randomly Shuffle Training Data Set
+##### Randomly Shuffle Training Dataset
 
 You can randomly shuffle the order of examples in the training set to improve the prediction accuracy of models. This is true, especially for algorithms that learn from one observation at a time (e.g. SGD in online learning), rather than algorithms that learn from the entire batch of training examples.
 
