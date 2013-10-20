@@ -292,3 +292,7 @@ matplot(100*apply(edu.sal.xtab,2,function(x){x/margin.table(edu.sal.xtab,1)}) ,t
 
 * helps reduce data dimensionality by selecting one of redundant features.
 
+```
+qplot(education.num, hours.per.week, data=income, color=class) + stat_smooth()
+```
+
