@@ -243,5 +243,5 @@ $ native.country: Factor w/ 41 levels "Cambodia","Canada",..: 39 39 39 39 39 39 
 <img src='http://dl.dropboxusercontent.com/u/47820156/img/histogram-class-fill.png' />
 
 * Two things stand out in the histogram:
-  * On an average, older people make more money -- do you see how we arrived at the conclusion?
-  * Relatively fewer people make more than 50K/year -- we saw this in the summary command.
+  * on an average, older people make more money -- do you see how we arrived at the conclusion?
+  * relatively fewer people make more than 50K/year -- we saw this in the summary command.
