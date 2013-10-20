@@ -248,11 +248,17 @@ qplot(data=income, x=age, main="Class-wise Histogram of Age", binwidth=3, positi
 qplot(data=income, x=age, main="Histogram of Age")
 ```
 
-<img src='http://dl.dropboxusercontent.com/u/47820156/img/histogram-class-fill.png' />
-
-* Two things stand out in the histogram:
+* Things stand out in the histogram:
   * on average, older people make more money -- do you see how we arrived at this conclusion?
   * relatively fewer people make more than 50K/year -- we saw this in the summary command.
+
+<img src='http://dl.dropboxusercontent.com/u/47820156/img/histogram-class-fill.png' />
+
+* Obtaining raw class distribution for an attribute
+  * age.sal.xtab[,1]
+  * age.sal.xtab[,1]/sum(age.sal.xtab[,1])
+  * plot(age.sal.xtab[,1])
+  * points(age.sal.xtab[,2],col='red',pch=19
 
 ```bash
 age.sal.xtab=xtabs(~age+class, data=income)
