@@ -195,6 +195,7 @@ summary(income) # shows the statistic summary on the entire dataset.
 str(income) # shows the structure of the data object.
 
 library('ggplot2')
+qplot(data=income, x=age, main="Histogram of Age", binwidth=3)
 qplot(data=income, x=age, main="Class-wise Histogram of Age", binwidth=3, position="dodge", fill=class)
 ```
 
