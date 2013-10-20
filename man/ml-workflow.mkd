@@ -8,6 +8,7 @@ Keywords: observations, [SGD (logistic regression)](http://cwiki.apache.org/conf
   * [Data Collection & Integration](#data-collection)
   * [Data Preparation & Clean up](#data-preparation)
   * [Data Visualization & Analysis](#data-analysis)
+  * [Feature Engineering](#feature-engineering)
 
 ### ML introduction
 
@@ -300,3 +301,8 @@ qplot(education.num, hours.per.week, data=income, color=class) + stat_smooth()
 
 * there is a wide range of hours worked per-week values for every value of educationnum. we can conclude that there is little correlation between education level and the number of hours people work per week.
 * furthermore, the smoother curves inch upwards towards the right of the plots, indicating that higher education levels positively correlate with more hours worked per week. the effect is more pronounced for the lower income group than the higher income group (since the red curve inches upwards more sharply). one more observation from the smoother curves is that higher income groups generally work longer hours regardless of their education level. note that these are still correlations; it is not possible to uncover a causal relationship between Income Indicator and education or hours worked from these plots.
+
+#### Feature Engineering
+
+* this process of manipulating raw, original data into new, more useful representations, or features requires trial and error combined with domain knowledge and ingenuity.
+* 
