@@ -175,12 +175,12 @@ Here are four additional data preparation and cleansing operations that you can 
 * Downsampling: To handle extremely large datasets, certain ML algorithms train models on random samples that are much smaller in size. Here, you can preserve class proportions in the sample using techniques such as stratified sampling. In many applications (e.g. online advertising), the class distribution is imbalanced with skewed occurrence of one class (e.g. no-clicks). In such cases, the model training algorithm may give more importance to the majority class and ignore the minority class when learning model parameters. One strategy to deal with imbalanced classes is to downsample the dominant class. Here, we create a new training dataset that retains all examples belonging to the minority class and a sample containing an equal number of examples from the majority class. We then train a predictive model against the new training dataset with a balanced class distribution.
 * Importance Weights: Instead of downsampling the majority class, a different strategy is to assign an importance weight to each example from the minority class – to ensure a balanced class distribution, the importance weight is selected as the ratio of the majority and minority classes. Thus, importance weights are a useful mechanism for correcting class imbalance without adding or removing examples from the training data. In addition to balancing class distributions, importance weights are also a useful tool for meeting specific application requirements. For instance, in some applications like adult content detection, there is a significant cost associated with misclassifying a positive example and so one can penalize misclassification of positive examples by assigning them higher importance weights.
 
-#### Data Visualization & Analysis
+#### Data Analysis
 
 * **Feature & Target summaries**: helps detect outliers and skew in feature or target data distribution.
 * **Feature-Target correlations**: helps keep features with high correlation since they are ones with signal, and filter out features with low correlation since they are most likely noisy.
 * **Feature-Feature correlations**: helps reduce data dimensionality by selecting one of redundant features.
-* install R http://cran.rstudio.com/bin/macosx/, and R Studio http://www.rstudio.com/ide/
+* Prerequisites: install R http://cran.rstudio.com/bin/macosx/, and R Studio http://www.rstudio.com/ide/
 
 ```bash
 R
