@@ -305,4 +305,4 @@ qplot(education.num, hours.per.week, data=income, color=class) + stat_smooth()
 #### Feature Engineering
 
 * this process of manipulating raw, original data into new, more useful representations, or features requires lots of trial and error combined with domain knowledge and ingenuity.
-* 
+* often times, linear models w/ simple features may not be adequate for capturing complex correlations between the data and the target label; a way to improve the expressive power of linear models is to introduce non-linearity through feature transformations.
