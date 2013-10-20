@@ -297,3 +297,9 @@ qplot(education.num, hours.per.week, data=income, color=class) + stat_smooth()
 ```
 
 <img src="http://dl.dropboxusercontent.com/u/47820156/img/scatter-plot-smoother-overlaid.png" />
+
+* there is a wide range of hours worked per-week values for every value of educationnum. we can conclude that there is little correlation between education level and the number of hours people work per week.
+* furthermore, the smoother curves inch upwards towards the right of the plots, indicating that higher education levels positively correlate with more hours worked per week.
+* the effect is more pronounced for the lower income group than the higher income group (since the red curve inches upwards more sharply).
+* one more observation from the smoother curves is that higher income groups generally work longer hours regardless of their education level.
+* note that these are still correlations; it is not possible to uncover a causal relationship between Income Indicator and education or hours worked from these plots.
