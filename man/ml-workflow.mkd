@@ -246,3 +246,26 @@ $ native.country: Factor w/ 41 levels "Cambodia","Canada",..: 39 39 39 39 39 39 
 * Two things stand out in the histogram:
   * on average, older people make more money -- do you see how we arrived at this conclusion?
   * relatively fewer people make more than 50K/year -- we saw this in the summary command.
+
+```bash
+age.sal.xtab=xtabs(~age+class, data=income)
+age.sal.xtab
+
+      class
+age   0   1
+ 17 395   0
+ 18 550   0
+ 19 710   2
+ 20 753   0
+ 21 717   3
+ 22 752  13
+ 23 865  12
+ 24 767  31
+ 25 788  53
+ 26 722  63
+ 27 754  81
+ 28 748 119
+ 29 679 134
+ 30 690 171
+ 31 705 183
+```
