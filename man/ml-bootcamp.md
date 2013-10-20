@@ -649,6 +649,8 @@ opendiff /workspace/mahout-tag-0.8/core/src/main/java/org/apache/mahout/clusteri
 
 ##### R
 
+* R http://cran.rstudio.com/bin/macosx/, and R Studio http://www.rstudio.com/ide/
+
 ```bash
 curl -o /tmp/income_train_data_10.csv -ksL http://dl.dropboxusercontent.com/u/47820156/r/income_train_data_10.csv
 ```
