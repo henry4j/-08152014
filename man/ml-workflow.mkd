@@ -310,4 +310,4 @@ qplot(education.num, hours.per.week, data=income, color=class) + stat_smooth()
   * non-linear data transformations: numeric feature binning, or cartesian product of features.
   * domain-specific features: text features, features that capture web page structures, special features for image data.
   * data-driven features: meta-features from clusters within the data.
-  * feature selection: selecting a subset of relevant features; retain features that are highly correlated w/ the target, and eliminate noisy features.
+  * feature selection: selecting a subset of relevant features; retain features that are highly correlated w/ the target, and eliminate noisy features, or make learning computationally feasible.
