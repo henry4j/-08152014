@@ -269,3 +269,8 @@ age   0   1
  30 690 171
  31 705 183
 ```
+
+```bash
+edu.sal.xtab=xtabs(~education.num+class, data=income)
+matplot(100*apply(edu.sal.xtab,2,function(x){x/margin.table(edu.sal.xtab,1)}) ,type='l',lwd=2,xlab="Education",ylab="% of data")
+```
