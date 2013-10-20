@@ -311,3 +311,26 @@ qplot(education.num, hours.per.week, data=income, color=class) + stat_smooth()
   * domain-specific features: text features, features that capture web page structures, special features for image data.
   * data-driven features: meta-features from clusters within the data.
   * feature selection: selecting a subset of relevant features; retain features that are highly correlated w/ the target, and eliminate noisy features, or make learning computationally feasible.
+
+```bash
+types.binary:class
+types.categorical:workclass,education,education-num,marital-status,occupation,relationship,race,sex,native-country
+types.numeric:hours-per-week,age,capital-gain,capital-loss
+
+hours-per-week:quantile_bin:10
+age:quantile_bin:10
+capital-loss:quantile_bin:10
+capital-gain:quantile_bin:10
+
+processor.cartesian.1: relationship, marital-status
+processor.cartesian.2: relationship, (age:quantile_bin:10)
+processor.cartesian.3: relationship, occupation
+processor.cartesian.4: marital-status, (age:quantile_bin:10)
+processor.cartesian.5: marital-status, occupation
+processor.cartesian.6: (age:quantile_bin:10), education
+processor.cartesian.7: (age:quantile_bin:10), (capital-gain:quantile_bin:10)
+processor.cartesian.8: (age:quantile_bin:10), (hours-per-week:quantile_bin:10)
+processor.cartesian.9: (age:quantile_bin:10), sex
+processor.cartesian.10: occupation, education
+processor.cartesian.11: education, (hours-per-week:quantile_bin:10)
+```
