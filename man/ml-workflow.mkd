@@ -296,3 +296,4 @@ matplot(100*apply(edu.sal.xtab,2,function(x){x/margin.table(edu.sal.xtab,1)}) ,t
 qplot(education.num, hours.per.week, data=income, color=class) + stat_smooth()
 ```
 
+<img src="http://dl.dropboxusercontent.com/u/47820156/img/scatter-plot-smoother-overlaid.png" />
