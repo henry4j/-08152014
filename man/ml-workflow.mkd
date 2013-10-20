@@ -177,7 +177,9 @@ Here are four additional data preparation and cleansing operations that you can 
 
 #### Data Visualization & Analysis
 
-* DO keep features with high correlation since they are ones with signal, and filter out features with low correlation since they are most likely noisy.
+* Feature & Target summaries: helps detect outliers and skew in feature or target data distribution.
+* Feature-Target correlations: helps keep features with high correlation since they are ones with signal, and filter out features with low correlation since they are most likely noisy.
+* Feature-Feature correlations: 
 
 ```bash
 R
