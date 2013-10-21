@@ -24,37 +24,21 @@ class Analyzer
     end
   end
 
-  def initialize(model_id, debug = false)
-    @@jars ||= TopicModeling.require_jars
-    a, b = "http://s3.amazonaws.com/#{ENV['S3_BUCKET']}/#{model_id}/{dictionary.file-0,model-0,df-count-0}", "/tmp/#{model_id}"
-    system "curl -o '#{b}/#1' -ksL '#{a}' --create-dirs" unless Dir.exist?(b)
-    $stderr.puts "DEBUG: openning model files (id: #{model_id})" if debug
-    org.apache.log4j.Logger.root_logger.level = org.apache.log4j.Level::OFF
-    dictionary, model, df = %w(dictionary.file-0 model-0 df-count-0).map { |e| open("#{b}/#{e}").to_inputstream }
+  def initialize(analyzer)
+    @@jars ||= Analyzer.require_jars
+    @analyzer = org.apache.mahout.common.lucene.AnalyzerUtils.createAnalyzer(analyzer)
+  end
+
+  def tokenize(text)
+    stream = @analzyer.tokenStream("{field-name}", java.io.StringReader.new(text)).tap { |e| e.reset }
+    term_attr = stream.add_attribute(org.apache.lucene.analysis.tokenattributes.CharTermAttribute.java_class)
+    tokens = []
     begin
-      @modeling = com.henry4j.text.TopicModeling.new(dictionary, model, 'com.henry4j.text.CommTextAnalyzer', df)
+      tokens << java.lang.String.new(term_attr.buffer, 0, term_attr.length).to_s if term_attr.length > 0 while stream.increment_token
+      tokens
     ensure
-      [dictionary, model, df].each { |e| e and e.close }
+      stream.close
     end
-  end
-
-  def p_topics(s, sort = false, min_value = nil)
-    a = @modeling.get_ptopic(s).to_ary
-    a = a.each_with_index.sort_by { |(e, i)| -e }.
-        reduce({}) { |h, (e, i)| e *= 100; h[i] = e.round(1) unless min_value && e < min_value; h } if sort && !a[0].nan?
-    a
-  end
-end
-
-def tokenize(analzyer, text)
-  stream = analzyer.tokenStream("{field-name}", java.io.StringReader.new(text)).tap { |s| s.reset }
-  term_attr = stream.add_attribute(org.apache.lucene.analysis.tokenattributes.CharTermAttribute.java_class)
-  tokens = []
-  begin
-    tokens << java.lang.String.new(term_attr.buffer, 0, term_attr.length).to_s if term_attr.length > 0 while stream.increment_token
-    tokens
-  ensure
-    stream.close
   end
 end
 
@@ -74,8 +58,7 @@ def parse_options
 end
 
 def run!
-  Analyzer.require_jars
-
+  analyzer = Analyzer.new('com.henry4j.text.CommTextAnalyzer')
   options = parse_options
   overwrite = options[:overwrite]
   skip_count = options[:skip_count] || 1
@@ -87,15 +70,10 @@ def run!
   stop_phrases = options[:stop_phrases] || File.expand_path('../stop-comm-text', File.realpath(__FILE__))
   excludes = options[:excludes] || []
 
-  # fail "'corpus' must be specified." unless (corpus = ARGV[0])
   corpus = File.join(ENV['MAHOUT_WORK'], 'corpus-3492-876.csv')
 
   stop_phrases = File.exists?(stop_phrases) ? open(stop_phrases).readlines.reduce([]) { |a, l| l.start_with?('#') ? a : a << l.chomp } : nil
   stop_phrases = /#{stop_phrases.join('|')}/ if stop_phrases
-
-  FileUtils.mkdir_p File.join(out_dir, 'corpus')
-
-  w = CSV.open('/tmp/aaa.csv', 'w:windows-1250')
 
   lines_by_id = {}
   open(corpus, 'r:windows-1250') do |io|
@@ -108,8 +86,8 @@ def run!
     end
   end
 
-  analyzer = org.apache.mahout.common.lucene.AnalyzerUtils.createAnalyzer('com.henry4j.text.CommTextAnalyzer')
-
+  w = File.join(out_dir, 'corpus-engineered.csv')
+  w = CSV.open(w, 'w:windows-1250')
   lines_by_id.sort.each do |id, l|
     begin
       s = fields.map { |f| l[f] }.compact.each { |f| stop_phrases ? f.gsub(stop_phrases, '.') : f }.join(' ')
@@ -120,8 +98,6 @@ def run!
     end
     print id, ' '
   end
-
-  puts 'hhhhello'
   exit 0
 end
 
