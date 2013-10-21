@@ -51,7 +51,6 @@ def parse_options
     p.on('-l', '--l-field INTEGER', Integer, 'Specifies required field index for label(s).') { |v| options[:l_field] = v }
     p.on('-f', '--fields i,j,k', Array, 'Specifies required field indices for feature(s).') { |v| options[:fields] = v }
     p.on('-r', '--stop-phrases PATH', String, 'Specifies optional file paths for stop-phrases.') { |v| options[:stop_phrases] = v }
-    p.on('-o', '--overwrite', 'Specifies whether to overwrite existing output.') { |v| options[:overwrite] = v }
     p.on('-x', '--excludes x,y,z', Array, 'Specifies labels to exclude.') { |v| options[:excludes] = v }
   end.parse!
   options
@@ -60,22 +59,19 @@ end
 def run!
   analyzer = Analyzer.new('com.henry4j.text.CommTextAnalyzer')
   options = parse_options
-  overwrite = options[:overwrite]
   skip_count = options[:skip_count] || 1
   max_entries = options[:max_entries]
-  out_dir = options[:out_dir] || '/tmp'
   id_field = options[:id_field] || 0
   l_field = options[:l_field] || 8
   fields = (options[:fields] || ['4', '5']).map { |e| e.to_i }
   stop_phrases = options[:stop_phrases] || File.expand_path('../stop-comm-text', File.realpath(__FILE__))
   excludes = options[:excludes] || []
 
-  fail "'corpus' must be specified." unless (corpus = ARGV[0])
-
   stop_phrases = File.exists?(stop_phrases) ? open(stop_phrases).readlines.reduce([]) { |a, l| l.start_with?('#') ? a : a << l.chomp } : nil
   stop_phrases = /#{stop_phrases.join('|')}/ if stop_phrases
 
   lines_by_id = {}
+  corpus = ARGV[0] || '/workspace/mahout-work/corpus-3492-876.csv'
   open(corpus, 'r:windows-1250') do |io|
     CSV.new(io).each do |l|
       next if (skip_count -= 1) >= 0
@@ -86,8 +82,7 @@ def run!
     end
   end
 
-  w = File.join(out_dir, 'corpus-engineered.csv')
-  w = CSV.open(w, 'w:windows-1250')
+  w = CSV.new($stdout)
   w.puts ['label', 'id', 'text']
   lines_by_id.sort.each do |id, l|
     begin
@@ -97,7 +92,6 @@ def run!
     rescue
       raise 'Failed to process a line: %s.' % [l]
     end
-    print id, ' '
   end
   exit 0
 end
