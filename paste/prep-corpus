@@ -70,7 +70,7 @@ def run!
   stop_phrases = options[:stop_phrases] || File.expand_path('../stop-comm-text', File.realpath(__FILE__))
   excludes = options[:excludes] || []
 
-  corpus = File.join(ENV['MAHOUT_WORK'], 'corpus-3492-876.csv')
+  fail "'corpus' must be specified." unless (corpus = ARGV[0])
 
   stop_phrases = File.exists?(stop_phrases) ? open(stop_phrases).readlines.reduce([]) { |a, l| l.start_with?('#') ? a : a << l.chomp } : nil
   stop_phrases = /#{stop_phrases.join('|')}/ if stop_phrases
