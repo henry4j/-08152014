@@ -337,4 +337,19 @@ processor.cartesian.11: education, (hours-per-week:quantile_bin:10)
 
 #### Model Training
 
-* 
+```bash
+cat <<EOF >> "/tmp/income_params.txt"
+PredictionType:binary
+Passes:10
+EOF
+```
+
+```bash
+3ml create predictor \
+--labelColumn class \
+--recipe ./income_recipe.txt \
+--dataFileType CSV \
+--trainingParams ./income_params.txt \
+--trainingFile s3://3ml-training-data/work_id_1234/income_train_data.csv
+```
+
