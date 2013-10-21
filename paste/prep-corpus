@@ -4,8 +4,6 @@
 class Analyzer
   def self.require_jars
     %w(
-      commons-logging:commons-logging:1.1.1
-      log4j:log4j:1.2.17
       org.apache.lucene:lucene-analyzers-common:4.3.0
       org.apache.lucene:lucene-core:4.3.0
       org.apache.mahout:mahout-core:0.8
