@@ -40,7 +40,7 @@ public class TopicModelingTest {
         this.topicModelingTF = new TopicModeling(asFileIS("/dictionary-0"), asFileIS("/model-0"), "com.henry4j.text.CommTextAnalyzer");
     }
 
-    @Test
+    // @Test
     public void testDF() throws IOException {
         val conf = new Configuration();
         long[] df = TopicModeling.readDFs(new Path("/tmp/true-l-lda-df-count-0"), conf);

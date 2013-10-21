@@ -103,12 +103,12 @@ public class TopicModeling {
     }
 
     public Vector vectorize(String text) {
-        val tf = tf(termToIdMappings, tokenize(text), maxNGram);
+        val tf = tf(termToIdMappings, tokenize(analyzer, text), maxNGram);
         return (null == idf) ? tf : tfidf(tf, idf);
     }
 
     @SneakyThrows({ IOException.class })
-    public List<String> tokenize(String text) {
+    public static List<String> tokenize(Analyzer analyzer, String text) {
         @Cleanup TokenStream stream = analyzer.tokenStream("{field-name}", new StringReader(text));
         val termAttr = stream.addAttribute(CharTermAttribute.class);
         val tokens = ImmutableList.<String>builder();
