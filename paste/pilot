@@ -30,7 +30,7 @@ class Analyzer
   end
 
   def tokenize(text)
-    stream = @analzyer.tokenStream("{field-name}", java.io.StringReader.new(text)).tap { |e| e.reset }
+    stream = @analyzer.tokenStream("{field-name}", java.io.StringReader.new(text)).tap { |e| e.reset }
     term_attr = stream.add_attribute(org.apache.lucene.analysis.tokenattributes.CharTermAttribute.java_class)
     tokens = []
     begin
@@ -91,7 +91,7 @@ def run!
   lines_by_id.sort.each do |id, l|
     begin
       s = fields.map { |f| l[f] }.compact.each { |f| stop_phrases ? f.gsub(stop_phrases, '.') : f }.join(' ')
-      s = tokenize(analyzer, s).join(' ')
+      s = analyzer.tokenize(s).join(' ')
       w.puts [l[l_field], id, s]
     rescue
       raise 'Failed to process a line: %s.' % [l]
