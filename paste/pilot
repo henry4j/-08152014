@@ -63,14 +63,15 @@ def run!
   model_id = options[:model_id] || 'unigram-rrc-pro-22k'
   sort = options[:sort] || false
   min_value = options[:min_value] || 2.0
-  modeling = TopicModeling.new(model_id, debug)
-  if ARGV.empty?
-    $stderr.puts 'DEBUG: begins reading lines' if debug
-    j modeling.p_topics($_, sort, min_value) unless $_.chomp!.empty? while gets
-    $stderr.puts 'DEBUG: ends reading lines' if debug
-  else
-    ARGV.each { |e| j modeling.p_topics(e, sort, min_value) }
-  end
+  TopicModeling.require_jars
+#  modeling = TopicModeling.new(model_id, debug)
+#  if ARGV.empty?
+#    $stderr.puts 'DEBUG: begins reading lines' if debug
+#    j modeling.p_topics($_, sort, min_value) unless $_.chomp!.empty? while gets
+#    $stderr.puts 'DEBUG: ends reading lines' if debug
+#  else
+#    ARGV.each { |e| j modeling.p_topics(e, sort, min_value) }
+#  end
   exit 0
 end
 
