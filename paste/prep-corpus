@@ -1,91 +1,105 @@
-#!/usr/bin/env jruby # called `tame-topics`
-%w{rake optparse open-uri csv json open3}.each { |e| require e }
+#!/usr/bin/env jruby
+%W(optparse fileutils csv json #{ENV['HADOOP_BASE']}/libexec/lib/text-1.0-SNAPSHOT.jar).each { |e| require e }
 
-$options = {}
-OptionParser.new do |p|
-  p.on('-a', '--analyzer STRING', String, "Specifies the analyzer (default: 'com.henry4j.text.CommTextAnalyzer')") { |v| $options[:analyzer] = v }
-  p.on('-k', '--min-llr INTEGER', Integer, 'Specifies the min-LLR (default: 120)') { |v| $options[:min_llr] = v }
-  p.on('-g', '--max-ngram INTEGER', Integer, 'Specifies the max N gram (default: 1)') { |v| $options[:max_ngram] = v }
-  p.on('-w', '--work-id STRING', String, "Specifies the topic modeling work id (default: 'true-l-lda')") { |v| $options[:work_id] = v }
-  p.on('-o', '--overwrite', 'Whether to overwrite existing doc-topics and model.') { |v| $options[:overwrite] = v }
-end.parse!
-
-def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
-
-def store_topic_term_priors(work_id, vectors)
-  Vectors.write vectors, "#{ENV['MAHOUT_WORK']}/#{work_id}/topic-term-priors"
-end
-
-def doc_topic_priors_exist?
-  %x($HADOOP dfs -ls ${MAHOUT_WORK}/comm-text-ext/doc-topic-priors) && 0 == $?
-end
-
-def load_doc_topic_priors(work_id)
-  Vectors.read "#{ENV['MAHOUT_WORK']}/comm-text-ext/doc-topic-priors"
-end
-
-def load_doc_vectors(work_id)
-  Vectors.read "#{ENV['MAHOUT_WORK']}/#{work_id}/matrix"
-end
-
-def patch_mahout
-  %w(core-0.8 core-0.8-job examples-0.8 examples-0.8-job)
-    .map { |e| File.join(ENV['MAHOUT_BASE'], "mahout-%s.jar" % e) }
-    .each { |e| FileUtils.mv(e, "#{File.dirname(e)}/#{File.basename(e)}.bak") if File.exist?(e) }
-  %w(core-0.8.2 core-0.8.2-job examples-0.8.2 examples-0.8.2-job)
-    .map { |e| File.join(ENV['MAHOUT_BASE'], "mahout-%s.jar" % e) }
-    .reject { |e| File.exist?(e) }
-    .each { |e| x! 'curl -o %s -kL http://dl.dropbox.com/u/47820156/mahout/l-lda/%s' % [e, File.basename(e)] }
-end
-
-analyzer = $options[:analyzer] || 'com.henry4j.text.CommTextAnalyzer'
-min_llr = $options[:min_llr] || 120
-max_ngram = $options[:max_ngram] || 1
-work_id = $options[:work_id] || 'prep-corpus'
-vectors = $options[:vectors] || 'tf-vectors'
-x! "$HADOOP dfs -rmr '${MAHOUT_WORK}/#{work_id}'" do end if $options[:overwrite]
-
-if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitstatus
-  x! [
-    'export HADOOP_CLASSPATH=${MAHOUT_BASE}/lib/text-1.0-SNAPSHOT.jar:${MAHOUT_BASE}/lib/lucene-analyzers-common-4.3.0.jar:${MAHOUT_BASE}/lib/lucene-core-4.3.0.jar',
-    "$MAHOUT seq2sparse -i ${MAHOUT_WORK}/comm-text-seq/ -o ${MAHOUT_WORK}/#{work_id} -ow --namedVector -s 20 -md 10 -x 65 -ng %s -ml %s -a %s" % [max_ngram, min_llr, analyzer]
-  ].join('; ') # excludes terms of 80- DF & 70+ DF%
-  # -a org.apache.mahout.text.MailArchivesClusteringAnalyzer \
-  # -a org.apache.lucene.analysis.en.EnglishAnalyzer \
-  # -a org.apache.lucene.analysis.standard.StandardAnalyzer \
-
-  x! "$MAHOUT rowid -i ${MAHOUT_WORK}/#{work_id}/#{vectors} -o ${MAHOUT_WORK}/#{work_id}"
-  %w(df-count tf-vectors tfidf-vectors tokenized-documents).each { |e| x! "resplit ${MAHOUT_WORK}/#{work_id}/#{e}" do end }
-  x! "$MAHOUT seqdumper -i ${MAHOUT_WORK}/#{work_id}/tokenized-documents-0 -o /tmp/#{work_id}-tokenized-documents.txt"
-  x! "$HADOOP dfs -put /tmp/#{work_id}-tokenized-documents.txt ${MAHOUT_WORK}/#{work_id}/tokenized-documents.txt"
-end
-exit -1
-
-io = %w(matrix dictionary.file-0 model doc-topics modeling).map { |e| "$MAHOUT_WORK/#{work_id}/#{e}" }
-x! "$HADOOP dfs -rmr #{io[-3..-1].join(' ')}" do end
-
-if doc_topic_priors_exist? 
-  require_relative 'vectors'
-  doc_topic_priors = load_doc_topic_priors(work_id)
-  doc_vectors = load_doc_vectors(work_id)
-  rows, columns = doc_topic_priors[0].size, doc_vectors[0].size
-  topic_term_priors = org.apache.mahout.math.SparseRowMatrix.new(rows, columns, true) # true for random access
-  doc_vectors.each do |(d, v)|
-    doc_topic_priors[d].non_zeroes.each do |z_d|
-      row = topic_term_priors.view_row(z_d.index)
-      v.non_zeroes.each { |w| row.set_quick(w.index, row.get_quick(w.index) + w.get * z_d.get) }
+class Analyzer
+  def self.require_jars
+    %w(
+      com.google.guava:guava:14.0.1
+      commons-logging:commons-logging:1.1.1
+      log4j:log4j:1.2.17
+      org.apache.avro:avro:1.5.3
+      org.apache.commons:commons-math3:3.2
+      org.apache.hadoop:hadoop-common:2.0.5-alpha
+      org.apache.lucene:lucene-analyzers-common:4.3.0
+      org.apache.lucene:lucene-core:4.3.0
+      org.apache.mahout:mahout-core:0.8
+      org.apache.mahout:mahout-math:0.8
+      org.slf4j:slf4j-api:1.6.1
+      org.slf4j:slf4j-log4j12:1.6.1
+    ).map do |e|
+      g, a, v = e.split(':')
+      jar = "#{ENV['HOME']}/.m2/repository/#{g.gsub(/\./, '/')}/#{a}/#{v}/#{a}-#{v}.jar"
+      system "mvn dependency:get -DremoteRepositories=http://download.java.net/maven2 -Dartifact=#{e}" unless File.exist?(jar)
+      require jar
     end
   end
-  store_topic_term_priors(work_id, topic_term_priors)
-  x! "$HADOOP dfs -cp ${MAHOUT_WORK}/comm-text-ext/labels.json ${MAHOUT_WORK}/#{work_id}"
-  x! "$HADOOP dfs -cp ${MAHOUT_WORK}/#{work_id}/topic-term-priors #{io[-1]}/model-0/part-r-00000" do end
-  patch_mahout
-  cvb_opts = "-k #{rows} -pidt -dtp ${MAHOUT_WORK}/comm-text-ext/doc-topic-priors -cd 6e-24"
-else
-  cvb_opts = '-k 20 -pidt -cd 6e-4'
+
+  def initialize(analyzer)
+    @@jars ||= Analyzer.require_jars
+    @analyzer = org.apache.mahout.common.lucene.AnalyzerUtils.createAnalyzer(analyzer)
+  end
+
+  def tokenize(text)
+    stream = @analyzer.tokenStream("{field-name}", java.io.StringReader.new(text)).tap { |e| e.reset }
+    term_attr = stream.add_attribute(org.apache.lucene.analysis.tokenattributes.CharTermAttribute.java_class)
+    tokens = []
+    begin
+      tokens << java.lang.String.new(term_attr.buffer, 0, term_attr.length).to_s if term_attr.length > 0 while stream.increment_token
+      tokens
+    ensure
+      stream.close
+    end
+  end
 end
 
-x! "rm -rf ${MAHOUT_WORK}/#{work_id}/modeling" do end
-x! "$MAHOUT cvb -i %s -dict %s -ow -o %s -dt %s -mt %s -x 35 -block 2 -tf 0.25 -seed 777 #{cvb_opts}" % io
-x! "resplit #{io[2, 2].join(' ')}"
+def parse_options
+  options = {}
+  OptionParser.new do |p|
+    p.on('-s', '--skip-entries INTEGER', Integer, 'Skips processing as many entries as specified (default: 1).') { |v| options[:skip_count] = v }
+    p.on('-n', '--max-entries INTEGER', Integer, 'Processes as many entries as specified.') { |v| options[:max_entries] = v }
+    p.on('-i', '--id-field INTEGER', Integer, 'Specifies required field index for document id.') { |v| options[:id_field] = v }
+    p.on('-l', '--l-field INTEGER', Integer, 'Specifies required field index for label(s).') { |v| options[:l_field] = v }
+    p.on('-f', '--fields i,j,k', Array, 'Specifies required field indices for feature(s).') { |v| options[:fields] = v }
+    p.on('-r', '--stop-phrases PATH', String, 'Specifies optional file paths for stop-phrases.') { |v| options[:stop_phrases] = v }
+    p.on('-o', '--overwrite', 'Specifies whether to overwrite existing output.') { |v| options[:overwrite] = v }
+    p.on('-x', '--excludes x,y,z', Array, 'Specifies labels to exclude.') { |v| options[:excludes] = v }
+  end.parse!
+  options
+end
 
+def run!
+  analyzer = Analyzer.new('com.henry4j.text.CommTextAnalyzer')
+  options = parse_options
+  overwrite = options[:overwrite]
+  skip_count = options[:skip_count] || 1
+  max_entries = options[:max_entries]
+  out_dir = options[:out_dir] || '/tmp'
+  id_field = options[:id_field] || 0
+  l_field = options[:l_field] || 8
+  fields = (options[:fields] || ['4', '5']).map { |e| e.to_i }
+  stop_phrases = options[:stop_phrases] || File.expand_path('../stop-comm-text', File.realpath(__FILE__))
+  excludes = options[:excludes] || []
+
+  corpus = File.join(ENV['MAHOUT_WORK'], 'corpus-3492-876.csv')
+
+  stop_phrases = File.exists?(stop_phrases) ? open(stop_phrases).readlines.reduce([]) { |a, l| l.start_with?('#') ? a : a << l.chomp } : nil
+  stop_phrases = /#{stop_phrases.join('|')}/ if stop_phrases
+
+  lines_by_id = {}
+  open(corpus, 'r:windows-1250') do |io|
+    CSV.new(io).each do |l|
+      next if (skip_count -= 1) >= 0
+      next if l_field && l[l_field].nil?
+      next if excludes.any? { |e| l[l_field].include?(e) }
+      break if max_entries && (max_entries -= 1) < 0
+      lines_by_id[l[id_field].strip] = l
+    end
+  end
+
+  w = File.join(out_dir, 'corpus-engineered.csv')
+  w = CSV.open(w, 'w:windows-1250')
+  w.puts ['label', 'id', 'text']
+  lines_by_id.sort.each do |id, l|
+    begin
+      s = fields.map { |f| l[f] }.compact.each { |f| stop_phrases ? f.gsub(stop_phrases, '.') : f }.join(' ')
+      s = analyzer.tokenize(s).join(' ')
+      w.puts [l[l_field], id, s]
+    rescue
+      raise 'Failed to process a line: %s.' % [l]
+    end
+    print id, ' '
+  end
+  exit 0
+end
+
+run! if __FILE__==$0
