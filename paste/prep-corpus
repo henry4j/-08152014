@@ -21,7 +21,7 @@ class Analyzer
   end
 
   def tokenize(text)
-    stream = @analyzer.tokenStream("{field-name}", java.io.StringReader.new(text)).tap { |e| e.reset }
+    stream = @analyzer.tokenStream('{field-name}', java.io.StringReader.new(text)).tap { |e| e.reset }
     term_attr = stream.add_attribute(org.apache.lucene.analysis.tokenattributes.CharTermAttribute.java_class)
     tokens = []
     begin
