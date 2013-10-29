@@ -5,6 +5,7 @@
 * http://www.datastax.com/dev/blog/apache-mahout-in-datastax-enterprise-building-a-classification-system
 * http://sujitpal.blogspot.com/2012/09/learning-mahout-classification.html
 * http://bickson.blogspot.com/2011/01/mahout-on-amazon-ec2-part-2-testing.html
+* http://ashokabhat.wordpress.com/2012/02/13/mahout-and-hadoop-run-the-logistic-regression/
 * http://svn.apache.org/repos/asf/mahout/trunk/examples/src/main/resources/donut.csv
 * /workspace/mahout/examples/bin/classify-20newsgroups.sh
 * mahout trainlogistic
