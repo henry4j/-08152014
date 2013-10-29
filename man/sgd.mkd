@@ -1,1 +1,4 @@
-#### [Logistic Regression (SGD)](https://cwiki.apache.org/confluence/display/MAHOUT/Logistic+Regression)
+##### [Logistic Regression (SGD)](https://cwiki.apache.org/confluence/display/MAHOUT/Logistic+Regression)
+
+* http://jayatiatblogs.blogspot.com/2013/05/running-mahouts-logistic-regression.html
+* 
