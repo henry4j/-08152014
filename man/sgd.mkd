@@ -2,6 +2,7 @@
 
 * http://jayatiatblogs.blogspot.com/2013/05/running-mahouts-logistic-regression.html
 * http://imiloainf.wordpress.com/2011/11/02/mahout-logistic-regression/
+* http://www.datastax.com/dev/blog/apache-mahout-in-datastax-enterprise-building-a-classification-system
 * /workspace/mahout/examples/bin/classify-20newsgroups.sh
 * mahout trainlogistic
 * mahout runlogistic
