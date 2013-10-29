@@ -4,6 +4,7 @@
 * http://imiloainf.wordpress.com/2011/11/02/mahout-logistic-regression/
 * http://www.datastax.com/dev/blog/apache-mahout-in-datastax-enterprise-building-a-classification-system
 * http://sujitpal.blogspot.com/2012/09/learning-mahout-classification.html
+* http://svn.apache.org/repos/asf/mahout/trunk/examples/src/main/resources/donut.csv
 * /workspace/mahout/examples/bin/classify-20newsgroups.sh
 * mahout trainlogistic
 * mahout runlogistic
