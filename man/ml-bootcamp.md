@@ -143,7 +143,7 @@ v='0.8'; e="mahout-distribution-$v"
 [ ! -e "$HOME/Downloads/$e.zip" ] &&
   curl -o "$HOME/Downloads/$e.zip" -kL "http://mirrors.ibiblio.org/apache/mahout/$v/$e.zip"
 rm -rf "/workspace/$e" && unzip -o "$HOME/Downloads/$e.zip" -d /workspace/
-rm /workspace/mahout/ && ln -sf "/workspace/$e" /workspace/mahout
+rm -rf /workspace/mahout && ln -sf "/workspace/$e" /workspace/mahout
 curl -o "$MAHOUT_BASE/bin/#1" -kL 'http://raw.github.com/henry4j/-/master/paste/{mahout,mahout-d}'
 chmod +x $MAHOUT_BASE/bin/mahout*
 ```
