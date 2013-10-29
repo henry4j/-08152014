@@ -13,3 +13,8 @@
 * /workspace/mahout/examples/bin/classify-20newsgroups.sh
 * mahout trainlogistic
 * mahout runlogistic
+
+#
+```bash
+curl -o http://svn.apache.org/repos/asf/mahout/trunk/examples/src/main/resources/donut.csv
+```
