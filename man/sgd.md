@@ -19,9 +19,9 @@
 ```bash
 curl -o $MAHOUT_WORK/donut.csv \
   -kL http://svn.apache.org/repos/asf/mahout/trunk/examples/src/main/resources/donut.csv
-mahout org.apache.mahout.classifier.sgd.TrainLogistic \
---passes 100 --rate 50 --lambda 0.001 --input /workspace/mahout-work/donut.csv --features 21 \
---output donut.model --target color --categories 2 --predictors x y xx xy yy a b c --types n n
+mahout trainlogistic \
+  --passes 100 --rate 50 --lambda 0.001 --input /workspace/mahout-work/donut.csv --features 21 \
+  --output donut.model --target color --categories 2 --predictors x y xx xy yy a b c --types n n
 ```
 
 ```bash
