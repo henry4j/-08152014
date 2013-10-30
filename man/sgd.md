@@ -24,3 +24,9 @@ mahout trainlogistic
   -passes 100 -rate 50 -lambda 0.0001 \
   -features 21 –target color -categories 2 –predictors x y xx xy yy a b c –types n n
 ```
+
+   --features numFeatures the number of        
+                                                                                                                        internal  
+                                                                                                                        hashed    
+                                                                                                                        features  
+                                                                                                                        to use    
