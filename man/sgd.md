@@ -15,6 +15,8 @@
 * mahout runlogistic
 
 #
+
 ```bash
-curl -o http://svn.apache.org/repos/asf/mahout/trunk/examples/src/main/resources/donut.csv
+curl -o ${MAHOUT_WORK}/donut.csv -kL http://svn.apache.org/repos/asf/mahout/trunk/examples/src/main/resources/donut.csv
+
 ```
