@@ -21,6 +21,7 @@ curl -o $MAHOUT_WORK/donut.csv \
   -kL http://svn.apache.org/repos/asf/mahout/trunk/examples/src/main/resources/donut.csv
 curl -o $MAHOUT_WORK/donut-test.csv \
   -kL http://svn.apache.org/repos/asf/mahout/trunk/examples/src/main/resources/donut-test.csv
+
 mahout trainlogistic \
   --passes 100 --rate 50 --lambda 0.001 --input $MAHOUT_WORK/donut.csv --features 21 \
   --output $MAHOUT_WORK/donut.model --target color --categories 2 --predictors x y xx xy yy a b c --types n n
@@ -37,6 +38,7 @@ color ~
                    y -1.67092
                   yy 0.35319
     2.765337737     0.000000000    -1.670917299     0.000000000     0.000000000     0.000000000     5.449999190     0.000000000   -24.160908591    -4.739579336     0.353190637     0.000000000     0.000000000     0.000000000     0.000000000     0.000000000     0.000000000     0.000000000     0.000000000     0.000000000     0.000000000
+
 mahout runlogistic \
   --input $MAHOUT_WORK/donut-test.csv --model $MAHOUT_WORK/donut.model \
   --auc --scores --confusion
