@@ -7,6 +7,7 @@
 * http://sujitpal.blogspot.com/2012/09/learning-mahout-classification.html
 * http://www.cnblogs.com/batys/p/3295942.html
 * http://www.datastax.com/dev/blog/apache-mahout-in-datastax-enterprise-building-a-classification-system
+* http://skife.org/mahout/2013/02/14/first_steps_with_mahout.html
 
 #
 * http://svn.apache.org/repos/asf/mahout/trunk/examples/src/main/resources/donut.csv
