@@ -26,7 +26,11 @@ mahout trainlogistic
 ```
 
 ```bash
-  --features           numFeatures the number of hashed features to use
-  --noBias             don't include a bias term
-  --rate learningRate  the learning rate
+  --features              numFeatures the number of hashed features to use
+  --noBias                don't include a bias term
+  --rate learningRate     the learning rate
+  --lambda lambda         the amount of coefficient decay to use
+  --passes passes         the number of times to pass over the input data
+  --types t [t ...]       a list of predictor variable types (numeric, word, or text)
+  --predictors p [p ...]  a list of predictor variables
 ```
