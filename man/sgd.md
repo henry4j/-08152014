@@ -26,6 +26,10 @@ mahout trainlogistic
 ```
 
 ```bash
+Usage:
+  --quiet
+  --input input
+  --output output
   --features              numFeatures the number of hashed features to use
   --noBias                don't include a bias term
   --rate learningRate     the learning rate
