@@ -25,8 +25,8 @@ mahout trainlogistic
   -features 21 –target color -categories 2 –predictors x y xx xy yy a b c –types n n
 ```
 
-   --features numFeatures the number of        
-                                                                                                                        internal  
-                                                                                                                        hashed    
-                                                                                                                        features  
-                                                                                                                        to use    
+```bash
+  --features           numFeatures the number of hashed features to use
+  --noBias             don't include a bias term
+  --rate learningRate  the learning rate
+```
