@@ -31,10 +31,12 @@ Usage:
   --input input
   --output output
   --features numFeatures  the number of hashed features to use
+
   --noBias                don't include a bias term
+  --passes passes         the number of times to pass over the input data
   --rate learningRate     the learning rate
   --lambda lambda         the amount of coefficient decay to use
-  --passes passes         the number of times to pass over the input data
+
   --types t [t ...]       a list of predictor variable types (numeric, word, or text)
   --predictors p [p ...]  a list of predictor variables
   --categories number     the number of target categories to be considered
