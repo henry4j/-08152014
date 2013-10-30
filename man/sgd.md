@@ -17,7 +17,10 @@
 #
 
 ```bash
-curl -o ${MAHOUT_WORK}/donut.csv \
+curl -o $MAHOUT_WORK/donut.csv \
   -kL http://svn.apache.org/repos/asf/mahout/trunk/examples/src/main/resources/donut.csv
-
+mahout trainlogistic
+  -input $MAHOUT_WORK/donut.csv –output $MAHOUT_WORK/donut.model \
+  -passes 100 -rate 50 -lambda 0.0001 \
+  -features 21 –target color -categories 2 –predictors x y xx xy yy a b c –types n n
 ```
