@@ -25,9 +25,8 @@ mahout trainlogistic \
   --passes 100 --rate 50 --lambda 0.001 --input $MAHOUT_WORK/donut.csv --features 21 \
   --output $MAHOUT_WORK/donut.model --target color --categories 2 --predictors x y xx xy yy a b c --types n n
 mahout runlogistic \
-  –-input $MAHOUT_WORK/donut-test.csv \
-  –-model $MAHOUT_WORK/donut.model \
-  –-auc –-scores –-confusion
+  --input $MAHOUT_WORK/donut-test.csv --model $MAHOUT_WORK/donut.model \
+  --auc --scores --confusion
 ```
 
 ```bash
