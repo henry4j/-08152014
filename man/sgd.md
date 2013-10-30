@@ -10,9 +10,8 @@
 
 #
 * http://svn.apache.org/repos/asf/mahout/trunk/examples/src/main/resources/donut.csv
+* http://svn.apache.org/repos/asf/mahout/trunk/examples/src/main/resources/donut-test.csv
 * /workspace/mahout/examples/bin/classify-20newsgroups.sh
-* mahout trainlogistic
-* mahout runlogistic
 
 #
 
