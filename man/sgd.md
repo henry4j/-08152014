@@ -33,4 +33,6 @@ mahout trainlogistic
   --passes passes         the number of times to pass over the input data
   --types t [t ...]       a list of predictor variable types (numeric, word, or text)
   --predictors p [p ...]  a list of predictor variables
+  --categories number     the number of target categories to be considered
+  --target target         the name of the target variable
 ```
