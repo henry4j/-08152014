@@ -30,7 +30,7 @@ Usage:
   --quiet
   --input input
   --output output
-  --features              numFeatures the number of hashed features to use
+  --features numFeatures  the number of hashed features to use
   --noBias                don't include a bias term
   --rate learningRate     the learning rate
   --lambda lambda         the amount of coefficient decay to use
