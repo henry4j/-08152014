@@ -1,0 +1,13 @@
+#!/usr/bin/env jruby # called `tame-corpus`
+require 'rake' # sudo gem install rake
+
+sources = %w(rrc_pro_3492_876.csv)
+corpora = %w(corpus-3492-876.csv).map { |e| File.join(ENV['MAHOUT_WORK'], e) }
+tokenized = corpora.map { |e| e.sub(/.csv\z/, '-tokenized.csv') }
+c = Integer(ARGV[0]) - 1 # expects an integer between 1 and 6.
+
+def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
+
+x! "s3cmd get s3://${S3_BUCKET}-private/resources/#{sources[c]} #{corpora[c]}" unless File.exist?(corpora[c])
+x! "prep-corpus #{corpora[c]} > #{tokenized[c]}" unless File.exist?(tokenized[c])
+x! "split-comm-text #{tokenized[c]}"
