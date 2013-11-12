@@ -1,13 +1,43 @@
 #!/usr/bin/env jruby # called `tame-corpus`
 require 'rake' # sudo gem install rake
 
+def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
+
 sources = %w(rrc_pro_3492_876.csv)
 corpora = %w(corpus-3492-876.csv).map { |e| File.join(ENV['MAHOUT_WORK'], e) }
 tokenized = corpora.map { |e| e.sub(/.csv\z/, '-tokenized.csv') }
 c = Integer(ARGV[0]) - 1 # expects an integer between 1 and 6.
 
-def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
+classes = [
+  'Others',
+  'What is your return\/refund policy?',
+  'What do I do if a customer returns an item in a different condition?',
+  'What do I do if I suspect customer fraud?',
+  'How do I verify if a refund has been processed?',
+  'What do I do if the item is undeliverable?',
+  'How do I process a return\/refund?',
+  'How do I cancel a refund?',
+  'I\'m concerned about negative feedback; what can I do?',
+  'How do I recharge an order?',
+  'How do cancellations work?',
+  'How do I deal with orders that have not been returned?',
+  'How do I undo a cancel for an order?',
+  'How do I deal with an A-Z claim?',
+  'What do I do if the customer claims they never received their order?',
+  'How do I issue a partial refund?',
+  'How do I provide return labels?',
+  'What do I do if my customer claims they received an item inconsistent with my listing?',
+  'What do I do if I receive an order for an item not in my inventory?',
+  'What are the fees or costs that can be re-imbursed to me?',
+  'How can I remove individual items from an order?',
+  'Can I charge a restocking fee?',
+  'If a customer failed to properly read the description of my product',
+  'How should I handle a buyer who might be making up reasons to ask for a refund or return the items?',
+  'How can I issue a concession for the buyer shipping charge in addition to the refund for the order?'
+]
 
 x! "s3cmd get s3://${S3_BUCKET}-private/resources/#{sources[c]} #{corpora[c]}" unless File.exist?(corpora[c])
 x! "prep-corpus #{corpora[c]} > #{tokenized[c]}" unless File.exist?(tokenized[c])
 x! "split-comm-text #{tokenized[c]}" unless File.exists?(tokenized[c] + '-0.75')
+
+# x! "ruby -pe 
