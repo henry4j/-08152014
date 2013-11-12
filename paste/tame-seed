@@ -10,4 +10,4 @@ def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (
 
 x! "s3cmd get s3://${S3_BUCKET}-private/resources/#{sources[c]} #{corpora[c]}" unless File.exist?(corpora[c])
 x! "prep-corpus #{corpora[c]} > #{tokenized[c]}" unless File.exist?(tokenized[c])
-x! "split-comm-text #{tokenized[c]}"
+x! "split-comm-text #{tokenized[c]}" unless File.exists?(tokenized[c] + '-0.75')
