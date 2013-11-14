@@ -31,7 +31,7 @@ labels = [
   'What are the fees or costs that can be re-imbursed to me?',
   'How can I remove individual items from an order?',
   'Can I charge a restocking fee?',
-  '.?If a customer failed to properly read the description of my product, am I still required to approve a return or refund?.?',
+  '"If a customer failed to properly read the description of my product, am I still required to approve a return or refund?"',
   'How should I handle a buyer who might be making up reasons to ask for a refund or return the items?',
   'How can I issue a concession for the buyer shipping charge in addition to the refund for the order?'
 ]
