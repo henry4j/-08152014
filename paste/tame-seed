@@ -17,7 +17,7 @@ labels = [
   'What do I do if the item is undeliverable?',
   'How do I process a return\/refund?',
   'How do I cancel a refund?',
-  'I\'m concerned about negative feedback; what can I do?',
+  'I\\\'m concerned about negative feedback; what can I do?',
   'How do I recharge an order?',
   'How do cancellations work?',
   'How do I deal with orders that have not been returned?',
@@ -39,5 +39,6 @@ labels = [
 x! "s3cmd get s3://${S3_BUCKET}-private/resources/#{sources[c]} #{corpora[c]}" unless File.exist?(corpora[c])
 x! "prep-corpus #{corpora[c]} > #{tokenized[c]}" unless File.exist?(tokenized[c])
 x! "split-comm-text #{tokenized[c]}" unless File.exists?(dataset = tokenized[c] + '-0.75')
-# labels.each_with_index { |e, i| x! %Q(ruby -i.bak -pe 'sub(/%s,/, "%s,")' #{dataset}) % [e, i] }
-labels.each_with_index { |e, i| x! %Q(ruby -i.bak -pe '$_["%s,"] &&= "%s,"' #{dataset}) % [e, i] if i == 0 }
+labels.each_with_index { |e, i|
+  x! %Q{ruby -i -pe $'$_[%Q(#{e},)] &&= %q(#{i},)' #{dataset}}
+}
