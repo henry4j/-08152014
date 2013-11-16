@@ -240,7 +240,7 @@ Found n items
 
 * this is a similar script that compiles a corpus of reuter mail archives that is well-known for lucene benchmark program.
 
-```
+```bash
 if [ ! -e ${MAHOUT_WORK}/reuters-ext ]; then
   if [ ! -e ${MAHOUT_WORK}/reuters-sgm ]; then
     if [ ! -f ${MAHOUT_WORK}/reuters21578.tar.gz ]; then
@@ -407,7 +407,7 @@ x! "s3cmd setacl -r --acl-public s3://${S3_BUCKET}/#{work_id}"
 ###### Install [Eclipse Kepler (4.3)](http://www.eclipse.org/downloads/)
 
 ```bash
-curl -o "$HOME/Downloads/eclipse.tar.gz" -kL http://mirrors.ibiblio.org/eclipse/technology/epp/downloads/release/kepler/R/eclipse-jee-kepler-R-macosx-cocoa-x86_64.tar.gz
+curl -o "$HOME/Downloads/eclipse.tar.gz" -kL http://mirrors.ibiblio.org/eclipse/technology/epp/downloads/release/kepler/SR1/eclipse-standard-kepler-SR1-macosx-cocoa-x86_64.tar.gz
 tar xvf "$HOME/Downloads/eclipse.tar.gz" -C /Applications/
 open /Applications/eclipse/Eclipse.app # and then keep this in dock
 ```
@@ -440,7 +440,6 @@ sudo java -jar "$HOME/.m2/repository/org/projectlombok/lombok/0.12.0/lombok-0.12
    * Interpreters | Add... | Interpreter executable: `/usr/local/bin/ruby` as `ruby 2`
 
 ##### Config M2, P4merge, SVN and Git with aliases
-
 
 ```bash
 curl -o "$HOME/.m2/settings.xml" -ksL https://raw.github.com/henry4j/-/master/paste/.m2-settings.xml
