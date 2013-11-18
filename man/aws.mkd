@@ -1,8 +1,8 @@
 [ [AWS SDK](http://docs.amazonwebservices.com/AWSJavaSDK/latest/javadoc/allclasses-noframe.html) | ]
 
-#### Amazon ElastiCache
+#### Amazon ElastiCache - Redis
 
-
+* Redis
 
 #### Amazon S3
 
