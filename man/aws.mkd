@@ -5,6 +5,7 @@
 * A popular open-source in-memory key-value store that supports data structures such as sorted sets and lists.
   * ElastiCache supports [Redis](http://www.redis.io/) master / slave replication which can be used to achieve cross AZ redundancy.
 * Devo will be eligible for the free usage tier of 750 hours per month of a t1.micro Cache node - no upfront costs.
+* Get started http://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/GettingStarted.html
 
 #### Amazon S3
 
