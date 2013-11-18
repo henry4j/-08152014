@@ -4,7 +4,7 @@
 
 * A popular open-source in-memory key-value store that supports data structures such as sorted sets and lists.
   * ElastiCache supports [Redis](http://www.redis.io/) master / slave replication which can be used to achieve cross AZ redundancy.
-* 
+* Be eligible for free use for 750 hours per month of a t1.micro Cache node.
 
 #### Amazon S3
 
