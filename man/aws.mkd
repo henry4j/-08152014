@@ -2,7 +2,7 @@
 
 #### Amazon ElastiCache - Redis
 
-* Redis
+* Redis - Redis – a popular open-source in-memory key-value store that supports data structures such as sorted sets and lists. ElastiCache supports Redis master / slave replication which can be used to achieve cross AZ redundancy.
 
 #### Amazon S3
 
