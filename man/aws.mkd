@@ -1,9 +1,10 @@
 [ [AWS SDK](http://docs.amazonwebservices.com/AWSJavaSDK/latest/javadoc/allclasses-noframe.html) | ]
 
-#### Amazon ElastiCache - Redis
+#### Amazon ElastiCache - Redis - pricing in on-demand or reserved cache nodes
 
 * A popular open-source in-memory key-value store that supports data structures such as sorted sets and lists.
   * ElastiCache supports [Redis](http://www.redis.io/) master / slave replication which can be used to achieve cross AZ redundancy.
+* 
 
 #### Amazon S3
 
