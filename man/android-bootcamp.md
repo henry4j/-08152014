@@ -66,7 +66,7 @@ little snitch, [sequel.pro](http://www.sequelpro.com/download/), [oracle.sql.dev
 
 ##### [Install Android SDK](http://developer.android.com/sdk/index.html)
 
-    wget -o /tmp/android-sdk_r22.3-macosx.zip -ksL https://dl.google.com/android/android-sdk_r22.3-macosx.zip
+    curl -o /tmp/android-sdk_r22.3-macosx.zip -ksL https://dl.google.com/android/android-sdk_r22.3-macosx.zip
     unzip -o /tmp/android-sdk_r22.3-macosx.zip -d /workspace/
     mv /workspace/android-sdk-macosx /workspace/android-sdk-r22.3
     ln -s /workspace/android-sdk-r22.3 /workspace/android-sdk
