@@ -5,3 +5,6 @@
 * http://www.sebertech.com/2013/05/how-to-manage-internal-storage-on.html
 * http://www.themobimag.com/how-to-remove-bloatware-from-samsung-galaxy-s4/
 * http://mobotalks.com/android/how-to-remove-bloatware-apps-from-your-samsung-galaxy-s4-without-rooting-ultimate-guide/
+* http://eandroidhowto.com/how-to-remove-bloatware-apps-from-your-samsung-galaxy-s4-without-rooting-ultimate-guide.html
+* 
+
