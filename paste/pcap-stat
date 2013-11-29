@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+%w{optparse open-uri csv json}.each { |e| require e }
+
+csv = ARGV[0] || '/tmp/aptn.csv'
+
+skip_count = 1
+max_lines = 5
+mileages = {}
+CSV.open(csv, 'r:windows-1250').each do |row|
+  next if (skip_count -= 1) >= 0
+  break unless max_lines.nil? || (max_lines -= 1) >= 0
+  (mileages[row[3]] ||= []) << row[5].to_i
+end
+
+jj mileages
