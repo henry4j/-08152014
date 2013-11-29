@@ -1,21 +1,27 @@
 #!/usr/bin/env ruby
 %w{optparse open-uri csv json}.each { |e| require e }
 
-csv = ARGV[0] || '/tmp/aptn.csv'
+$options = {}
+OptionParser.new do |p|
+  p.on('-s', '--skip-lines INTEGER', Integer, 'Skips processing as many lines as specified (default: 1).') { |v| $options[:skip_count] = v }
+  p.on('-n', '--max-lines INTEGER',  Integer, 'Processes as many lines as specified.') { |v| $options[:max_lines] = v }
+end.parse!
 
-skip_count = 1
-max_lines = 100
-uploads = {}
-CSV.open(csv, 'r:windows-1250').each do |row|
-  next if (skip_count -= 1) >= 0
-  break unless max_lines.nil? || (max_lines -= 1) >= 0
-  (uploads[row[3]] ||= []) << row[5].to_i
+skip_count = $options[:skip_count] || 1
+max_lines = $options[:max_lines] || 100
+
+ARGV.each do |arg|
+  uploads = {}
+  CSV.open(arg, 'r:windows-1250').each do |row|
+    next if (skip_count -= 1) >= 0
+    break unless max_lines.nil? || (max_lines -= 1) >= 0
+    (uploads[row[3]] ||= []) << row[5].to_i
+  end
+  jj uploads
+  
+  mileages = uploads.reduce({}) do |h, (k, v)|
+    h[k] = [daily = v.reduce(:+), v.size > 6 ? 30 * daily : daily]
+    h 
+  end
+  jj mileages
 end
-jj uploads
-
-mileages = uploads.reduce({}) do |h, (k, v)|
-  h[k] = [daily = v.reduce(:+), v.size > 6 ? 30 * daily : daily]
-  h 
-end
-jj mileages
-
