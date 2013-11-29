@@ -3,4 +3,4 @@
 * http://forum.xda-developers.com/showthread.php?t=2307355
 * http://removeandreplace.com/2013/06/24/how-to-easily-root-the-samsung-galaxy-s4/
 * http://www.sebertech.com/2013/05/how-to-manage-internal-storage-on.html
-* 
+* http://www.themobimag.com/how-to-remove-bloatware-from-samsung-galaxy-s4/
