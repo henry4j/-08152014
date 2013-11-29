@@ -66,10 +66,10 @@ little snitch, [sequel.pro](http://www.sequelpro.com/download/), [oracle.sql.dev
 
 ##### [Install Android SDK](http://developer.android.com/sdk/index.html)
 
-    wget -P /tmp/ http://dl.google.com/android/android-sdk_r21.0.1-macosx.zip
-    unzip -o /tmp/android-sdk_r21.0.1-macosx.zip -d /workspace/
-    mv /workspace/android-sdk-macosx /workspace/android-sdk-r21
-    ln -s /workspace/android-sdk-r21 /workspace/android-sdk
+    wget -o /tmp/android-sdk_r22.3-macosx.zip -ksL https://dl.google.com/android/android-sdk_r22.3-macosx.zip
+    unzip -o /tmp/android-sdk_r22.3-macosx.zip -d /workspace/
+    mv /workspace/android-sdk-macosx /workspace/android-sdk-r22.3
+    ln -s /workspace/android-sdk-r22.3 /workspace/android-sdk
     android update sdk --no-ui --no-https # takes forever on sluggish network connections!!!
 
 ##### Set up env. variables for Android SDK and Maven
