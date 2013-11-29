@@ -4,12 +4,18 @@
 csv = ARGV[0] || '/tmp/aptn.csv'
 
 skip_count = 1
-max_lines = 5
-mileages = {}
+max_lines = 100
+uploads = {}
 CSV.open(csv, 'r:windows-1250').each do |row|
   next if (skip_count -= 1) >= 0
   break unless max_lines.nil? || (max_lines -= 1) >= 0
-  (mileages[row[3]] ||= []) << row[5].to_i
+  (uploads[row[3]] ||= []) << row[5].to_i
 end
+jj uploads
 
+mileages = uploads.reduce({}) do |h, (k, v)|
+  h[k] = [daily = v.reduce(:+), v.size > 6 ? 30 * daily : daily]
+  h 
+end
 jj mileages
+
