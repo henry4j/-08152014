@@ -17,6 +17,7 @@ ARGV.each do |arg|
   CSV.open(arg, 'r:windows-1250').each do |row|
     next if (skip_count -= 1) >= 0
     break unless max_lines.nil? || (max_lines -= 1) >= 0
+    # row[3] = row[3].split('.')[0..-2].join('.')
     (uploads[row[3]] ||= []) << row[5].to_i
   end
   jj uploads
