@@ -10,7 +10,7 @@ end.parse!
 
 skip_count = $options[:skip_count] || 1
 max_lines = $options[:max_lines] || 200
-threshold = ($options[:threshold] || 2.0) * (1024 * 1024)
+threshold = ($options[:threshold] || 1.5) * (1024 * 1024)
 
 ARGV.each do |arg|
   uploads = {}
