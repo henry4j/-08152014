@@ -229,6 +229,7 @@ unless c == -1
   x! "s3cmd get s3://${S3_BUCKET}-private/resources/#{sources[c]} #{corpora[c]}" unless File.exist?(corpora[c])
 else
   corpora << ARGV[0]
+  options << options[0]
 end
 
 x! "$HADOOP dfs -rmr #{extract} ${MAHOUT_WORK}/comm-text-seq" do end # rescue on errors.
