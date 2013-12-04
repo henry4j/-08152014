@@ -30,8 +30,7 @@ require_relative 'vectors' if l_field
 stop_phrases = File.exists?(stop_phrases) ? open(stop_phrases).readlines.reduce([]) { |a, l| l.start_with?('#') ? a : a << l.chomp } : nil
 stop_phrases = /#{stop_phrases.join('|')}/ if stop_phrases
 
-FileUtils.rm_rf File.join(out_dir, 'corpus') if overwrite
-FileUtils.rm_rf File.join(out_dir, 'corpus-priors') if overwrite
+%w{corpus doc-topic-priors labels.json}.each { |e| FileUtils.rm_rf File.join(out_dir, e) } if overwrite
 FileUtils.mkdir_p File.join(out_dir, 'corpus')
  
 lines_by_id = {}
