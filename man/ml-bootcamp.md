@@ -210,7 +210,7 @@ x! '$HADOOP dfsadmin -safemode leave' do end
 
 #### [`tame-corpus 6`](http://raw.github.com/henry4j/-/master/paste/tame-corpus), or step-by-step at the terminal
 
-* `7` is the id for the latest corpus or the excel spreadsheet.
+* `6` is the id for the latest corpus or the excel spreadsheet.
 
 ```bash
 #!/usr/bin/env jruby # called `tame-corpus`
