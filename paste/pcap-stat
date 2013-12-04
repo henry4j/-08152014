@@ -28,7 +28,7 @@ ARGV.each do |arg|
   end
   jj mileages
 
-  mileages = mileages.reject { |k, v| v[1] < threshold }
-  jj mileages
+  outliers = mileages.reject { |k, v| v[1] < threshold }
+  jj outliers
 end
 
