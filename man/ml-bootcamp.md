@@ -32,7 +32,7 @@
   * or, Xcode -- Launch **[App Store]** | Search by **'Xcode'** | **[FREE]** and then **[Install APP]**
      * Applications | Xcode | Install | Start Using Xcode  
        Xcode | **Preference...** | Downloads | Install **[Command Line Tools]**
-* `ruby -e "$(curl -fsSL http://raw.github.com/mxcl/homebrew/go)"` # at the terminal.
+* `ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go/install)"` # at the terminal.
 
 #### Set up password-less SSH and optional git repository accounts
 
