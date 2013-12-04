@@ -39,7 +39,7 @@ open(corpus, 'r:windows-1250') do |io|
   CSV.new(io).each do |l|
     next if (skip_count -= 1) >= 0
     next if l_field && l[l_field].nil?
-    next if excludes.any? { |e| l[l_field].include?(e) }
+    next if l_field && excludes.any? { |e| l[l_field].include?(e) }
     break if max_entries && (max_entries -= 1) < 0
     lines_by_id[l[id_field].strip] = l
   end
