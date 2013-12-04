@@ -9,7 +9,7 @@ OptionParser.new do |p|
 end.parse!
 
 skip_count = $options[:skip_count] || 1
-max_lines = $options[:max_lines] || 200
+max_lines = $options[:max_lines] # || 200 # uncomment if 200 default is desirable.
 threshold = ($options[:threshold] || 1.5) * (1024 * 1024)
 
 ARGV.each do |arg|
