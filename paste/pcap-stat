@@ -5,7 +5,7 @@ $options = {}
 OptionParser.new do |p|
   p.on('-s', '--skip-lines INTEGER', Integer, 'Skips processing as many lines as specified (default: 1).') { |v| $options[:skip_count] = v }
   p.on('-n', '--max-lines INTEGER',  Integer, 'Processes as many lines as specified.') { |v| $options[:max_lines] = v }
-  p.on('-t', '--threshold FLOAT',    Float,   'Sepcifies a threshold in MB for warnings.') { |v| $options[:threshold] = v }
+  p.on('-t', '--threshold FLOAT',    Float,   'Sepcifies a threshold in MB for outliers (default: 1.5).') { |v| $options[:threshold] = v }
 end.parse!
 
 skip_count = $options[:skip_count] || 1
