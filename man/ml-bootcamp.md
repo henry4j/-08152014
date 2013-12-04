@@ -171,7 +171,9 @@ done
 #### ~~Set up utilities for Mahout work~~ -- no longer in use.
 
 ```bash
-for e in prep-comm-text stop-comm-text prep-corpus split-comm-text resplit pp-w,z pp-z,d tame-hadoop tame-corpus tame-topics tame-topics-l p-topics p-topics.rb vectors.rb exam-comm-text; do
+for e in prep-comm-text stop-comm-text prep-corpus split-comm-text resplit \
+    pp-w,z pp-z,d tame-hadoop tame-corpus tame-topics tame-topics-l \
+    p-topics p-topics.rb vectors.rb exam-comm-text; do
   rm -f /usr/local/bin/$e; ln -s /workspace/gits/henry4j/paste/$e /usr/local/bin/$e;
 done
 ```
