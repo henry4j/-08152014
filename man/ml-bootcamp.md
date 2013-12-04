@@ -107,7 +107,7 @@ sudo mkdir /workspace; sudo chown $USER /workspace
 
 #### Install Hadoop <sub>(requires passphraseless ssh)</sub>, <sub>see also [Hadoop on Ubuntu Linux](http://www.michael-noll.com/tutorials/running-hadoop-on-ubuntu-linux-single-node-cluster/)</sub>
 
-* Setup `libexec/conf/hadoop-env.sh` and [pseudo-distributed operation](http://hadoop.apache.org/docs/stable/single_node_setup.html#PseudoDistributed)
+* Setup `libexec/conf/hadoop-env.sh` and [pseudo-distributed operation](http://hadoop.apache.org/docs/r1.2.1/single_node_setup.html#PseudoDistributed)
 * Bring up the [name node](http://localhost:50070/) and [job tracker](http://localhost:50030/) (n/a if running locally)
 * Try-upload & download local files to DFS by [`hadoop dfs -put`](http://hadoop.apache.org/docs/stable/file_system_shell.html#put), [`hadoop dfs -get`](http://hadoop.apache.org/docs/stable/file_system_shell.html#get), and then [`hadoop dfs -ls`](http://hadoop.apache.org/docs/stable/file_system_shell.html#ls)
 
