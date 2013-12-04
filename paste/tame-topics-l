@@ -90,8 +90,6 @@ x! "resplit #{io[2, 2].join(' ')}"
 
 x! "$MAHOUT vectordump -i %s-0 -sort %s-0 -d %s -o /tmp/#{work_id}-w,z-dump.txt -p true -vs 25 -dt sequencefile" % io.values_at(-3, -3, 1)
 x! "$MAHOUT vectordump -i %s-0 -o /tmp/#{work_id}-z,d-dump.txt" % io[-2]
-x! "$HADOOP dfs -put /tmp/#{work_id}-*-dump.txt ${MAHOUT_WORK}/#{work_id}" do end
- 
 x! "pp-w,z /tmp/#{work_id}-w,z-dump.txt       | tee /tmp/#{work_id}-w,z-topic-terms.txt"
 x! "pp-z,d /tmp/#{work_id}-z,d-dump.txt -n 30 | tee /tmp/#{work_id}-z,d-doc-topics.txt"
 %w(w,z z,d).map { |e| x! "$HADOOP dfs -put /tmp/#{work_id}-#{e}-*.txt ${MAHOUT_WORK}/#{work_id}" do end }
