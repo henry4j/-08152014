@@ -217,8 +217,8 @@ x! '$HADOOP dfsadmin -safemode leave' do end
 require 'rake' # sudo gem install rake
 
 sources = %w(rrc_pro_22110.csv rrc_ind_31771.csv rrc_pro_2285_labeled_1.0.csv rrc_pro_2285_labeled_0.75.csv rrc_pro_2285_others_1.0.csv rrc_pro_3055_799.csv rrc_pro_3492_876.csv)
-corpora = %w(corpus-1.csv corpus-2.csv corpus-l-1.0.csv corpus-l-0.75.csv corpus-l-2285+others.csv corpus-3055+799.csv corpus-3492-876.csv).map { |e| File.join(ENV['MAHOUT_WORK'], e) }
-options = ["-i 3 -f 4,11", "-i 3 -f 4,11", "-i 4 -l 8 -f 1,3", "-i 4 -l 8 -f 1,3", "-i 0 -l 8 -f 4,5", "-i 0 -l 8 -f 4,5"]
+corpora = %w(corpus-0.csv corpus-1.csv corpus-l-1.0.csv corpus-l-0.75.csv corpus-l-2285+others.csv corpus-3055+799.csv corpus-3492-876.csv).map { |e| File.join(ENV['MAHOUT_WORK'], e) }
+options = ["-i 3 -f 4,11 -m 200", "-i 3 -f 4,11", "-i 4 -l 8 -f 1,3", "-i 4 -l 8 -f 1,3", "-i 0 -l 8 -f 4,5", "-i 0 -l 8 -f 4,5"]
 extract = '${MAHOUT_WORK}/comm-text-ext'
 
 def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
@@ -234,8 +234,8 @@ end
 x! "$HADOOP dfs -rmr #{extract} ${MAHOUT_WORK}/comm-text-seq" do end # rescue on errors.
 x! "prep-comm-text #{corpora[c]} --out-dir #{extract} --excludes Others --overwrite #{options[c]}"
 x! "$HADOOP dfs -put #{extract}/corpus ${MAHOUT_WORK}/comm-text-ext/corpus"
-x! "$HADOOP dfs -put #{extract}/doc-topic-priors ${MAHOUT_WORK}/comm-text-ext/doc-topic-priors"
-x! "$HADOOP dfs -put #{extract}/labels.json ${MAHOUT_WORK}/comm-text-ext/labels.json"
+x! "$HADOOP dfs -put #{extract}/doc-topic-priors ${MAHOUT_WORK}/comm-text-ext/doc-topic-priors" if File.exist?("#{extract}/doc-topic-priors")
+x! "$HADOOP dfs -put #{extract}/labels.json ${MAHOUT_WORK}/comm-text-ext/labels.json" if File.exist?("#{extract}/labels.json")
 x! "$MAHOUT seqdirectory -i #{extract}/corpus -o ${MAHOUT_WORK}/comm-text-seq -ow -chunk 5"
 ```
 
