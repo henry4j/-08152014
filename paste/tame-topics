@@ -41,7 +41,7 @@ end
 analyzer = $options[:analyzer] || 'com.henry4j.text.CommTextAnalyzer'
 min_llr = $options[:min_llr] || 120
 max_ngram = $options[:max_ngram] || 1
-work_id = $options[:work_id] || 'true-l-lda'
+work_id = $options[:work_id] || 'lda-' + Time.now.utc.strftime('%Y%m%d-%Hz')
 vectors = $options[:vectors] || 'tf-vectors'
 x! "$HADOOP dfs -rmr '${MAHOUT_WORK}/#{work_id}'" do end if $options[:overwrite]
 
