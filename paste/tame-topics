@@ -49,7 +49,7 @@ if %x($HADOOP dfs -test -e "${MAHOUT_WORK}/#{work_id}/matrix") && 0 != $?.exitst
   x! [
     'export HADOOP_CLASSPATH=${MAHOUT_BASE}/lib/text-1.0-SNAPSHOT.jar:${MAHOUT_BASE}/lib/lucene-analyzers-common-4.3.0.jar:${MAHOUT_BASE}/lib/lucene-core-4.3.0.jar',
     "$MAHOUT seq2sparse -i ${MAHOUT_WORK}/comm-text-seq/ -o ${MAHOUT_WORK}/#{work_id} -ow --namedVector -s 20 -md 10 -x 65 -ng %s -ml %s -a %s" % [max_ngram, min_llr, analyzer]
-  ].join('; ') # excludes terms of 80- DF & 70+ DF%
+  ].join('; ') # excludes terms of 10- DF & 65+ DF%
   # -a org.apache.mahout.text.MailArchivesClusteringAnalyzer \
   # -a org.apache.lucene.analysis.en.EnglishAnalyzer \
   # -a org.apache.lucene.analysis.standard.StandardAnalyzer \
