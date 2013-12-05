@@ -659,6 +659,7 @@ opendiff /workspace/mahout-tag-0.8/core/src/main/java/org/apache/mahout/clusteri
 
 ##### R
 
+* http://davidsimpson.me/2013/02/26/installing-r-on-os-x/
 * R http://cran.rstudio.com/bin/macosx/, and R Studio http://www.rstudio.com/ide/
 
 ```bash
