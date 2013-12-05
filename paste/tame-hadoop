@@ -3,10 +3,17 @@ require 'rake' # sudo gem install rake
 
 def x!(*cmd, &blk) block_given? ? (sh cmd.join(' ') do |*a| blk.call(a) end) : (sh cmd.join(' ')) end
 
+%w{core-0.8 core-0.8-job examples-0.8 examples-0.8-job}.each do |e|
+  x! %Q([ -e $MAHOUT_BASE/mahout-#{e}.jar ] && mv $MAHOUT_BASE/mahout-#{e}.jar $MAHOUT_BASE/mahout-#{e}.jar.bak) do end
+end
+%w{core-0.8.2 core-0.8.2-job examples-0.8.2 examples-0.8.2-job}.each do |e|
+  x! %Q([ ! -e $MAHOUT_BASE/mahout-#{e}.jar ] && curl -o $MAHOUT_BASE/mahout-#{e}.jar -kL http://dl.dropboxusercontent.com/u/47820156/mahout/l-lda/mahout-#{e}.jar) do end
+end
+
 jar = 'text-1.0-SNAPSHOT.jar'
 x! "curl -o ${HADOOP_BASE}/libexec/lib/#{jar} -ksL http://raw.github.com/henry4j/-/master/paste/#{jar}"
 x! "ln -sf ${HADOOP_BASE}/libexec/lib/#{jar} ${MAHOUT_BASE}/lib/#{jar}"
- 
+
 x! 'stop-all.sh' do end # rescue on errors.
 x! 'ps -ef | grep "org.apache.hadoop.[^ ]\+$" | ruby -ane "puts $F[1]" | xargs kill' do end
 x! 'start-all.sh'
