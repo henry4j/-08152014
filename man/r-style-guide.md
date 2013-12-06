@@ -68,3 +68,61 @@ Do not place spaces around code in parentheses or square brackets. (Except if th
     x[1,]  # Needs a space after the comma
     x[1 ,]  # Space goes after, not before
 
+##### Curly braces
+
+An opening curly brace should never go on its own line and should always be followed by a new line; a closing curly brace should always go on its own line, unless followed by else.
+
+Always indent the code inside the curly braces.
+
+    # Good
+    
+    if (y < 0 && debug) {
+      message("Y is negative")
+    }
+    
+    if (y == 0) {
+      log(x)
+    } else {
+      y ^ x
+    }
+    
+    # Bad
+    
+    if (y < 0 && debug)
+    message("Y is negative")
+    
+    if (y == 0) {
+      log(x)
+    } 
+    else {
+      y ^ x
+    }
+
+It’s ok to leave very short statements on the same line:
+
+    if (y < 0 && debug) message("Y is negative")    
+
+##### Indentation
+
+When indenting your code, use two spaces. Never use tabs or mix tabs and spaces.
+
+##### Line length
+
+Keep your lines less than 80 characters. This is the amount that will fit comfortably on a printed page at a reasonable size. If you find you are running out of room, this is probably an indication that you should encapsulate some of the work in a separate function.
+
+##### Assignment
+
+Use <-, not =, for assignment.
+
+    # Good
+    x <- 5
+    # Bad
+    x = 5
+
+#### Organisation
+
+##### Commenting guidelines
+
+Comment your code. Entire commented lines should begin with # and one space. Comments should explain the why, not the what.
+
+Use commented lines of - and = to break up your files into scannable chunks.
