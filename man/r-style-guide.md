@@ -1,4 +1,4 @@
-# R style guide
+### R style guide by [Hadley Wickham](http://adv-r.had.co.nz/)
 
 Good coding style is like using correct punctuation when writing: you can manage without it, but it sure makes things easier to read. As with punctuation, there are many possible variations, and the main thing is to be consistent. The following guide describes the style that I use - you don't have to use it, but you need to have some consistent style that you do follow.  My style is  based on Google's [R style guide][1], with a few tweaks.
 
@@ -6,9 +6,9 @@ Good style is important because while your code only has one author, it will usu
 
 One package that can make adhering to a style guide easier is `formatR`, by Yihui Xie.  It can't do everything, but if you're starting with very poorly formatted R code, it will get you to a good place much more quickly than doing everything by hand.  Make sure to read [the notes on the wiki](https://github.com/yihui/formatR/wiki) before using it.
 
-## Notation and naming
+#### Notation and naming
 
-### File names
+##### File names
 
 File names should end in `.r` and be meaningful.
 
@@ -19,7 +19,7 @@ File names should end in `.r` and be meaningful.
     foo.r
     my-homework.R
 
-### Identifiers
+##### Identifiers
 
 "There are only two hard things in Computer Science: cache invalidation and naming things." -- Phil Karlton
 
@@ -34,9 +34,9 @@ Variable and function names should be lowercase. Use `_` to separate words withi
     dayone
     djm1
 
-## Syntax
+#### Syntax
 
-### Spacing
+##### Spacing
 
 Place spaces around all infix operators (`=`, `+`, `-`, `<-`, etc.). Do not place a space before a comma, but always place one after a comma (just like in regular English).
 
@@ -76,7 +76,7 @@ Do not place spaces around code in parentheses or square brackets. (Except if th
     x[1,]  # Needs a space after the comma
     x[1 ,]  # Space goes after, not before
 
-### Curly braces
+##### Curly braces
 
 An opening curly brace should never go on its own line and should always be followed by a new line; a closing curly brace should always go on its own line, unless followed by `else`.
 
@@ -110,11 +110,11 @@ It's ok to leave very short statements on the same line:
 
     if (y < 0 && debug) message("Y is negative")    
 
-### Line length
+##### Line length
 
 Keep your lines less than 80 characters. This is the amount that will fit comfortably on a printed page at a reasonable size. If you find you are running out of room, this is probably an indication that you should encapsulate some of the work in a separate function.
 
-### Indentation
+##### Indentation
 
 When indenting your code, use two spaces. Never use tabs or mix tabs and spaces.
 
@@ -127,7 +127,7 @@ long_function_name <- function(a = "a long argument", b = "another argument",
 }
 ```
 
-### Assignment
+##### Assignment
 
 Use `<-`, not `=`, for assignment.
 
@@ -136,9 +136,9 @@ Use `<-`, not `=`, for assignment.
     # Bad
     x = 5
 
-## Organisation
+#### Organisation
 
-### Commenting guidelines
+##### Commenting guidelines
 
 Comment your code. Entire commented lines should begin with `#` and one space. Comments should explain the why, not the what.
 
