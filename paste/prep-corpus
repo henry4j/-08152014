@@ -83,7 +83,7 @@ def run!
     begin
       s = fields.map { |f| l[f] }.compact.each { |f| stop_phrases ? f.gsub(stop_phrases, '.') : f }.join(' ')
       s = analyzer.tokenize(s).join(' ')
-      w.puts [l[l_field], -id, s]
+      w.puts [-id, l[l_field], s]
     rescue
       raise 'Failed to process a line: %s.' % [l]
     end
