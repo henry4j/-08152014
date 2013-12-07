@@ -53,8 +53,8 @@ def run!
   skip_count = options[:skip_count] || 1
   max_entries = options[:max_entries]
   id_field = options[:id_field] || 0
-  l_field = options[:l_field] || 3
-  fields = (options[:fields] || ['1', '2']).map { |e| e.to_i }
+  l_field = options[:l_field] || 1
+  fields = (options[:fields] || ['2', '3']).map { |e| e.to_i }
   stop_phrases = options[:stop_phrases] || File.expand_path('../stop-comm-text', File.realpath(__FILE__))
   excludes = options[:excludes] || []
 
