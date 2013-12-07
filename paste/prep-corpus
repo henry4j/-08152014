@@ -78,7 +78,6 @@ def run!
   end
 
   w = CSV.new($stdout)
-  w.puts ['label', 'id', 'text']
   lines_by_id.sort.each do |id, l|
     begin
       s = fields.map { |f| l[f] }.compact.each { |f| stop_phrases ? f.gsub(stop_phrases, '.') : f }.join(' ')
