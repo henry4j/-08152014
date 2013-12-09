@@ -23,11 +23,11 @@ ruby -ane 'puts $F.map(&:to_i).map(&:abs).join(" ")' # changes to absolute value
 ```bash
 # ruby -E windows-1250 -ane 'BEGIN{$; = ","}; p $F[3].chomp' rrc_pro.csv | sort -f | uniq | tee rrc_pro_labels.json
 
-ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[1,2].join("; ")' rrc_pro_5286_2764_c.csv |
-  tokenize | tee rrc_pro_5286_2764_c_tokens.txt
+ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[1,2].join("; ")' rrc_pro_5286_c.csv |
+  tokenize | tee rrc_pro_5286_c_tokens.txt
 
 ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[3].chomp' \
-  rrc_pro_5286_2764_c.csv | tee rrc_pro_5286_2764_c_labels.txt
+  rrc_pro_5286_c.csv | tee rrc_pro_5286_c_labels.txt
 
 curl -o /tmp/rrc_pro_25_labels.json -ksL http://goo.gl/HLT94O
 
@@ -36,7 +36,7 @@ ruby -ne 'BEGIN{
   l = JSON[open("/tmp/rrc_pro_25_labels.json").read];
   l = l.each_with_index.reduce({}) { |h, (e, i)| h[e] = i; h }
 }; puts l[$_.chomp]' \
-  rrc_pro_5286_2764_c_labels.txt | tee rrc_pro_5286_2764_c_label_ids.txt
+  rrc_pro_5286_c_labels.txt | tee rrc_pro_5286_c_label_ids.txt
 
-paste -d '|' rrc_pro_5286_c_label_ids.txt rrc_pro_5286_c_tokens.txt | tee rrc_pro_5286.vw
+paste -d '|' rrc_pro_5286_c_tokens.txt rrc_pro_5286_c_label_ids.txt | tee rrc_pro_5286.vw
 ```
