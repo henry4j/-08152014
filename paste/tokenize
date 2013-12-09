@@ -42,7 +42,6 @@ def parse_options
 end
 
 def run!
-  Encoding.default_external = Encoding::Windows_1250
   analyzer = Analyzer.new('com.henry4j.text.CommTextAnalyzer')
   options = parse_options
   stop_phrases = options[:stop_phrases] || File.expand_path('../stop-comm-text', File.realpath(__FILE__))
@@ -50,7 +49,7 @@ def run!
   stop_phrases = File.exists?(stop_phrases) ? open(stop_phrases).readlines.reduce([]) { |a, l| l.start_with?('#') ? a : a << l.chomp } : nil
   stop_phrases = /#{stop_phrases.join('|')}/ if stop_phrases
 
-  lines_by_id = {}
+  Encoding.default_external = Encoding::Windows_1250
   argf = ARGV.empty? ? [$stdin] : ARGV.map { |e| open(e, 'r') }
   begin
     argf.each do |io|
