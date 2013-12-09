@@ -23,11 +23,18 @@ ruby -ane 'puts $F.map(&:to_i).map(&:abs).join(" ")' # changes to absolute value
 ```bash
 # ruby -E windows-1250 -ane 'BEGIN{$; = ","}; p $F[3].chomp' rrc_pro.csv | sort -f | uniq | tee rrc_pro_labels.json
 
-ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[1,2].join("; ")' rrc_pro_5286_c.csv |
-  tokenize | tee rrc_pro_5286_c_tokens.txt
+ruby -e '
+  srand 1234;
+  l = ARGF.readlines; 
+  r = 0...(n = l.size);
+  r.each { |i| j = i + rand(n - i); l[i], l[j] = l[j], l[i] };
+  puts l' rrc_pro_5286_c.csv | tee rrc_pro_5286_r.csv
+
+ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[1,2].join("; ")' rrc_pro_5286_r.csv |
+  tokenize | tee rrc_pro_5286_r_tokens.txt
 
 ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[3].chomp' \
-  rrc_pro_5286_c.csv | tee rrc_pro_5286_c_labels.txt
+  rrc_pro_5286_r.csv | tee rrc_pro_5286_r_labels.txt
 
 curl -o /tmp/rrc_pro_25_labels.json -ksL http://goo.gl/HLT94O
 
@@ -36,22 +43,13 @@ ruby -ne 'BEGIN{
   l = JSON[open("/tmp/rrc_pro_25_labels.json").read];
   l = l.each_with_index.reduce({}) { |h, (e, i)| h[e] = i; h }
 }; puts l[$_.chomp]' \
-  rrc_pro_5286_c_labels.txt | tee rrc_pro_5286_c_label_ids.txt
+  rrc_pro_5286_r_labels.txt | tee rrc_pro_5286_r_label_ids.txt
 
-paste -d ',' rrc_pro_5286_c_label_ids.txt rrc_pro_5286_c_tokens.txt |
+paste -d ',' rrc_pro_5286_r_label_ids.txt rrc_pro_5286_r_tokens.txt |
   ruby -ape 'BEGIN{$; = ","; $, = " | "}; $_ = $_.split.join' |
-  tee rrc_pro_5286_c_vw.in
-
-ruby -e '
-  srand 1234;
-  l = ARGF.readlines; 
-  r = 0...(n = l.size);
-  r.each { |i| j = i + rand(n - i); l[i], l[j] = l[j], l[i] };
-  puts l' rrc_pro_5286_c_vw.in | tee rrc_pro_5286_c_vw_rand.in
+  tee rrc_pro_5286_r_vw.in
   
-vw --oaa 24 --ngram 2 rrc_pro_5286_c_vw_rand.in -f rrc_pro_5286_c.model
+vw --oaa 24 --ngram 2 rrc_pro_5286_r_vw.in -f rrc_pro_5286_c.model
 
-vw -t -i rrc_pro_5286_c.model rrc_pro_5286_c_tokens.txt -p rrc_pro_5286_c.predict
-
-vw -t -i rrc_pro_5286_c.model rrc_pro_5286_c_vw_rand.in -p rrc_pro_5286_c_vw_rand.out
+vw -t -i rrc_pro_5286_r.model rrc_pro_5286_r_vw.in -p rrc_pro_5286_r_vw.out
 ```
