@@ -30,5 +30,5 @@ ruby -ne 'BEGIN{
   l = JSON[open("rrc_pro_25_labels.json").read];
   l = l.each_with_index.reduce({}) { |h, (e, i)| h[e] = i; h }
 }; puts l[$_.chomp]' rrc_pro_5286_2764_c_labels.txt |
-  rrc_pro_5286_2764_c_labels_k.txt
+  tee rrc_pro_5286_2764_c_labels_k.txt
 ```
