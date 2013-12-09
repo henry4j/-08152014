@@ -38,5 +38,5 @@ ruby -ne 'BEGIN{
 }; puts l[$_.chomp]' \
   rrc_pro_5286_c_labels.txt | tee rrc_pro_5286_c_label_ids.txt
 
-paste -d '|' rrc_pro_5286_c_tokens.txt rrc_pro_5286_c_label_ids.txt | tee rrc_pro_5286.vw
+paste -d '|' rrc_pro_5286_c_tokens.txt rrc_pro_5286_c_label_ids.txt | tee rrc_pro_5286_c.in
 ```
