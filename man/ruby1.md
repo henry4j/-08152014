@@ -51,4 +51,7 @@ paste -d ',' rrc_pro_5286_r_label_ids.txt rrc_pro_5286_r_tokens.txt |
   
 vw --oaa 24 --ngram 2 rrc_pro_5286_r_vw.in -f rrc_pro_5286_r.model
 vw -t -i rrc_pro_5286_r.model rrc_pro_5286_r_vw.in -p rrc_pro_5286_r_vw.out
+
+paste -d rrc_pro_5286_r_label_ids.txt rrc_pro_5286_r_vw.out |
+  
 ```
