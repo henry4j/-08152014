@@ -46,4 +46,6 @@ ruby -e '
   r = 0...(n = l.size);
   r.each { |i| j = i + rand(n - i); l[i], l[j] = l[j], l[i] };
   puts l' rrc_pro_5286_c.in | tee rrc_pro_5286_c_rand.in
+  
+vw --oaa 24 --ngram 2 rrc_pro_5286_c_rand.in -f rrc_pro_5286_c.model
 ```
