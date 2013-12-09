@@ -48,4 +48,6 @@ ruby -e '
   puts l' rrc_pro_5286_c.in | tee rrc_pro_5286_c_rand.in
   
 vw --oaa 24 --ngram 2 rrc_pro_5286_c_rand.in -f rrc_pro_5286_c.model
+
+vw -t -i rrc_pro_5286_c.model rrc_pro_5286_c_tokens.txt -p rrc_pro_5286_c.predict
 ```
