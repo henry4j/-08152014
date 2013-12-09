@@ -53,5 +53,5 @@ vw --oaa 24 --ngram 2 rrc_pro_5286_r_vw.in -f rrc_pro_5286_r.model
 vw -t -i rrc_pro_5286_r.model rrc_pro_5286_r_vw.in -p rrc_pro_5286_r_vw.out
 
 paste rrc_pro_5286_r_label_ids.txt rrc_pro_5286_r_vw.out |
-  ruby -ane 'BEGIN{c = 0; n = `wc -l rrc_pro_5286_r.csv`.to_f}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/n}'
+  ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l rrc_pro_5286_r.csv`.to_f)}'
 ```
