@@ -37,6 +37,6 @@ ruby -ne 'BEGIN{
   l = l.each_with_index.reduce({}) { |h, (e, i)| h[e] = i; h }
 }; puts l[$_.chomp]' \
   rrc_pro_5286_2764_c_labels.txt | tee rrc_pro_5286_2764_c_label_ids.txt
-```
 
-paste -d '|' rrc_pro_5286_2764_c_label_ids.txt rrc_pro_5286_2764_c_tokens.txt | tee rrc_pro_5286_2764_c_label_ids.txt
+paste -d '|' rrc_pro_5286_c_label_ids.txt rrc_pro_5286_c_tokens.txt | tee rrc_pro_5286.vw
+```
