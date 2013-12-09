@@ -46,7 +46,7 @@ ruby -ne 'BEGIN{
   rrc_pro_5286_r_labels.txt | tee rrc_pro_5286_r_label_ids.txt
 
 paste -d ',' rrc_pro_5286_r_label_ids.txt rrc_pro_5286_r_tokens.txt |
-  ruby -ape 'BEGIN{$; = ","; $, = " | "}; $_ = $_.split.join' |
+  ruby -ape 'BEGIN{$; = ","; $, = " | "}; $_ = $F.join' |
   tee rrc_pro_5286_r_vw.in
   
 vw --oaa 24 --ngram 2 rrc_pro_5286_r_vw.in -f rrc_pro_5286_c.model
