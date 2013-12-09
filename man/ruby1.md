@@ -39,20 +39,17 @@ ruby -ne 'BEGIN{
   rrc_pro_5286_c_labels.txt | tee rrc_pro_5286_c_label_ids.txt
 
 paste -d ',' rrc_pro_5286_c_label_ids.txt rrc_pro_5286_c_tokens.txt |
-  ruby -ape 'BEGIN{$; = ","; $, = " | "};' |
-  tee rrc_pro_5286_c_vw.csv
-
-paste -d ',' rrc_pro_5286_c_label_ids.txt rrc_pro_5286_c_tokens.txt |
-  tee rrc_pro_5286_c_vw.bar
+  ruby -ape 'BEGIN{$; = ","; $, = " | "}; $_ = $_.split.join'
+  tee rrc_pro_5286_c_vw.in
 
 ruby -e '
   srand 1234;
   l = ARGF.readlines; 
   r = 0...(n = l.size);
   r.each { |i| j = i + rand(n - i); l[i], l[j] = l[j], l[i] };
-  puts l' rrc_pro_5286_c_vw.csv | tee rrc_pro_5286_c_rand.in
+  puts l' rrc_pro_5286_c_vw.in | tee rrc_pro_5286_c_vw_rand.in
   
-vw --oaa 24 --ngram 2 rrc_pro_5286_c_rand.in -f rrc_pro_5286_c.model
+vw --oaa 24 --ngram 2 rrc_pro_5286_c_vw_rand.in -f rrc_pro_5286_c.model
 
 vw -t -i rrc_pro_5286_c.model rrc_pro_5286_c_tokens.txt -p rrc_pro_5286_c.predict
 ```
