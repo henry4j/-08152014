@@ -30,7 +30,7 @@ ruby -e '
   r.each { |i| j = i + rand(n - i); l[i], l[j] = l[j], l[i] };
   puts l' rrc_pro_5286_c.csv | tee rrc_pro_5286_r.csv
 
-ruby -E windows-1250 -ape 'BEGIN{$; = ","; $, = "; "}; $_ = $F[1,2].join' rrc_pro_5286_r.csv |
+ruby -E windows-1250 -ane 'BEGIN{$; = ","; $, = "; "}; puts $F[1,2].join' rrc_pro_5286_r.csv |
   tokenize | tee rrc_pro_5286_r_tokens.txt
 
 ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[3].chomp' \
