@@ -57,5 +57,7 @@ paste rrc_pro_5286_r_label_ids.txt rrc_pro_5286_r_vw.out |
 
 ####
 
+rrc_pro_5286_2764_c.csv
+vw -t -i rrc_pro_5286_r.model rrc_pro_5286_r_vw.in -p rrc_pro_5286_r_vw.out
 
 ```
