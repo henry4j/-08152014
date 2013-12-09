@@ -38,7 +38,7 @@ ruby -ne 'BEGIN{
 }; puts l[$_.chomp]' \
   rrc_pro_5286_c_labels.txt | tee rrc_pro_5286_c_label_ids.txt
 
-paste -d '|' rrc_pro_5286_c_label_ids.txt rrc_pro_5286_c_tokens.txt | tee rrc_pro_5286_c.in
+paste -d ' | ' rrc_pro_5286_c_label_ids.txt rrc_pro_5286_c_tokens.txt | tee rrc_pro_5286_c.in
 
 ruby -e '
   srand 1234;
