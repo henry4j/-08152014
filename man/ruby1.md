@@ -39,7 +39,7 @@ ruby -ne 'BEGIN{
   rrc_pro_5286_c_labels.txt | tee rrc_pro_5286_c_label_ids.txt
 
 paste -d ',' rrc_pro_5286_c_label_ids.txt rrc_pro_5286_c_tokens.txt |
-  ruby -ape 'BEGIN{$; = ","; $, = " | "}; $_ = $_.split.join'
+  ruby -ape 'BEGIN{$; = ","; $, = " | "}; $_ = $_.split.join' |
   tee rrc_pro_5286_c_vw.in
 
 ruby -e '
