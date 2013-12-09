@@ -27,7 +27,7 @@ ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[3].chomp' rrc_pro_5286_2764_
 
 ruby -ne 'BEGIN{
   %w{open-uri json}.each { |e| require e }
-  l = JSON[open("http://goo.gl/OcsNIZ").read];
+  l = JSON[open("https://raw.github.com/henry4j/-/master/paste/rrc_pro_25_labels.json").read];
   l = l.each_with_index.reduce({}) { |h, (e, i)| h[e] = i; h }
 }; puts l[$_.chomp]' rrc_pro_5286_2764_c_labels.txt |
   tee rrc_pro_5286_2764_c_label_ids.txt
