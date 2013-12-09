@@ -72,7 +72,9 @@ ruby -ne 'BEGIN{
 }; puts l[$_.chomp]' \
   rrc_pro_5286_2764_c_labels.txt | tee rrc_pro_5286_2764_c_label_ids.txt
 
-paste -d ',' rrc_pro_5286_2764_c_label_ids.txt rrc_5286_2764_c_tokens.txt |
+paste -d ',' rrc_pro_5286_2764_c_label_ids.txt rrc_pro_5286_2764_c_tokens.txt |
   ruby -ape 'BEGIN{$; = ","; $, = " | "}; $_ = $F.join' |
   tee rrc_pro_5286_2764_c_vw.in
+
+vw -t -i rrc_pro_5286_r.model rrc_pro_5286_2764_c_vw.in -r rrc_pro_5286_2764_c_vw.raw -p rrc_pro_5286_2764_c_vw.out
 ```
