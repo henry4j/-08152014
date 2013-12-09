@@ -19,3 +19,7 @@ ruby -ane 'puts $F.map(&:to_i).reduce(:+)' # sums fields of each line.
 ruby -ane 'puts $F.map(&:to_i).map(&:abs).join(" ")' # changes to absolute values.
 
 ```
+
+```bash
+ruby -E windows-1250 -ane 'BEGIN{$; = ","}; p $F[-2]' rrc_pro_3492_0876_a.csv | sort | uniq
+```
