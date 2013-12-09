@@ -27,6 +27,6 @@ ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[3]' rrc_pro_nnnn.csv | tee r
 ruby -ane 'BEGIN{
   require "json";
   l = JSON[open("rrc_pro_labels.json").read];
-  l = l.each_with_index.reduce({}) { |h, (e, i)| h[i] = e; h }
+  l = l.each_with_index.reduce({}) { |h, (e, i)| h[e] = i; h }
 } puts l[F[0]' rrc_pro_nnnn_labels.json
 ```
