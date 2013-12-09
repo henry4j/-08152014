@@ -22,4 +22,6 @@ ruby -ane 'puts $F.map(&:to_i).map(&:abs).join(" ")' # changes to absolute value
 
 ```bash
 ruby -E windows-1250 -ane 'BEGIN{$; = ","}; p $F[3]' rrc_pro_3492_0876_a.csv | sort  -f | uniq | tee labels.json
+
+JSON[open(b).read]
 ```
