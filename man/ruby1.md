@@ -19,3 +19,16 @@ ruby -ane 'puts $F.map(&:to_i).reduce(:+)' # sums fields of each line.
 ruby -ane 'puts $F.map(&:to_i).map(&:abs).join(" ")' # changes to absolute values.
 
 ```
+
+```bash
+# ruby -E windows-1250 -ane 'BEGIN{$; = ","}; p $F[3].chomp' rrc_pro.csv | sort -f | uniq | tee rrc_pro_labels.json
+ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[3].chomp' rrc_pro_5286_2764_c_labels.csv | 
+  tee rrc_pro_5286_2764_c_labels.txt
+
+ruby -ne 'BEGIN{
+  require "json";
+  l = JSON[open("rrc_pro_25_labels.json").read];
+  l = l.each_with_index.reduce({}) { |h, (e, i)| h[e] = i; h }
+}; puts l[$_.chomp]' rrc_pro_5286_2764_c_labels.txt |
+  tee rrc_pro_5286_2764_c_label_ids.txt
+```

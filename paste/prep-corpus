@@ -53,8 +53,8 @@ def run!
   skip_count = options[:skip_count] || 1
   max_entries = options[:max_entries]
   id_field = options[:id_field] || 0
-  l_field = options[:l_field] || 8
-  fields = (options[:fields] || ['4', '5']).map { |e| e.to_i }
+  l_field = options[:l_field] || 1
+  fields = (options[:fields] || ['2', '3']).map { |e| e.to_i }
   stop_phrases = options[:stop_phrases] || File.expand_path('../stop-comm-text', File.realpath(__FILE__))
   excludes = options[:excludes] || []
 
@@ -70,7 +70,7 @@ def run!
         next if l_field && l[l_field].nil?
         next if excludes.any? { |e| l[l_field].include?(e) }
         break if max_entries && (max_entries -= 1) < 0
-        lines_by_id[l[id_field].strip] = l
+        lines_by_id[-l[id_field].strip.to_i] = l
       end
     end
   ensure
@@ -78,12 +78,11 @@ def run!
   end
 
   w = CSV.new($stdout)
-  w.puts ['label', 'id', 'text']
   lines_by_id.sort.each do |id, l|
     begin
       s = fields.map { |f| l[f] }.compact.each { |f| stop_phrases ? f.gsub(stop_phrases, '.') : f }.join(' ')
       s = analyzer.tokenize(s).join(' ')
-      w.puts [l[l_field], id, s]
+      w.puts [-id, l[l_field], s]
     rescue
       raise 'Failed to process a line: %s.' % [l]
     end
