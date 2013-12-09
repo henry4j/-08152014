@@ -42,6 +42,7 @@ paste -d '|' rrc_pro_5286_c_label_ids.txt rrc_pro_5286_c_tokens.txt | tee rrc_pr
 
 head -n 5 rrc_pro_5286_c.in |
 ruby -e '
+  srand 1234;
   l = ARGF.readlines; 
   r = 0...(n = l.size);
   r.each { |i| j = i + rand(n - i); l[i], l[j] = l[j], l[i] };
