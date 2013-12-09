@@ -21,7 +21,7 @@ ruby -ane 'puts $F.map(&:to_i).map(&:abs).join(" ")' # changes to absolute value
 ```
 
 ```bash
-ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[3].strip' rrc_pro_nnnn.csv | sort -f | uniq | tee rrc_pro_25_labels.json
+ruby -E windows-1250 -ane 'BEGIN{$; = ","}; p $F[3].strip' rrc_pro_nnnn.csv | sort -f | uniq | tee rrc_pro_25_labels.json
 ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[3].strip' rrc_pro_nnnn.csv | tee rrc_pro_nnnn_labels.txt
 
 ruby -ane 'BEGIN{
