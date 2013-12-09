@@ -52,4 +52,6 @@ ruby -e '
 vw --oaa 24 --ngram 2 rrc_pro_5286_c_vw_rand.in -f rrc_pro_5286_c.model
 
 vw -t -i rrc_pro_5286_c.model rrc_pro_5286_c_tokens.txt -p rrc_pro_5286_c.predict
+
+vw -t -i rrc_pro_5286_c.model rrc_pro_5286_c_vw_rand.in -p rrc_pro_5286_c_vw_rand.out
 ```
