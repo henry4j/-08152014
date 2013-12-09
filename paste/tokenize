@@ -55,7 +55,7 @@ def run!
     argf.each do |io|
       io.each do |l|
         l.gsub!(stop_phrases, '.') if stop_phrases
-        puts analyzer.tokenize(l).join(' ')
+        $stdout.puts analyzer.tokenize(l).join(' ')
       end
     end
   ensure
