@@ -90,6 +90,6 @@ ruby -ane '
   };
   p = normalize($F.map { |e| sigmoid(e.split(":")[1].to_f) })
   pi = p.each_with_index.max
-  p pi[0] > 0.33 ? pi[1] : 0' rrc_pro_5286_2764_c_vw.raw |
+  p pi[0] > 0.05 ? pi[1]+1 : 0' rrc_pro_5286_2764_c_vw.raw |
   tee rrc_pro_5286_2764_c_vw_2.out
 ```
