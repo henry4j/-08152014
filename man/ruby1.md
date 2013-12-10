@@ -25,6 +25,8 @@ ruby -ane 'puts $F.map(&:to_i).map(&:abs).join(" ")' # changes to absolute value
 
 corpus='rrc_pro_5286_c'
 
+[ ! -e $corpus.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/$corpus.csv $corpus.csv
+
 ruby -e '
   srand 1234;
   l = ARGF.readlines; 
@@ -62,6 +64,8 @@ paste $corpus.label_ids $corpus-vw.out |
 #### Build a model & evaluate it using the non-other dataset, and then the all dataset (77.5% accuracy)
 
 corpus='rrc_pro_5286_2764_c'
+
+[ ! -e $corpus.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/$corpus.csv $corpus.csv
 
 ruby -E windows-1250 -ne 'puts $_.split(",").values_at(1, 2).join(";")' $corpus.csv |
   tokenize | tee $corpus.tokens
