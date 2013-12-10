@@ -52,7 +52,7 @@ paste -d ',' $corpus.label_ids $corpus.tokens |
   tee $corpus-vw.in
   
 vw --oaa 24 --ngram 2 $corpus-vw.in -f $HOME/Downloads/$corpus.model
-vw -t -i $HOME/Downloads/$corpus.model $corpus-r-vw.in -p $corpus-vw.out
+vw -t -i $HOME/Downloads/$corpus.model $corpus-vw.in -p $corpus-vw.out
 
 paste $corpus.label_ids $corpus-vw.out |
   ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l $corpus.csv`.to_f)}' # 91.5%
