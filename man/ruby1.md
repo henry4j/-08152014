@@ -88,6 +88,8 @@ ruby -ane '
     def sigmoid(x) 1/(1+Math.exp(-x)) end; 
     def normalize(a) s = a.reduce(:+); a.map { |e| e/s } end
   };
-  puts normalize($F.map { |e| sigmoid(e.split(":")[1].to_f) }).each_with_index.max[1] + 1' rrc_pro_5286_2764_c_vw.raw |
+  p = normalize($F.map { |e| sigmoid(e.split(":")[1].to_f) })
+  pi = p.each_with_index.max
+  p pi[0] > 0.33 ? pi[1] : 0' rrc_pro_5286_2764_c_vw.raw |
   tee rrc_pro_5286_2764_c_vw_2.out
 ```
