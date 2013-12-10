@@ -83,12 +83,11 @@ vw -t -i rrc_pro_5286_r.model rrc_pro_5286_2764_c_vw.in -r rrc_pro_5286_2764_c_v
 paste rrc_pro_5286_2764_c_label_ids.txt rrc_pro_5286_2764_c_vw.out |
   ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l rrc_pro_5286_r.csv`.to_f)}' # 91.5%
 
-head -n 5 rrc_pro_5286_2764_c_vw.raw |
 ruby -ane '
   BEGIN{
     def sigmoid(x) 1/(1+Math.exp(-x)) end; 
     def normalize(a) s = a.reduce(:+); a.map { |e| e/s } end
   };
-  puts normalize($F.map { |e| sigmoid(e.split(":")[1].to_f) }).each_with_index.to_a.max[1]' |
+  puts normalize($F.map { |e| sigmoid(e.split(":")[1].to_f) }).each_with_index.max[1] + 1' rrc_pro_5286_2764_c_vw.raw |
   tee rrc_pro_5286_2764_c_vw_2.out
 ```
