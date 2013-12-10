@@ -38,11 +38,9 @@ ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[1..2].join("; ")' $corpus-r.
 ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[3].chomp' $corpus-r.csv |
   tee $corpus-r.labels
 
-curl -o /tmp/rrc_pro_25_labels.json -ksL http://goo.gl/HLT94O
-
 ruby -ne 'BEGIN{
   %w{open-uri json}.each { |e| require e }
-  l = JSON[open("/tmp/rrc_pro_25_labels.json").read];
+  l = JSON[open("https://goo.gl/HLT94O").read];
   h = l.each_with_index.reduce({}) { |h, (e, i)| h[e] = i; h }
 }; puts h[$_.chomp]' $corpus-r.labels | 
   tee $corpus-r.label_ids
