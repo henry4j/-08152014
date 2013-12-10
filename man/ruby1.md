@@ -67,12 +67,10 @@ ruby -E windows-1250 -ane 'BEGIN{$; = ","; $, = "; "}; puts $F[1,2].join' rrc_pr
 ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[3].chomp' \
   rrc_pro_5286_2764_c.csv | tee rrc_pro_5286_2764_c_labels.txt
 
-curl -o /tmp/rrc_pro_25_labels.json -ksL http://goo.gl/HLT94O
-
 ruby -ne '
   BEGIN{
     %w{open-uri json}.each { |e| require e }
-    l = JSON[open("/tmp/rrc_pro_25_labels.json").read];
+    l = JSON[open("https://goo.gl/HLT94O").read];
     l = l.each_with_index.reduce({}) { |h, (e, i)| h[e] = i; h }
   }; 
   puts l[$_.chomp]' \
