@@ -34,10 +34,10 @@ ruby -e '
 
 corpus=$corpus-r
 
-ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[1..2].join("; ")' $corpus.csv |
+ruby -E windows-1250 -ne 'puts $_.split(",").values_at(1, 2).join(";")' $corpus.csv |
   tokenize | tee $corpus.tokens
 
-ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[3].chomp' $corpus.csv |
+ruby -E windows-1250 -ne 'puts $_.split(",")[3].chomp' $corpus.csv |
   tee $corpus.labels
 
 ruby -ne 'BEGIN{
