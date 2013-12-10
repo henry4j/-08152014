@@ -110,6 +110,8 @@ paste $corpus.label_ids $corpus-vw.out |
 ```bash
 corpus='rrc_pro_oct_nov'
 
+[ ! -e $corpus.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/$corpus.csv $corpus.csv
+
 ruby -E windows-1250 -ne 'puts $_.split(",").values_at(4, 11).join(";")' $corpus.csv |
   tokenize | tee $corpus.tokens
 
