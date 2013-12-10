@@ -83,9 +83,7 @@ ruby -ne '
   }; 
   puts l[$_.chomp]' $corpus.labels | tee $corpus.label_ids
 
-paste -d ',' $corpus.label_ids $corpus.tokens |
-  ruby -pe '$_ = $_.split(",").join(" | ")' |
-  tee $corpus-vw.in
+ruby -pe '$_ = " | " + $_' $corpus.tokens | tee $corpus-vw.in
 
 [ ! -e $HOME/Downloads/rrc_pro_5286_c-r.model ] &&
   s3cmd get s3://${S3_BUCKET}-private/resources/rrc_pro_5286_c-r.model $HOME/Downloads/rrc_pro_5286_c-r.model
