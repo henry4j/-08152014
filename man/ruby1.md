@@ -42,12 +42,13 @@ ruby -E windows-1250 -ne 'puts $_.split(",").values_at(1, 2).join(";")' $corpus.
 ruby -E windows-1250 -ne 'puts $_.split(",")[3].chomp' $corpus.csv |
   tee $corpus.labels
 
-ruby -ne 'BEGIN{
-  %w{open-uri json}.each { |e| require e }
-  l = JSON[open("https://goo.gl/HLT94O").read];
-  h = l.each_with_index.reduce({}) { |h, (e, i)| h[e] = i; h }
-}; puts h[$_.chomp]' $corpus.labels | 
-  tee $corpus.label_ids
+ruby -ne '
+  BEGIN{
+    %w{open-uri json}.each { |e| require e }
+    l = JSON[open("https://goo.gl/HLT94O").read];
+    l = l.each_with_index.reduce({}) { |h, (e, i)| h[e] = i; h }
+  }; 
+  puts l[$_.chomp]' $corpus.labels | tee $corpus.label_ids
 
 paste -d ',' $corpus.label_ids $corpus.tokens |
   ruby -pe '$_ = $_.split(",").join(" | ")' |
@@ -79,8 +80,7 @@ ruby -ne '
     l = JSON[open("https://goo.gl/HLT94O").read];
     l = l.each_with_index.reduce({}) { |h, (e, i)| h[e] = i; h }
   }; 
-  puts l[$_.chomp]' \
-  $corpus.labels | tee $corpus.label_ids
+  puts l[$_.chomp]' $corpus.labels | tee $corpus.label_ids
 
 paste -d ',' $corpus.label_ids $corpus.tokens |
   ruby -pe '$_ = $_.split(",").join(" | ")' |
