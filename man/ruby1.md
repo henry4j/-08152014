@@ -140,4 +140,6 @@ ruby -ne '
   }; 
   puts l[$_.chomp.to_i]' \
   $corpus-vw.out | tee $corpus-vw.labels
+
+:)
 ```
