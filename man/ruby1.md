@@ -88,7 +88,7 @@ ruby -ane '
   p normalize($F.map { |e| sigmoid(e.split(":")[1].to_f) })' rrc_pro_5286_2764_c_vw.raw |
   tee rrc_pro_5286_2764_c_vw.norm
 
-ruby -ne 'e = eval($_).each_with_index.max; p e[0] > 0.075 ? e[1] + 1 : 0' rrc_pro_5286_2764_c_vw.norm |
+ruby -ne 'e = eval($_).each_with_index.max; p e[0] > 0.071 ? e[1] + 1 : 0' rrc_pro_5286_2764_c_vw.norm |
   tee rrc_pro_5286_2764_c_vw.out
 
 paste rrc_pro_5286_2764_c_label_ids.txt rrc_pro_5286_2764_c_vw.out |
