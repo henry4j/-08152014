@@ -54,7 +54,9 @@ vw -t -i rrc_pro_5286_r.model rrc_pro_5286_r_vw.in -p rrc_pro_5286_r_vw.out
 
 paste rrc_pro_5286_r_label_ids.txt rrc_pro_5286_r_vw.out |
   ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l rrc_pro_5286_r.csv`.to_f)}' # 91.5%
+```
 
+```bash
 #### Build a model & evaluate it using the non-other dataset, and then the all dataset (77.5% accuracy)
 
 ruby -E windows-1250 -ane 'BEGIN{$; = ","; $, = "; "}; puts $F[1,2].join' rrc_pro_5286_2764_c.csv |
