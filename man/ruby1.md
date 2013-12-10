@@ -65,7 +65,7 @@ s3cmd put $HOME/Downloads/$corpus.model s3://${S3_BUCKET}-private/resources/
 ```bash
 #### Build a model & evaluate it using the non-other dataset, and then the all dataset (77.5% accuracy)
 
-corpus='rrc_pro_5286_2764_c'
+export corpus='rrc_pro_5286_2764_c'
 
 [ ! -e $corpus.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/$corpus.csv $corpus.csv
 
