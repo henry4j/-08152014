@@ -32,38 +32,42 @@ ruby -e '
   r.each { |i| j = i + rand(n - i); l[i], l[j] = l[j], l[i] };
   puts l' $corpus.csv | tee $corpus-r.csv
 
-ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[1..2].join("; ")' $corpus-r.csv |
-  tokenize | tee $corpus-r.tokens
+corpus=$corpus-r
 
-ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[3].chomp' $corpus-r.csv |
-  tee $corpus-r.labels
+ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[1..2].join("; ")' $corpus.csv |
+  tokenize | tee $corpus.tokens
+
+ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[3].chomp' $corpus.csv |
+  tee $corpus.labels
 
 ruby -ne 'BEGIN{
   %w{open-uri json}.each { |e| require e }
   l = JSON[open("https://goo.gl/HLT94O").read];
   h = l.each_with_index.reduce({}) { |h, (e, i)| h[e] = i; h }
-}; puts h[$_.chomp]' $corpus-r.labels | 
-  tee $corpus-r.label_ids
+}; puts h[$_.chomp]' $corpus.labels | 
+  tee $corpus.label_ids
 
-paste -d ',' $corpus-r.label_ids $corpus-r.tokens |
-  ruby -ape 'BEGIN{$; = ","; $, = " | "}; $_ = $F.join' |
-  tee $corpus-r-vw.in
+paste -d ',' $corpus.label_ids $corpus.tokens |
+  ruby -pe '$_ = $_.split(",").join(" | ")' |
+  tee $corpus-vw.in
   
-vw --oaa 24 --ngram 2 $corpus-r-vw.in -f $corpus-r.model
-vw -t -i $corpus-r.model $corpus-r-vw.in -p $corpus-r-vw.out
+vw --oaa 24 --ngram 2 $corpus-vw.in -f $HOME/Downloads/$corpus.model
+vw -t -i $HOME/Downloads/$corpus.model $corpus-r-vw.in -p $corpus-vw.out
 
-paste $corpus-r.label_ids $corpus-r-vw.out |
+paste $corpus.label_ids $corpus-vw.out |
   ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l $corpus.csv`.to_f)}' # 91.5%
 ```
 
 ```bash
 #### Build a model & evaluate it using the non-other dataset, and then the all dataset (77.5% accuracy)
 
-ruby -E windows-1250 -ane 'BEGIN{$; = ","; $, = "; "}; puts $F.values_at(4, 11).join' rrc_pro_5286_2764_c.csv |
-  tokenize | tee rrc_pro_5286_2764_c_tokens.txt
+corpus='rrc_pro_5286_2764_c'
 
-ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[3].chomp' \
-  rrc_pro_5286_2764_c.csv | tee rrc_pro_5286_2764_c_labels.txt
+ruby -E windows-1250 -ne 'puts $_.split(",").values_at(1, 2).join(";")' $corpus.csv |
+  tokenize | tee $corpus.tokens
+
+ruby -E windows-1250 -ne 'puts $_.split(",")[3].chomp' $corpus.csv |
+  tee $corpus.labels
 
 ruby -ne '
   BEGIN{
@@ -72,11 +76,11 @@ ruby -ne '
     l = l.each_with_index.reduce({}) { |h, (e, i)| h[e] = i; h }
   }; 
   puts l[$_.chomp]' \
-  rrc_pro_5286_2764_c_labels.txt | tee rrc_pro_5286_2764_c_label_ids.txt
+  $corpus.labels | tee $corpus.label_ids
 
-paste -d ',' rrc_pro_5286_2764_c_label_ids.txt rrc_pro_5286_2764_c_tokens.txt |
-  ruby -ape 'BEGIN{$; = ","; $, = " | "}; $F[0] = "" if $F[0] == "0"; $_ = $F.join' |
-  tee rrc_pro_5286_2764_c_vw.in
+paste -d ',' $corpus.label_ids $corpus.tokens |
+  ruby -pe '$_ = $_.split(",").join(" | ")' |
+  tee $corpus-vw.in
 
 vw -t -i rrc_pro_5286_r.model rrc_pro_5286_2764_c_vw.in -r rrc_pro_5286_2764_c_vw.raw
 
