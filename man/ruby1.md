@@ -101,7 +101,7 @@ paste rrc_pro_5286_2764_c_label_ids.txt rrc_pro_5286_2764_c_vw.out |
 corpus='rrc_pro_q3_2013'
 # corpus='rrc_pro_5286_2764_c'
 
-ruby -E windows-1250 -ane 'BEGIN{$; = ","; $, = "; "}; puts $F[1,2].join' $corpus.csv |
+ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[1,2].join(";")' $corpus.csv |
   tokenize | tee $corpus.tokens
 
 ruby -pe '$_ = " | " + $_' $corpus.tokens | tee $corpus-vw.in
