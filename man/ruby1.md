@@ -23,7 +23,7 @@ ruby -ane 'puts $F.map(&:to_i).map(&:abs).join(" ")' # changes to absolute value
 ```bash
 #### Build a model & evaluate it using the non-other dataset (91.5% accuracy)
 
-corpus='rrc_pro_5286_c'
+export corpus='rrc_pro_5286_c'
 
 [ ! -e $corpus.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/$corpus.csv $corpus.csv
 
@@ -34,7 +34,7 @@ ruby -e '
   r.each { |i| j = i + rand(n - i); l[i], l[j] = l[j], l[i] };
   puts l' $corpus.csv | tee $corpus-r.csv
 
-corpus=$corpus-r
+export corpus=$corpus-r
 
 ruby -E windows-1250 -ne 'puts $_.split(",").values_at(1, 2).join(";")' $corpus.csv |
   tokenize | tee $corpus.tokens
