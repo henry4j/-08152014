@@ -78,21 +78,19 @@ paste -d ',' rrc_pro_5286_2764_c_label_ids.txt rrc_pro_5286_2764_c_tokens.txt |
   ruby -ape 'BEGIN{$; = ","; $, = " | "}; $F[0] = "" if $F[0] == "0"; $_ = $F.join' |
   tee rrc_pro_5286_2764_c_vw.in
 
-vw -t -i rrc_pro_5286_r.model rrc_pro_5286_2764_c_vw.in -r rrc_pro_5286_2764_c_vw.raw -p rrc_pro_5286_2764_c_vw.out
-
-paste rrc_pro_5286_2764_c_label_ids.txt rrc_pro_5286_2764_c_vw.out |
-  ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l rrc_pro_5286_r.csv`.to_f)}' # 91.5%
+vw -t -i rrc_pro_5286_r.model rrc_pro_5286_2764_c_vw.in -r rrc_pro_5286_2764_c_vw.raw
 
 ruby -ane '
   BEGIN{
     def sigmoid(x) 1/(1+Math.exp(-x)) end; 
     def normalize(a) s = a.reduce(:+); a.map { |e| e/s } end
   };
-  p = normalize($F.map { |e| sigmoid(e.split(":")[1].to_f) })
-  pi = p.each_with_index.max
-  p pi[0] > 0.09 ? pi[1]+1 : 0' rrc_pro_5286_2764_c_vw.raw |
-  tee rrc_pro_5286_2764_c_vw_2.out
+  p normalize($F.map { |e| sigmoid(e.split(":")[1].to_f) })' rrc_pro_5286_2764_c_vw.raw |
+  tee rrc_pro_5286_2764_c_vw.norm
 
-paste rrc_pro_5286_2764_c_label_ids.txt rrc_pro_5286_2764_c_vw_2.out |
+ruby -ne 'e = eval($_).each_with_index.max; p e[0] > 0.77 ? e[1] + 1 : 0' rrc_pro_5286_2764_c_vw.norm |
+  tee rrc_pro_5286_2764_c_vw.out
+
+paste -d ':' rrc_pro_5286_2764_c_label_ids.txt rrc_pro_5286_2764_c_vw.out |
   ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l rrc_pro_5286_2764_c.csv`.to_f)}' # 74.48%
 ```
