@@ -103,10 +103,10 @@ ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F.values_at(4, 11).join(";")' 
 
 ruby -pe '$_ = " | " + $_' $corpus.tokens | tee $corpus-vw.in
 
-[ ! -e $HOME/Downloads/rrc_pro_5286-r.model ] &&
-  s3cmd get s3://${S3_BUCKET}-private/resources/rrc_pro_5286-r.model $HOME/Downloads/rrc_pro_5286-r.model
+[ ! -e $HOME/Downloads/rrc_pro_5286_c-r.model ] &&
+  s3cmd get s3://${S3_BUCKET}-private/resources/rrc_pro_5286_c-r.model $HOME/Downloads/rrc_pro_5286_c-r.model
 
-vw -t -i $HOME/Downloads/rrc_pro_5286-r.model $corpus-vw.in -r $corpus-vw.raw
+vw -t -i $HOME/Downloads/rrc_pro_5286_c-r.model $corpus-vw.in -r $corpus-vw.raw
 
 ruby -ane '
   BEGIN{
