@@ -106,7 +106,9 @@ ruby -E windows-1250 -ane 'BEGIN{$; = ","; $, = "; "}; puts $F[1,2].join' $corpu
 
 ruby -pe '$_ = " | " + $_' $corpus.tokens | tee $corpus-vw.in
 
-vw -t -i rrc_pro_5286_r.model $corpus-vw.in -r $corpus-vw.raw
+curl -o /tmp/rrc_pro_5286_r.model -ksL http://goo.gl/yyUfTe
+
+vw -t -i /tmp/rrc_pro_5286_r.model $corpus-vw.in -r $corpus-vw.raw
 
 ruby -ane '
   BEGIN{
