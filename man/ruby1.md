@@ -128,6 +128,4 @@ ruby -ne '
   }; 
   puts l[$_.chomp]' \
   $corpus-vw.out | tee $corpus-vw.labels
-
-paste -d ',' $corpus.csv $corpus-vw.labels | $corpus-labeled.csv
 ```
