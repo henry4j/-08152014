@@ -57,7 +57,9 @@ vw -t -i $HOME/Downloads/$corpus.model $corpus-vw.in -p $corpus-vw.out
 paste $corpus.label_ids $corpus-vw.out |
   ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l $corpus.csv`.to_f)}' # 91.5%
 
-s3cmd put $HOME/Downloads/$corpus.model s3://${S3_BUCKET}-private/resources
+s3cmd put $HOME/Downloads/$corpus.model s3://${S3_BUCKET}-private/resources/
+
+:)
 ```
 
 ```bash
