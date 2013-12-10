@@ -59,7 +59,7 @@ paste $corpus-r.label_ids $corpus-r-vw.out |
 ```bash
 #### Build a model & evaluate it using the non-other dataset, and then the all dataset (77.5% accuracy)
 
-ruby -E windows-1250 -ane 'BEGIN{$; = ","; $, = "; "}; puts $F[4,11].join' rrc_pro_5286_2764_c.csv |
+ruby -E windows-1250 -ane 'BEGIN{$; = ","; $, = "; "}; puts $F.values_at(4, 11).join' rrc_pro_5286_2764_c.csv |
   tokenize | tee rrc_pro_5286_2764_c_tokens.txt
 
 ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[3].chomp' \
