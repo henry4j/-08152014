@@ -65,11 +65,13 @@ ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[3].chomp' \
 
 curl -o /tmp/rrc_pro_25_labels.json -ksL http://goo.gl/HLT94O
 
-ruby -ne 'BEGIN{
-  %w{open-uri json}.each { |e| require e }
-  l = JSON[open("/tmp/rrc_pro_25_labels.json").read];
-  l = l.each_with_index.reduce({}) { |h, (e, i)| h[e] = i; h }
-}; puts l[$_.chomp]' \
+ruby -ne '
+  BEGIN{
+    %w{open-uri json}.each { |e| require e }
+    l = JSON[open("/tmp/rrc_pro_25_labels.json").read];
+    l = l.each_with_index.reduce({}) { |h, (e, i)| h[e] = i; h }
+  }; 
+  puts l[$_.chomp]' \
   rrc_pro_5286_2764_c_labels.txt | tee rrc_pro_5286_2764_c_label_ids.txt
 
 paste -d ',' rrc_pro_5286_2764_c_label_ids.txt rrc_pro_5286_2764_c_tokens.txt |
@@ -84,7 +86,11 @@ paste rrc_pro_5286_2764_c_label_ids.txt rrc_pro_5286_2764_c_vw.out |
 head -n 5 rrc_pro_5286_2764_c_vw.raw | 
   ruby -ane 'BEGIN{require "json"}; $_ = "{" + $F.join(",") + "}"; h = JSON[$_.gsub(%r(([^,{]+)\s*:), %q("\1":))]; p h'
 
-ruby -ane 'BEGIN{def sigmoid(x) 1/(1+Math.exp(x)) end; def normalize(a) s = a.reduce(:+); a.map { |e| e/s } end}; puts normalize($F.map { |e| sigmoid(e.split(":")[1].to_f) }).each_with_index.to_a.max[1]' rrc_pro_5286_2764_c_vw.raw |
+ruby -ane '
+  BEGIN{
+    def sigmoid(x) 1/(1+Math.exp(x)) end; 
+    def normalize(a) s = a.reduce(:+); a.map { |e| e/s } end
+  };
+  puts normalize($F.map { |e| sigmoid(e.split(":")[1].to_f) }).each_with_index.to_a.max[1]' rrc_pro_5286_2764_c_vw.raw |
   tee rrc_pro_5286_2764_c_vw_2.out
-
 ```
