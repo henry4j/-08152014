@@ -50,7 +50,7 @@ ruby -E windows-1250 -ne 'puts $_.split(",")[3].chomp' $corpus.csv | ruby -ne '
 paste -d ',' $corpus.label_ids $corpus.tokens |
   ruby -pe '$_ = $_.split(",").join(" | ")' |
   tee $corpus-vw.in
-  
+
 vw --oaa 24 --ngram 2 $corpus-vw.in -f $HOME/Downloads/$corpus.model
 vw -t -i $HOME/Downloads/$corpus.model $corpus-vw.in -p $corpus-vw.out
 
@@ -87,21 +87,26 @@ paste -d ',' $corpus.label_ids $corpus.tokens |
   ruby -pe '$_ = $_.split(",").join(" | ")' |
   tee $corpus-vw.in
 
-vw -t -i rrc_pro_5286_r.model rrc_pro_5286_2764_c_vw.in -r rrc_pro_5286_2764_c_vw.raw
+[ ! -e $HOME/Downloads/rrc_pro_5286_c-r.model ] &&
+  s3cmd get s3://${S3_BUCKET}-private/resources/rrc_pro_5286_c-r.model $HOME/Downloads/rrc_pro_5286_c-r.model
+
+vw -t -i $HOME/Downloads/rrc_pro_5286_c-r.model $corpus-vw.in -r $corpus-vw.raw
 
 ruby -ane '
   BEGIN{
     def sigmoid(x) 1/(1+Math.exp(-x)) end; 
     def normalize(a) s = a.reduce(:+); a.map { |e| e/s } end
   };
-  p normalize($F.map { |e| sigmoid(e.split(":")[1].to_f) })' rrc_pro_5286_2764_c_vw.raw |
-  tee rrc_pro_5286_2764_c_vw.norm
+  p normalize($F.map { |e| sigmoid(e.split(":")[1].to_f) })' $corpus-vw.raw |
+  tee $corpus-vw.norm
 
-ruby -ne 'ei = eval($_).each_with_index.max; p ei[0] > 0.071 ? ei[1] + 1 : 0' rrc_pro_5286_2764_c_vw.norm |
-  tee rrc_pro_5286_2764_c_vw.out
+ruby -ne 'ei = eval($_).each_with_index.max; p ei[0] > 0.071 ? ei[1] + 1 : 0' $corpus-vw.norm |
+  tee $corpus-vw.out
 
-paste rrc_pro_5286_2764_c_label_ids.txt rrc_pro_5286_2764_c_vw.out |
+paste $corpus.label_ids $corpus-vw.out |
   ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l rrc_pro_5286_2764_c.csv`.to_f)}' # 77.5%
+  
+:)
 ```
 
 ```bash
