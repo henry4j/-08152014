@@ -128,6 +128,6 @@ ruby -ne '
     %w{open-uri json}.each { |e| require e }
     l = JSON[open("/tmp/rrc_pro_25_labels.json").read];
   }; 
-  puts l[$_.chomp]' \
+  puts l[$_.chomp.to_i]' \
   $corpus-vw.out | tee $corpus-vw.labels
 ```
