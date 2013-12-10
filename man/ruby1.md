@@ -90,9 +90,9 @@ ruby -ane '
   };
   p = normalize($F.map { |e| sigmoid(e.split(":")[1].to_f) })
   pi = p.each_with_index.max
-  p pi[0] > 0.05 ? pi[1]+1 : 0' rrc_pro_5286_2764_c_vw.raw |
+  p pi[0] > 0.09 ? pi[1]+1 : 0' rrc_pro_5286_2764_c_vw.raw |
   tee rrc_pro_5286_2764_c_vw_2.out
-  
+
 paste rrc_pro_5286_2764_c_label_ids.txt rrc_pro_5286_2764_c_vw_2.out |
-  ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l rrc_pro_5286_2764_c.csv`.to_f)}' # 91.5%
+  ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l rrc_pro_5286_2764_c.csv`.to_f)}' # 74.48%
 ```
