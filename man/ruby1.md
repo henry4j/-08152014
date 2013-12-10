@@ -92,5 +92,5 @@ ruby -ne 'e = eval($_).each_with_index.max; p e[0] > 0.071 ? e[1] + 1 : 0' rrc_p
   tee rrc_pro_5286_2764_c_vw.out
 
 paste rrc_pro_5286_2764_c_label_ids.txt rrc_pro_5286_2764_c_vw.out |
-  ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l rrc_pro_5286_2764_c.csv`.to_f)}' # 91.5%
+  ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l rrc_pro_5286_2764_c.csv`.to_f)}' # 77.5%
 ```
