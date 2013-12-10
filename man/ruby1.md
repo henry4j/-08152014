@@ -96,3 +96,35 @@ ruby -ne 'ei = eval($_).each_with_index.max; p ei[0] > 0.071 ? ei[1] + 1 : 0' rr
 paste rrc_pro_5286_2764_c_label_ids.txt rrc_pro_5286_2764_c_vw.out |
   ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l rrc_pro_5286_2764_c.csv`.to_f)}' # 77.5%
 ```
+
+```bash
+ruby -E windows-1250 -ane 'BEGIN{$; = ","; $, = "; "}; puts $F[1,2].join' rrc_pro_q3_2013.csv |
+  tokenize | tee rrc_pro_q3_2013_tokens.txt
+
+ruby -pe '$_ = " | " + $_' rrc_pro_q3_2013_tokens.txt | tee rrc_pro_q3_2013_vw.in
+
+vw -t -i rrc_pro_5286_r.model rrc_pro_q3_2013_vw.in -r rrc_pro_q3_2013_vw.raw
+
+ruby -ane '
+  BEGIN{
+    def sigmoid(x) 1/(1+Math.exp(-x)) end; 
+    def normalize(a) s = a.reduce(:+); a.map { |e| e/s } end
+  };
+  p normalize($F.map { |e| sigmoid(e.split(":")[1].to_f) })' rrc_pro_q3_2013_vw.raw |
+  tee rrc_pro_q3_2013_vw.norm
+
+ruby -ne 'ei = eval($_).each_with_index.max; p ei[0] > 0.071 ? ei[1] + 1 : 0' rrc_pro_q3_2013_vw.norm |
+  tee rrc_pro_q3_2013_vw.out
+
+curl -o /tmp/rrc_pro_25_labels.json -ksL http://goo.gl/HLT94O
+
+ruby -ne '
+  BEGIN{
+    %w{open-uri json}.each { |e| require e }
+    l = JSON[open("/tmp/rrc_pro_25_labels.json").read];
+  }; 
+  puts l[$_.chomp]' \
+  rrc_pro_q3_2013_vw.out | tee rrc_pro_q3_2013_labels.txt
+
+paste -d ',' rrc_pro_q3_2013.csv rrc_pro_q3_2013_labels.txt | rrc_pro_q3_2013_labeled.csv
+```
