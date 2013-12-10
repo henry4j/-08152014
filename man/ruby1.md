@@ -78,6 +78,8 @@ paste -d ',' rrc_pro_5286_2764_c_label_ids.txt rrc_pro_5286_2764_c_tokens.txt |
 
 vw -t -i rrc_pro_5286_r.model rrc_pro_5286_2764_c_vw.in -r rrc_pro_5286_2764_c_vw.raw -p rrc_pro_5286_2764_c_vw.out
 
+head -n 5 rrc_pro_5286_2764_c_vw.out | ruby -e ''
+
 paste rrc_pro_5286_2764_c_label_ids.txt rrc_pro_5286_2764_c_vw.out |
   ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l rrc_pro_5286_r.csv`.to_f)}' # 91.5%
 ```
