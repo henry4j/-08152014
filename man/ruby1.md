@@ -98,23 +98,26 @@ paste rrc_pro_5286_2764_c_label_ids.txt rrc_pro_5286_2764_c_vw.out |
 ```
 
 ```bash
-ruby -E windows-1250 -ane 'BEGIN{$; = ","; $, = "; "}; puts $F[1,2].join' rrc_pro_q3_2013.csv |
-  tokenize | tee rrc_pro_q3_2013_tokens.txt
+corpus = 'rrc_pro_q3_2013'
 
-ruby -pe '$_ = " | " + $_' rrc_pro_q3_2013_tokens.txt | tee rrc_pro_q3_2013_vw.in
 
-vw -t -i rrc_pro_5286_r.model rrc_pro_q3_2013_vw.in -r rrc_pro_q3_2013_vw.raw
+ruby -E windows-1250 -ane 'BEGIN{$; = ","; $, = "; "}; puts $F[1,2].join' $corpus.csv |
+  tokenize | tee $corpus.tokens
+
+ruby -pe '$_ = " | " + $_' $corpus.tokens | tee $corpus-vw.in
+
+vw -t -i rrc_pro_5286_r.model $corpus-vw.in -r $corpus-vw.raw
 
 ruby -ane '
   BEGIN{
     def sigmoid(x) 1/(1+Math.exp(-x)) end; 
     def normalize(a) s = a.reduce(:+); a.map { |e| e/s } end
   };
-  p normalize($F.map { |e| sigmoid(e.split(":")[1].to_f) })' rrc_pro_q3_2013_vw.raw |
-  tee rrc_pro_q3_2013_vw.norm
+  p normalize($F.map { |e| sigmoid(e.split(":")[1].to_f) })' $corpus-vw.raw |
+  tee $corpus-vw.norm
 
-ruby -ne 'ei = eval($_).each_with_index.max; p ei[0] > 0.071 ? ei[1] + 1 : 0' rrc_pro_q3_2013_vw.norm |
-  tee rrc_pro_q3_2013_vw.out
+ruby -ne 'ei = eval($_).each_with_index.max; p ei[0] > 0.071 ? ei[1] + 1 : 0' $corpus-vw.norm |
+  tee $corpus-vw.out
 
 curl -o /tmp/rrc_pro_25_labels.json -ksL http://goo.gl/HLT94O
 
@@ -124,7 +127,7 @@ ruby -ne '
     l = JSON[open("/tmp/rrc_pro_25_labels.json").read];
   }; 
   puts l[$_.chomp]' \
-  rrc_pro_q3_2013_vw.out | tee rrc_pro_q3_2013_labels.txt
+  $corpus-vw.out | tee $corpus-vw.labels
 
-paste -d ',' rrc_pro_q3_2013.csv rrc_pro_q3_2013_labels.txt | rrc_pro_q3_2013_labeled.csv
+paste -d ',' $corpus.csv $corpus-vw.labels | $corpus-labeled.csv
 ```
