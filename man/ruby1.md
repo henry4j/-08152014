@@ -23,37 +23,39 @@ ruby -ane 'puts $F.map(&:to_i).map(&:abs).join(" ")' # changes to absolute value
 ```bash
 #### Build a model & evaluate it using the non-other dataset (91.5% accuracy)
 
+corpus='rrc_pro_5286_c'
+
 ruby -e '
   srand 1234;
   l = ARGF.readlines; 
   r = 0...(n = l.size);
   r.each { |i| j = i + rand(n - i); l[i], l[j] = l[j], l[i] };
-  puts l' rrc_pro_5286_c.csv | tee rrc_pro_5286_r.csv
+  puts l' $corpus.csv | tee $corpus-r.csv
 
-ruby -E windows-1250 -ane 'BEGIN{$; = ","; $, = "; "}; puts $F[1,2].join' rrc_pro_5286_r.csv |
-  tokenize | tee rrc_pro_5286_r_tokens.txt
+ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[1..2].join("; ")' $corpus-r.csv |
+  tokenize | tee $corpus-r.tokens
 
-ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[3].chomp' \
-  rrc_pro_5286_r.csv | tee rrc_pro_5286_r_labels.txt
+ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[3].chomp' $corpus-r.csv |
+  tee $corpus-r.labels
 
 curl -o /tmp/rrc_pro_25_labels.json -ksL http://goo.gl/HLT94O
 
 ruby -ne 'BEGIN{
   %w{open-uri json}.each { |e| require e }
   l = JSON[open("/tmp/rrc_pro_25_labels.json").read];
-  l = l.each_with_index.reduce({}) { |h, (e, i)| h[e] = i; h }
-}; puts l[$_.chomp]' \
-  rrc_pro_5286_r_labels.txt | tee rrc_pro_5286_r_label_ids.txt
+  h = l.each_with_index.reduce({}) { |h, (e, i)| h[e] = i; h }
+}; puts h[$_.chomp]' $corpus-r.labels | 
+  tee $corpus-r.label_ids
 
-paste -d ',' rrc_pro_5286_r_label_ids.txt rrc_pro_5286_r_tokens.txt |
+paste -d ',' $corpus-r.label_ids $corpus-r.tokens |
   ruby -ape 'BEGIN{$; = ","; $, = " | "}; $_ = $F.join' |
-  tee rrc_pro_5286_r_vw.in
+  tee $corpus-r-vw.in
   
-vw --oaa 24 --ngram 2 rrc_pro_5286_r_vw.in -f rrc_pro_5286_r.model
-vw -t -i rrc_pro_5286_r.model rrc_pro_5286_r_vw.in -p rrc_pro_5286_r_vw.out
+vw --oaa 24 --ngram 2 $corpus-r-vw.in -f $corpus-r.model
+vw -t -i $corpus-r.model $corpus-r-vw.in -p $corpus-r-vw.out
 
-paste rrc_pro_5286_r_label_ids.txt rrc_pro_5286_r_vw.out |
-  ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l rrc_pro_5286_r.csv`.to_f)}' # 91.5%
+paste $corpus-r.label_ids $corpus-r-vw.out |
+  ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l $corpus.csv`.to_f)}' # 91.5%
 ```
 
 ```bash
