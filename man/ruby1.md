@@ -104,9 +104,9 @@ ruby -E windows-1250 -ane 'BEGIN{$; = ","}; puts $F[1,2].join(";")' $corpus.csv 
 
 ruby -pe '$_ = " | " + $_' $corpus.tokens | tee $corpus-vw.in
 
-curl -o /tmp/rrc_pro_5286_r.model -ksL http://goo.gl/yyUfTe
+curl -o /tmp/rrc_pro_5286-r.model -ksL http://goo.gl/yyUfTe
 
-vw -t -i /tmp/rrc_pro_5286_r.model $corpus-vw.in -r $corpus-vw.raw
+vw -t -i /tmp/rrc_pro_5286-r.model $corpus-vw.in -r $corpus-vw.raw
 
 ruby -ane '
   BEGIN{
@@ -119,12 +119,10 @@ ruby -ane '
 ruby -ne 'ei = eval($_).each_with_index.max; p ei[0] > 0.071 ? ei[1] + 1 : 0' $corpus-vw.norm |
   tee $corpus-vw.out
 
-curl -o /tmp/rrc_pro_25_labels.json -ksL http://goo.gl/HLT94O
-
 ruby -ne '
   BEGIN{
     %w{open-uri json}.each { |e| require e }
-    l = JSON[open("/tmp/rrc_pro_25_labels.json").read];
+    l = JSON[open("https://goo.gl/HLT94O").read];
   }; 
   puts l[$_.chomp.to_i]' \
   $corpus-vw.out | tee $corpus-vw.labels
