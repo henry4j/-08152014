@@ -3,7 +3,7 @@
 class Analyzer
   def self.require_jars
     %w(text-1.0-SNAPSHOT.jar).map do |e|
-      jar = "#{ENV['HADOOP_BASE']}/libexec/lib/#{e}"
+      jar = ENV['HADOOP_BASE'] ? "#{ENV['HADOOP_BASE']}/libexec/lib/#{e}" : "#{ENV['HOME']}/Downloads/#{e}"
       system "curl -o #{jar} -ksL http://raw.github.com/henry4j/-/master/paste/#{e}" unless File.exist?(jar)
       require jar
     end + %w(
