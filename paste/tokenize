@@ -1,9 +1,15 @@
 #!/usr/bin/env jruby -E windows-1250
-%W(open-uri #{ENV['HADOOP_BASE']}/libexec/lib/text-1.0-SNAPSHOT.jar).each { |e| require e }
 
 class Analyzer
+  def self.require_hadoop_jars
+    %w(text-1.0-SNAPSHOT.jar).map do |e|
+      system "[ ! -e $HADOOP_BASE/libexec/lib/#{e} ] && curl -o $HADOOP_BASE/libexec/lib/#{e} -ksL http://raw.github.com/henry4j/-/master/paste/#{e}"
+      require "#{ENV['HADOOP_BASE']}/libexec/lib/#{e}"
+    end
+  end
+
   def self.require_jars
-    %w(
+    Analyzer.require_hadoop_jars + %w(
       org.apache.lucene:lucene-analyzers-common:4.3.0
       org.apache.lucene:lucene-core:4.3.0
       org.apache.mahout:mahout-core:0.8
