@@ -17,11 +17,11 @@ class Analyzer
 
   def initialize(analyzer)
     @@jars ||= Analyzer.require_jars
-    @@stop_phrases_in_re ||= /#{@@stop_phrases.split("\n").reject { |e| e[0] == '#' }.join('|')}/
     @analyzer = org.apache.mahout.common.lucene.AnalyzerUtils.createAnalyzer(analyzer)
   end
 
   def tokenize(text)
+    @@stop_phrases_in_re ||= /#{STOP_PHRASES.split("\n").reject { |e| e[0] == '#' }.join('|')}/
     text = text.gsub(@@stop_phrases_in_re, '.')
     stream = @analyzer.tokenStream('{field-name}', java.io.StringReader.new(text)).tap { |e| e.reset }
     term_attr = stream.add_attribute(org.apache.lucene.analysis.tokenattributes.CharTermAttribute.java_class)
@@ -34,7 +34,7 @@ class Analyzer
     end
   end
 
-  @@stop_phrases ||= <<'HERE'
+  STOP_PHRASES = <<'HERE'
  has requested technical support through the Seller Central is temporarily unavailable.{,2} contact-us form.  Please reply to: 
 # ASIN/ISBN:?
 # ASIN:
