@@ -1,15 +1,12 @@
 #!/usr/bin/env jruby -E windows-1250
 
 class Analyzer
-  def self.require_hadoop_jars
-    %w(text-1.0-SNAPSHOT.jar).map do |e|
-      system "[ ! -e $HADOOP_BASE/libexec/lib/#{e} ] && curl -o $HADOOP_BASE/libexec/lib/#{e} -ksL http://raw.github.com/henry4j/-/master/paste/#{e}"
-      require "#{ENV['HADOOP_BASE']}/libexec/lib/#{e}"
-    end
-  end
-
   def self.require_jars
-    %w(
+    %w(text-1.0-SNAPSHOT.jar).map do |e|
+      jar = "#{ENV['HADOOP_BASE']}/libexec/lib/#{e}"
+      system "curl -o #{jar} -ksL http://raw.github.com/henry4j/-/master/paste/#{e}" unless File.exist?(jar)
+      require jar
+    end + %w(
       org.apache.lucene:lucene-analyzers-common:4.3.0
       org.apache.lucene:lucene-core:4.3.0
       org.apache.mahout:mahout-core:0.8
@@ -22,7 +19,7 @@ class Analyzer
   end
 
   def initialize(analyzer)
-    @@jars ||= Analyzer.require_hadoop_jars + Analyzer.require_jars
+    @@jars ||= Analyzer.require_jars
     @analyzer = org.apache.mahout.common.lucene.AnalyzerUtils.createAnalyzer(analyzer)
   end
 
