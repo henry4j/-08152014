@@ -136,5 +136,9 @@ AMAZON
 HERE
 end # the end of class Analyzer
 
-analyzer = Analyzer.new('com.henry4j.text.CommTextAnalyzer')
-ARGF.each { |e| $stdout.puts analyzer.tokenize(e).join(' ') }
+def run!
+  analyzer = Analyzer.new('com.henry4j.text.CommTextAnalyzer')
+  ARGF.each { |e| $stdout.puts analyzer.tokenize(e).join(' ') }
+end
+
+run! if __FILE__==$0
