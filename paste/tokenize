@@ -9,7 +9,7 @@ class Analyzer
   end
 
   def self.require_jars
-    Analyzer.require_hadoop_jars + %w(
+    %w(
       org.apache.lucene:lucene-analyzers-common:4.3.0
       org.apache.lucene:lucene-core:4.3.0
       org.apache.mahout:mahout-core:0.8
@@ -22,7 +22,7 @@ class Analyzer
   end
 
   def initialize(analyzer)
-    @@jars ||= Analyzer.require_jars
+    @@jars ||= Analyzer.require_hadoop_jars + Analyzer.require_jars
     @analyzer = org.apache.mahout.common.lucene.AnalyzerUtils.createAnalyzer(analyzer)
   end
 
