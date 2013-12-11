@@ -1,4 +1,4 @@
-#!/usr/bin/env jruby
+#!/usr/bin/env jruby -E windows-1250
 %W(optparse open-uri fileutils csv json #{ENV['HADOOP_BASE']}/libexec/lib/text-1.0-SNAPSHOT.jar).each { |e| require e }
 
 class Analyzer
@@ -33,35 +33,7 @@ class Analyzer
   end
 end
 
-def parse_options
-  options = {}
-  OptionParser.new do |p|
-    p.on('-r', '--stop-phrases PATH', String, 'Specifies optional file paths for stop-phrases.') { |v| options[:stop_phrases] = v }
-  end.parse!
-  options
-end
+analyzer = Analyzer.new('com.henry4j.text.CommTextAnalyzer')
+stop_phrases = %r(#{open('https://goo.gl/oLljZW').readlines.reduce([]) { |a, e| e[0] == '#' ? a : a << e.chomp }.join('|')})
 
-def run!
-  analyzer = Analyzer.new('com.henry4j.text.CommTextAnalyzer')
-  options = parse_options
-  stop_phrases = options[:stop_phrases] || File.expand_path('../stop-comm-text', File.realpath(__FILE__))
-
-  stop_phrases = File.exists?(stop_phrases) ? open(stop_phrases).readlines.reduce([]) { |a, l| l.start_with?('#') ? a : a << l.chomp } : nil
-  stop_phrases = /#{stop_phrases.join('|')}/ if stop_phrases
-
-  Encoding.default_external = Encoding::Windows_1250
-  argf = ARGV.empty? ? [$stdin] : ARGV.map { |e| open(e, 'r') }
-  begin
-    argf.each do |io|
-      io.each do |l|
-        l.gsub!(stop_phrases, '.') if stop_phrases
-        $stdout.puts analyzer.tokenize(l).join(' ')
-      end
-    end
-  ensure
-    argf.each { |io| io.close } 
-  end
-  exit 0
-end
-
-run! if __FILE__==$0
+ARGF.each { |e| $stdout.puts analyzer.tokenize(e.gsub(stop_phrases, '.')).join(' ') }
