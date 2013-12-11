@@ -1,5 +1,5 @@
 #!/usr/bin/env jruby -E windows-1250
-%W(optparse open-uri fileutils csv json #{ENV['HADOOP_BASE']}/libexec/lib/text-1.0-SNAPSHOT.jar).each { |e| require e }
+%W(open-uri #{ENV['HADOOP_BASE']}/libexec/lib/text-1.0-SNAPSHOT.jar).each { |e| require e }
 
 class Analyzer
   def self.require_jars
