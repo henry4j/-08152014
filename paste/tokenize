@@ -17,10 +17,12 @@ class Analyzer
 
   def initialize(analyzer)
     @@jars ||= Analyzer.require_jars
+    @@stop_phrases_in_re ||= /#{@@stop_phrases.split("\n").reject { |e| e[0] == '#' }.join('|')}/
     @analyzer = org.apache.mahout.common.lucene.AnalyzerUtils.createAnalyzer(analyzer)
   end
 
   def tokenize(text)
+    text = text.gsub(@@stop_phrases_in_re, '.')
     stream = @analyzer.tokenStream('{field-name}', java.io.StringReader.new(text)).tap { |e| e.reset }
     term_attr = stream.add_attribute(org.apache.lucene.analysis.tokenattributes.CharTermAttribute.java_class)
     tokens = []
@@ -31,9 +33,108 @@ class Analyzer
       stream.close
     end
   end
-end
+
+  @@stop_phrases ||= <<'HERE'
+ has requested technical support through the Seller Central is temporarily unavailable.{,2} contact-us form.  Please reply to: 
+# ASIN/ISBN:?
+# ASIN:
+Account ID:
+Actual Account Type:
+Additional Information:
+Amazon Seller Support (CA )?
+# Amount of disbursement:
+Contact Id:
+Contact Name:
+Contact Phone # EST. CST. PST:
+Contact phone number for account:
+Customer ID/Account #:
+Customer's e-?mail address \(required\):
+Cut and paste of email:  (\(You can also use the attachment feature below to send a copy of the email to Amazon.\))?
+Date of Problem:
+Date of communication:
+# Date of delivery at Amazon Fulfillment Center:
+Date of sale:
+# Date order placed:
+# Date you last updated your bank account information:
+Date\(s\) of sale\(s\):
+Describe all sales channels you use. including other web storefronts:
+Detailed explanation of caller's inquiry \(required\): 
+Detailed explanation of customer's inquiry \(required\): 
+# Disbursement date:
+# Expected disbursement date:
+Explain how the issues identified by Amazon will be resolved by your company:
+# FNSKU:
+# Feed ID:
+Field(s) that currently contain wrong information:
+Follow up Actions:
+Form Account Type:
+From your perspective. supply an explanation of the reason and causes for your account suspension:
+From your perspective. supply an suspension:
+# How are you uploading your products\?:
+How can we verify the suggested change is correct\? \(?URL to product details on manufacturers website or attached scan of product manual or photo\)?
+# ISBN. UPC. or ASIN:
+# ISBN/UPC of active item on account:
+# ISBN:
+# In the Feedback Box. customer entered the following comments:
+Initial Question:
+Is this contact Pre or Post sale?
+Java Script is Enabled
+# Last digital order placed:
+# Last physical order placed:
+# Order #:
+# Order ID:
+# Order date:
+# Payee name on account:
+Please describe the issue or question:
+Please describe the issue:
+Please fill in the following information:
+Please include the following information. so we can complete your account review:
+Please include the following information. so we can understand the issue:
+Please include the following information:
+Product Category:
+Products or services you are interested in:
+Related IDs:
+# SKU.s. ASIN.s. or FN SKU.s:
+# SKU:
+Security verified OR non-account information only/not required:
+Security verified\?:
+Seller Concern:
+Seller/violator.s nickname:
+# Shipment ID:
+# Shipment Tracking Information:
+Submission details:
+Submitter email:
+Submitter name:
+# Tracking information on delivered orders:
+# Transaction ID or Order Number:
+# UPC or ASIN:
+# URL of Tools Used:
+What is wrong with the information\?
+What's the issue\?:
+Which product\(s\) do you have a question about\?:
+Your Name:
+# Your Order ID:
+Your e-?mail address \(required\):
+Your suggested change?
+\(Feel free to send attachments if lists are lengthy.\)
+# \(URL to product details on manufacturer's website or attached scan of product manual or photo\)
+\(You MUST verify security if account/order information is involved\)
+\(please allow 3 business days to process your shipment\)
+[Ii]ssues
+[P]roblems
+[Qq]uestions
+https://(www\.)?
+AMAZON
+[Aa]mazon(\.(com|COM))?
+[Aa]mazon\.(ca|CA)
+[Aa]mazon\.co\.uk
+[Aa]mazon\.de
+[Aa]mazon\.es
+[Aa]mazon\.fr
+[Jj]anuary|[Ff]ebruary|\b[Mm]arch\b|\b[Aa]pril\b|\b[Mm]ay\b|\b[Jj]une\b|\b[Jj]uly\b|[Aa]ugust|[Ss]eptember|[Oo]ctober|[Nn]ovember|[Dd]ecember
+\b[Jj]an\b|\b[Ff]eb\b|\b[Mm]ar\b|\b[Aa]pr\b|\b[Jj]un\b|\b[Jj]ul\b|\b[Aa]ug\b|\b[Ss]ep\b|\b[Ss]ept\b|\b[Oo]ct\b|\b[Nn]ov\b|\b[Dd]ec\b
+HERE
+end # the end of class Analyzer
 
 analyzer = Analyzer.new('com.henry4j.text.CommTextAnalyzer')
-stop_phrases = %r(#{open('https://goo.gl/oLljZW').readlines.reduce([]) { |a, e| e[0] == '#' ? a : a << e.chomp }.join('|')})
-
-ARGF.each { |e| $stdout.puts analyzer.tokenize(e.gsub(stop_phrases, '.')).join(' ') }
+ARGF.each { |e| $stdout.puts analyzer.tokenize(e).join(' ') }
