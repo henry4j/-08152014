@@ -21,7 +21,7 @@ class Analyzer
   end
 
   def tokenize(text)
-    @@stop_phrases_in_re ||= /#{STOP_PHRASES.split("\n").reject { |e| e[0] == '#' }.join('|')}/
+    @@stop_phrases_in_re ||= Regexp.compile(STOP_PHRASES.split("\n").reject { |e| e[0] == '#' }.join('|'))
     text = text.gsub(@@stop_phrases_in_re, '.')
     stream = @analyzer.tokenStream('{field-name}', java.io.StringReader.new(text)).tap { |e| e.reset }
     term_attr = stream.add_attribute(org.apache.lucene.analysis.tokenattributes.CharTermAttribute.java_class)
