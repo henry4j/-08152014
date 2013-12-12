@@ -141,7 +141,7 @@ ruby -F', ' -ane '
     %w{open-uri json}.each { |e| require e }
     l = JSON[open("https://goo.gl/HLT94O").read];
   }; 
-  puts "%d, %.3f" % [l[$F[0].to_i], $F[1]]' $corpus-vw-label-ids.csv | 
+  puts "%s, %.3f" % [l[$F[0].to_i], $F[1]]' $corpus-vw-label-ids.csv | 
   tee $corpus-vw-labels.csv
 
 :)
