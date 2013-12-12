@@ -149,7 +149,7 @@ grep -v Others $corpus-vw-labels.csv | tee $corpus-vw-non-other-labels.csv
 # 7569 cases := 4299 top + 3270 other questions.
 ```
 
-```R
+```
 > vw1 <- read.csv('/tmp/exp/rrc_pro_oct_nov-vw-labels.csv', head = TRUE)
 > summary(vw1)
                                              label          p_max        
