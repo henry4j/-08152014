@@ -144,5 +144,5 @@ ruby -F, -ane '
   puts "%s, %f" % [l[$F[0].to_i], $F[1]]' $corpus-vw-label-ids.csv | 
   tee $corpus-vw-labels.csv
 
-# 7569 cases := 4299 top and 3270 other questions.
+# 7569 cases := 4299 top + 3270 other questions.
 ```
