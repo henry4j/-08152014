@@ -160,7 +160,7 @@ ruby -F, -ane '
  (Other)                                        :1543                    
 
 > library('ggplot2') # requires `install.packages('ggplot2')`
-> qplot(data=vw1, x=p_max*100, main="Histogram of p_max", binwidth=1)
+> qplot(data=vw1, x=p_max*100, main="histogram of p_max", binwidth=1)
 ```
 
-[https://dl.dropboxusercontent.com/u/47820156/img/p_max.png]
+![](https://dl.dropboxusercontent.com/u/47820156/img/p_max.png "p_max histogram")
