@@ -148,25 +148,19 @@ ruby -F, -ane '
 ```
 
 ```R
-vw <- read.csv('/tmp/exp/rrc_pro_oct_nov-vw-labels.csv', head = TRUE)
-summary(vw)
-                                                                     label    
- Others                                                              :220  
- What is your return/refund policy?                                  : 48  
- How do cancellations work?                                          : 43  
- What do I do if I suspect customer fraud?                           : 27  
- What do I do if the item is undeliverable?                          : 21  
- What do I do if a customer returns an item in a different condition?: 17  
- (Other)                                                             :103  
-     p_max        
- Min.   :0.04505  
- 1st Qu.:0.05758  
- Median :0.07580  
- Mean   :0.10793  
- 3rd Qu.:0.11486  
- Max.   :0.86051  
- NA's   :1  
+> vw1 <- read.csv('/tmp/exp/rrc_pro_oct_nov-vw-labels.csv', head = TRUE)
+> summary(vw1)
+                                             label          p_max        
+ Others                                         :3270   Min.   :0.04371  
+ What is your return/refund policy?             : 835   1st Qu.:0.05900  
+ How do cancellations work?                     : 727   Median :0.07870  
+ What do I do if I suspect customer fraud?      : 528   Mean   :0.10666  
+ How do I verify if a refund has been processed?: 335   3rd Qu.:0.12049  
+ What do I do if the item is undeliverable?     : 331   Max.   :0.92382  
+ (Other)                                        :1543                    
 
-library('ggplot2') # requires `install.packages('ggplot2')`
-qplot(data=vw, x=p_max*100, main="Histogram of p_max", binwidth=3)
+> library('ggplot2') # requires `install.packages('ggplot2')`
+> qplot(data=vw1, x=p_max*100, main="Histogram of p_max", binwidth=1)
 ```
+
+[https://dl.dropboxusercontent.com/u/47820156/img/p_max.png]
