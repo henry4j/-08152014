@@ -148,5 +148,6 @@ ruby -F, -ane '
 ```
 
 ```R
-vw_labels = read.csv('rrc_pro_oct_nov-vw-labels.csv')
+w1 <- read.csv('rrc_pro_oct_nov-vw-labels.csv', head = TRUE)
+hist(w1$p_max)
 ```
