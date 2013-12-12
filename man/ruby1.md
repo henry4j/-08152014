@@ -130,8 +130,11 @@ ruby -ane '
   p normalize($F.map { |e| sigmoid(e.split(":")[1].to_f) })' $corpus-vw.raw |
   tee $corpus-vw.norm
 
-ruby -ne 'ei = eval($_).each_with_index.max; p ei[0] > 0.071 ? ei[1] + 1 : 0' $corpus-vw.norm |
+ruby -ne 'ei = eval($_).each_with_index.max; puts ei[0] > 0.071 ? ei[1] + 1 : 0' $corpus-vw.norm |
   tee $corpus-vw.out
+
+ruby -ne 'ei = eval($_).each_with_index.max; puts ei[0] > 0.071 ? ei[1] + 1 : 0' $corpus-vw.norm |
+  tee $corpus-vw-label-ids.csv
 
 ruby -ne '
   BEGIN{
