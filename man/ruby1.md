@@ -146,3 +146,7 @@ ruby -F, -ane '
 
 # 7569 cases := 4299 top + 3270 other questions.
 ```
+
+```R
+vw_labels = read.csv('rrc_pro_oct_nov-vw-labels.csv')
+```
