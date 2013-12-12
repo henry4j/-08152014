@@ -148,6 +148,25 @@ ruby -F, -ane '
 ```
 
 ```R
-w1 <- read.csv('rrc_pro_oct_nov-vw-labels.csv', head = TRUE)
-hist(w1$p_max)
+vw <- read.csv('/tmp/exp/rrc_pro_oct_nov-vw-labels.csv', head = TRUE)
+summary(vw)
+                                                                     label    
+ Others                                                              :220  
+ What is your return/refund policy?                                  : 48  
+ How do cancellations work?                                          : 43  
+ What do I do if I suspect customer fraud?                           : 27  
+ What do I do if the item is undeliverable?                          : 21  
+ What do I do if a customer returns an item in a different condition?: 17  
+ (Other)                                                             :103  
+     p_max        
+ Min.   :0.04505  
+ 1st Qu.:0.05758  
+ Median :0.07580  
+ Mean   :0.10793  
+ 3rd Qu.:0.11486  
+ Max.   :0.86051  
+ NA's   :1  
+
+library('ggplot2') # requires `install.packages('ggplot2')`
+qplot(data=vw, x=p_max*100, main="Histogram of p_max", binwidth=3)
 ```
