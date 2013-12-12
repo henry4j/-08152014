@@ -141,7 +141,7 @@ ruby -F, -ane '
     %w{open-uri json}.each { |e| require e }
     l = JSON[open("https://goo.gl/HLT94O").read];
   };
-  puts 1 == $. ? "p_max,label" : "%f,%s" % [$F[0], l[$F[1].to_i]]' $corpus-vw-label-ids.csv | 
+  puts 1 == $. ? "p_max,labeled" : "%f,%s" % [$F[0], l[$F[1].to_i]]' $corpus-vw-label-ids.csv | 
   tee $corpus-vw-labels.csv
 
 grep -v Others $corpus-vw-labels.csv | tee $corpus-vw-non-other-labels.csv
