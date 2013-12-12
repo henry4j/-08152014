@@ -166,3 +166,21 @@ grep -v Others $corpus-vw-labels.csv | tee $corpus-vw-non-other-labels.csv
 ```
 
 ![](https://dl.dropboxusercontent.com/u/47820156/img/p_max.png "p_max histogram")
+
+```
+> vw2 <- read.csv('/tmp/exp/rrc_pro_oct_nov-vw-non-other-labels.csv', head = TRUE)
+> summary(vw2)
+                                             label          p_max        
+ What is your return/refund policy?             : 835   Min.   :0.07105  
+ How do cancellations work?                     : 727   1st Qu.:0.08859  
+ What do I do if I suspect customer fraud?      : 528   Median :0.11213  
+ How do I verify if a refund has been processed?: 335   Mean   :0.14409  
+ What do I do if the item is undeliverable?     : 331   3rd Qu.:0.15857  
+ How do I process a return/refund?              : 233   Max.   :0.92382  
+ (Other)                                        :1310                    
+
+> library('ggplot2') # requires `install.packages('ggplot2')`
+> qplot(data=vw2, x=p_max*100, main="histogram of p_max", binwidth=1)
+```
+
+![](https://dl.dropboxusercontent.com/u/47820156/img/non_other_p_max.png "p_max histogram")
