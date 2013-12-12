@@ -26,4 +26,29 @@
 * `example(rnorm)`  
 * `help.start()`  
 * `source("foo.R")`  
-* 
+
+##### R
+
+* http://davidsimpson.me/2013/02/26/installing-r-on-os-x/
+* R http://cran.rstudio.com/bin/macosx/, and R Studio http://www.rstudio.com/ide/
+
+```bash
+curl -o /tmp/income_train_data_10.csv -ksL http://dl.dropboxusercontent.com/u/47820156/r/income_train_data_10.csv
+```
+
+```bash
+R
+install.packages('ggplot2') # qplot() for quick plots; ggplot() for fine, granular control for everything.
+install.packages('ROCR')
+```
+
+```bash
+R
+income <- read.csv('/tmp/income_train_data_10.csv', header=T, strip.white=TRUE)
+income$class <- as.factor(income$class)
+? read.csv
+summary(income)
+str(income)
+library('ggplot2')
+qplot(data=income, x=age,main="Histogram of Age",binwidth=3)
+```
