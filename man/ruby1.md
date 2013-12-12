@@ -133,16 +133,16 @@ ruby -ane '
 ruby -ne 'ei = eval($_).each_with_index.max; puts ei[0] > 0.071 ? ei[1] + 1 : 0' $corpus-vw.norm |
   tee $corpus-vw.out
 
-ruby -ne 'ei = eval($_).each_with_index.max; puts ei[0] > 0.071 ? ei[1] + 1 : 0' $corpus-vw.norm |
+ruby -ne 'ei = eval($_).each_with_index.max; puts '%d, %.3f' % [ei[0] > 0.071 ? ei[1] + 1 : 0, ei[0]]' $corpus-vw.norm |
   tee $corpus-vw-label-ids.csv
 
-ruby -ne '
+ruby -ane -F ', ' '
   BEGIN{
     %w{open-uri json}.each { |e| require e }
     l = JSON[open("https://goo.gl/HLT94O").read];
   }; 
-  puts l[$_.chomp.to_i]' \
-  $corpus-vw.out | tee $corpus-vw.labels
+  puts l[$F[0].to_i], ', ', $F[1]' \
+  $corpus-vw-label-ids.csv | tee $corpus-vw-labels.csv
 
 :)
 ```
