@@ -161,6 +161,10 @@ grep -v Others $corpus-vw-labels.csv | tee $corpus-vw-non-other-labels.csv
  What do I do if the item is undeliverable?     : 331   Max.   :0.92382  
  (Other)                                        :1543                    
 
+> quantile(vw1$p_max, c(0.25, 0.5, 0.75, 0.8, 0.85, 0.9, 0.95))
+      25%       50%       75%       80%       85%       90%       95% 
+0.0589990 0.0786950 0.1204930 0.1359842 0.1543038 0.1870690 0.2639390 
+
 > library('ggplot2') # requires `install.packages('ggplot2')`
 > qplot(data=vw1, x=p_max*100, main="histogram of p_max", binwidth=1)
 ```
@@ -178,6 +182,10 @@ grep -v Others $corpus-vw-labels.csv | tee $corpus-vw-non-other-labels.csv
  What do I do if the item is undeliverable?     : 331   3rd Qu.:0.15857  
  How do I process a return/refund?              : 233   Max.   :0.92382  
  (Other)                                        :1310                    
+
+> quantile(vw2$p_max, c(0.25, 0.5, 0.75, 0.8, 0.85, 0.9, 0.95))
+      25%       50%       75%       80%       85%       90%       95% 
+0.0885895 0.1121340 0.1585715 0.1771966 0.2038631 0.2469032 0.3283119 
 
 > library('ggplot2') # requires `install.packages('ggplot2')`
 > qplot(data=vw2, x=p_max*100, main="histogram of p_max", binwidth=1)
