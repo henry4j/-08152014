@@ -1,29 +1,197 @@
-### corpus: 2285 labeled documents
+### L-LDA topic modeling implementation
 
-* split-comm-text -f 0.75,0.25 $MAHOUT_WORK/test-set-2285-labeled_typos.csv
+* In Mahout, http://github.com/henry4j/mahout-0.8.x/commits/master.
+* In Scripts, build doc-topic priors from corpus and feed the CVB program w/ priors.
+  * [prep-comm-text](http://raw.github.com/henry4j/-/master/paste/prep-comm-text)/[tame-corpus 3](http://raw.github.com/henry4j/-/master/paste/tame-corpus) writes out corpus-priors in vector iterables.
+  * [tame-topics-l](http://raw.github.com/henry4j/-/master/paste/tame-topics-l) feeds L-LDA with corpus priors for labeled corpus.
 
-tc# | train dataset | test dataset | accuracy
---- | --- | --- | ---
-tc1 | rrc_pro_2285_labeled_1.0.csv (2285 x 284) | rrc_pro_2285_labeled_1.0.csv | 78.8% (1800 / 2285)
-tc2 | rrc_pro_2285_labeled_1.0.csv (2285 x 284) | rrc_pro_2285_labeled_0.75.csv | 78.5% (1349 / 1719)
-tc3 | rrc_pro_2285_labeled_1.0.csv (2285 x 284) | rrc_pro_2285_labeled_0.25.csv | 79.8% (451 / 565)
-tc4 | rrc_pro_2285_labeled_0.75.csv (1718 x 236) | rrc_pro_2285_labeled_1.0.csv | 45.1% (1031 / 2285)
-tc5 | rrc_pro_2285_labeled_0.75.csv (1718 x 236) | rrc_pro_2285_labeled_0.75.csv | 45.3% (779 / 1719)
-tc6 | rrc_pro_2285_labeled_0.75.csv (1718 x 236) | rrc_pro_2285_labeled_0.25.csv | 46.2% (261 / 565)
+### L-LDA topic modeling in 3 procedural steps
 
-### corpus: 2285 + 1266 others
+1. [`tame-hadoop`](http://raw.github.com/henry4j/-/master/paste/tame-hadoop) 
+2. [`tame-corpus 3`](http://raw.github.com/henry4j/-/master/paste/tame-corpus) # TODO: verify if I am building priors properly.
+3. [`tame-topics-l`](http://raw.github.com/henry4j/-/master/paste/tame-topics-l)
+
+### L-LDA http://www.newdesign.aclweb.org/anthology-new/D/D09/D09-1026.pdf
+
+* 
+
+### L-LDA topic model in details
+
+#### ["true" Labeled-LDA](http://markmail.org/message/cm2a6rnxblj5azuh) -- not published, but a close variant at http://github.com/twitter/mahout
+
+* Since 0.7, for training, we can specify a seed model to start with (i.e. a matrix of latent topic to term counts);  
+  we are welcome to build up a matrix of "informed priors" on term distributions on each topic, or it starts random if unspecified. 
+* This twitter fork http://github.com/twitter/mahout allows you to specify priors on the document/topic distribution:  
+  you take your set of input documents, and if each one has some known set of labels associated with it;  
+  you take as a prior for p(topic) for this document to be not random (or uniform across all topics) but uniform across the known labels.
+  * L-LDA futher constraints that while training it forces p(topic | doc(i)) = 0 for all topics outside the labeled set for doc(i),  
+    whereas this fork allows drifting freely after the initial prior is applied, which leads to an intermediate algorithm between regular LDA and L-LDA.
+* To get "true" L-LDA: 
+  * Before [trainDocTopicModel() at line 108](http://github.com/twitter/mahout/blob/master/core/src/main/java/org/apache/mahout/clustering/lda/cvb/CVB0PriorMapper.java), we'd keep a copy of the docTopicPrior vector or note which topics used to have 0 (zero) probabilities.
+    Following trainDocTopicModel(), we'd zero-out entries in the mutated docTopicPrior vector of which used to be 0 and renormalize it before emission.
+
+##### ~~Dive into Mahout change log~~
+
+```bash
+# MAHOUT-971 Use FileSystem.get(URI, Configuration) across the board to make it (more likely to) work with S3
+git checkout e34ea29 .
+svn update -r r1241649
+```
+
+```bash
+git log --after={2012-02-08} # 24 commits
+svn log -r HEAD:{2012-02-08} # 19 commits
+```
+
+```bash
+git diff 16ea0f3^!
+svn diff -r r1338501
+```
+
+* CVB0Driver.java - /workspace/mahout-twitter/core/src/main/java/org/apache/mahout/clustering/lda/cvb 
+  * added
+     * pidt: persist and update intermediate p(topic|doc): false
+     * pdt: path to prior values of p(topic|doc) matrix: no default.
+     * int: max number of iterations per doc for p(topic|doc) inference: default 100.
+     * ol: only use docs with non-null doc/topic priors: false.
+  * changed
+     * public static final int MAX_ITERATIONS_DEFAULT = 30;
+     * public static final int MAX_ITERATIONS_PER_DOC_DEFAULT = 10;
+     * public static final int MAX_INFERENCE_ITERATIONS_PER_DOC_DEFAULT = 100;
+
+##### Fork a Mahout L-LDA
+
+```bash
+[ ! -d /workspace/gits/mahout-twitter ] && git clone https://github.com/twitter/mahout.git /workspace/gits/mahout-twitter
+if [ ! -d /workspace/gits/mahout-l-lda ]; then
+  svn checkout http://svn.apache.org/repos/asf/mahout/tags/mahout-0.8 /workspace/gits/mahout-0.8.x
+  find /workspace/gits/mahout-l-lda -type d -name .svn | xargs rm -rf
+  cd /workspace/gits/mahout-0.8.x; git init; git add -f .; git commit -m 'mahout-0.8'
+
+  cp -R /workspace/gits/mahout-twitter/core/src/main/java/org/apache/mahout/clustering/lda/cvb/ \
+    /workspace/gits/mahout-0.8.x/core/src/main/java/org/apache/mahout/clustering/lda/cvb
+  cp -R /workspace/gits/mahout-twitter/core/src/test/java/org/apache/mahout/clustering/lda/cvb/ \
+    /workspace/gits/mahout-0.8.x/core/src/test/java/org/apache/mahout/clustering/lda/cvb
+  cd /workspace/gits/mahout-0.8.x; git add -f .; git commit -m 'L-LDA from https://github.com/twitter/mahout/'
+end
+```
+
+```bash
+opendiff /workspace/gits/mahout-twitter/core/src/main/java/org/apache/mahout/clustering/lda/cvb \
+  /workspace/gits/mahout-0.8.x/core/src/main/java/org/apache/mahout/clustering/lda/cvb
+
+diff -wr -x .svn \
+  /workspace/gits/mahout-twitter/core/src/main/java/org/apache/mahout/clustering/lda/cvb \
+  /workspace/gits/mahout-0.8.x/core/src/main/java/org/apache/mahout/clustering/lda/cvb
+```
+
+Then, we are ready to implement "true" L-LDA suggestion. See commits http://github.com/henry4j/mahout-0.8.x/commits/master.
+
+```bash
+# implement "true" L-LDA on your own, or clone this git repo.
+rm -rf /workspace/gits/mahout-0.8.x; git clone git@github.com:henry4j/mahout-0.8.x.git /workspace/gits/mahout-0.8.x
+```
+
+##### Patch [`true-l-lda`](https://raw.github.com/henry4j/-/master/paste/true-l-lda)
+
+```bash
+#!/bin/bash # called `true-l-lda`
+for e in core-0.8   core-0.8-job   examples-0.8   examples-0.8-job;
+  do mv $MAHOUT_BASE/mahout-$e.jar $MAHOUT_BASE/mahout-$e.jar.bak;
+done
+
+cd /workspace/gits/mahout-0.8.x/core;     mvn install -DskipTests
+cd /workspace/gits/mahout-0.8.x/examples; mvn install -DskipTests # or mvn install -Dmaven.test.skip=true # skips compiling tests
+
+cp $HOME/.m2/repository/com/henry4j/mahout/mahout-core/0.8.2/mahout-core-0.8.2.jar $MAHOUT_BASE
+cp $HOME/.m2/repository/com/henry4j/mahout/mahout-core/0.8.2/mahout-core-0.8.2-job.jar $MAHOUT_BASE
+cp $HOME/.m2/repository/com/henry4j/mahout/mahout-examples/0.8.2/mahout-examples-0.8.2.jar $MAHOUT_BASE
+cp $HOME/.m2/repository/com/henry4j/mahout/mahout-examples/0.8.2/mahout-examples-0.8.2-job.jar $MAHOUT_BASE
+```
+
+```bash
+# or, curl pre-built jars
+for e in core-0.8   core-0.8-job   examples-0.8   examples-0.8-job;
+  do [ -e "$MAHOUT_BASE/mahout-$e.jar" ] && mv $MAHOUT_BASE/mahout-$e.jar $MAHOUT_BASE/mahout-$e.jar.bak;
+done
+for e in core-0.8.2 core-0.8.2-job examples-0.8.2 examples-0.8.2-job;
+  do [ ! -e "$MAHOUT_BASE/mahout-$e.jar" ] && curl -o "$MAHOUT_BASE/mahout-$e.jar" -kL "http://dl.dropboxusercontent.com/u/47820156/mahout/l-lda/mahout-$e.jar"; 
+done
+```
+
+* See our new cvb command line options:  
+  `mahout cvb --help` | `tee` [`lda-cvb-l-lda.txt`](http://raw.github.com/henry4j/-/master/man/lda-cvb-l-lda.mkd)
+
+##### [@Test in TestCVBModelTrainer](https://github.com/henry4j/mahout-l-lda/blob/master/core/src/test/java/org/apache/mahout/clustering/lda/cvb/TestCVBModelTrainer.java)
+
+name | structure | value
+--- | --- | ---
+matrix | 5 topics x 30 terms in DenseMatrix |
+sampledCorpus | 500 docs x 30 terms in SparseRowMatrix |
+sampleCorpusPath | Path | `/tmp/mahout-TestCVBModelTrainer-6999986663745124352/corpus`
+
+```java
+{
+  0  =>	{0:0.0029154518950437317,1:0.004629629629629629,2:0.0080,3:0.015625,4:0.037037037037037035,5:0.125,6:1.0,7:0.125,8:0.037037037037037035,9:0.015625,10:0.0080,11:0.004629629629629629,12:0.0029154518950437317,13:0.001953125,14:0.0013717421124828531,15:0.0010,16:7.513148009015778E-4,17:5.787037037037037E-4,18:4.551661356395084E-4,19:3.6443148688046647E-4,20:2.962962962962963E-4,21:2.44140625E-4,22:2.962962962962963E-4,23:3.6443148688046647E-4,24:4.551661356395084E-4,25:5.787037037037037E-4,26:7.513148009015778E-4,27:0.0010,28:0.0013717421124828531,29:0.001953125}
+  1  =>	{0:4.551661356395084E-4,1:5.787037037037037E-4,2:7.513148009015778E-4,3:0.0010,4:0.0013717421124828531,5:0.001953125,6:0.0029154518950437317,7:0.004629629629629629,8:0.0080,9:0.015625,10:0.037037037037037035,11:0.125,12:1.0,13:0.125,14:0.037037037037037035,15:0.015625,16:0.0080,17:0.004629629629629629,18:0.0029154518950437317,19:0.001953125,20:0.0013717421124828531,21:0.0010,22:7.513148009015778E-4,23:5.787037037037037E-4,24:4.551661356395084E-4,25:3.6443148688046647E-4,26:2.962962962962963E-4,27:2.44140625E-4,28:2.962962962962963E-4,29:3.6443148688046647E-4}
+  2  =>	{0:4.551661356395084E-4,1:3.6443148688046647E-4,2:2.962962962962963E-4,3:2.44140625E-4,4:2.962962962962963E-4,5:3.6443148688046647E-4,6:4.551661356395084E-4,7:5.787037037037037E-4,8:7.513148009015778E-4,9:0.0010,10:0.0013717421124828531,11:0.001953125,12:0.0029154518950437317,13:0.004629629629629629,14:0.0080,15:0.015625,16:0.037037037037037035,17:0.125,18:1.0,19:0.125,20:0.037037037037037035,21:0.015625,22:0.0080,23:0.004629629629629629,24:0.0029154518950437317,25:0.001953125,26:0.0013717421124828531,27:0.0010,28:7.513148009015778E-4,29:5.787037037037037E-4}
+  3  =>	{0:0.0029154518950437317,1:0.001953125,2:0.0013717421124828531,3:0.0010,4:7.513148009015778E-4,5:5.787037037037037E-4,6:4.551661356395084E-4,7:3.6443148688046647E-4,8:2.962962962962963E-4,9:2.44140625E-4,10:2.962962962962963E-4,11:3.6443148688046647E-4,12:4.551661356395084E-4,13:5.787037037037037E-4,14:7.513148009015778E-4,15:0.0010,16:0.0013717421124828531,17:0.001953125,18:0.0029154518950437317,19:0.004629629629629629,20:0.0080,21:0.015625,22:0.037037037037037035,23:0.125,24:1.0,25:0.125,26:0.037037037037037035,27:0.015625,28:0.0080,29:0.004629629629629629}
+  4  =>	{0:1.0,1:0.125,2:0.037037037037037035,3:0.015625,4:0.0080,5:0.004629629629629629,6:0.0029154518950437317,7:0.001953125,8:0.0013717421124828531,9:0.0010,10:7.513148009015778E-4,11:5.787037037037037E-4,12:4.551661356395084E-4,13:3.6443148688046647E-4,14:2.962962962962963E-4,15:2.44140625E-4,16:2.962962962962963E-4,17:3.6443148688046647E-4,18:4.551661356395084E-4,19:5.787037037037037E-4,20:7.513148009015778E-4,21:0.0010,22:0.0013717421124828531,23:0.001953125,24:0.0029154518950437317,25:0.004629629629629629,26:0.0080,27:0.015625,28:0.037037037037037035,29:0.125}
+}
+```
+
+```java
+{
+  0  =>	{16:1.0,18:8.0,21:1.0}
+  1  =>	{22:1.0,18:8.0,19:1.0}
+  2  =>	{18:8.0,19:2.0}
+  ...
+}
+```
+
+###### testInMemoryCVB0
+
+name | structure | value
+--- | --- | ---
+matrix | 3 topics x 26 terms in DenseMatrix |
+sampledCorpus | 100 docs x 26 terms in SparseRowMatrix |
+
+```
+INFO: model after: 0: {q:0.472,p:0.119,r:0.119,s:0.0555,o:0.041,n:0.0335,t:0.029,m:0.017,u:0.016,l:0.0135,v:0.012,k:0.011,h:0.0070,x:0.0070,a:0.0060,j:0.0060,w:0.0060,i:0.0050,b:0.0045,e:0.0040,y:0.0035,c:0.0030,f:0.0030,g:0.0025,z:0.0025}
+INFO: 2.034720670366602 = perplexity
+INFO: model after: 1: {q:0.472,p:0.119,r:0.119,s:0.0555,o:0.041,n:0.0335,t:0.029,m:0.017,u:0.016,l:0.0135,v:0.012,k:0.011,h:0.0070,x:0.0070,a:0.0060,j:0.0060,w:0.0060,i:0.0050,b:0.0045,e:0.0040,y:0.0035,c:0.0030,f:0.0030,g:0.0025,z:0.0025}
+INFO: 2.034720670366602 = perplexity
+INFO: 0.0 = fractionalChange
+INFO: Converged! fractional error change: 0.000000, error 2.034721
+```
+
+###### implement remaining part of Jake Mannix's suggestion in JRuby
+
+* This twitter fork http://github.com/twitter/mahout allows you to specify priors on the document/topic distribution:  
+  you take your set of input documents, and if each one has some known set of labels associated with it;  
+  you take as a prior for p(topic) for this document to be not random (or uniform across all topics) but uniform across the known labels.
+* DONE:
+  * [prep-comm-text](http://raw.github.com/henry4j/-/master/paste/prep-comm-text)/[tame-corpus 3](http://raw.github.com/henry4j/-/master/paste/tame-corpus) writes out corpus-priors in vector iterables.
+  * [tame-topics-l](http://raw.github.com/henry4j/-/master/paste/tame-topics-l) feeds L-LDA with corpus priors for labeled corpus.
 
 
 
-### l-lda ideas
 
-Ref: http://aclweb.org/anthology//D/D09/D09-1026.pdf
+**Markdown Extra** has a special syntax for tables:
 
-l-lda
-* outperforms SVMs by more than 3 to 1 when extracting tag-specific document snippets.
-* competitive as a multi-level classifier on various data sets.
+Item      | Value
+--------- | -----
+Computer  | \$1600
+Phone     | \$12
+Pipe      | \$1
 
-Let each document d be represented by a tuple of
-* a list of word indices: w<sup>(d)</sup> = (w1, ..., w<sub>_Nd_</sub>)
-* a list of topic presenses: Λ<sup>(d)</sup> = (l1, ..., l<sub>_k_</sub>)  
-  where N<sub>d</sub>: the document length, and K: the # of unique labels.
+You can specify column alignment with one or two colons:
+
+| Item      |  Value | Qty  |
+| :-------- | ------:| :--: |
+| Computer  | \$1600 |  5   |
+| Phone     |   \$12 |  12  |
+| Pipe      |    \$1 | 234  |
+
+
+<i class="icon-cog"></i>
