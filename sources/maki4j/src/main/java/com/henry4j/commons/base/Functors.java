@@ -2,6 +2,7 @@ package com.henry4j.commons.base;
 
 import java.util.Locale;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import lombok.extern.log4j.Log4j;
 
@@ -60,6 +61,24 @@ public class Functors {
             }
         }
     };
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static Action1<Future<Void>> joinQuietly(final long timeout, final TimeUnit unit) {
+        return new Action1<Future<Void>>() {
+            @Override
+            public void apply(Future<Void> f) {
+                try {
+                    f.get(timeout, unit);
+                } catch (Exception e) {
+                    if (null != e.getCause()) {
+                        log.error("Exception Uncaught!!!", e.getCause());
+                    } else {
+                        log.error("Exception Uncaught!", e);
+                    }
+                }
+            }
+        };
+    }
 
     private static Function1<Pair<Object, Object>, Object> SECOND = new Function1<Pair<Object,Object>, Object>() {
         @Override
