@@ -1,0 +1,5 @@
+
+
+#### Naive Bayes
+
+* Bayes Law
