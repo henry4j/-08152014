@@ -5,8 +5,7 @@
   * given a patient tests positive, what is the p the patient is actually sick?
   * P(sick|+) = P(sick ∩ +) / P(+) = (1% * 99%)/(1% * 99%+ + 99% * 1%+) = 50%.
 * P(spam|word) = P(word ∩ spam) / P(word)?
-  * p_spam, p_ham = 1500 / (1500 + 3672), 3672 / (1500 + 1672) # given 1500 spam and 3672 ham.
-  * P(meeting|spam) = 16 / 1500 # 16 spams and 153 hams with "meeting".
-  * P(spam|meeting) = (16 / 1500) / ((16 + 153) / (1500 + 3672)) = 9%
-  
-
+  * P(spam|meeting) = (16 / 5172.0) / (0.29 * 0.0106 + 0.71 * 0.0416) = 9%
+    P(spam), P(ham) = 0.29, 0.71 # from 1500 spams and 3672 hams.
+    P(meeting|spam), P(meeting|ham) = 16/1500, 153/3672 # 16 spams and 153 hams w/ meeting.
+  * P(spam|money) = 80%; P(spam|viagra) = 100%, P(spam|amazon) = 0%.
