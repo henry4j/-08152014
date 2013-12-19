@@ -9,3 +9,6 @@
     P(spam), P(ham) = 0.29, 0.71 # from 1500 spams and 3672 hams.  
     P(meeting|spam), P(meeting|ham) = 16/1500, 153/3672 # 16 spams and 153 hams w/ meeting.
   * P(spam|money) = 80%; P(spam|viagra) = 100%, P(spam|amazon) = 0%.
+
+#### Logistic Regression
+
