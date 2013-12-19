@@ -12,3 +12,4 @@
 
 #### Logistic Regression
 
+* mapping data points to the probability of a given label or labels.
