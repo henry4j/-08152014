@@ -2,7 +2,7 @@
 
 ### ML / Data Science SDE requirement -- <sub>[1](http://www.amazon.com/gp/jobs/232194/), [2](http://www.amazon.com/gp/jobs/180727/), [3](https://jobs.groupon.com/careers/engineering/software-development-engineer-senior-goods-seattle-wa-united-states/), [4](https://twitter.com/jobs/positions?jvi=oSAqXfwz,Job), [5](https://twitter.com/jobs/positions?jvi=oTAqXfwA,Job), [6](http://www.linkedin.com/jobs?viewJob=&jobId=6907673), [7](http://www.linkedin.com/jobs?viewJob=&jobId=6865716)</sub>
 
-* ML/Data Scientist: one who is better at statistics than software engineer and better at software engineering than statistian - Josh Wills.
+* ML/Data Scientist: better at statistics than software engineer & better at software engineering than statistian - Josh Wills.
 * ML basics: Supervised- & Unsupervised learning, Collaborative filtering, TF/TFIDF, n-gram, tokenizer, vectorizer, ...
 * Cloud Computing/SOA patterns/Java Concurrency: 
   * Hadoop/<sub>Map Reduce/HDFS/Pig/Hive</sub>, Mahout/R, Lucene/Solr/<sub>search</sub>, ZooKeeper/<sub>distributed coordination</sub>, ...
