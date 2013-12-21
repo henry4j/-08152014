@@ -8,7 +8,7 @@
   * Amazon EMR/SWF/SQS/DynamoDB/S3, ORM/noSQL, Barrier/AQS/PQ, Leader Election/<sub>Paxos</sub>, ...
 * Scripting/open source tools: GIT/Subversion, Maven/POM/Eclipse, awk/sed, Shell/Ruby/Python, Scala/JRuby/Jython, ...
 * How to formulate ML problems? How to parallelize ML algorithms? How to select or reduce features? For your reading:  
-[![x](http://akamaicovers.oreilly.com/images/0636920028529/thumb.gif)](http://www.amazon.com/Doing-Data-Science-Straight-Frontline/dp/1449358659/)
+[![x](http://inside-bigdata.com/wp-content/uploads/2013/11/Doing_data_science.jpg)](http://www.amazon.com/Doing-Data-Science-Straight-Frontline/dp/1449358659/)
 ![x](http://www.manning.com/holmes/holmes_cover150.jpg)
 ![x](http://www.manning.com/ingersoll/ingersoll_cover150.jpg)
 ![x](http://www.manning.com/owen/owen_cover150.jpg)
