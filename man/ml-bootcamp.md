@@ -15,7 +15,7 @@
 ![x](http://www.manning.com/owen/owen_cover150.jpg)
 ![x](http://www.manning.com/pharrington/pharrington_cover150.jpg)
 
-### Table of Contents / Machine Learning SDE
+### Table of Contents / ML experienments in 2013
 
 * Set up machine learning SDE environment (Hadoop & Mahout)
 * Build LDA models from a corpus using Apache Mahout
