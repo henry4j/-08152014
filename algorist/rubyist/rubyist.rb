@@ -1975,7 +1975,7 @@ module Search
   def self.queens_in_peace(n)
     answers = []
     peaceful_at = lambda do |queens, c, m = queens.size|
-      m.times.all? { |i| (queens[i] != c) && (m - i) != (queens[i] - c).abs }
+      queens.each_with_index { |e, i| e != c && m - i != (e - c).abs }
     end
 
     expand_out = lambda do |queens|
