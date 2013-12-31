@@ -433,16 +433,17 @@ module DP # http://basicalgos.blogspot.com/search/label/dynamic%20programming
   end
 
   # http://en.wikipedia.org/wiki/Longest_common_substring_problem
-  def self.longest_common_substring(s, t) # best solved by suffix tree
-    n, m = s.size, t.size
+  def self.longest_common_substring(a, b) # best solved by suffix tree
+    n, m = a.size, b.size
     memos = []
     longest = []
     1.upto(n) do |i|
       1.upto(m) do |j|
-        if s[i-1] == t[j-1]
+        if a[i-1] == b[j-1]
           l = memos[i][j] = 1 + (memos[i-1][j-1] || 0)
-          longest << s[i-l, l] if longest.empty? || l == longest[0].size
-          longest.replace([s[i-l, l]]) if l > longest[0].size
+          s = a[i-l, l]
+          longest << s if longest.empty? || l == longest[0].size
+          longest.replace([s]) if l > longest[0].size
         end
       end
     end
@@ -1973,8 +1974,8 @@ module Search
   # http://www.youtube.com/watch?v=p4_QnaTIxkQ
   def self.queens_in_peace(n)
     answers = []
-    peaceful_at = lambda do |queens, c|
-      queens.size.times.all? { |i| (queens[i] != c) && (queens.size - i).abs != (queens[i] - c).abs }
+    peaceful_at = lambda do |queens, c, m = queens.size|
+      m.times.all? { |i| (queens[i] != c) && (m - i) != (queens[i] - c).abs }
     end
 
     expand_out = lambda do |queens|
