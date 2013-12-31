@@ -435,12 +435,12 @@ module DP # http://basicalgos.blogspot.com/search/label/dynamic%20programming
   # http://en.wikipedia.org/wiki/Longest_common_substring_problem
   def self.longest_common_substring(s, t) # best solved by suffix tree
     n, m = s.size, t.size
-    memos = Array.new(n+1) { Array.new(m+1, 0) }
+    memos = []
     longest = []
     1.upto(n) do |i|
       1.upto(m) do |j|
         if s[i-1] == t[j-1]
-          l = memos[i][j] = memos[i-1][j-1] + 1
+          l = memos[i][j] = 1 + (memos[i-1][j-1] || 0)
           longest << s[i-l, l] if longest.empty? || l == longest[0].size
           longest.replace([s[i-l, l]]) if l > longest[0].size
         end
