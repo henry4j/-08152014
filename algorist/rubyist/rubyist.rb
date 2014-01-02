@@ -1946,7 +1946,7 @@ module Search
   end
 
   def self.permutate(ary, n = ary.size)
-    if 0 == n
+    if 1 == n
       [ ary.dup ]
     else
       h = {}
