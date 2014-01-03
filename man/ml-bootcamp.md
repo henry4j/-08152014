@@ -413,17 +413,17 @@ x! "s3cmd setacl -r --acl-public s3://${S3_BUCKET}/#{work_id}"
 
 #### Evaluation Metrics
 
-* a trade-off between sensitivity and specificity, e.g. false negatives may be way worse than false positives when to predict illness.
+* a trade-off between sensitivity and specificity,  
+  e.g. false negatives may be way worse than false positives when to predict illness.
+* accuracy: what % of prediction were correct? 98.2% == (9,760 + 60) / 10,000
+* precision: what % of positive predictions were correct? 30% == (60/200)
+* recall: what % of positive cases did we catch? 60% == (60/200)
 
 \- | Predicted - | Predicted + | %
 --- | --- | --- | ---
 \- Cases | TN: 9,760 | FP: 140 | -
 \+ Cases | FN: 40 | TP: 60 | recall: 60%
 % | - | precision: 30% | accuracy: 98.2%
-
-* accuracy: what % of prediction were correct? 98.2% == (9,760 + 60) / 10,000
-* precision: what % of positive predictions were correct? 30% == (60/200)
-* recall: what % of positive cases did we catch? 60% == (60/200)
 
 ### Tuning in Progress
 
