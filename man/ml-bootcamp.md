@@ -411,6 +411,12 @@ x! "s3cmd setacl -r --acl-public s3://${S3_BUCKET}/#{work_id}"
 
 ![Bob the builder?](http://upload.wikimedia.org/wikipedia/en/thumb/c/c5/Bob_the_builder.jpg/220px-Bob_the_builder.jpg "Under Construction")
 
+#### Evaluation Metrics
+
+* a trade-off between sensitivity and specificity, e.g. false negatives may be way worse than false positives when to predict illness.
+* precision and recall
+* accuracy: ratio of the number of correct labels to the total # of labels (1 - misclassification rate).
+
 ### Tuning in Progress
 
 *
