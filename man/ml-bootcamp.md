@@ -414,8 +414,12 @@ x! "s3cmd setacl -r --acl-public s3://${S3_BUCKET}/#{work_id}"
 #### Evaluation Metrics
 
 * a trade-off between sensitivity and specificity, e.g. false negatives may be way worse than false positives when to predict illness.
-* precision and recall
-* accuracy: ratio of the number of correct labels to the total # of labels (1 - misclassification rate).
+
+Item | Predicted + | Predicted -
+--------- | ----------- | -----------
+Computer  | \$1600
+Phone     | \$12
+Pipe      | \$1
 
 ### Tuning in Progress
 
