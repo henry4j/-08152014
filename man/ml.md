@@ -7,6 +7,6 @@
 
 ##### 
 
-Y<sup>^</sup> = f<sup>^</sup> where they represent our estimate of f and resulting prediction for Y.
+Y<sup>^</sup> = f<sup>^</sup>(X) where they represent our estimate of f and resulting prediction for Y.
 
 
