@@ -8,5 +8,6 @@
 ##### Why Estimate f?
 
 * Prediction: Y<sup>^</sup> = f<sup>^</sup>(X) where they represent our estimate of f and resulting prediction for Y.
+  * to minimize `reducible error`, while `irreducible error` proposes an upper bound on the prediction accuracy for Y.
 * Inference:
 
