@@ -9,4 +9,4 @@
 
 * Prediction: Y<sup>^</sup> = f<sup>^</sup>(X) where they represent our estimate of f and resulting prediction for Y.
   * to minimize `reducible error`, while `irreducible error` proposes an upper bound on the prediction accuracy for Y.
-* Inference: how each predictor is associated with the response? linear, non-linear, more or less interpretable models.
+* Inference: how each predictor is associated with the response? (in linear, non-linear, more or less interpretable models).
