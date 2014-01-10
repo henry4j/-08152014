@@ -7,9 +7,6 @@
 
 ##### 
 
-Y^2^
-
-6.02 x 10^23^
-
+Y<sup>^</sup> = f<sup>^</sup> where they represent our estimate of f and resulting prediction for Y.
 
 
