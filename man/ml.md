@@ -4,3 +4,7 @@
   * more generally, `Y = f(X)` + e where f is some fixed, but unknown fuction; e is a random error term w/ mean zero.
 * `income` data set of 30 individuals suggests one might predict `income` using `years of education` and `seniority`.
 * In essence, statistical learning refers to a set of approaches for estimating f and tools for evaluating estimates.
+
+##### 
+
+* \hat Y
