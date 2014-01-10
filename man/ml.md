@@ -5,8 +5,8 @@
 * `income` data set of 30 individuals suggests one might predict `income` using `years of education` and `seniority`.
 * In essence, statistical learning refers to a set of approaches for estimating f and tools for evaluating estimates.
 
-##### 
+##### Why Estimate f?
 
-Y<sup>^</sup> = f<sup>^</sup>(X) where they represent our estimate of f and resulting prediction for Y.
-
+* Prediction: Y<sup>^</sup> = f<sup>^</sup>(X) where they represent our estimate of f and resulting prediction for Y.
+* Inference:
 
