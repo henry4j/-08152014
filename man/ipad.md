@@ -19,3 +19,4 @@
   * viki
 * http://www.iphonehacks.com/2013/09/top-reasons-jailbreak-ios-7.html
 * http://appadvice.com/appnn/2014/01/cydia-tweak-bitesms-gets-updated-for-apples-iphone-5s
+* http://www.ipadable.com/best-cydia-apps/
