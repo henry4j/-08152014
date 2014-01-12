@@ -17,3 +17,5 @@
   * sleipnir
   * talkatone
   * viki
+* http://www.iphonehacks.com/2013/09/top-reasons-jailbreak-ios-7.html
+* 
