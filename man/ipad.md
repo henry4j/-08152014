@@ -22,3 +22,4 @@
 * http://www.ipadable.com/best-cydia-apps/
 * http://www.gottabemobile.com/2014/01/04/6-essential-ios-7-cydia-tweaks/
 * http://www.gizmag.com/best-cydia-apps/26065/
+* http://www.makeuseof.com/pages/best-cydia-tweaks
