@@ -24,3 +24,4 @@
 * http://www.gizmag.com/best-cydia-apps/26065/
 * http://www.makeuseof.com/pages/best-cydia-tweaks
 * http://www.cydiarepo.com/249/top-10-must-have-cydia-tweaks/
+* http://idevicedailys.com/cydia/jailbreak-best-ios-7-compatible-tweaks/
