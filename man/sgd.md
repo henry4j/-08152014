@@ -1,5 +1,6 @@
 ##### [Logistic Regression (SGD)](https://cwiki.apache.org/confluence/display/MAHOUT/Logistic+Regression)
 
+* https://www.google.com/#q=%22new+AdaptiveLogisticRegression%22+train+public
 * http://ashokabhat.wordpress.com/2012/02/13/mahout-and-hadoop-run-the-logistic-regression/
 * http://bickson.blogspot.com/2011/01/mahout-on-amazon-ec2-part-2-testing.html
 * http://imiloainf.wordpress.com/2011/11/02/mahout-logistic-regression/
