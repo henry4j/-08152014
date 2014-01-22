@@ -10,6 +10,7 @@ class Analyzer
       org.apache.lucene:lucene-analyzers-common:4.3.0
       org.apache.lucene:lucene-core:4.3.0
       org.apache.mahout:mahout-core:0.8
+      org.apache.mahout:mahout-math:0.8
       com.google.guava:guava:16.0
     ).map do |e|
       g, a, v = e.split(':')
@@ -47,7 +48,7 @@ def run!
   # ARGF.each { |e| $stdout.puts analyzer.tokenize(e).join(' ') }
   # http://search-lucene.com/jd/mahout/core/org/apache/mahout/vectorizer/encoders/AdaptiveWordValueEncoder.html
   # org.apache.mahout.vectorizer.encoders.AdaptiveWordValueEncoder
-  Java::OrgApacheMahoutVectorizerEncoders::AdaptiveWordValueEncoder # missing dependency: com/google/common/collect/Multiset
+  Java::OrgApacheMahoutVectorizerEncoders::AdaptiveWordValueEncoder.class
 end
 
 run! if __FILE__==$0
