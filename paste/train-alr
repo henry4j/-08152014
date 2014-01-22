@@ -48,9 +48,14 @@ def run!
   # ARGF.each { |e| $stdout.puts analyzer.tokenize(e).join(' ') }
   # http://search-lucene.com/jd/mahout/core/org/apache/mahout/vectorizer/encoders/AdaptiveWordValueEncoder.html
   # org.apache.mahout.vectorizer.encoders.AdaptiveWordValueEncoder
+  features = 10000
   e = org.apache.mahout.vectorizer.encoders.AdaptiveWordValueEncoder.java_class.constructor(java.lang.String).new_instance('contents').to_java
-  v = org.apache.mahout.math.RandomAccessSparseVector.new(10000)
+  e.probes = 2
+  v = org.apache.mahout.math.RandomAccessSparseVector.new(features) # size for initial hashmap
   e.addToVector('hello', v) # v.iterate_non_zero.map { |e| p [e.index, e.get] }
+  
+  l1 = org.apache.mahout.classifier.sgd.L1.new
+  lr = org.apache.mahout.classifier.sgd.AdaptiveLogisticRegression.new(2, features, l1)
 end
 
 run! if __FILE__==$0
