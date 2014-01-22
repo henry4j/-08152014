@@ -48,7 +48,9 @@ def run!
   # ARGF.each { |e| $stdout.puts analyzer.tokenize(e).join(' ') }
   # http://search-lucene.com/jd/mahout/core/org/apache/mahout/vectorizer/encoders/AdaptiveWordValueEncoder.html
   # org.apache.mahout.vectorizer.encoders.AdaptiveWordValueEncoder
-  Java::OrgApacheMahoutVectorizerEncoders::AdaptiveWordValueEncoder.class
+  e = org.apache.mahout.vectorizer.encoders.AdaptiveWordValueEncoder.java_class.constructor(java.lang.String).new_instance('contents').to_java
+  v = org.apache.mahout.math.RandomAccessSparseVector.new(10000)
+  e.addToVector('hello', v) # v.iterate_non_zero.map { |e| p [e.index, e.get] }
 end
 
 run! if __FILE__==$0
