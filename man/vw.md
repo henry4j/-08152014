@@ -17,7 +17,7 @@ vw --version
 ```bash
 #### Build a model & evaluate it using the non-other dataset (91.5% accuracy)
 
-export corpus='rrc_pro_5286_c'
+export corpus='rrc_pro_6215'
 
 [ ! -e $corpus.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/$corpus.csv $corpus.csv
 
