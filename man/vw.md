@@ -186,3 +186,47 @@ grep -v Others $corpus-vw-labels.csv | tee $corpus-vw-non-other-labels.csv
 ```
 
 ![](https://dl.dropboxusercontent.com/u/47820156/img/non_other_p_max.png "p_max histogram")
+
+#### Build a model & evaluate it using the non-other dataset (91.5% accuracy)
+
+```
+export corpus='rrc_pro_6215'
+
+[ ! -e $corpus.csv ] && s3cmd get s3://${S3_BUCKET}-private/resources/$corpus.csv $corpus.csv
+
+ruby -e '
+  srand 1234;
+  l = ARGF.readlines; 
+  r = 0...(n = l.size);
+  r.each { |i| j = i + rand(n - i); l[i], l[j] = l[j], l[i] };
+  puts l' $corpus.csv | tee $corpus-r.csv
+
+export corpus=$corpus-r
+
+ruby -E windows-1250 -ne 'puts $_.split(",").values_at(1, 2).join(";")' $corpus.csv |
+  tokenize | tee $corpus.tokens
+
+ruby -E windows-1250 -ne 'puts $_.split(",")[3].chomp' $corpus.csv | ruby -ne '
+  BEGIN{
+    %w{open-uri json}.each { |e| require e }
+    l = JSON[open("https://goo.gl/HLT94O").read];
+    l = l.each_with_index.reduce({}) { |h, (e, i)| h[e] = i; h }
+  }; 
+  puts l[$_.chomp]' | tee $corpus.label_ids
+
+paste -d ',' $corpus.label_ids $corpus.tokens |
+  ruby -pe '$_ = $_.split(",").join(" | ")' |
+  tee $corpus-vw.in
+
+# vw --oaa 24 --ngram 2 $corpus-vw.in -f $HOME/Downloads/$corpus.model
+train-sgd $corpus-vw.in
+
+vw -t -i $HOME/Downloads/$corpus.model $corpus-vw.in -p $corpus-vw.out
+
+paste $corpus.label_ids $corpus-vw.out |
+  ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l $corpus.csv`.to_f)}' # 91.5%
+
+s3cmd put $HOME/Downloads/$corpus.model s3://${S3_BUCKET}-private/resources/
+
+:)
+```
