@@ -66,8 +66,8 @@ def run!
 
   org.apache.mahout.classifier.sgd.ModelSerializer.writeBinary('/tmp/model', lr.best.payload.learner)
 
-  model = open('/tmp/model').to_inputstream
-  org.apache.mahout.classifier.sgd.ModelSerializer.readBinary(model, CrossFoldLearner.class)
+  model = open('/tmp/model', 'r').to_inputstream
+  org.apache.mahout.classifier.sgd.ModelSerializer.readBinary(model, org.apache.mahout.classifier.sgd.CrossFoldLearner.java_class)
   model.close
 end
 
