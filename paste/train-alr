@@ -1,5 +1,7 @@
 #!/usr/bin/env jruby -E windows-1250
 
+require 'optparse'
+
 class Modeling
   # http://mahout.apache.org/users/classification/logistic-regression.html
   def self.require_jars
@@ -22,7 +24,7 @@ class Modeling
     end
   end
 
-  def initialize(categories = 2, features = 1000)
+  def initialize(categories, features)
     @@jars ||= Modeling.require_jars
     @lr = org.apache.mahout.classifier.sgd.AdaptiveLogisticRegression.new(categories, features, org.apache.mahout.classifier.sgd.L1.new)
     @enc = org.apache.mahout.vectorizer.encoders.AdaptiveWordValueEncoder.java_class.constructor(java.lang.String).new_instance('contents').to_java
@@ -56,14 +58,24 @@ class Modeling
   end
 end # the end of class SGD
 
+def parse_options
+  options = {}
+  OptionParser.new do |p|
+    p.on('-k', '--categories INTEGER', Integer, 'Specifies the # of categories (default: 24).') { |v| options[:categories] = v }
+    p.on('-w', '--features INTEGER', Integer, 'Specifies # of features (default: 2000).') { |v| options[:features] = v }
+  end.parse!
+  options
+end
+
 def run!
-  # ARGF.each { |e| $stdout.puts analyzer.tokenize(e).join(' ') }
-  sgd = Modeling.new
-  sgd.train([1, v = sgd.hash('hello world'.split)])
+  options = parse_options
+  sgd = Modeling.new(options[:categories] || 24, options[:features] || 2000)
+  ARGF.each do |e| 
+    e = e.split(' | ')
+    sgd.train([e[0].to_i - 1, v = sgd.hash(e[0].split)])
+  end
   sgd.close
   sgd.write
-  sgd.read
-  sgd.close
 end
 
 run! if __FILE__==$0
