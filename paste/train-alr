@@ -61,6 +61,10 @@ def run!
   
   l1 = org.apache.mahout.classifier.sgd.L1.new
   lr = org.apache.mahout.classifier.sgd.AdaptiveLogisticRegression.new(2, features, l1)
+  lr.train(1, v)
+  lr.close
+
+  org.apache.mahout.classifier.sgd.ModelSerializer.writeBinary('/tmp/model', lr.best.payload.learner)
 end
 
 run! if __FILE__==$0
