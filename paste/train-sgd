@@ -53,9 +53,6 @@ class Modeling
     @lr = org.apache.mahout.classifier.sgd.ModelSerializer.readBinary(model, org.apache.mahout.classifier.sgd.CrossFoldLearner.java_class)
     # model.close
   end
-
-  def test
-  end
 end # the end of class SGD
 
 def parse_options
@@ -73,6 +70,7 @@ def run!
   ARGF.each do |e| 
     e = e.split(' | ')
     sgd.train([e[0].to_i - 1, v = sgd.hash(e[0].split)])
+    print '.'
   end
   sgd.close
   sgd.write
