@@ -50,7 +50,7 @@ class Modeling
 
   def read(model = open('/tmp/model.sgd').to_inputstream)
     @lr = org.apache.mahout.classifier.sgd.ModelSerializer.readBinary(model, org.apache.mahout.classifier.sgd.CrossFoldLearner.java_class)
-    model.close
+    # model.close
   end
 
   def test
@@ -61,8 +61,8 @@ def run!
   # ARGF.each { |e| $stdout.puts analyzer.tokenize(e).join(' ') }
   sgd = Modeling.new
   sgd.train([1, v = sgd.hash('hello world'.split)])
-  sgd.write
   sgd.close
+  sgd.write
   sgd.read
   sgd.close
 end
