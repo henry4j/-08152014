@@ -35,7 +35,6 @@ class Modeling
   end
 
   def train(example)
-    p example
     @lr.train(example[0], example[1]) # e in [actual, instance]
     self
   end
