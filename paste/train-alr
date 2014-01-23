@@ -65,6 +65,10 @@ def run!
   lr.close
 
   org.apache.mahout.classifier.sgd.ModelSerializer.writeBinary('/tmp/model', lr.best.payload.learner)
+
+  model = open('/tmp/model').to_inputstream
+  org.apache.mahout.classifier.sgd.ModelSerializer.readBinary(model, CrossFoldLearner.class)
+  model.close
 end
 
 run! if __FILE__==$0
