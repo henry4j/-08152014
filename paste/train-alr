@@ -1,12 +1,9 @@
 #!/usr/bin/env jruby -E windows-1250
 
-class Analyzer
+class Modeling
+  # http://mahout.apache.org/users/classification/logistic-regression.html
   def self.require_jars
-    %w(text-1.0-SNAPSHOT.jar).map do |e|
-      jar = ENV['HADOOP_BASE'] ? "#{ENV['HADOOP_BASE']}/libexec/lib/#{e}" : "#{ENV['HOME']}/Downloads/#{e}"
-      system "curl -o #{jar} -ksL http://raw.github.com/henry4j/-/master/paste/#{e}" unless File.exist?(jar)
-      require jar
-    end + %w(
+    %w(
       com.google.guava:guava:16.0
       log4j:log4j:1.2.17
       org.apache.commons:commons-math3:3.2
@@ -25,50 +22,49 @@ class Analyzer
     end
   end
 
-  def initialize(analyzer)
-    @@jars ||= Analyzer.require_jars
-    @analyzer = org.apache.mahout.common.lucene.AnalyzerUtils.createAnalyzer(analyzer)
+  def initialize(categories = 2, features = 1000)
+    @@jars ||= Modeling.require_jars
+    @lr = org.apache.mahout.classifier.sgd.AdaptiveLogisticRegression.new(categories, features, org.apache.mahout.classifier.sgd.L1.new)
+    @enc = org.apache.mahout.vectorizer.encoders.AdaptiveWordValueEncoder.java_class.constructor(java.lang.String).new_instance('contents').to_java
+    @enc.probes = 2
   end
 
-  def tokenize(text)
-    @@stop_phrases_in_re ||= Regexp.compile(STOP_PHRASES.split("\n").reject { |e| e[0] == '#' }.join('|'))
-    text = text.gsub(@@stop_phrases_in_re, '.')
-    stream = @analyzer.tokenStream('{field-name}', java.io.StringReader.new(text)).tap { |e| e.reset }
-    term_attr = stream.add_attribute(org.apache.lucene.analysis.tokenattributes.CharTermAttribute.java_class)
-    tokens = []
-    begin
-      tokens << java.lang.String.new(term_attr.buffer, 0, term_attr.length).to_s if term_attr.length > 0 while stream.increment_token
-      tokens
-    ensure
-      stream.close
-    end
+  def hash(words, v = org.apache.mahout.math.RandomAccessSparseVector.new(@lr.numFeatures))
+    words.each { |w| @enc.addToVector(w, v) }
+    v
   end
 
-  STOP_PHRASES = <<'HERE'
-HERE
-end # the end of class Analyzer
+  def train(example)
+    p example
+    @lr.train(example[0], example[1]) # e in [actual, instance]
+    self
+  end
+
+  def close
+    @lr.close
+  end
+
+  def write(model = '/tmp/model.sgd')
+    org.apache.mahout.classifier.sgd.ModelSerializer.writeBinary(model, @lr.best.payload.learner)
+  end
+
+  def read(model = open('/tmp/model.sgd').to_inputstream)
+    @lr = org.apache.mahout.classifier.sgd.ModelSerializer.readBinary(model, org.apache.mahout.classifier.sgd.CrossFoldLearner.java_class)
+    model.close
+  end
+
+  def test
+  end
+end # the end of class SGD
 
 def run!
-  analyzer = Analyzer.new('com.henry4j.text.CommTextAnalyzer')
   # ARGF.each { |e| $stdout.puts analyzer.tokenize(e).join(' ') }
-  # http://search-lucene.com/jd/mahout/core/org/apache/mahout/vectorizer/encoders/AdaptiveWordValueEncoder.html
-  # org.apache.mahout.vectorizer.encoders.AdaptiveWordValueEncoder
-  features = 10000
-  e = org.apache.mahout.vectorizer.encoders.AdaptiveWordValueEncoder.java_class.constructor(java.lang.String).new_instance('contents').to_java
-  e.probes = 2
-  v = org.apache.mahout.math.RandomAccessSparseVector.new(features) # size for initial hashmap
-  e.addToVector('hello', v) # v.iterate_non_zero.map { |e| p [e.index, e.get] }
-  
-  l1 = org.apache.mahout.classifier.sgd.L1.new
-  lr = org.apache.mahout.classifier.sgd.AdaptiveLogisticRegression.new(2, features, l1)
-  lr.train(1, v)
-  lr.close
-
-  org.apache.mahout.classifier.sgd.ModelSerializer.writeBinary('/tmp/model', lr.best.payload.learner)
-
-  model = open('/tmp/model', 'r').to_inputstream
-  org.apache.mahout.classifier.sgd.ModelSerializer.readBinary(model, org.apache.mahout.classifier.sgd.CrossFoldLearner.java_class)
-  model.close
+  sgd = Modeling.new
+  sgd.train([1, v = sgd.hash('hello world'.split)])
+  sgd.write
+  sgd.close
+  sgd.read
+  sgd.close
 end
 
 run! if __FILE__==$0
