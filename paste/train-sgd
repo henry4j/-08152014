@@ -26,17 +26,18 @@ class SGD
 
   def initialize(categories, features)
     @@jars ||= SGD.require_jars
-    @lr = org.apache.mahout.classifier.sgd.AdaptiveLogisticRegression.new(categories, features, org.apache.mahout.classifier.sgd.L1.new)
+    @categories, @features = categories, features
   end
 
-  def vectorize(words, v = org.apache.mahout.math.RandomAccessSparseVector.new(@lr.numFeatures))
+  def vectorize(words, v = org.apache.mahout.math.RandomAccessSparseVector.new(features))
     @enc ||= org.apache.mahout.vectorizer.encoders.AdaptiveWordValueEncoder.java_class.constructor(java.lang.String).new_instance('contents').to_java.tap { |e| e.probes = 2 }
     words.each { |w| @enc.addToVector(w, v) }
     v
   end
 
-  def train(example)
-    @lr.train(example[0], example[1]) # e in [actual, instance]
+  def train(category, instance)
+    @lr ||= org.apache.mahout.classifier.sgd.AdaptiveLogisticRegression.new(@categories, @features, org.apache.mahout.classifier.sgd.L1.new)
+    @lr.train(category, instance) # e in [actual, instance]
     self
   end
 
@@ -69,7 +70,7 @@ def run!
   begin
     ARGF.each do |e| 
       e = e.split(' | ')
-      sgd.train([e[0].to_i - 1, sgd.vectorize(e[0].split)])
+      sgd.train(e[0].to_i - 1, sgd.vectorize(e[0].split))
       print '.'
     end
   ensure
