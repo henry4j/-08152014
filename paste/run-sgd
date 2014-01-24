@@ -77,13 +77,14 @@ def parse_options(options = {})
     p.on('-m', '--model PATH', String, 'Specifies the model file path (default: "model.sdg").') { |v| options[:model] = v }
     p.on('-r', '--raw', 'Specifies whether to output raw predictions.') { |v| options[:raw] = v }
     p.on('-o', '--others FLOAT', Float, 'Specifies whether to classify as "Others".') { |v| options[:others] = v }
+    p.on('-p', '--predictions PATH', String, 'Specifies the prediction path.') { |v| options[:prediction] = v }
   end.parse!
   options
 end
 
 def run!
   options = parse_options
-  sgd = SGD.new(options[:categories] || 24, options[:features] || 2048)
+  sgd = SGD.new(options[:categories] || 24, options[:features] || 10000)
   sgd.read(options[:model] || 'model.sdg')
   begin
     ARGF.each do |e| 
