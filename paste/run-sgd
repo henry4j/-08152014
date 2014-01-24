@@ -84,7 +84,7 @@ end
 
 def run!
   options = parse_options
-  sgd = SGD.new(options[:categories] || 24, options[:features] || 20000)
+  sgd = SGD.new(options[:categories] || 24, options[:features] || 24000)
   sgd.read(options[:model] || 'model.sdg')
   out = options[:output] ? open(options[:output], 'w') : $stdout
   ARGF.each do |e| 
