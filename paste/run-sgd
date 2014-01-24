@@ -26,6 +26,7 @@ class SGD
 
   def initialize(categories, features)
     @@jars ||= SGD.require_jars
+    @@values ||= org.apache.mahout.math.DenseVector.java_class.declared_field('values').tap { |f| f.accessible = true }
     @categories, @features = categories, features
   end
 
@@ -41,6 +42,11 @@ class SGD
     self
   end
 
+  def classify(instance)
+    @lr.classifyFull(v = org.apache.mahout.math.DenseVector.new(@categories), instance)
+    @@values.value(v).to_a
+  end
+
   def close
     @lr.close
   end
@@ -48,7 +54,7 @@ class SGD
   def write(model)
     dos = java.io.DataOutputStream.new(open(model, 'w').to_outputstream)
     begin
-      org.apache.mahout.classifier.sgd.PolymorphicWritable.write(dis, @lr.best.payload.learner)
+      org.apache.mahout.classifier.sgd.PolymorphicWritable.write(dos, @lr.best.payload.learner)
     ensure
       dos.close
     end
@@ -69,6 +75,7 @@ def parse_options(options = {})
     p.on('-k', '--categories INTEGER', Integer, 'Specifies the # of categories (default: 24).') { |v| options[:categories] = v }
     p.on('-w', '--features INTEGER', Integer, 'Specifies # of features (default: 2048).') { |v| options[:features] = v }
     p.on('-m', '--model PATH', String, 'Specifies the model file path (default: "model.sdg").') { |v| options[:model] = v }
+    p.on('-r', '--raw', 'Specifies whether to output raw predictions.') { |v| options[:raw] = v }
   end.parse!
   options
 end
@@ -77,18 +84,15 @@ def run!
   options = parse_options
   sgd = SGD.new(options[:categories] || 24, options[:features] || 2048)
   sgd.read(options[:model] || 'model.sdg')
-  p 'hello'
   begin
     ARGF.each do |e| 
       e = e.split(' | ')
-      sgd.train(e[0].to_i - 1, sgd.vectorize(e[0].split))
-      print '.'
+      raw = sgd.classify(sgd.vectorize(e[-1].split))
+      p (options[:raw] ? raw : raw.each_with_index.max[1] + 1)
     end
   ensure
     sgd.close
   end
-  sgd.write(options[:model] || 'model.sdg')
-  puts
 end
 
 run! if __FILE__==$0
