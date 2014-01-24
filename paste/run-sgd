@@ -86,8 +86,8 @@ def run!
   sgd.read(options[:model] || 'model.sdg')
   begin
     ARGF.each do |e| 
-      words = e.chomp.split(' | ')[-1].split
-      raw = sgd.classify(sgd.vectorize(words))
+      words = e.chomp.split(' | ')[-1]
+      raw = sgd.classify(v = sgd.vectorize(words.split))
       if options[:raw]
         p raw.map { |e| e.round(3) }
       else
