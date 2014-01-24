@@ -201,7 +201,7 @@ ruby -e '
   r.each { |i| j = i + rand(n - i); l[i], l[j] = l[j], l[i] };
   puts l' $corpus.csv | tee $corpus-r.csv
 
-export corpus=$corpus-r
+export corpus='rrc_pro_6215-r'
 
 ruby -E windows-1250 -ne 'puts $_.split(",").values_at(1, 2).join(";")' $corpus.csv |
   tokenize | tee $corpus.tokens
