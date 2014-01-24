@@ -45,7 +45,7 @@ class SGD
     @lr.close
   end
 
-  def write(model = '/tmp/model.sgd')
+  def write(model)
     org.apache.mahout.classifier.sgd.ModelSerializer.writeBinary(model, @lr.best.payload.learner)
   end
 
@@ -59,6 +59,7 @@ def parse_options(options = {})
   OptionParser.new do |p|
     p.on('-k', '--categories INTEGER', Integer, 'Specifies the # of categories (default: 24).') { |v| options[:categories] = v }
     p.on('-w', '--features INTEGER', Integer, 'Specifies # of features (default: 2000).') { |v| options[:features] = v }
+    p.on('-m', '--model PATH', String, 'Specifies the model file path.') { |v| options[:model] = v }
   end.parse!
   options
 end
@@ -72,7 +73,7 @@ def run!
     print '.'
   end
   sgd.close
-  sgd.write
+  sgd.write(options[:model] || '/tmp/model.sdg')
 end
 
 run! if __FILE__==$0
