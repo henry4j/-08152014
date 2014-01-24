@@ -222,7 +222,7 @@ paste -d ',' $corpus.label_ids $corpus.tokens |
 train-sgd -k 24 -w 2048 $corpus-vw.in -m $HOME/Downloads/$corpus.sgd
 
 # vw -t -i $HOME/Downloads/$corpus.sgd $corpus-vw.in -p $corpus-vw.out
-run-sgd -w 2048 $corpus-vw.in -m $HOME/Downloads/$corpus.sgd
+run-sgd -w 2048 $corpus-vw.in -m $HOME/Downloads/$corpus.sgd > $corpus-vw.out
 
 paste $corpus.label_ids $corpus-vw.out |
   ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l $corpus.csv`.to_f)}' # 91.5%
