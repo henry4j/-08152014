@@ -219,6 +219,7 @@ paste -d ',' $corpus.label_ids $corpus.tokens |
   tee $corpus-vw.in
 
 # vw --oaa 24 --ngram 2 $corpus-vw.in -f $HOME/Downloads/$corpus.sgd
+# export JRUBY_OPTS=-J-Xmx2g # in case of OutOfMemoryError
 sgd-train -k 24 $corpus-vw.in -m $HOME/Downloads/$corpus.sgd
 
 # vw -t -i $HOME/Downloads/$corpus.sgd $corpus-vw.in -p $corpus-vw.out
