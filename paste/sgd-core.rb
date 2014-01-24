@@ -22,16 +22,17 @@ class SGD
     end
   end
 
-  def initialize(categories, features)
+  def initialize(categories = nil, features = nil)
     @@jars ||= SGD.require_jars
     @@values ||= org.apache.mahout.math.DenseVector.java_class.declared_field('values').tap { |f| f.accessible = true }
     @categories, @features = categories, features
   end
 
-  def vectorize(text, ngram = 2, v = org.apache.mahout.math.RandomAccessSparseVector.new(@features))
+  def vectorize(text, ngram = 2)
     @enc ||= org.apache.mahout.vectorizer.encoders.AdaptiveWordValueEncoder.java_class.constructor(java.lang.String).new_instance('contents').to_java.tap { |e| e.probes = 2 }
     terms = text.split
     terms = ngram(terms, ngram) if ngram > 1
+    v = org.apache.mahout.math.RandomAccessSparseVector.new(@features, 3 * terms.size)
     terms.each { |w| @enc.addToVector(w, v) }
     v
   end
@@ -78,6 +79,8 @@ class SGD
     dis = java.io.DataInputStream.new(open(model, 'r').to_inputstream)
     begin
       @lr = org.apache.mahout.classifier.sgd.PolymorphicWritable.read(dis, org.apache.mahout.classifier.sgd.CrossFoldLearner.java_class)
+      @categories = @lr.num_categories
+      @features = @lr.num_features
     ensure
       dis.close
     end

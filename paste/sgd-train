@@ -10,17 +10,18 @@ def parse_options(options = {})
     p.on('-m', '--model PATH', String, 'Specifies the model file path (default: "model.sdg").') { |v| options[:model] = v }
     p.on('-r', '--raw', 'Specifies whether to output raw predictions.') { |v| options[:raw] = v }
     p.on('-g', '--ngram INTEGER', Integer, 'Specifies the max # of grams.') { |v| options[:ngram] = v }
+    p.on('-d', '--verbose', 'Specifies whether to turn on debug output.') { |v| options[:debug] = v }
   end.parse!
   options
 end
 
 def run!
   options = parse_options
-  sgd = SGD.new(options[:categories] || 24, options[:features] || 23500)
+  sgd = SGD.new(options[:categories] || 24, options[:features] || 43500)
   ARGF.each do |e| 
     label, text = e.chomp.split(' | ')
     sgd.train(label.to_i - 1, v = sgd.vectorize(text, options[:ngram] || 2))
-    j v.iterate_non_zero.map { |e| [e.index, e.get] }
+    options[:debug] ? (j v.iterate_non_zero.map { |e| [e.index, e.get] }) : (print '.')
   end
   sgd.close
   sgd.write(options[:model] || 'model.sdg')

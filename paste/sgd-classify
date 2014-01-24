@@ -5,8 +5,6 @@ require_relative 'sgd-core'
 
 def parse_options(options = {})
   OptionParser.new do |p|
-    p.on('-k', '--categories INTEGER', Integer, 'Specifies the # of categories (default: 24).') { |v| options[:categories] = v }
-    p.on('-w', '--features INTEGER', Integer, 'Specifies # of features (default: 2048).') { |v| options[:features] = v }
     p.on('-m', '--model PATH', String, 'Specifies the model file path (default: "model.sdg").') { |v| options[:model] = v }
     p.on('-r', '--raw', 'Specifies whether to output raw predictions.') { |v| options[:raw] = v }
     p.on('-x', '--others FLOAT', Float, 'Specifies whether to classify as "Others".') { |v| options[:others] = v }
@@ -18,7 +16,7 @@ end
 
 def run!
   options = parse_options
-  sgd = SGD.new(options[:categories] || 24, options[:features] || 23500)
+  sgd = SGD.new
   sgd.read(options[:model] || 'model.sdg')
   out = options[:output] ? open(options[:output], 'w') : $stdout
   ARGF.each do |e| 
