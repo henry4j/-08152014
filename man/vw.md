@@ -222,6 +222,7 @@ paste -d ',' $corpus.label_ids $corpus.tokens |
 train-sgd -k 24 -w 2048 $corpus-vw.in -m $HOME/Downloads/$corpus.sgd
 
 # vw -t -i $HOME/Downloads/$corpus.sgd $corpus-vw.in -p $corpus-vw.out
+run-sgd -w 2048 $corpus-vw.in -m $HOME/Downloads/$corpus.sgd -r | tee $corpus-vw.raw
 run-sgd -w 2048 $corpus-vw.in -m $HOME/Downloads/$corpus.sgd | tee $corpus-vw.out
 
 paste $corpus.label_ids $corpus-vw.out |
