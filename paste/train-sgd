@@ -46,12 +46,21 @@ class SGD
   end
 
   def write(model)
-    org.apache.mahout.classifier.sgd.ModelSerializer.writeBinary(model, @lr.best.payload.learner)
+    dos = java.io.DataOutputStream.new(open(model, 'w').to_outputstream)
+    begin
+      org.apache.mahout.classifier.sgd.PolymorphicWritable.write(dos, @lr.best.payload.learner)
+    ensure
+      dos.close
+    end
   end
 
-  def read(model = open('/tmp/model.sgd').to_inputstream)
-    @lr = org.apache.mahout.classifier.sgd.ModelSerializer.readBinary(model, org.apache.mahout.classifier.sgd.CrossFoldLearner.java_class)
-    # model.close
+  def read(model)
+    dis = java.io.DataInputStream.new(open(model, 'r').to_inputstream)
+    begin
+      @lr = org.apache.mahout.classifier.sgd.PolymorphicWritable.read(dis, org.apache.mahout.classifier.sgd.CrossFoldLearner.java_class)
+    ensure
+      dis.close
+    end
   end
 end # the end of class SGD
 
