@@ -2,7 +2,7 @@
 
 require 'optparse'
 
-class Modeling
+class Sgd
   # http://mahout.apache.org/users/classification/logistic-regression.html
   def self.require_jars
     %w(
@@ -25,19 +25,19 @@ class Modeling
   end
 
   def initialize(categories, features)
-    @@jars ||= Modeling.require_jars
+    @@jars ||= Sgd.require_jars
     @lr = org.apache.mahout.classifier.sgd.AdaptiveLogisticRegression.new(categories, features, org.apache.mahout.classifier.sgd.L1.new)
     @enc = org.apache.mahout.vectorizer.encoders.AdaptiveWordValueEncoder.java_class.constructor(java.lang.String).new_instance('contents').to_java
     @enc.probes = 2
   end
 
-  def hash(words, v = org.apache.mahout.math.RandomAccessSparseVector.new(@lr.numFeatures))
+  def vectorize(words, v = org.apache.mahout.math.RandomAccessSparseVector.new(@lr.numFeatures))
     words.each { |w| @enc.addToVector(w, v) }
     v
   end
 
-  def train(example)
-    @lr.train(example[0], example[1]) # e in [actual, instance]
+  def train(category, instance)
+    @lr.train(category, instance) # e in [actual, instance]
     self
   end
 
@@ -66,10 +66,10 @@ end
 
 def run!
   options = parse_options
-  sgd = Modeling.new(options[:categories] || 24, options[:features] || 2000)
+  sgd = Sgd.new(options[:categories] || 24, options[:features] || 2000)
   ARGF.each do |e| 
     e = e.split(' | ')
-    sgd.train([e[0].to_i - 1, v = sgd.hash(e[0].split)])
+    sgd.train([e[0].to_i - 1, sgd.vectorize(e[0].split)])
     print '.'
   end
   sgd.close
