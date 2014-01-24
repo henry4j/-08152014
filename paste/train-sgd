@@ -71,11 +71,13 @@ def run!
     ARGF.each do |e| 
       e = e.split(' | ')
       sgd.train([e[0].to_i - 1, sgd.vectorize(e[0].split)])
+      print '.'
     end
   ensure
     sgd.close
   end
   sgd.write(options[:model] || 'model.sdg')
+  puts
 end
 
 run! if __FILE__==$0
