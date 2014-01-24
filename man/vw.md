@@ -201,7 +201,7 @@ ruby -e '
   r.each { |i| j = i + rand(n - i); l[i], l[j] = l[j], l[i] };
   puts l' $corpus.csv | tee $corpus-r.csv
 
-export corpus=$corpus-r
+export corpus='rrc_pro_6215-r'
 
 ruby -E windows-1250 -ne 'puts $_.split(",").values_at(1, 2).join(";")' $corpus.csv |
   tokenize | tee $corpus.tokens
@@ -219,16 +219,16 @@ paste -d ',' $corpus.label_ids $corpus.tokens |
   tee $corpus-vw.in
 
 # vw --oaa 24 --ngram 2 $corpus-vw.in -f $HOME/Downloads/$corpus.sgd
-train-sgd -k 24 -w 2048 $corpus-vw.in -m $HOME/Downloads/$corpus.sgd
+train-sgd -k 24 $corpus-vw.in -m $HOME/Downloads/$corpus.sgd
 
 # vw -t -i $HOME/Downloads/$corpus.sgd $corpus-vw.in -p $corpus-vw.out
-run-sgd -w 2048 $corpus-vw.in -m $HOME/Downloads/$corpus.sgd -r | tee $corpus-vw.raw
-run-sgd -w 2048 $corpus-vw.in -m $HOME/Downloads/$corpus.sgd | tee $corpus-vw.out
+run-sgd $corpus-vw.in -m $HOME/Downloads/$corpus.sgd -r | tee $corpus-vw.raw
+run-sgd $corpus-vw.in -m $HOME/Downloads/$corpus.sgd | tee $corpus-vw.out
 
 paste $corpus.label_ids $corpus-vw.out |
   ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l $corpus.csv`.to_f)}' # 91.5%
 
-s3cmd put $HOME/Downloads/$corpus.sgd s3://${S3_BUCKET}-private/resources/
+# s3cmd put $HOME/Downloads/$corpus.sgd s3://${S3_BUCKET}-private/resources/
 
 :)
 ```
