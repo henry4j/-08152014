@@ -76,7 +76,7 @@ def parse_options(options = {})
     p.on('-w', '--features INTEGER', Integer, 'Specifies # of features (default: 2048).') { |v| options[:features] = v }
     p.on('-m', '--model PATH', String, 'Specifies the model file path (default: "model.sdg").') { |v| options[:model] = v }
     p.on('-r', '--raw', 'Specifies whether to output raw predictions.') { |v| options[:raw] = v }
-    p.on('-o', '--others', Float, 'Specifies whether to classify as "Others".') { |v| options[:others] = v }
+    p.on('-f', '--others FLOAT', Float, 'Specifies whether to classify as "Others".') { |v| options[:others] = v }
   end.parse!
   options
 end
