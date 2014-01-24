@@ -83,15 +83,12 @@ end
 def run!
   options = parse_options
   sgd = SGD.new(options[:categories] || 24, options[:features] || 2048)
-  begin
-    ARGF.each do |e| 
-      label, *words = e.chomp.split(' | ')
-      j [label, words]
-      sgd.train(label.to_i - 1, sgd.vectorize(words))
-    end
-  ensure
-    sgd.close
+  ARGF.each do |e| 
+    label, words = e.chomp.split(' | ')
+    sgd.train(label.to_i - 1, v = sgd.vectorize(words.split))
+    j v.iterate_non_zero.map { |e| [e.index, e.get] }
   end
+  sgd.close
   sgd.write(options[:model] || 'model.sdg')
 end
 
