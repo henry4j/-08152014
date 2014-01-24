@@ -10,6 +10,7 @@ def parse_options(options = {})
     p.on('-x', '--others FLOAT', Float, 'Specifies whether to classify as "Others".') { |v| options[:others] = v }
     p.on('-o', '--output PATH', String, 'Specifies the prediction output path.') { |v| options[:output] = v }
     p.on('-g', '--ngram INTEGER', Integer, 'Specifies the max # of grams.') { |v| options[:ngram] = v }
+    p.on('-d', '--debug', 'Specifies whether to turn on debug output.') { |v| options[:debug] = v }
   end.parse!
   options
 end
@@ -22,7 +23,7 @@ def run!
   ARGF.each do |e| 
     text = e.chomp.split(' | ')[-1]
     raw = sgd.classify(v = sgd.vectorize(text, options[:ngram] || 2))
-    j v.iterate_non_zero.map { |e| [e.index, e.get] } if options[:output]
+    j v.iterate_non_zero.map { |e| [e.index, e.get] } if options[:debug]
     if options[:raw]
       out.puts raw.map { |e| e.round(3) }.inspect
     else

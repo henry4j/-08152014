@@ -10,7 +10,7 @@ def parse_options(options = {})
     p.on('-m', '--model PATH', String, 'Specifies the model file path (default: "model.sdg").') { |v| options[:model] = v }
     p.on('-r', '--raw', 'Specifies whether to output raw predictions.') { |v| options[:raw] = v }
     p.on('-g', '--ngram INTEGER', Integer, 'Specifies the max # of grams (default: 2).') { |v| options[:ngram] = v }
-    p.on('-d', '--verbose', 'Specifies whether to turn on debug output.') { |v| options[:debug] = v }
+    p.on('-d', '--debug', 'Specifies whether to turn on debug output.') { |v| options[:debug] = v }
   end.parse!
   options
 end
