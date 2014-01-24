@@ -1,6 +1,7 @@
 #!/usr/bin/env jruby -E windows-1250
 
 %w{optparse json}.each { |e| require e }
+require_relative 'sgd-core'
 
 def parse_options(options = {})
   OptionParser.new do |p|
