@@ -18,12 +18,12 @@ end
 
 def run!
   options = parse_options
-  sgd = SGD.new(options[:categories] || 24, options[:features] || 22000)
+  sgd = SGD.new(options[:categories] || 24, options[:features] || 23000)
   sgd.read(options[:model] || 'model.sdg')
   out = options[:output] ? open(options[:output], 'w') : $stdout
   ARGF.each do |e| 
     text = e.chomp.split(' | ')[-1]
-    raw = sgd.classify(v = sgd.vectorize(text, options[:ngram] || 1))
+    raw = sgd.classify(v = sgd.vectorize(text, options[:ngram] || 2))
     j v.iterate_non_zero.map { |e| [e.index, e.get] } if options[:output]
     if options[:raw]
       out.puts raw.map { |e| e.round(3) }.inspect
