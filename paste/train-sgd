@@ -1,6 +1,6 @@
 #!/usr/bin/env jruby -E windows-1250
 
-require 'optparse'
+%w{optparse json}.each { |e| require e }
 
 class SGD
   # http://mahout.apache.org/users/classification/logistic-regression.html
@@ -85,15 +85,14 @@ def run!
   sgd = SGD.new(options[:categories] || 24, options[:features] || 2048)
   begin
     ARGF.each do |e| 
-      e = e.split(' | ')
-      sgd.train(e[0].to_i - 1, sgd.vectorize(e[0].split))
-      print '.'
+      label, *words = e.chomp.split(' | ')
+      j [label, words]
+      sgd.train(label.to_i - 1, sgd.vectorize(words))
     end
   ensure
     sgd.close
   end
   sgd.write(options[:model] || 'model.sdg')
-  puts
 end
 
 run! if __FILE__==$0
