@@ -26,6 +26,7 @@ class SGD
 
   def initialize(categories, features)
     @@jars ||= SGD.require_jars
+    @@values ||= org.apache.mahout.math.DenseVector.java_class.declared_field('values').tap { |f| f.accessible = true }
     @categories, @features = categories, features
   end
 
@@ -39,6 +40,11 @@ class SGD
     @lr ||= org.apache.mahout.classifier.sgd.AdaptiveLogisticRegression.new(@categories, @features, org.apache.mahout.classifier.sgd.L1.new)
     @lr.train(category, instance) # e in [actual, instance]
     self
+  end
+
+  def classify(instance)
+    @lr.classifyFull(v = org.apache.mahout.math.DenseVector.new(@categories), instance)
+    @@values.value(v).to_a
   end
 
   def close
@@ -69,6 +75,7 @@ def parse_options(options = {})
     p.on('-k', '--categories INTEGER', Integer, 'Specifies the # of categories (default: 24).') { |v| options[:categories] = v }
     p.on('-w', '--features INTEGER', Integer, 'Specifies # of features (default: 2048).') { |v| options[:features] = v }
     p.on('-m', '--model PATH', String, 'Specifies the model file path (default: "model.sdg").') { |v| options[:model] = v }
+    p.on('-r', '--raw', 'Specifies whether to output raw predictions.') { |v| options[:raw] = v }
   end.parse!
   options
 end
