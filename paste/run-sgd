@@ -92,7 +92,7 @@ def run!
         p raw
       else
         ei = raw.each_with_index.max
-        puts ei[0] > 0.071 ? e1[1] + 1 : 0
+        puts ei[0] > 0.071 ? ei[1] + 1 : 0
       end
     end
   ensure
