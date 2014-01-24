@@ -88,7 +88,12 @@ def run!
     ARGF.each do |e| 
       e = e.split(' | ')
       raw = sgd.classify(sgd.vectorize(e[-1].split))
-      p (options[:raw] ? raw : raw.each_with_index.max[1] + 1)
+      if options[:raw]
+        p raw
+      else
+        ei = raw.each_with_index.max
+        puts ei[0] > 0.071 ? e1[1] + 1 : 0
+      end
     end
   ensure
     sgd.close
