@@ -227,7 +227,7 @@ sgd-train -k 24 $corpus-vw.in -m $HOME/Downloads/$corpus.sgd
 sgd-classify $corpus-vw.in -m $HOME/Downloads/$corpus.sgd -o $corpus-vw.out
 
 paste $corpus.label_ids $corpus-vw.out |
-  ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l $corpus.csv`.to_f)}' # 91.5%
+  ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l $corpus.csv`.to_f)}' # 92.68%
 
 # s3cmd put $HOME/Downloads/$corpus.sgd s3://${S3_BUCKET}-private/resources/
 
