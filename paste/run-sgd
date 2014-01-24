@@ -58,7 +58,7 @@ end # the end of class SGD
 def parse_options(options = {})
   OptionParser.new do |p|
     p.on('-k', '--categories INTEGER', Integer, 'Specifies the # of categories (default: 24).') { |v| options[:categories] = v }
-    p.on('-w', '--features INTEGER', Integer, 'Specifies # of features (default: 2000).') { |v| options[:features] = v }
+    p.on('-w', '--features INTEGER', Integer, 'Specifies # of features (default: 2048).') { |v| options[:features] = v }
     p.on('-m', '--model PATH', String, 'Specifies the model file path (default: "model.sdg").') { |v| options[:model] = v }
   end.parse!
   options
@@ -66,7 +66,7 @@ end
 
 def run!
   options = parse_options
-  sgd = SGD.new(options[:categories] || 24, options[:features] || 2000)
+  sgd = SGD.new(options[:categories] || 24, options[:features] || 2048)
   begin
     ARGF.each do |e| 
       e = e.split(' | ')
