@@ -27,11 +27,10 @@ class SGD
   def initialize(categories, features)
     @@jars ||= SGD.require_jars
     @lr = org.apache.mahout.classifier.sgd.AdaptiveLogisticRegression.new(categories, features, org.apache.mahout.classifier.sgd.L1.new)
-    @enc = org.apache.mahout.vectorizer.encoders.AdaptiveWordValueEncoder.java_class.constructor(java.lang.String).new_instance('contents').to_java
-    @enc.probes = 2
   end
 
   def vectorize(words, v = org.apache.mahout.math.RandomAccessSparseVector.new(@lr.numFeatures))
+    @enc ||= org.apache.mahout.vectorizer.encoders.AdaptiveWordValueEncoder.java_class.constructor(java.lang.String).new_instance('contents').to_java.tap { |e| e.probes = 2 }
     words.each { |w| @enc.addToVector(w, v) }
     v
   end
