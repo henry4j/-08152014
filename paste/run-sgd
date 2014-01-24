@@ -1,6 +1,6 @@
 #!/usr/bin/env jruby -E windows-1250
 
-require 'optparse'
+%w{optparse json}.each { |e| require e }
 
 class SGD
   # http://mahout.apache.org/users/classification/logistic-regression.html
@@ -76,8 +76,8 @@ def parse_options(options = {})
     p.on('-w', '--features INTEGER', Integer, 'Specifies # of features (default: 2048).') { |v| options[:features] = v }
     p.on('-m', '--model PATH', String, 'Specifies the model file path (default: "model.sdg").') { |v| options[:model] = v }
     p.on('-r', '--raw', 'Specifies whether to output raw predictions.') { |v| options[:raw] = v }
-    p.on('-o', '--others FLOAT', Float, 'Specifies whether to classify as "Others".') { |v| options[:others] = v }
-    p.on('-p', '--predictions PATH', String, 'Specifies the prediction path.') { |v| options[:prediction] = v }
+    p.on('-x', '--others FLOAT', Float, 'Specifies whether to classify as "Others".') { |v| options[:others] = v }
+    p.on('-o', '--output PATH', String, 'Specifies the prediction output path.') { |v| options[:output] = v }
   end.parse!
   options
 end
@@ -86,20 +86,19 @@ def run!
   options = parse_options
   sgd = SGD.new(options[:categories] || 24, options[:features] || 10000)
   sgd.read(options[:model] || 'model.sdg')
-  begin
-    ARGF.each do |e| 
-      words = e.chomp.split(' | ')[-1]
-      raw = sgd.classify(v = sgd.vectorize(words.split))
-      if options[:raw]
-        p raw.map { |e| e.round(3) }
-      else
-        ei = raw.each_with_index.max
-        puts options[:others] && ei[0] < options[:others] ? 0 : ei[1] + 1
-      end
+  out = options[:output] ? open(options[:output], 'w') : $stdout
+  ARGF.each do |e| 
+    words = e.chomp.split(' | ')[-1]
+    raw = sgd.classify(v = sgd.vectorize(words.split))
+    j v.iterate_non_zero.map { |e| [e.index, e.get] } if options[:output]
+    if options[:raw]
+      out.puts raw.map { |e| e.round(3) }.inspect
+    else
+      ei = raw.each_with_index.max
+      out.puts options[:others] && ei[0] < options[:others] ? 0 : ei[1] + 1
     end
-  ensure
-    sgd.close
   end
+  sgd.close
 end
 
 run! if __FILE__==$0
