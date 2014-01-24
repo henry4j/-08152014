@@ -219,7 +219,7 @@ paste -d ',' $corpus.label_ids $corpus.tokens |
   tee $corpus-vw.in
 
 # vw --oaa 24 --ngram 2 $corpus-vw.in -f $HOME/Downloads/$corpus.model
-train-sgd $corpus-vw.in
+train-sgd -k 24 -w 2000 $corpus-vw.in -m $HOME/Downloads/$corpus.model
 
 vw -t -i $HOME/Downloads/$corpus.model $corpus-vw.in -p $corpus-vw.out
 
