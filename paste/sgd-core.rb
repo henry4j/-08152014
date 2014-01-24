@@ -1,7 +1,5 @@
 #!/usr/bin/env jruby -E windows-1250
 
-%w{optparse json}.each { |e| require e }
-
 class SGD
   # http://mahout.apache.org/users/classification/logistic-regression.html
   def self.require_jars
@@ -86,27 +84,3 @@ class SGD
     end
   end
 end # the end of class SGD
-
-def parse_options(options = {})
-  OptionParser.new do |p|
-    p.on('-k', '--categories INTEGER', Integer, 'Specifies the # of categories (default: 24).') { |v| options[:categories] = v }
-    p.on('-w', '--features INTEGER', Integer, 'Specifies # of features (default: 2048).') { |v| options[:features] = v }
-    p.on('-m', '--model PATH', String, 'Specifies the model file path (default: "model.sdg").') { |v| options[:model] = v }
-    p.on('-r', '--raw', 'Specifies whether to output raw predictions.') { |v| options[:raw] = v }
-  end.parse!
-  options
-end
-
-def run!
-  options = parse_options
-  sgd = SGD.new(options[:categories] || 24, options[:features] || 22000)
-  ARGF.each do |e| 
-    label, text = e.chomp.split(' | ')
-    sgd.train(label.to_i - 1, v = sgd.vectorize(text))
-    j v.iterate_non_zero.map { |e| [e.index, e.get] }
-  end
-  sgd.close
-  sgd.write(options[:model] || 'model.sdg')
-end
-
-run! if __FILE__==$0
