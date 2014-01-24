@@ -2,7 +2,7 @@
 
 require 'optparse'
 
-class Modeling
+class SGD
   # http://mahout.apache.org/users/classification/logistic-regression.html
   def self.require_jars
     %w(
@@ -25,13 +25,13 @@ class Modeling
   end
 
   def initialize(categories, features)
-    @@jars ||= Modeling.require_jars
+    @@jars ||= SGD.require_jars
     @lr = org.apache.mahout.classifier.sgd.AdaptiveLogisticRegression.new(categories, features, org.apache.mahout.classifier.sgd.L1.new)
     @enc = org.apache.mahout.vectorizer.encoders.AdaptiveWordValueEncoder.java_class.constructor(java.lang.String).new_instance('contents').to_java
     @enc.probes = 2
   end
 
-  def hash(words, v = org.apache.mahout.math.RandomAccessSparseVector.new(@lr.numFeatures))
+  def vectorize(words, v = org.apache.mahout.math.RandomAccessSparseVector.new(@lr.numFeatures))
     words.each { |w| @enc.addToVector(w, v) }
     v
   end
@@ -45,7 +45,7 @@ class Modeling
     @lr.close
   end
 
-  def write(model = '/tmp/model.sgd')
+  def write(model)
     org.apache.mahout.classifier.sgd.ModelSerializer.writeBinary(model, @lr.best.payload.learner)
   end
 
@@ -55,25 +55,29 @@ class Modeling
   end
 end # the end of class SGD
 
-def parse_options
-  options = {}
+def parse_options(options = {})
   OptionParser.new do |p|
     p.on('-k', '--categories INTEGER', Integer, 'Specifies the # of categories (default: 24).') { |v| options[:categories] = v }
     p.on('-w', '--features INTEGER', Integer, 'Specifies # of features (default: 2000).') { |v| options[:features] = v }
+    p.on('-m', '--model PATH', String, 'Specifies the model file path (default: "model.sdg").') { |v| options[:model] = v }
   end.parse!
   options
 end
 
 def run!
   options = parse_options
-  sgd = Modeling.new(options[:categories] || 24, options[:features] || 2000)
-  ARGF.each do |e| 
-    e = e.split(' | ')
-    sgd.train([e[0].to_i - 1, v = sgd.hash(e[0].split)])
-    print '.'
+  sgd = SGD.new(options[:categories] || 24, options[:features] || 2000)
+  begin
+    ARGF.each do |e| 
+      e = e.split(' | ')
+      sgd.train([e[0].to_i - 1, sgd.vectorize(e[0].split)])
+      print '.'
+    end
+  ensure
+    sgd.close
   end
-  sgd.close
-  sgd.write
+  sgd.write(options[:model] || 'model.sdg')
+  puts
 end
 
 run! if __FILE__==$0
