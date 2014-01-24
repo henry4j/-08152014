@@ -89,7 +89,7 @@ def run!
       e = e.split(' | ')
       raw = sgd.classify(sgd.vectorize(e[-1].split))
       if options[:raw]
-        p raw
+        p raw.map { |e| e.round(3) }
       else
         ei = raw.each_with_index.max
         puts ei[0] > 0.071 ? ei[1] + 1 : 0
