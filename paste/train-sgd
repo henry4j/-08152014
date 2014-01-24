@@ -82,7 +82,7 @@ end
 
 def run!
   options = parse_options
-  sgd = SGD.new(options[:categories] || 24, options[:features] || 100000)
+  sgd = SGD.new(options[:categories] || 24, options[:features] || 20000)
   ARGF.each do |e| 
     label, words = e.chomp.split(' | ')
     sgd.train(label.to_i - 1, v = sgd.vectorize(words.split))
