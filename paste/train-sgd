@@ -30,10 +30,27 @@ class SGD
     @categories, @features = categories, features
   end
 
-  def vectorize(words, v = org.apache.mahout.math.RandomAccessSparseVector.new(@features))
+  def vectorize(text, ngram = 2, v = org.apache.mahout.math.RandomAccessSparseVector.new(@features))
     @enc ||= org.apache.mahout.vectorizer.encoders.AdaptiveWordValueEncoder.java_class.constructor(java.lang.String).new_instance('contents').to_java.tap { |e| e.probes = 2 }
-    words.each { |w| @enc.addToVector(w, v) }
+    terms = text.split
+    terms = ngram(terms, ngram) if ngram > 1
+    terms.each { |w| @enc.addToVector(w, v) }
     v
+  end
+
+  def ngram(terms, max_ngram)
+    # http://lucene.apache.org/core/4_6_0/analyzers-common/org/apache/lucene/analysis/shingle/ShingleFilter.html
+    # token_stream = org.apache.mahout.common.lucene.IteratorTokenStream.new(java.util.Arrays.asList(terms.to_java(:string)).iterator)
+    token_stream = org.apache.mahout.common.lucene.IteratorTokenStream.new(java.util.Arrays.asList(terms.to_java).iterator)
+    stream  = org.apache.lucene.analysis.shingle.ShingleFilter.new(token_stream, max_ngram).tap { |e| e.reset }
+    term_attr = stream.add_attribute(org.apache.lucene.analysis.tokenattributes.CharTermAttribute.java_class)
+    tokens = []
+    begin
+      tokens << java.lang.String.new(term_attr.buffer, 0, term_attr.length).to_s if term_attr.length > 0 while stream.increment_token
+      tokens
+    ensure
+      stream.close
+    end
   end
 
   def train(category, instance)
@@ -84,8 +101,8 @@ def run!
   options = parse_options
   sgd = SGD.new(options[:categories] || 24, options[:features] || 22000)
   ARGF.each do |e| 
-    label, words = e.chomp.split(' | ')
-    sgd.train(label.to_i - 1, v = sgd.vectorize(words.split))
+    label, text = e.chomp.split(' | ')
+    sgd.train(label.to_i - 1, v = sgd.vectorize(text))
     j v.iterate_non_zero.map { |e| [e.index, e.get] }
   end
   sgd.close
