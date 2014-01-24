@@ -29,7 +29,7 @@ class SGD
     @categories, @features = categories, features
   end
 
-  def vectorize(words, v = org.apache.mahout.math.RandomAccessSparseVector.new(features))
+  def vectorize(words, v = org.apache.mahout.math.RandomAccessSparseVector.new(@features))
     @enc ||= org.apache.mahout.vectorizer.encoders.AdaptiveWordValueEncoder.java_class.constructor(java.lang.String).new_instance('contents').to_java.tap { |e| e.probes = 2 }
     words.each { |w| @enc.addToVector(w, v) }
     v
