@@ -76,6 +76,7 @@ def parse_options(options = {})
     p.on('-w', '--features INTEGER', Integer, 'Specifies # of features (default: 2048).') { |v| options[:features] = v }
     p.on('-m', '--model PATH', String, 'Specifies the model file path (default: "model.sdg").') { |v| options[:model] = v }
     p.on('-r', '--raw', 'Specifies whether to output raw predictions.') { |v| options[:raw] = v }
+    p.on('-o', '--others', Float, 'Specifies whether to classify as "Others".') { |v| options[:others] = v }
   end.parse!
   options
 end
@@ -92,7 +93,7 @@ def run!
         p raw.map { |e| e.round(3) }
       else
         ei = raw.each_with_index.max
-        puts ei[0] > 0.071 ? ei[1] + 1 : 0
+        puts options[:others] && ei[0] < options[:others] ? 0 : ei[1] + 1
       end
     end
   ensure
