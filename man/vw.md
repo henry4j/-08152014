@@ -218,15 +218,16 @@ paste -d ',' $corpus.label_ids $corpus.tokens |
   ruby -pe '$_ = $_.split(",").join(" | ")' |
   tee $corpus-vw.in
 
-# vw --oaa 24 --ngram 2 $corpus-vw.in -f $HOME/Downloads/$corpus.model
-train-sgd -k 24 -w 2048 $corpus-vw.in -m $HOME/Downloads/$corpus.model
+# vw --oaa 24 --ngram 2 $corpus-vw.in -f $HOME/Downloads/$corpus.sgd
+train-sgd -k 24 -w 2048 $corpus-vw.in -m $HOME/Downloads/$corpus.sgd
 
-vw -t -i $HOME/Downloads/$corpus.model $corpus-vw.in -p $corpus-vw.out
+# vw -t -i $HOME/Downloads/$corpus.sgd $corpus-vw.in -p $corpus-vw.out
+run-sgd -w 2048 $corpus-vw.in -m $HOME/Downloads/$corpus.sgd
 
 paste $corpus.label_ids $corpus-vw.out |
   ruby -ane 'BEGIN{c = 0}; c += 1 if $F[0].to_i == $F[1].to_i; END{p c/(`wc -l $corpus.csv`.to_f)}' # 91.5%
 
-s3cmd put $HOME/Downloads/$corpus.model s3://${S3_BUCKET}-private/resources/
+s3cmd put $HOME/Downloads/$corpus.sgd s3://${S3_BUCKET}-private/resources/
 
 :)
 ```
