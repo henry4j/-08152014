@@ -1,7 +1,6 @@
 #!/usr/bin/env jruby -E windows-1250
 
 class SGD
-  # http://mahout.apache.org/users/classification/logistic-regression.html
   def self.require_jars
     %w(
       com.google.guava:guava:16.0
