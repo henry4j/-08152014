@@ -78,8 +78,7 @@ class SGD
     dis = java.io.DataInputStream.new(open(model, 'r').to_inputstream)
     begin
       @lr = org.apache.mahout.classifier.sgd.PolymorphicWritable.read(dis, org.apache.mahout.classifier.sgd.CrossFoldLearner.java_class)
-      @categories = @lr.num_categories
-      @features = @lr.num_features
+      @categories, @categories = @lr.num_features, @lr.num_categories
     ensure
       dis.close
     end
