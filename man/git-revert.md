@@ -1,6 +1,6 @@
 #### [How I reverted several git commits in a single commit](http://archlinux.me/dusty/2011/02/26/how-i-reverted-several-git-commits-in-a-single-commit/)
 
-I hate to publicly admit this, but I recently made four commits that should have been merged into one commit, including two with embarrassing commit messages like, "third commit without testing, for shame!" I'm thoroughly shocked that fellow coder, Dan McGee hasn't already attacked me for my misdemeanor.
+I hate to publicly admit this, but I recently made four commits that should have been merged into one commit, including two with embarrassing commit messages like, **third commit without testing, for shame!** I'm thoroughly shocked that fellow coder, Dan McGee hasn't already attacked me for my misdemeanor.
 
 Please forgive me, I was tired and in a hurry and was working on something that was easier tested on the production server and most certainly deserve to be attacked by a velociraptor.
 
