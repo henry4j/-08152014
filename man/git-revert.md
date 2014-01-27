@@ -1,6 +1,6 @@
 #### [How I reverted several git commits in a single commit](http://archlinux.me/dusty/2011/02/26/how-i-reverted-several-git-commits-in-a-single-commit/)
 
-I hate to publicly admit this, but I recently made four commits that should have been merged into one commit, including two with embarrassing commit messages like, “third commit without testing, for shame!” I'm thoroughly shocked that fellow coder, Dan McGee hasn't already attacked me for my misdemeanor.
+I hate to publicly admit this, but I recently made four commits that should have been merged into one commit, including two with embarrassing commit messages like, "third commit without testing, for shame!" I'm thoroughly shocked that fellow coder, Dan McGee hasn't already attacked me for my misdemeanor.
 
 Please forgive me, I was tired and in a hurry and was working on something that was easier tested on the production server and most certainly deserve to be attacked by a velociraptor.
 
@@ -45,7 +45,7 @@ git rebase -i is my favourite method of rebasing. It lists the five most recent 
     squash R3
     squash R4
 
-pick O3 says to include that commit and leave it unchanged. When rebasing, I usually go one commit earlier than I expect to make sure I'm modifying the correct history. The reword commit simply allows me to change the commit message of R1 to “Revert the XYZ changes because I no longer need them” The squash commits mean that those three R commits are merged into the previous commit — R1. And my end state is as desired:
+pick O3 says to include that commit and leave it unchanged. When rebasing, I usually go one commit earlier than I expect to make sure I'm modifying the correct history. The reword commit simply allows me to change the commit message of R1 to "Revert the XYZ changes because I no longer need them" The squash commits mean that those three R commits are merged into the previous commit — R1. And my end state is as desired:
 
     A–C1–C2–Ex–C3–C4–O1–O2–O3–R
 
