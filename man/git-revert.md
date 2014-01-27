@@ -29,7 +29,7 @@ My process was to run git revert several times:
 
 Possibly there is a way to do all of this in one command, I'm not sure. This left me with:
 
-A–C1–C2–Ex–C3–C4–O1–O2–O3–R1–R2–R3–R4
+    A–C1–C2–Ex–C3–C4–O1–O2–O3–R1–R2–R3–R4
 
 where the four R commits are reversions of the four C commits.
 
@@ -39,14 +39,14 @@ Then I ran:
 
 git rebase -i is my favourite method of rebasing. It lists the five most recent commits in vim asking me what to do with each one. You can choose several options for each commit. Here is what I chose:
 
-pick O3
-reword R1
-squash R2
-squash R3
-squash R4
+    pick O3
+    reword R1
+    squash R2
+    squash R3
+    squash R4
 
 pick O3 says to include that commit and leave it unchanged. When rebasing, I usually go one commit earlier than I expect to make sure I'm modifying the correct history. The reword commit simply allows me to change the commit message of R1 to “Revert the XYZ changes because I no longer need them” The squash commits mean that those three R commits are merged into the previous commit — R1. And my end state is as desired:
 
-A–C1–C2–Ex–C3–C4–O1–O2–O3–R
+    A–C1–C2–Ex–C3–C4–O1–O2–O3–R
 
 I'm pretty sure there are other other ways to do this. I chose this multi-step process because it allows me to understand what is going on at each step and to double check that I haven't accidentally removed, merged, or reverted a commit I didn't mean to.
