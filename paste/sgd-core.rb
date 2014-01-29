@@ -40,7 +40,7 @@ class SGD
 
   def ngram(terms, max_ngram)
     term_iterator = org.apache.mahout.common.lucene.IteratorTokenStream.new(java.util.Arrays.asList(terms.to_java).iterator)
-    stream  = org.apache.lucene.analysis.shingle.ShingleFilter.new(term_iterator, max_ngram).tap { |e| e.reset }
+    stream = org.apache.lucene.analysis.shingle.ShingleFilter.new(term_iterator, max_ngram).tap { |e| e.reset }
     term_attr = stream.add_attribute(org.apache.lucene.analysis.tokenattributes.CharTermAttribute.java_class)
     tokens = []
     begin
