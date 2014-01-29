@@ -28,12 +28,12 @@ class SGD
   end
 
   def vectorize(text, ngram = 2)
-    @@bias ||= org.apache.mahout.vectorizer.encoders.ConstantValueEncoder.new('intercept')
+    # @@bias ||= org.apache.mahout.vectorizer.encoders.ConstantValueEncoder.new('intercept')
     @enc ||= org.apache.mahout.vectorizer.encoders.AdaptiveWordValueEncoder.java_class.constructor(java.lang.String).new_instance('contents').to_java.tap { |e| e.probes = 2 }
     terms = text.split
     terms = ngram(terms, ngram) if ngram > 1
     v = org.apache.mahout.math.RandomAccessSparseVector.new(@features)
-    @@bias.addToVector(nil.to_java, 1, v)
+    # @@bias.addToVector(nil.to_java, 1, v)
     terms.each { |w| @enc.addToVector(w, v) }
     v
   end
