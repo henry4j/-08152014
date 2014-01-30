@@ -69,7 +69,7 @@ class SGD
   def write(model)
     dos = java.io.DataOutputStream.new(open(model, 'w').to_outputstream)
     begin
-      org.apache.mahout.classifier.sgd.PolymorphicWritable.write(dos, @lr.best.payload.learner)
+      org.apache.mahout.classifier.sgd.PolymorphicWritable.write(dos, @lr.best.payload.learner.models[0])
     ensure
       dos.close
     end
@@ -78,7 +78,7 @@ class SGD
   def read(model)
     dis = java.io.DataInputStream.new(open(model, 'r').to_inputstream)
     begin
-      @lr = org.apache.mahout.classifier.sgd.PolymorphicWritable.read(dis, org.apache.mahout.classifier.sgd.CrossFoldLearner.java_class)
+      @lr = org.apache.mahout.classifier.sgd.PolymorphicWritable.read(dis, org.apache.mahout.classifier.sgd.OnlineLogisticRegression.java_class)
       @features, @categories = @lr.num_features, @lr.num_categories
     ensure
       dis.close
