@@ -1,5 +1,8 @@
 #### Java 8, Google Guava, and Lombok 
 
+http://technology.amis.nl/2013/10/05/java-8-collection-enhancements-leveraging-lambda-expressions-or-how-java-emulates-sql/
+http://www.javacodegeeks.com/2013/10/java8.html
+
 ###### [Install JDK 1.8 B61 for Lambda](http://jdk8.java.net/lambda/) -- [lambda-8-b61.tar.gz](http://download.java.net/lambda/b61/macosx-x86_64/lambda-8-b61-macosx-x86_64-14_oct_2012.tar.gz)
 
     wget -P /tmp/ http://download.java.net/lambda/b61/macosx-x86_64/lambda-8-b61-macosx-x86_64-14_oct_2012.tar.gz # b61
