@@ -27,3 +27,7 @@
 * http://idevicedailys.com/cydia/jailbreak-best-ios-7-compatible-tweaks/
 * http://jailbreak.com/cache-google-maps-2-0-offline-usage/
 * http://jailbreakphone.org/free-cydia-apps/
+* http://lifehacker.com/the-best-jailbreak-apps-and-tweaks-for-ios-7-1497408095
+* http://www.iphonehacks.com/2014/01/redditors-top-10-reasons-jailbreak-ios-7.html
+* http://ioshacker.com/cydia/50-must-have-jailbreak-tweaks-and-apps-ios-7/
+
