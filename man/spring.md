@@ -1,4 +1,4 @@
-**Spring Framework [1.2 (Mar 2004)](http://static.springsource.org/spring/docs/1.2.x/reference/), J2SE 5.0 (Sept 2006), [2.5 (Nov 2006)](http://static.springsource.org/spring/docs/2.5.x/reference/), [3.0 (Dec 2009)](http://static.springsource.org/spring/docs/3.0.0.RELEASE/spring-framework-reference/htmlsingle/), and [3.1 (Dec 2011)](http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/htmlsingle/spring-framework-reference.html#beans-setter-injection)**.
+**Spring Framework [1.2 (Mar 2004)](http://static.springsource.org/spring/docs/1.2.x/reference/), J2SE 5.0 (Sept 2006), [2.5 (Nov 2006)](http://static.springsource.org/spring/docs/2.5.x/reference/), [3.0 (Dec 2009)](http://static.springsource.org/spring/docs/3.0.0.RELEASE/spring-framework-reference/htmlsingle/), and [3.1 (Dec 2011)](http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/htmlsingle/spring-framework-reference.html#beans-setter-injection)**, [4.0](http://docs.spring.io/spring/docs/4.0.x/spring-framework-reference/htmlsingle/).
 
 ### [Spring Dependency Injection Styles](http://www.youtube.com/watch?v=dJh84cjMY3E)
 
