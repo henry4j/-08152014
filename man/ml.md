@@ -5,8 +5,8 @@
 predictors/features | input variables X; independent variables | TV, radio, & newspaper budgets
 response | output variable Y; dependent variable | sales of a product in 200 markets
 
-* `Y = f(X) + e` -- `2.1`, where `f` is some fixed, but unknown fuction; `e` is a random error term w/ mean zero.
-* `Y' = f'(X)` -- 2.2
+* `Y = f(X) + e -- (2.1)`, where `f` is some fixed, but unknown fuction; `e` is a random error term w/ mean zero.
+* `Y' = f'(X) -- (2.2)`, where `f'` is our estimate for f, and `Y'` is the resulting prediction for `Y`.
 * `income` data set of 30 individuals suggests one might predict `income` using `years of education` and `seniority`.
 * In essence, statistical learning refers to a set of approaches for estimating f and tools for evaluating estimates.
 
