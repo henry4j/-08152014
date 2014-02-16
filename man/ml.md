@@ -7,7 +7,7 @@ response | output variable Y; dependent variable | sales of a product in 200 mar
 
 * `Y = f(X) + e -- (2.1)`, where `f` is some fixed, but unknown fuction; `e` is a random error term w/ mean zero.
 * `Y' = f'(X) -- (2.2)`, where `f'` is our estimate for `f`; as a black box `f'` yields accurate predictions `Y'` for `Y`.
-* `E(Y - Y')² = E[f(X) + e - f'(X)]² = [f(X) - f'(X)] + Var(e) -- (2.3)` # accuracy of Y' depends on reducible and irreducible errors.
+* `E(Y - Y')² = [f(X) - f'(X)] + Var(e) -- (2.3)` # accuracy of `Y'` as a prediction for `Y` depends reducible & irreducible errors.
 
 #
 * `income` data set of 30 individuals suggests one might predict `income` using `years of education` and `seniority`.
