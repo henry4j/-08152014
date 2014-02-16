@@ -1,6 +1,6 @@
 #### What Is Statistical Learning?
 
-* in essence, statistical learning refers to a set of approaches for estimating f and tools for evaluating estimates.
+* in essence, statistical learning refers to a set of approaches for estimating **f** and tools for evaluating estimates.
 * why Estimate f? predict response Y when not easy to obtain; understand how Y is affected, when X changes (inference).
 * depending on prediction, inference, or both of the goals, methods are chosen w/ tradeoffs of accuracy and interpretability.
   * Lasso, Least Squares LR, GAM (generalized additive models), Bagging, Boosting, and SVM (support vector machine).
