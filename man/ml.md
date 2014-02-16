@@ -9,7 +9,7 @@
   * **Y ≈ β<sub>0</sub> + β<sub>1</sub>X<sub>1</sub> + β<sub>2</sub>X<sub>2</sub> + ... + β<sub>p</sub>X<sub>p</sub>** # we need to estimate params; fit or train a model; commonly, **least squares LR** fit.
   * non-parametric methods: a **thin-plate spline** w/ a level of smoothness produces a remarkably accurate estimate of `f`.
 
-\- | data set consists | Advertising
+\ | data set consists | Advertising
 --- | --- | ---
 predictors/features | input variables X; independent variables | TV, radio, & newspaper budgets
 response | output variable Y; dependent variable | sales of a product in 200 markets
