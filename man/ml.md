@@ -11,6 +11,7 @@
 * in unsupervised learning problems, we lack a response variable that can supervise our analysis, e.g. cluster analysis.
 * in regression problems, least squares linear regression is used w/ quantitative responses, 
 * in classification problems, logistic regression is typically used w/ qualitative responses; to predict class probabilities.
+* in assessing model, MSE (mean squared error in training and test phases)
 
 \ | data set consists | `advertising` | `income` of 30 individuals
 --- | --- | --- | ---
@@ -20,9 +21,6 @@ response | output variable Y; dependent variable | sales of a product in 200 mar
 * **Y = f(X) + e -- (2.1)**, where **f** is some fixed, but unknown fuction; **e** is a random error term w/ mean zero.
 * **Y' = f'(X) -- (2.2)**, where **f'** is our estimate for **f**; as a black box **f'** yields accurate predictions **Y'** for **Y**.
 * **E(Y - Y')² = [f(X) - f'(X)] + Var(e) -- (2.3)** # accuracy of **Y'** as a prediction depends reducible & irreducible errors.
-
-
-
 
 #
 
