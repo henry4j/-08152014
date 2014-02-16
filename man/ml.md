@@ -9,10 +9,10 @@
   * **Y ≈ β<sub>0</sub> + β<sub>1</sub>X<sub>1</sub> + β<sub>2</sub>X<sub>2</sub> + ... + β<sub>p</sub>X<sub>p</sub>** # we need to estimate params; fit or train a model; commonly, **least squares LR** fit.
   * non-parametric methods: a **thin-plate spline** w/ a level of smoothness produces a remarkably accurate estimate of **f**.
 
-\ | data set consists | Advertising
---- | --- | ---
-predictors/features | input variables X; independent variables | TV, radio, & newspaper budgets
-response | output variable Y; dependent variable | sales of a product in 200 markets
+\ | data set consists | `advertising` | `income` of 30 individuals
+--- | --- | --- | ---
+predictors/features | input variables X; independent variables | TV, radio, & newspaper budgets | years of education and seniority
+response | output variable Y; dependent variable | sales of a product in 200 markets | income
 
 * **Y = f(X) + e -- (2.1)**, where **f** is some fixed, but unknown fuction; **e** is a random error term w/ mean zero.
 * **Y' = f'(X) -- (2.2)**, where **f'** is our estimate for **f**; as a black box **f'** yields accurate predictions **Y'** for **Y**.
@@ -20,7 +20,6 @@ response | output variable Y; dependent variable | sales of a product in 200 mar
 * tradeoff between prediction accuracy and model interpretability: Lasso, Least Squares LR, GAM (generalized additive models), Bagging, Boosting, and SVM (support vector machine).
 
 #
-* `income` data set of 30 individuals suggests one might predict `income` using `years of education` and `seniority`.
 
 \- | Predicted - | Predicted + | %
 --- | --- | --- | ---
