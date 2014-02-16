@@ -1,6 +1,7 @@
 #### What Is Statistical Learning?
 
 Predictors/Features | input variables X | independent variables
+--- | --- | ---
 Response | output variable Y | dependent variable
 
 * `ad` data set of `sales` of a product in 200 markets with ad budgets for 3 media: TV, radio, and newspaper.
