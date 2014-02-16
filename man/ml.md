@@ -1,9 +1,9 @@
 #### What Is Statistical Learning?
 
-\- | also called
+\- | data sets consists of ...
 --- | ---
-Predictors/Features | input variables X; independent variables
-Response | output variable Y; dependent variable
+predictors/features | input variables X; independent variables
+response | output variable Y; dependent variable
 
 * `ad` data set of `sales` of a product in 200 markets with ad budgets for 3 media: TV, radio, and newspaper.
 * `Y = f(X) + e` -- 2.1, where `f` is some fixed, but unknown fuction; `e` is a random error term w/ mean zero 
