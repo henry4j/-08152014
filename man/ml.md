@@ -22,16 +22,9 @@ response | output variable Y; dependent variable | sales of a product in 200 mar
 * **Y' = f'(X) -- (2.2)**, where **f'** is our estimate for **f**; as a black box **f'** yields accurate predictions **Y'** for **Y**.
 * **E(Y - Y')² = [f(X) - f'(X)] + Var(e) -- (2.3)** # accuracy of **Y'** as a prediction depends reducible & irreducible errors.
 
-#
-
 \- | Predicted - | Predicted + | %
 --- | --- | --- | ---
 \- Cases | TN: 9,760 | FP: 140 | -
 \+ Cases | FN: 40 | TP: 60 | recall: 60%
 % | - | precision: 30% | accuracy: 98.2%
 
-##### Why Estimate f?
-
-* Prediction: Y<sup>^</sup> = f<sup>^</sup>(X) where they represent our estimate of f and resulting prediction for Y.
-  * to minimize `reducible error`, while `irreducible error` proposes an upper bound on the prediction accuracy for Y.
-* Inference: how each predictor is associated with the response? (in linear, non-linear, more or less interpretable models).
