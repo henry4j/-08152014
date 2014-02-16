@@ -9,13 +9,13 @@
 predictors/features | input variables X; independent variables | TV, radio, & newspaper budgets
 response | output variable Y; dependent variable | sales of a product in 200 markets
 
-* `Y = f(X) + e -- (2.1)`, where `f` is some fixed, but unknown fuction; `e` is a random error term w/ mean zero.
-* `Y' = f'(X) -- (2.2)`, where `f'` is our estimate for `f`; as a black box `f'` yields accurate predictions `Y'` for `Y`.
-* `E(Y - Y')² = [f(X) - f'(X)] + Var(e) -- (2.3)` # accuracy of `Y'` as a prediction depends reducible & irreducible errors.
+* _Y = f(X) + e -- (2.1)_, where `f` is some fixed, but unknown fuction; `e` is a random error term w/ mean zero.
+* _Y' = f'(X) -- (2.2)_, where `f'` is our estimate for `f`; as a black box `f'` yields accurate predictions `Y'` for `Y`.
+* _E(Y - Y')² = [f(X) - f'(X)] + Var(e) -- (2.3)_ # accuracy of `Y'` as a prediction depends reducible & irreducible errors.
+* _f(X) = β<sub>0</sub> + β<sub>1</sub>X<sub>1</sub> + β<sub>2</sub>X<sub>2</sub> + ... + β<sub>p</sub>X<sub>p</sub>_
 
 #
 * `income` data set of 30 individuals suggests one might predict `income` using `years of education` and `seniority`.
-
 
 \- | Predicted - | Predicted + | %
 --- | --- | --- | ---
