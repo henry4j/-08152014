@@ -14,9 +14,9 @@
 predictors/features | input variables X; independent variables | TV, radio, & newspaper budgets
 response | output variable Y; dependent variable | sales of a product in 200 markets
 
-* **Y = f(X) + e -- (2.1)**, where `f` is some fixed, but unknown fuction; `e` is a random error term w/ mean zero.
-* **Y' = f'(X) -- (2.2)**, where `f'` is our estimate for `f`; as a black box `f'` yields accurate predictions `Y'` for `Y`.
-* **E(Y - Y')² = [f(X) - f'(X)] + Var(e) -- (2.3)** # accuracy of `Y'` as a prediction depends reducible & irreducible errors.
+* **Y = f(X) + e -- (2.1)**, where **f** is some fixed, but unknown fuction; **e** is a random error term w/ mean zero.
+* **Y' = f'(X) -- (2.2)**, where **f'** is our estimate for **f**; as a black box **f'** yields accurate predictions **Y'** for **Y**.
+* **E(Y - Y')² = [f(X) - f'(X)] + Var(e) -- (2.3)** # accuracy of **Y'** as a prediction depends reducible & irreducible errors.
 * tradeoff between prediction accuracy and model interpretability: Lasso, Least Squares LR, GAM (generalized additive models), Bagging, Boosting, and SVM (support vector machine).
 
 #
