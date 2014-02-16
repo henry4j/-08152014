@@ -1,6 +1,6 @@
 #### What Is Statistical Learning?
 
-\- | data sets consists of ...
+\- | data set consists of ...
 --- | ---
 predictors/features | input variables X; independent variables
 response | output variable Y; dependent variable
