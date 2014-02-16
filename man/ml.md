@@ -7,6 +7,8 @@ response | output variable Y; dependent variable | sales of a product in 200 mar
 
 * `Y = f(X) + e -- (2.1)`, where `f` is some fixed, but unknown fuction; `e` is a random error term w/ mean zero.
 * `Y' = f'(X) -- (2.2)`, where `f'` is our estimate for `f`; as a black box `f'` yields accurate predictions `Y'` for `Y`.
+* `E(Y - Y')² = E[f(X) + e - f'(X)]² = [f(X) - f'(X)] + Var(e) -- (2.3)` # Reducible and Irreducible.
+
 * `income` data set of 30 individuals suggests one might predict `income` using `years of education` and `seniority`.
 * In essence, statistical learning refers to a set of approaches for estimating f and tools for evaluating estimates.
 
