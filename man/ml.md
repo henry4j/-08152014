@@ -11,7 +11,7 @@
 * in unsupervised learning problems, we lack a response variable that can supervise our analysis, e.g. cluster analysis.
 * in regression problems, least squares linear regression is used w/ quantitative responses, 
 * in classification problems, logistic regression is typically used w/ qualitative responses; to predict class probabilities.
-* in assessing model, MSE (mean squared error in training and test phases)
+* in assessing model, we'd look at MSE (mean squared error) and bias-variance for regression; error rates for classification.
 
 \ | data set consists | `advertising` | `income` of 30 individuals
 --- | --- | --- | ---
