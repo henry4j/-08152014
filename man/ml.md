@@ -3,6 +3,7 @@
 * in essence, statistical learning refers to a set of approaches for estimating f and tools for evaluating estimates.
 * why Estimate f? predict response Y when not easy to obtain; understand how Y is affected, when X changes (inference).
 * depending on prediction, inference, or both of the goals, methods are chosen w/ tradeoffs of accuracy and interpretability.
+  * tradeoff: Lasso, Least Squares LR, GAM (generalized additive models), Bagging, Boosting, and SVM (support vector machine).
 * how estimate f?
   * **f(X) = β<sub>0</sub> + β<sub>1</sub>X<sub>1</sub> + β<sub>2</sub>X<sub>2</sub> + ... + β<sub>p</sub>X<sub>p</sub> -- (2.3)**, e.g. of a linear function; can be a p-d function.
   * **Y ≈ β<sub>0</sub> + β<sub>1</sub>X<sub>1</sub> + β<sub>2</sub>X<sub>2</sub> + ... + β<sub>p</sub>X<sub>p</sub>** -- need to estimate params; fit or train a model; commonly, **least squares** fit.
