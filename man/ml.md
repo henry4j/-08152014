@@ -1,5 +1,8 @@
 #### What Is Statistical Learning?
 
+* In essence, statistical learning refers to a set of approaches for estimating f and tools for evaluating estimates.
+  * Why Estimate? predict
+
 \- | data set consists | Advertising
 --- | --- | ---
 predictors/features | input variables X; independent variables | TV, radio, & newspaper budgets
@@ -11,7 +14,6 @@ response | output variable Y; dependent variable | sales of a product in 200 mar
 
 #
 * `income` data set of 30 individuals suggests one might predict `income` using `years of education` and `seniority`.
-* In essence, statistical learning refers to a set of approaches for estimating f and tools for evaluating estimates.
 
 
 \- | Predicted - | Predicted + | %
