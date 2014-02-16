@@ -1,7 +1,7 @@
 #### What Is Statistical Learning?
 
 * In essence, statistical learning refers to a set of approaches for estimating f and tools for evaluating estimates.
-  * Why Estimate? predict
+  * Why Estimate f? predict responses when not easy to obtain; understand how response is affected, when the input changes.
 
 \- | data set consists | Advertising
 --- | --- | ---
