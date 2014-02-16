@@ -9,7 +9,7 @@
   * **Y ≈ β<sub>0</sub> + β<sub>1</sub>X<sub>1</sub> + β<sub>2</sub>X<sub>2</sub> + ... + β<sub>p</sub>X<sub>p</sub>** # we need to estimate params; fit or train a model; commonly, **least squares LR** fit.
   * non-parametric methods: a **thin-plate spline** w/ a level of smoothness produces a remarkably accurate estimate of **f**.
 * in unsupervised learning problems, we lack a response variable that can supervise our analysis, e.g. cluster analysis.
-* least squares linear regression is used w/ quantitative responses, whereas logistic regression is typically used with qualitative responses.
+* least squares linear regression is used w/ quantitative responses, whereas logistic regression is typically used w/ qualitative responses.
 
 \ | data set consists | `advertising` | `income` of 30 individuals
 --- | --- | --- | ---
