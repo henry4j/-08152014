@@ -5,7 +5,7 @@
 * depending on prediction, inference, or both of the goals, methods are chosen w/ tradeoffs of accuracy and interpretability.
   * Lasso, Least Squares LR, GAM (generalized additive models), Bagging, Boosting, and SVM (support vector machine).
 * how estimate f?
-  * **f(X) = β<sub>0</sub> + β<sub>1</sub>X<sub>1</sub> + β<sub>2</sub>X<sub>2</sub> + ... + β<sub>p</sub>X<sub>p</sub> -- (2.3)**, e.g. assume a p-dim. function, a linear function.
+  * **f(X) = β<sub>0</sub> + β<sub>1</sub>X<sub>1</sub> + β<sub>2</sub>X<sub>2</sub> + ... + β<sub>p</sub>X<sub>p</sub> -- (2.3)** # we assume a p-dim. function, a linear function.
   * **Y ≈ β<sub>0</sub> + β<sub>1</sub>X<sub>1</sub> + β<sub>2</sub>X<sub>2</sub> + ... + β<sub>p</sub>X<sub>p</sub>** -- need to estimate params; fit or train a model; commonly, **least squares** fit.
   * non-parametric methods: a thin-plate spline w/ a level of smoothness produces a remarkably accurate estimate of `f`.
 
