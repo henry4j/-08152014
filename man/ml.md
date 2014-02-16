@@ -6,7 +6,7 @@
 * how estimate f?
   * **f(X) = β<sub>0</sub> + β<sub>1</sub>X<sub>1</sub> + β<sub>2</sub>X<sub>2</sub> + ... + β<sub>p</sub>X<sub>p</sub> -- (2.3)**, e.g. of a linear function; can be a p-d function.
   * **Y ≈ β<sub>0</sub> + β<sub>1</sub>X<sub>1</sub> + β<sub>2</sub>X<sub>2</sub> + ... + β<sub>p</sub>X<sub>p</sub>** -- need to estimate params; fit or train a model; commonly, **least squares** fit.
-  * e.g. of non-parametric methods: a thin-plate spline with a level of smoothness produces a remarkably accurate estimate of f. 
+  * non-parametric methods: a thin-plate spline w/ a level of smoothness produces a remarkably accurate estimate of `f`.
 
 \- | data set consists | Advertising
 --- | --- | ---
