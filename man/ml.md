@@ -1,7 +1,7 @@
 #### What Is Statistical Learning?
 
 \- | data set consists | Advertising
---- | ---
+--- | --- | ---
 predictors/features | input variables X; independent variables | TV, radio, & newspaper budgets
 response | output variable Y; dependent variable | sales
 
