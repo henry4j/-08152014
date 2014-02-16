@@ -13,7 +13,7 @@ response | output variable Y; dependent variable | sales of a product in 200 mar
 * **Y' = f'(X) -- (2.2)**, where `f'` is our estimate for `f`; as a black box `f'` yields accurate predictions `Y'` for `Y`.
 * **E(Y - Y')² = [f(X) - f'(X)] + Var(e) -- (2.3)** # accuracy of `Y'` as a prediction depends reducible & irreducible errors.
 * **f(X) = β<sub>0</sub> + β<sub>1</sub>X<sub>1</sub> + β<sub>2</sub>X<sub>2</sub> + ... + β<sub>p</sub>X<sub>p</sub> -- (2.3)**, e.g. of a linear function; can be a p-d function.
-* **Y = β<sub>0</sub> + β<sub>1</sub>X<sub>1</sub> + β<sub>2</sub>X<sub>2</sub> + ... + β<sub>p</sub>X<sub>p</sub>** -- need to estimate params; fit or train a model; commonly, **least squares** fit.
+* **Y ≈ β<sub>0</sub> + β<sub>1</sub>X<sub>1</sub> + β<sub>2</sub>X<sub>2</sub> + ... + β<sub>p</sub>X<sub>p</sub>** -- need to estimate params; fit or train a model; commonly, **least squares** fit.
 
 #
 * `income` data set of 30 individuals suggests one might predict `income` using `years of education` and `seniority`.
