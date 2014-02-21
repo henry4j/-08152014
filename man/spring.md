@@ -31,7 +31,7 @@ public class TransferService {
 * Since you can mix both, **constructor-** and **setter-based DI**, it is a good rule of thumb to use constructor arguments for mandatory dependencies and setters for optional dependencies. The disadvantage is that the object becomes less amenable to reconfiguration and re-injection.
 * The Spring team generally advocates setter injection, because large numbers of constructor arguments can get unwieldy, especially when properties are optional. Note that the use of a @Required annotation on a setter can be used to make setters required dependencies.
 
-##### Sidebar: [SOLID design principles identified by Robert C. Martin](http://en.wikipedia.org/wiki/SOLID_\(object-oriented_design\))
+##### Sidebar: [SOLID design principles identified by Robert C. Martin](http://en.wikipedia.org/wiki/SOLID_\(object-oriented_design\)) ([Clean Code](http://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882/), [Agile Design Principles](http://www.amazon.com/Software-Development-Principles-Patterns-Practices/dp/0135974445/))
 
 * **SRP** (single responsibility p-), **OCP** (open-closed p-), **LSP** (liskov substitution p-), **ISP** (interface segregation p-) and **DIP** (dependency inversion p-)
 
