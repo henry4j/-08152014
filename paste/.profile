@@ -44,6 +44,7 @@ alias wget='wget --no-check-certificate'
 
 # ssh-aliases
 alias hylee="ssh -X hylee.desktop.$DOMAINNAME"
+alias hylee-ubuntu="ssh -X hylee-ubuntu.aka.$DOMAINNAME"
 alias mbp13="ssh -X 3c075447ffae.ant.$DOMAINNAME"
 alias alpha="ssh jaschen-1.desktop.$DOMAINNAME"
 alias gamma="ssh acme-snapshot-gamma-na-1a-i-13e86d71.us-east-1.$DOMAINNAME"
