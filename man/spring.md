@@ -1,4 +1,4 @@
-**Spring Framework [1.2 (Mar 2004)](http://static.springsource.org/spring/docs/1.2.x/reference/), J2SE 5.0 (Sept 2006), [2.5 (Nov 2006)](http://static.springsource.org/spring/docs/2.5.x/reference/), [3.0 (Dec 2009)](http://static.springsource.org/spring/docs/3.0.0.RELEASE/spring-framework-reference/htmlsingle/), and [3.1 (Dec 2011)](http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/htmlsingle/spring-framework-reference.html#beans-setter-injection)**.
+**Spring Framework [1.2 (Mar 2004)](http://static.springsource.org/spring/docs/1.2.x/reference/), J2SE 5.0 (Sept 2006), [2.5 (Nov 2006)](http://static.springsource.org/spring/docs/2.5.x/reference/), [3.0 (Dec 2009)](http://static.springsource.org/spring/docs/3.0.0.RELEASE/spring-framework-reference/htmlsingle/), [3.2 (Dec 2011)](http://docs.spring.io/spring/docs/3.2.x/spring-framework-reference/htmlsingle/)**, and **[4.0](http://docs.spring.io/spring/docs/4.0.x/spring-framework-reference/htmlsingle/)**.
 
 ### [Spring Dependency Injection Styles](http://www.youtube.com/watch?v=dJh84cjMY3E)
 
@@ -31,7 +31,7 @@ public class TransferService {
 * Since you can mix both, **constructor-** and **setter-based DI**, it is a good rule of thumb to use constructor arguments for mandatory dependencies and setters for optional dependencies. The disadvantage is that the object becomes less amenable to reconfiguration and re-injection.
 * The Spring team generally advocates setter injection, because large numbers of constructor arguments can get unwieldy, especially when properties are optional. Note that the use of a @Required annotation on a setter can be used to make setters required dependencies.
 
-##### Sidebar: [SOLID design principles identified by Robert C. Martin](http://en.wikipedia.org/wiki/SOLID_\(object-oriented_design\))
+##### Sidebar: [SOLID design principles identified by Robert C. Martin](http://en.wikipedia.org/wiki/SOLID_\(object-oriented_design\)) ([Clean Code](http://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882/), [Agile Design Principles](http://www.amazon.com/Software-Development-Principles-Patterns-Practices/dp/0135974445/))
 
 * **SRP** (single responsibility p-), **OCP** (open-closed p-), **LSP** (liskov substitution p-), **ISP** (interface segregation p-) and **DIP** (dependency inversion p-)
 
