@@ -434,8 +434,8 @@ x! "s3cmd setacl -r --acl-public s3://${S3_BUCKET}/#{work_id}"
 ###### Install [Eclipse Kepler (4.3)](http://www.eclipse.org/downloads/)
 
 ```bash
-curl -o "$HOME/Downloads/eclipse-4.3.1.tar.gz" -kL http://ftp.osuosl.org/pub/eclipse//technology/epp/downloads/release/kepler/SR1/eclipse-standard-kepler-SR1-macosx-cocoa-x86_64.tar.gz
-tar xvf "$HOME/Downloads/eclipse-4.3.1.tar.gz" -C /Applications/
+curl -o "$HOME/Downloads/eclipse-4.tar.gz" -kL http://ftp.osuosl.org/pub/eclipse//technology/epp/downloads/release/kepler/SR2/eclipse-standard-kepler-SR2-macosx-cocoa-x86_64.tar.gz
+tar xvf "$HOME/Downloads/eclipse-4.tar.gz" -C /Applications/
 open /Applications/eclipse/Eclipse.app # and then keep this in dock
 ```
 
