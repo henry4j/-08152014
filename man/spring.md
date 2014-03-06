@@ -539,7 +539,7 @@ public class AppConfig {
 * Spring 3.0 supports `@Configuration`, `@Bean`, `@DependsOn`, `@Primary`, `@Lazy`, `@Import`, `@ImportResource`, and `@Value`.
 * Spring 3.1 supports `Environment`, `@PropertySource`, `@ComponentScan`, `@EnableTransactionManagement`, `@EnableCaching`, `@EnableWebMvc`, `@EnableScheduling`, `@EnableAsync`, `@EnableAspectJAutoProxy`, `@EnableLoadTimeWeaving`, and `@EnableSpringConfigured`
 
-* [Example: Unit Test w/ bean profiles](http://blog.42.nl/articles/advanced-unit-testing-with-your-spring-configuration), [Full Spring 3.1 Config](http://danwatt.org/2012/07/full-spring-3-1-config/)
+* [Example: Unit Test w/ bean profiles](http://blog.42.nl/articles/advanced-unit-testing-with-your-spring-configuration), [Full Spring 3.1 Config](http://danwatt.org/blog/2012/07/23/full-spring-3-1-config/)
 
 ```java
 package org.example.config;
