@@ -13,23 +13,19 @@ end
 
 def run!
   options = parse_options
-  http = Net::HTTP.new(options[:hostname] || 'p13n-proxy.integ.' + `hostname | rev | cut -d. -f1,2 | rev`)
-  p http
-  exit -1
+  hostname = options[:hostname] || 'p13n-proxy.integ.' + `hostname | rev | cut -d. -f1,2 | rev`.chomp
   p13_type, mkt_id, rating_type = 'r', 136750, 'n'
+  http = Net::HTTP.new(hostname)
   ARGF.each do |e| 
     dt, uid, title_id, rating = e.chomp.split # 2013-06-01T00:00:00.053Z  ur34164904  tt1706601   9
     uid = uid[2..-1].to_i # ur00164904
     if 0 == rating = rating.to_i
-      path = '/%s/%s/%s/%s/%s' % [p13_type, mkt_id, uid, rating_type, title_id]
-      res = http.request(req = Net::HTTP::Delete.new(path))
-      p res, res.body
-      exit -1
+      del = '/%s/%s/%s/%s/%s' % [p13_type, mkt_id, uid, rating_type, title_id]
+      res = http.request(Net::HTTP::Delete.new(del))
     else
       ms = DateTime.parse(dt).strftime('%Q')
-      path = '/%s/%s/%s/%s/%s/%s/%s' % [p13_type, mkt_id, uid, rating_type, title_id, ms, rating]
-      res = http.request(req = Net::HTTP::Put.new(path))
-      p res, res.body
+      put = '/%s/%s/%s/%s/%s/%s/%s' % [p13_type, mkt_id, uid, rating_type, title_id, ms, rating]
+      res = http.request(Net::HTTP::Put.new(put))
     end
   end
 end
