@@ -733,6 +733,10 @@ private Map<Enum<?>, Long> miles;
 * As a specific consequence of this semantic difference, beans that are themselves defined as a collection or map type cannot be injected through @Autowired, because type matching is not properly applicable to them. Use @Resource for such beans, referring to the specific collection or map bean by unique name.
 * @Autowired applies to fields, constructors, and multi-argument methods, allowing for narrowing through qualifier annotations at the parameter level. By contrast, @Resource is supported only for fields and bean property setter methods with a single argument. As a consequence, stick with qualifiers if your injection target is a constructor or a multi-argument method.
 
+##### @Autowired for well-known dependencies --- excerpted from Spring Reference Manual 3.1
+
+You can also use @Autowired for well-known resolvable dependencies: BeanFactory, ApplicationContext, Environment, ResourceLoader, ApplicationEventPublisher, and MessageSource. These interfaces and their extended interfaces, such as ConfigurableApplicationContext or ResourcePatternResolver, are automatically resolved, with no special setup necessary.
+
 #### Streotyping annotations
 
 These annotations are used to stereotype classes with regard to the application tier that they belong to. Classes that are annotated with one of these annotations will automatically be registered in the Spring application context if `<context:component-scan>` is in the Spring XML configuration. In addition, if a `PersistenceExceptionTranslationPostProcessor` is configured in Spring, any bean annotated with `@Repository` will have `SQLExceptions` thrown from its methods translated into one of Spring’s unchecked `DataAccessExceptions`.
