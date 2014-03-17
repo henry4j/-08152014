@@ -537,9 +537,9 @@ public class AppConfig {
 ##### Java-based config example from Spring framework 3.0 reference documentation
 
 * Spring 3.0 supports `@Configuration`, `@Bean`, `@DependsOn`, `@Primary`, `@Lazy`, `@Import`, `@ImportResource`, and `@Value`.
-* Spring 3.1 supports `Environment`, `@PropertySource`, `@ComponentScan`, `@EnableTransactionManagement`, `@EnableCaching`, `@EnableWebMvc`, `@EnableScheduling`, `@EnableAsync`, `@EnableAspectJAutoProxy`, `@EnableLoadTimeWeaving`, and `@EnableSpringConfigured`
+* Spring 3.1 supports `@Environment`, `@PropertySource`, `@ComponentScan`, `@EnableTransactionManagement`, `@EnableCaching`, `@EnableWebMvc`, `@EnableScheduling`, `@EnableAsync`, `@EnableAspectJAutoProxy`, `@EnableLoadTimeWeaving`, and `@EnableSpringConfigured`
 
-* [Example: Unit Test w/ bean profiles](http://blog.42.nl/articles/advanced-unit-testing-with-your-spring-configuration), [Full Spring 3.1 Config](http://danwatt.org/2012/07/full-spring-3-1-config/)
+* [Example: Unit Test w/ bean profiles](http://blog.42.nl/articles/advanced-unit-testing-with-your-spring-configuration), [Full Spring 3.1 Config](http://danwatt.org/blog/2012/07/23/full-spring-3-1-config/)
 
 ```java
 package org.example.config;
@@ -732,6 +732,10 @@ private Map<Enum<?>, Long> miles;
 * If you intend to express annotation-driven injection by name, do not primarily use @Autowired, even if is technically capable of referring to a bean name through @Qualifier values. Instead, use the JSR-250 @Resource annotation, which is semantically defined to identify a specific target component by its unique name, with the declared type being irrelevant for the matching process.
 * As a specific consequence of this semantic difference, beans that are themselves defined as a collection or map type cannot be injected through @Autowired, because type matching is not properly applicable to them. Use @Resource for such beans, referring to the specific collection or map bean by unique name.
 * @Autowired applies to fields, constructors, and multi-argument methods, allowing for narrowing through qualifier annotations at the parameter level. By contrast, @Resource is supported only for fields and bean property setter methods with a single argument. As a consequence, stick with qualifiers if your injection target is a constructor or a multi-argument method.
+
+##### @Autowired for well-known dependencies --- excerpted from Spring Reference Manual 3.1
+
+You can also use @Autowired for well-known resolvable dependencies: BeanFactory, ApplicationContext, Environment, ResourceLoader, ApplicationEventPublisher, and MessageSource. These interfaces and their extended interfaces, such as ConfigurableApplicationContext or ResourcePatternResolver, are automatically resolved, with no special setup necessary.
 
 #### Streotyping annotations
 
@@ -1019,6 +1023,21 @@ public void configure(MovieFinder movieFinder,
     </tr>
   </tbody>
 </table>
+
+
+###### [Bean Expression Context](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/config/BeanExpressionContext.html) as a root object
+
+```java
+@Bean
+String appNameByBeanRef(@Value("#{getObject('applicationName') ?: 'P13n'}") String s) {
+    return s;
+}
+
+@Bean
+String appNameByProperty(@Value("${apollo.OCF.AppConfig.app:P13n}") String s) {
+    return s;
+}
+```
 
 ##### Glue code and the evil singleton --- excerpted from Spring Reference Manual 3.1
 
