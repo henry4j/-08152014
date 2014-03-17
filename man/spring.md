@@ -1029,12 +1029,12 @@ public void configure(MovieFinder movieFinder,
 
 ```java
 @Bean
-String appName(@Value("#{getObject('applicationName') ?: 'P13n'}") String s) {
+String appNameByBeanRef(@Value("#{getObject('applicationName') ?: 'P13n'}") String s) {
     return s;
 }
 
 @Bean
-String logLevel(@Value("${apollo.OCF.Log4j.logSeverityLevel:INFO}") String s) {
+String appNameByProperty(@Value("${apollo.OCF.AppConfig.app:P13n}") String s) {
     return s;
 }
 ```
