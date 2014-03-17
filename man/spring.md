@@ -1025,7 +1025,8 @@ public void configure(MovieFinder movieFinder,
 </table>
 
 
-##### [Bean Expression Context](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/config/BeanExpressionContext.html)
+###### [Bean Expression Context](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/config/BeanExpressionContext.html) as a root object
+
 ```java
 @Bean
 String mainApplicationName(@Value("#{getObject('applicationName') ?: 'PPPReplicator'}") String applicationName) {
