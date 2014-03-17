@@ -1034,7 +1034,7 @@ String appName(@Value("#{getObject('applicationName') ?: 'P13n'}") String s) {
 }
 
 @Bean
-String appRoot(@Value("${root:./build/private}") String s) {
+String logLevel(@Value("${apollo.OCF.Log4j.logSeverityLevel:INFO}") String s) {
     return s;
 }
 ```
