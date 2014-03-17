@@ -1029,8 +1029,13 @@ public void configure(MovieFinder movieFinder,
 
 ```java
 @Bean
-String mainApplicationName(@Value("#{getObject('applicationName') ?: 'PPPReplicator'}") String applicationName) {
-    return applicationName;
+String appName(@Value("#{getObject('applicationName') ?: 'P13n'}") String s) {
+    return s;
+}
+
+@Bean
+String appRoot(@Value("${root:./build/private}") String s) {
+    return s;
 }
 ```
 
