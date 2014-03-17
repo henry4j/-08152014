@@ -1024,6 +1024,16 @@ public void configure(MovieFinder movieFinder,
   </tbody>
 </table>
 
+
+##### [Bean Expression Context](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/beans/factory/config/BeanExpressionContext.html)
+
+```java
+@Bean
+String mainApplicationName(@Value("#{getObject('applicationName') ?: 'PPPReplicator'}") String applicationName) {
+    return applicationName;
+}
+```
+
 ##### Glue code and the evil singleton --- excerpted from Spring Reference Manual 3.1
 
 It is best to write most application code in a dependency-injection (DI) style, where that code is served out of a Spring IoC container, has its own dependencies supplied by the container when it is created, and is completely unaware of the container. However, for the small glue layers of code that are sometimes needed to tie other code together, you sometimes need a singleton (or quasi-singleton) style access to a Spring IoC container. For example, third-party code may try to construct new objects directly (Class.forName() style), without the ability to get these objects out of a Spring IoC container. If the object constructed by the third-party code is a small stub or proxy, which then uses a singleton style access to a Spring IoC container to get a real object to delegate to, then inversion of control has still been achieved for the majority of the code (the object coming out of the container). Thus most code is still unaware of the container or how it is accessed, and remains decoupled from other code, with all ensuing benefits. EJBs may also use this stub/proxy approach to delegate to a plain Java implementation object, retrieved from a Spring IoC container. While the Spring IoC container itself ideally does not have to be a singleton, it may be unrealistic in terms of memory usage or initialization times (when using beans in the Spring IoC container such as a Hibernate SessionFactory) for each bean to use its own, non-singleton Spring IoC container.
