@@ -5,9 +5,8 @@
 def parse_options(options = {})
   OptionParser.new do |p|
     p.on("-h", "--hostname HOSTNAME", "hostname") { |v| options[:hostname] = v }
-    p.on("-t", "--threads INTEGER", Integer, "number of threads") { |v| options[:threads] = v }
-    p.on("-f", "--field-separator PATTERN", String, "field separator") { |v| options[:fs] = v } 
-    p.on("-m", "--max-tps FLOAT", Float, "max number of transactions/second") { |v| options[:tps] = v } 
+    p.on("-t", "--threads INTEGER", Integer, "number of threads (default: 4)") { |v| options[:threads] = v }
+    p.on("-m", "--max-tps FLOAT", Float, "max number of transactions/second (default: 1000)") { |v| options[:tps] = v } 
   end.parse!
   options
 end
@@ -70,12 +69,12 @@ def run!
   options = parse_options
   hostname = options[:hostname] || 'p13n-proxy.integ.' + `hostname | rev | cut -d. -f1,2 | rev`.chomp
   max_tps = options[:tps] || 1000 # 22 hours for 80M transactions
+  https = (options[:threads] || 4).times.map { Net::HTTP.new(hostname) }
 
   trans = 0
-  trans_in_log_interval = 5
-  trans_in_chk_interval = 8
+  trans_in_log_interval = 50
+  trans_in_chk_interval = 100
   begin_time = Time.now
-  https = (options[:threads] || 4).times.map { Net::HTTP.new(hostname) }
 
   fname = nil
   until ARGF.filename && ARGF.eof? do
