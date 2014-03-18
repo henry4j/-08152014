@@ -56,14 +56,13 @@ def run!
   https = (options[:threads] || 2).times.map { Net::HTTP.new(hostname) }
 
   until ARGF.filename && ARGF.eof? do
-    lines = https.times.reduce([]) { |r, _| ARGF.eof?? r : r << ARGF.gets.chomp }
+    lines = https.reduce([]) { |r, _| 2.times { ARGF.eof?? r : r << ARGF.gets.chomp } }
     exit -1 unless try_replay_in_parallel(https, lines)
     elapsed_time = Time.now - begin_time
     trans += lines.length
     sleep_second = (trans / max_tps) - elapsed_time
     sleep sleep_second if sleep_second > 0
   end
-  exit -2
 end
 
 run! if __FILE__==$0
