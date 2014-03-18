@@ -13,7 +13,7 @@ def parse_options(options = {})
 end
 
 def try_replay_in_parallel(https, lines)
-  lines.size.times.map { |i| Thread.new { try_replay(https[i], lines[i]) }.value }.all?
+  https.size.times.map { |i| Thread.new { try_replay(https[i], lines[i]) }.value }.all?
 end
 
 def try_replay(http, line)
@@ -53,11 +53,10 @@ def run!
 
   trans = 0
   begin_time = Time.now
-  threads = (options[:threads] || 2)
-  https = threads.times.map { Net::HTTP.new(hostname) }
+  https = (options[:threads] || 2).times.map { Net::HTTP.new(hostname) }
 
   until ARGF.filename && ARGF.eof? do
-    lines = threads.times.reduce([]) { |r, _| ARGF.eof?? r : r << ARGF.gets.chomp }
+    lines = https.times.reduce([]) { |r, _| ARGF.eof?? r : r << ARGF.gets.chomp }
     exit -1 unless try_replay_in_parallel(https, lines)
     elapsed_time = Time.now - begin_time
     trans += lines.length
