@@ -12,33 +12,59 @@ def parse_options(options = {})
   options
 end
 
+def try_replay_in_parallel(https, lines)
+  lines.size.times.map { |i| Thread.new { try_replay(https[i], lines[i]) }.value }.all?
+end
+
+def try_replay(http, line)
+  return false if line.empty?
+  p13_type, mkt_id, rating_type = 'r', 136750, 'n'
+  backoff_millis = 1000 # initial backoff millis (1000)
+  8.times do # max replay attempts (8)
+    begin
+      dt, uid, title_id, rating = line.split # 2013-06-01T00:00:00.053Z  ur34164904  tt1706601   9
+      uid, rating = [uid.delete('^0-9'), rating].map { |e| e.to_i }
+      if 0 == rating
+        del = '/%s/%s/%s/%s/%s' % [p13_type, mkt_id, uid, rating_type, title_id]
+        res = http.request(Net::HTTP::Delete.new(del))
+      else
+        ms = DateTime.parse(dt).strftime('%Q')
+        put = '/%s/%s/%s/%s/%s/%s/%s' % [p13_type, mkt_id, uid, rating_type, title_id, ms, rating]
+        res = http.request(Net::HTTP::Put.new(put))
+      end
+      if res.kind_of? Net::HTTPSuccess
+        return true
+      else
+        puts "Failed to process a line: #{line}", res.body
+      end
+    rescue
+      puts "Failed to process a line: #{line}", $!.inspect, $@
+      sleep backoff_millis / 1000.0
+      backoff_millis *= 2
+      next
+    end
+  end
+end
+
 def run!
   options = parse_options
   hostname = options[:hostname] || 'p13n-proxy.integ.' + `hostname | rev | cut -d. -f1,2 | rev`.chomp
   max_tps = options[:tps] || 1000 # 22 hours for 80M transactions
-  p13_type, mkt_id, rating_type = 'r', 136750, 'n'
 
   trans = 0
   begin_time = Time.now
-  http = Net::HTTP.new(hostname)
-  ARGF.each do |e| 
-    dt, uid, title_id, rating = e.chomp.split # 2013-06-01T00:00:00.053Z  ur34164904  tt1706601   9
-    uid = uid[2..-1].to_i # ur00164904
-    if 0 == rating = rating.to_i
-      del = '/%s/%s/%s/%s/%s' % [p13_type, mkt_id, uid, rating_type, title_id]
-      res = http.request(Net::HTTP::Delete.new(del))
-      print '.'
-    else
-      ms = DateTime.parse(dt).strftime('%Q')
-      put = '/%s/%s/%s/%s/%s/%s/%s' % [p13_type, mkt_id, uid, rating_type, title_id, ms, rating]
-      res = http.request(Net::HTTP::Put.new(put))
-      print '.'
-    end
+  threads = (options[:threads] || 2)
+  https = threads.times.map { Net::HTTP.new(hostname) }
+
+  until ARGF.filename && ARGF.eof? do
+    lines = threads.times.reduce([]) { |r, _| ARGF.eof?? r : r << ARGF.gets.chomp }
+    exit -1 unless try_replay_in_parallel(https, lines)
     elapsed_time = Time.now - begin_time
-    trans += 1
+    trans += lines.length
     sleep_second = (trans / max_tps) - elapsed_time
     sleep sleep_second if sleep_second > 0
   end
+  exit -2
 end
 
 run! if __FILE__==$0
