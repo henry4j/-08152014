@@ -12,13 +12,13 @@ def parse_options(options = {})
   options
 end
 
-def try_replay_in_parallel(https, lines, n = https.size)
-  lines.each_slice(n).each_with_index.map { |e, i| Thread.new { try_replay(https[i], e) }.value }.all?
+def try_replay_in_parallel(https, lines, n = (lines.size + https.size - 1)/https.size)
+  lines.each_slice(n).each_with_index.map { |e, i| Thread.new { try_replay(https[i], e) }.value }.flatten.all?
 end
 
 def try_replay(http, lines)
   p13_type, mkt_id, rating_type = 'r', 136750, 'n'
-  lines.each do |l|
+  lines.map do |l|
     backoff_millis = 1000 # initial backoff millis (1000)
     8.times do # max replay attempts (8)
       begin
@@ -32,13 +32,11 @@ def try_replay(http, lines)
           put = '/%s/%s/%s/%s/%s/%s/%s' % [p13_type, mkt_id, uid, rating_type, title_id, ms, rating]
           res = http.request(Net::HTTP::Put.new(put))
         end
-        if res.kind_of? Net::HTTPSuccess
-          return true
-        else
-          puts "Failed to process a line: #{line}", res.body
-        end
+        success = res.kind_of? Net::HTTPSuccess
+        puts "Failed to process a line: #{l}", res.body unless success
+        break success
       rescue
-        puts "Failed to process a line: #{line}", $!.inspect, $@
+        puts "Failed to process a line: #{l}", $!.inspect, $@
         sleep backoff_millis / 1000.0
         backoff_millis *= 2
         next
