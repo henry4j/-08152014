@@ -2,8 +2,9 @@
 
 %w{optparse json net/http uri time fileutils}.each { |e| require e }
 
-def parse_options(options = {})
+def parse_options!(options = {})
   OptionParser.new do |p|
+    p.on("-b", "--backoff INTEGER", Integer, "initial backoff millis (default: 20)") { |v| options[:backoff] = v } 
     p.on("-h", "--hostname HOSTNAME", "hostname") { |v| options[:hostname] = v }
     p.on("-t", "--threads INTEGER", Integer, "number of threads (default: 8)") { |v| options[:threads] = v }
     p.on("-m", "--max-tps FLOAT", Float, "max number of transactions/second (default: 50)") { |v| options[:tps] = v } 
@@ -12,13 +13,14 @@ def parse_options(options = {})
 end
 
 def run!
-  options = parse_options
+  options = parse_options!
+  initial_backoff_millis = options[:initial_backoff_millis] || 20
   hostname = options[:hostname] || 'p13n-proxy.integ.' + `hostname | rev | cut -d. -f1,2 | rev`.chomp
   max_tps = options[:tps] || 50
   https = (options[:threads] || 8).times.map { Net::HTTP.new(hostname) }
 
   trans = 0
-  trans_in_log_interval = 50
+  trans_in_log_interval = 25
   trans_in_chk_interval = 100
   begin_time = Time.now
 
@@ -32,8 +34,8 @@ def run!
       fname = ARGF.filename
     end
 
-    lines = https.reduce([]) { |r, _| https.size.times { r << ARGF.gets.chomp unless ARGF.eof? }; r }
-    exit -1 unless try_replay_in_parallel(https, lines)
+    lines = https.reduce([]) { |r, _| 2 * https.size.times { r << ARGF.gets.chomp unless ARGF.eof? }; r }
+    exit -1 unless try_replay_in_parallel(https, lines, initial_backoff_millis)
     trans += lines.length
     elapsed_time = Time.now - begin_time
     puts "@#{ARGF.lineno}/#{'%.2f' % (trans/elapsed_time)} tps: #{lines[-1]}" if between(trans, lines, trans_in_log_interval)
@@ -45,14 +47,16 @@ def run!
   puts "ends replays at #{ARGF.filename}:#{ARGF.lineno + 1} at #{Time.now}."
 end
 
-def try_replay_in_parallel(https, lines, n = (lines.size + https.size - 1)/https.size)
-  lines.each_slice(n).each_with_index.map { |e, i| Thread.new { try_replay(https[i], e) }.value }.flatten.all?
+def try_replay_in_parallel(https, lines, initial_backoff_millis, n = (lines.size + https.size - 1)/https.size)
+  lines.each_slice(n).each_with_index.map do |e, i|
+    Thread.new { try_replay(https[i], e, initial_backoff_millis) }.value 
+  end.flatten.all?
 end
 
-def try_replay(http, lines)
+def try_replay(http, lines, initial_backoff_millis)
   p13_type, mkt_id, rating_type = 'r', 136750, 'n'
   lines.map do |l|
-    backoff_millis = 1000 # initial backoff millis (1000)
+    backoff_millis = initial_backoff_millis
     8.times do |k| # max replay attempts (8)
       begin
         dt, uid, title_id, rating = l.split # 2013-06-01T00:00:00.053Z  ur34164904  tt1706601   9
