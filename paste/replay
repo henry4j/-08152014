@@ -5,10 +5,44 @@
 def parse_options(options = {})
   OptionParser.new do |p|
     p.on("-h", "--hostname HOSTNAME", "hostname") { |v| options[:hostname] = v }
-    p.on("-t", "--threads INTEGER", Integer, "number of threads (default: 4)") { |v| options[:threads] = v }
-    p.on("-m", "--max-tps FLOAT", Float, "max number of transactions/second (default: 1000)") { |v| options[:tps] = v } 
+    p.on("-t", "--threads INTEGER", Integer, "number of threads (default: 8)") { |v| options[:threads] = v }
+    p.on("-m", "--max-tps FLOAT", Float, "max number of transactions/second (default: 50)") { |v| options[:tps] = v } 
   end.parse!
   options
+end
+
+def run!
+  options = parse_options
+  hostname = options[:hostname] || 'p13n-proxy.integ.' + `hostname | rev | cut -d. -f1,2 | rev`.chomp
+  max_tps = options[:tps] || 50
+  https = (options[:threads] || 8).times.map { Net::HTTP.new(hostname) }
+
+  trans = 0
+  trans_in_log_interval = 50
+  trans_in_chk_interval = 100
+  begin_time = Time.now
+
+  fname = nil
+  until ARGF.filename && ARGF.eof? do
+    unless ARGF.filename.eql?(fname)
+      lineno = fetch_checkpoint_record(ARGF)
+      ARGF.gets until lineno.nil? || lineno == ARGF.lineno + 1 || ARGF.eof?
+      puts "begins replays at #{ARGF.filename}:#{ARGF.lineno + 1} at #{begin_time}."
+      next if ARGF.eof?
+      fname = ARGF.filename
+    end
+
+    lines = https.reduce([]) { |r, _| https.size.times { r << ARGF.gets.chomp unless ARGF.eof? }; r }
+    exit -1 unless try_replay_in_parallel(https, lines)
+    trans += lines.length
+    elapsed_time = Time.now - begin_time
+    puts "@#{ARGF.lineno}/#{'%.2f' % (trans/elapsed_time)} tps: #{lines[-1]}" if between(trans, lines, trans_in_log_interval)
+    store_checkpoint_record(ARGF) if between(trans, lines, trans_in_chk_interval)
+    sleep_second = (trans / max_tps) - elapsed_time
+    sleep sleep_second if sleep_second > 0
+  end
+  store_checkpoint_record(ARGF)
+  puts "ends replays at #{ARGF.filename}:#{ARGF.lineno + 1} at #{Time.now}."
 end
 
 def try_replay_in_parallel(https, lines, n = (lines.size + https.size - 1)/https.size)
@@ -19,7 +53,7 @@ def try_replay(http, lines)
   p13_type, mkt_id, rating_type = 'r', 136750, 'n'
   lines.map do |l|
     backoff_millis = 1000 # initial backoff millis (1000)
-    8.times do # max replay attempts (8)
+    8.times do |k| # max replay attempts (8)
       begin
         dt, uid, title_id, rating = l.split # 2013-06-01T00:00:00.053Z  ur34164904  tt1706601   9
         uid, rating = [uid.delete('^0-9'), rating].map { |e| e.to_i }
@@ -31,9 +65,8 @@ def try_replay(http, lines)
           put = '/%s/%s/%s/%s/%s/%s/%s' % [p13_type, mkt_id, uid, rating_type, title_id, ms, rating]
           res = http.request(Net::HTTP::Put.new(put))
         end
-        success = res.kind_of? Net::HTTPSuccess
-        puts "Failed to process a line: #{l}", res.body unless success
-        break success
+        break true if res.kind_of? Net::HTTPSuccess
+        puts "Failed to process a line: #{l}", res.body if 7 == k
       rescue
         puts "Failed to process a line: #{l}", $!.inspect, $@
         sleep backoff_millis / 1000.0
@@ -63,40 +96,6 @@ end
 
 def between(trans, lines, interval)
   trans % interval + lines.length >= interval
-end
-
-def run!
-  options = parse_options
-  hostname = options[:hostname] || 'p13n-proxy.integ.' + `hostname | rev | cut -d. -f1,2 | rev`.chomp
-  max_tps = options[:tps] || 1000 # 22 hours for 80M transactions
-  https = (options[:threads] || 4).times.map { Net::HTTP.new(hostname) }
-
-  trans = 0
-  trans_in_log_interval = 50
-  trans_in_chk_interval = 100
-  begin_time = Time.now
-
-  fname = nil
-  until ARGF.filename && ARGF.eof? do
-    unless ARGF.filename.eql?(fname)
-      lineno = fetch_checkpoint_record(ARGF)
-      ARGF.gets until lineno.nil? || lineno == ARGF.lineno + 1 || ARGF.eof?
-      puts "begins replays at #{ARGF.filename}:#{ARGF.lineno + 1} at #{begin_time}."
-      next if ARGF.eof?
-      fname = ARGF.filename
-    end
-
-    lines = https.reduce([]) { |r, _| 2.times { r << ARGF.gets.chomp unless ARGF.eof? }; r }
-    exit -1 unless try_replay_in_parallel(https, lines)
-    elapsed_time = Time.now - begin_time
-    store_checkpoint_record(ARGF) if between(trans, lines, trans_in_chk_interval)
-    puts "@#{ARGF.lineno}/#{'%.2f' % (trans/elapsed_time)} tps: #{lines[-1]}" if between(trans, lines, trans_in_log_interval)
-    trans += lines.length
-    sleep_second = (trans / max_tps) - elapsed_time
-    sleep sleep_second if sleep_second > 0
-  end
-  store_checkpoint_record(ARGF)
-  puts "ends replays at #{ARGF.filename}:#{ARGF.lineno + 1} at #{Time.now}."
 end
 
 run! if __FILE__==$0
