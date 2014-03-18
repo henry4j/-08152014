@@ -52,13 +52,17 @@ def run!
   max_tps = options[:tps] || 1000 # 22 hours for 80M transactions
 
   trans = 0
+  trans_in_log_interval = 10
   begin_time = Time.now
-  https = (options[:threads] || 2).times.map { Net::HTTP.new(hostname) }
+  https = (options[:threads] || 4).times.map { Net::HTTP.new(hostname) }
 
   until ARGF.filename && ARGF.eof? do
     lines = https.reduce([]) { |r, _| 2.times { r << ARGF.gets.chomp unless ARGF.eof? }; r }
     exit -1 unless try_replay_in_parallel(https, lines)
     elapsed_time = Time.now - begin_time
+    if trans % trans_in_log_interval + lines.length >= trans_in_log_interval
+      puts "@#{ARGF.lineno}/#{'%.2f' % (trans/elapsed_time)} tps: #{lines[-1]}"
+    end
     trans += lines.length
     sleep_second = (trans / max_tps) - elapsed_time
     sleep sleep_second if sleep_second > 0
