@@ -10,7 +10,7 @@ This page has a good coverage of test design strategies and tactics. Beyond best
 * JUnit is an open-source Java Unit Testing Framework designed by Kent Beck, Erich Gamma. It is the de facto standard for Java Unit Testing. JUnit is not included in JDK, but included in most of the IDEs such as Eclipse and NetBeans.
 * TestNG is a testing framework inspired from JUnit and NUnit (the xUnit family), but introduces new functionalities like dependency testing, grouping concept to make testing easier and more powerful. TestNG is designed to cover all types of tests: unit, integration, functional/acceptance, and etc.
 
-Discussions:
+##### Discussions:
 
 * JUnit favored over TestNG - best to possible to integrate w/ Mockito, DbUnit, Android, Jenkins, Spring, and Cucumber -- hylee@ -- it has been our company's **de facto unit test framework**, where we break our tests into \*Test and \*IntegrationTest.
 * TestNG favored over Junit - from more features aimed at enterprise Java app development to unit testing w/ extensibility (TestRule) -- honesthenry@ -- it'll be perfect for AT&T test team that requires thousands of well-organized functional/acceptance tests on their billing system app.
@@ -31,12 +31,12 @@ Testing state means you're verifying that the code under test returns the right 
 
 ```java
 public void testSortNumbers() {
-  NumberSorter numberSorter = new NumberSorter(quicksort, bubbleSort);
-  // Verify that the returned list is sorted. It doesn't matter which sorting
-  // algorithm is used, as long as the right result is returned.
-  assertEquals(
-      new ArrayList(1, 2, 3),
-      numberSorter.sortNumbers(new ArrayList(3, 1, 2)));
+    NumberSorter numberSorter = new NumberSorter(quicksort, bubbleSort);
+    // Verify that the returned list is sorted. It doesn't matter which sorting
+    // algorithm is used, as long as the right result is returned.
+    assertEquals(
+        new ArrayList(1, 2, 3),
+        numberSorter.sortNumbers(new ArrayList(3, 1, 2)));
 }
 ```
 
@@ -44,13 +44,13 @@ Testing interactions means you're verifying that the code under test calls certa
 
 ```java
 public void testSortNumbers_quicksortIsUsed() {
-  // Pass in mocks to the class and call the method under test.
-  NumberSorter numberSorter = new NumberSorter(mockQuicksort, mockBubbleSort);
-  numberSorter.sortNumbers(new ArrayList(3, 1, 2));
-  // Verify that numberSorter.sortNumbers() used quicksort. The test should
-  // fail if mockQuicksort.sort() is never called or if it's called with the
-  // wrong arguments (e.g. if mockBubbleSort is used to sort the numbers).
-  verify(mockQuicksort).sort(new ArrayList(3, 1, 2));
+    // Pass in mocks to the class and call the method under test.
+    NumberSorter numberSorter = new NumberSorter(mockQuicksort, mockBubbleSort);
+    numberSorter.sortNumbers(new ArrayList(3, 1, 2));
+    // Verify that numberSorter.sortNumbers() used quicksort. The test should
+    // fail if mockQuicksort.sort() is never called or if it's called with the
+    // wrong arguments (e.g. if mockBubbleSort is used to sort the numbers).
+    verify(mockQuicksort).sort(new ArrayList(3, 1, 2));
 }
 ```
 
