@@ -19,9 +19,10 @@ Discussions:
 
 honesthenry@ -- in general, we would stick with state-based testing -- compiled from State- vs. Interaction-based testing, and Google's little secret on well-tested code(?) - no, it's Mockito's motivation for years. See Also: Mockito's Goodbye! to expect-run-verify.
 
-**Q**: Why in most cases do we want to test state, not interactions?
+**Q**: Why in most cases do we want to test state, not interactions?  
 **A**: Just because a test that uses interactions is passing doesn't mean the code is working properly. In general, interactions should be tested when correctness doesn't only depend on what the code's output is, but also how the output is determined.
-**Q**: What are some cases where you want to test interactions?
+
+**Q**: What are some cases where you want to test interactions?  
 **A**: The code under test calls a method where differences in the number or order of calls would cause undesired behavior, such as side effects (e.g. expecting an email to be sent), latency (e.g. expecting a certain number of disk reads to occur) or multithreading issues (e.g. deadlock from acquiring resources in the wrong order). Testing interactions ensures that your tests will fail if these methods aren't called properly.
 
 ##### Examples
@@ -125,7 +126,7 @@ for (Invocation i: invocations) {
 
 ##### AssertThat w/ Matchers
 
-**Q**: Why use assertThat in place of traditional assertXXX? 
+**Q**: Why use assertThat in place of traditional assertXXX?  
 **A**: Compiled from JUnit 4.4 release note:
 
 * More readable and typeable: this syntax allows you to think in terms of subject, verb, object (assert "x is 3") rather than assertEquals, which uses verb, object, subject (assert "equals 3 x")
@@ -503,9 +504,10 @@ public class DdbBackedAppConfigTest {
 
 #### Q&A
 
-**Q**: How to inject mocked dependencies? 
-**A**: Should use ReflectionTestUtils, or put a setter. Adding constructors may have side effects (e.g. disallowing subclassing by CGLIB), and relaxing the visibility just for the sake of testing is not a good approach. 
-**Q**: How to mock a property of a CGLIB proxied bean? 
+**Q**: How to inject mocked dependencies?  
+**A**: Should use ReflectionTestUtils, or put a setter. Adding constructors may have side effects (e.g. disallowing subclassing by CGLIB), and relaxing the visibility just for the sake of testing is not a good approach.
+
+**Q**: How to mock a property of a CGLIB proxied bean?  
 **A**: Should unwrap the proxy, e.g. http://stackoverflow.com/questions/8121551/is-it-possible-to-unproxy-a-spring-bean
 
 ```java
