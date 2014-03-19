@@ -52,3 +52,200 @@ public void testSortNumbers_quicksortIsUsed() {
   verify(mockQuicksort).sort(new ArrayList(3, 1, 2));
 }
 ```
+
+#### Mockito <sub>favored over EasyMock and JMockit</sub>
+
+* Mockito's motivation: Java mocking is dominated by expect-run-verify libraries like EasyMock or jMock. Mockito offers simpler and more intuitive approach: you ask questions about interactions after execution. Using mockito, you can verify what you want (state-based testing). Using expect-run-verify libraries you are often forced to look after irrelevant interactions. See tutorials: Mockito and PowerMock.
+
+Discussions:
+
+* http://code.google.com/p/jmockit/wiki/MockingToolkitComparisonMatrix - feature-rich, but not popular.
+* http://java.dzone.com/articles/mockito-pros-cons-and-best - it was compared to old EasyMock v2.
+* http://blog.octo.com/en/easymock-facts-fallacies/ - EasyMock's response. But, GoodBye to expect-run-verify.
+
+##### Mackito: Stub in "when thenAnswer" style
+
+Let's see how we mock and stub classes & interfaces:
+
+```java
+//You can mock concrete classes, not only interfaces
+LinkedList mockedList = mock(LinkedList.class);
+ 
+//stubbing
+when(mockedList.get(0)).thenReturn("first");
+when(mockedList.get(1)).thenThrow(new RuntimeException());
+ 
+System.out.println(mockedList.get(0)); // prints "first"
+System.out.println(mockedList.get(1)); // throws runtime exception
+System.out.println(mockedList.get(999)); // prints "null" because get(999) was not stubbed
+ 
+//Although it is possible to verify a stubbed invocation, usually it's just redundant
+//If your code cares what get(0) returns then something else breaks (often before even verify()).
+//If your code doesn't care what get(0) returns then it should not be stubbed. Not convinced? See here.
+verify(mockedList).get(0);
+```
+
+##### Mackito: Stub in "doAnswer" method family
+
+You can use doThrow(), doAnswer(), doNothing(), and doReturn() in place of the corresponding call with when(), for any method. It is necessary when you
+
+* stub void methods
+* stub the same method more than once, to change the behavior of a mock in the middle of a test.
+
+but you may prefer to use these methods in place of the alternative with when(), for all of your stubbing calls.
+
+```java
+when(mock.some("any")).thenReturn("1", "2", "3"); // you may prefer doAnswer method family.
+ 
+Stubber s = null;
+for (int i = 0; i < 256; i++) {
+    String r = Integer.toString(i);
+    s = null == s ? doReturn(r): s.doReturn(r); // necessary to use doReturn method.
+}
+s = s.doThrow(new RuntimeException("UNCHECKED: this bug should go unhandled due to unexpected invocation(s)."));
+s.when(mock).some(anyString());
+```
+
+**See Also**: Bimock tool has to stub method invocations dynamically as follows:'
+
+```java
+Stubber s = null;
+for (Invocation i: invocations) {
+    if (null != i.failure()) {
+        s = null == s ? doThrow(i.failure()) : s.doThrow(i.failure());
+    } else if (Void.TYPE.equals(i.method().getReturnType())) {
+        s = null == s ? doNothing() : s.doNothing();
+    } else {
+        s = null == s ? doReturn(i.success()) : s.doReturn(i.success());
+    }
+}
+```
+
+#### JUnit Best Practices
+
+##### AssertThat w/ Matchers
+
+**Q**: Why use assertThat in place of traditional assertXXX? 
+**A**: Compiled from JUnit 4.4 release note:
+
+* More readable and typeable: this syntax allows you to think in terms of subject, verb, object (assert "x is 3") rather than assertEquals, which uses verb, object, subject (assert "equals 3 x")
+* Combinations: any matcher statement s can be negated (not(s)), combined (either(s).or(t)), mapped to a collection (each(s)), or used in custom combinations (afterFiveSeconds(s))
+* Readable failure messages. (...)
+* Custom Matchers. By implementing the Matcher interface yourself, you can get all of the above benefits for your own custom assertions.
+
+**See Also**: JavaDoc: ~~JUnitMatchers~~ (deprecated by CoreMatchers) and Hamcrest CoreMatchers
+
+```java
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.anyOf;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.CoreMatchers.both;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.everyItem;
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.junit.Assert.assertThat;
+ 
+import java.util.Arrays;
+ 
+import org.hamcrest.core.CombinableMatcher;
+import org.junit.Test;
+ 
+public class AssertTests {
+    // DO: assertThat with Core Hamcrest Matchers
+    @Test
+    public void testAssertThatHamcrestCoreMatchers() {
+        assertThat("good", allOf(equalTo("good"), startsWith("good")));
+        assertThat("good", not(allOf(equalTo("bad"), equalTo("good"))));
+        assertThat("good", anyOf(equalTo("bad"), equalTo("good")));
+        assertThat(7, not(CombinableMatcher.<Integer> either(equalTo(3)).or(equalTo(4))));
+        assertThat(new Object(), not(sameInstance(new Object())));
+    }
+ 
+    @Test
+    public void testAssertThatBothContainsString() {
+        assertThat("albumen", both(containsString("a")).and(containsString("b")));
+    }
+ 
+    @Test
+    public void testAssertThatEveryItemContainsString() {
+        assertThat(Arrays.asList(new String[] { "fun", "ban", "net" }), everyItem(containsString("n")));
+    }
+ 
+   @Test
+    public void testMoreMatchers() {
+        List<String> list = Arrays.asList("a", "b", "a");
+        assertThat(list, CoreMatchers.hasItems("a"));
+        assertThat(list, CoreMatchers.hasItems("a", "b", "b", "b"));
+        assertThat(list, not(CoreMatchers.hasItems("c")));
+ 
+        assertThat(list, IsIterableContainingInOrder.contains("a", "b", "a"));
+        assertThat(list, not(IsIterableContainingInOrder.contains("a", "b")));
+ 
+        assertThat(list, IsIterableContainingInAnyOrder.containsInAnyOrder("a", "b", "a"));
+        assertThat(list, IsIterableContainingInAnyOrder.containsInAnyOrder("a", "a", "b"));
+        assertThat(list, IsIterableContainingInAnyOrder.containsInAnyOrder("b", "a", "a"));
+        assertThat(list, not(IsIterableContainingInAnyOrder.containsInAnyOrder("a", "b")));
+ 
+        String[] set = { "a", "b", "a" };
+        assertThat(set, IsArrayContaining.hasItemInArray("b"));
+        assertThat(set, IsArrayContainingInOrder.arrayContaining("a", "b", "a"));
+        assertThat(set, not(IsArrayContainingInOrder.arrayContaining("b", "a", "a")));
+ 
+        assertThat(set, IsArrayContainingInAnyOrder.arrayContainingInAnyOrder("b", "a", "a"));
+        assertThat(set, not(IsArrayContainingInAnyOrder.arrayContainingInAnyOrder("b", "a", "a", "a")));
+ 
+        Map<String, ?> hash = ImmutableMap.<String, Object>of("k1", "v1", "k2", 2);
+        assertThat(hash.keySet(), IsIterableContainingInAnyOrder.containsInAnyOrder("k1", "k2"));
+        assertThat(hash, IsMapContaining.hasKey("k1"));
+        assertThat(hash, not(IsMapContaining.hasEntry("k1", (Object)2)));
+        assertThat(hash, IsMapContaining.hasValue((Object)2));
+    }
+ 
+    // DON'T: Classic
+    @Test
+    public void testAssertTrue() {
+        org.junit.Assert.assertTrue("failure - should be true", true);
+    }
+ 
+    @Test
+    public void testAssertArrayEquals() {
+        byte[] expected = "trial".getBytes();
+        byte[] actual = "trial".getBytes();
+        org.junit.Assert.assertArrayEquals("failure - byte arrays not same", expected, actual);
+    }
+ 
+    @Test
+    public void testAssertEquals() {
+        org.junit.Assert.assertEquals("failure - strings not same", 5l, 5l);
+    }
+ 
+    @Test
+    public void testAssertFalse() {
+        org.junit.Assert.assertFalse("failure - should be false", false);
+    }
+ 
+    @Test
+    public void testAssertNotNull() {
+        org.junit.Assert.assertNotNull("should not be null", new Object());
+    }
+ 
+    @Test
+    public void testAssertNotSame() {
+        org.junit.Assert.assertNotSame("should not be same Object", new Object(), new Object());
+    }
+ 
+    @Test
+    public void testAssertNull() {
+        org.junit.Assert.assertNull("should be null", null);
+    }
+ 
+    @Test
+    public void testAssertSame() {
+        Integer aNumber = Integer.valueOf(768);
+        org.junit.Assert.assertSame("should be same", aNumber, aNumber);
+    }
+}
+```
