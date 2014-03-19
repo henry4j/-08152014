@@ -249,3 +249,274 @@ public class AssertTests {
     }
 }
 ```
+
+**See Also**: 3rd Party [JSON matchers](https://github.com/hertzsprung/hamcrest-json)
+
+```java
+assertThat(
+    "{\"age\":43, \"friend_ids\":[16, 52, 23]}",
+    sameJSONAs("{\"friend_ids\":[52, 23, 16]}")
+        .allowingExtraUnexpectedFields()
+        .allowingAnyArrayOrdering());
+```
+
+##### Testing Exceptions (4.11)
+
+```java
+@Rule
+public ExpectedException thrown = ExpectedException.none();
+ 
+@Test
+public void shouldTestExceptionMessage()
+        throws IndexOutOfBoundsException {
+    thrown.expect(IndexOutOfBoundsException.class);
+    thrown.expectMessage("Index: 0, Size: 0");
+    new ArrayList<Object>().get(0); // execution will never get past this line
+}
+```
+
+##### Testing Exceptions (classic)
+
+```java
+@Test(expected=IndexOutOfBoundsException.class) 
+public void testException() { 
+     new ArrayList<Object>().get(0); 
+}
+ 
+@Test
+public void testExceptionMessage() {
+    try {
+        new ArrayList<Object>().get(0);
+        fail("Expected an IndexOutOfBoundsException to be thrown");
+    } catch (IndexOutOfBoundsException anIndexOutOfBoundsException) {
+        assertThat(anIndexOutOfBoundsException.getMessage(), is("Index: 0, Size: 0"));
+    }
+}
+```
+
+##### Testing Timeout (4.11)
+
+```java
+public class HasGlobalTimeout {
+    @Rule
+    public Timeout globalTimeout = new Timeout(1000); // max 1 second per method tested.
+ 
+    @Test
+    public void testInfiniteLoop1() {
+        for (;;) { }
+    }
+ 
+    @Test
+    public void testInfiniteLoop2() {
+        for (;;) { }
+    }
+}
+```
+
+##### Testing Timeout (classic)
+
+```java
+@Test(timeout=1000)
+public void testWithTimeout() { /* ... */ }
+```
+
+##### Testing w/ error collection (4.11)
+
+```java
+public static class UsesErrorCollectorTwice {
+    @Rule
+    public ErrorCollector collector= new ErrorCollector();
+ 
+    @Test
+    public void example() {
+        collector.addError(new Throwable("first thing went wrong"));
+        collector.addError(new Throwable("second thing went wrong"));
+    }
+}
+```
+
+##### Testing w/ external resources
+
+```java
+public static class UsesInstanceResource {
+    Server myServer = new Server();
+ 
+    @Rule
+    public ExternalResource resource = new ExternalResource() {
+        @Override
+        protected void before() throws Throwable { myServer.connect(); };
+ 
+        @Override
+        protected void after() { myServer.disconnect(); };
+    };
+ 
+    @Test
+    public void testFoo() {
+        new Client().run(myServer);
+    }
+}
+ 
+public class UsesStaticResource {
+    public static Server myServer = new Server();
+ 
+    @ClassRule
+    public static ExternalResource resource = new ExternalResource() {
+        @Override
+        protected void before() throws Throwable { myServer.connect(); };
+ 
+        @Override
+        protected void after() { myServer.disconnect(); };
+    };
+}
+```
+
+##### Testing w/ parameters
+
+```java
+@RunWith(Suite.class)
+@Suite.SuiteClasses({ FibonacciTest.class, PowerTest.class })
+public class MathTestSuite {
+    @RunWith(Parameterized.class)
+    public static class FibonacciTest {
+        @Parameters(name = "{index}: fib({0})={1}")
+        public static Iterable<Object[]> data() {
+            return Arrays.asList(new Object[][] { { 0, 0 }, { 1, 1 }, { 2, 1 }, { 3, 2 }, { 6, 8 } });
+        }
+ 
+        public @Parameter int input;
+        public @Parameter(1) int expected;
+ 
+        @Test
+        public void testFib() {
+            assertThat(Math.fibonacci(input), equalTo(expected));
+        }
+    }
+ 
+    @RunWith(Parameterized.class)
+    public static class PowerTest {
+        @Parameters(name = "{index}: power({0},{1})={2}")
+        public static Iterable<Object[]> data() {
+            return Arrays.asList(new Object[][] { { 0, 1, 0 }, { 1, 0, 1 }, { 2, 1, 2 }, { 2, 3, 8 } });
+        }
+ 
+        public @Parameter(0) int a;
+        public @Parameter(1) int b;
+        public @Parameter(2) int expected;
+ 
+        @Test
+        public void testPower() {
+            assertThat(Math.power(a, b), equalTo(expected));
+        }
+    }
+}
+```
+
+##### Resources
+
+* More about JUnit's Parameterized Tests and Rules at http://goo.gl/ox8QAS.
+* More about testing and asserting concurrent Java code at http://goo.gl/UT0944.
+
+#### JUnit w/ Mockito, PowerMock, and Spring
+
+In general, we hand-craft mocks/stubs, run functions, and then verify program states. DdbBackedAppConfigTest shows how to use the Spring JUnit4 runner w/ Mockito & PowerMock (as a rule exception, because we can't run with the PowerMock runner). See how easy or hard to implement and maintain stubbed mocks.
+
+##### Examples
+
+```java
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+ 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({ WithBimock.class, WithMockito.class })
+public class DdbBackedAppConfigTest {
+    @RunWith(SpringJUnit4ClassRunner.class)
+    @ContextConfiguration(classes = { TestConfig.class })
+    public abstract static class T {
+        @Autowired(required = true) DdbBackedAppConfig ddbBackedAppConfig;
+        @Autowired(required = true) LabelingDao labelingDao;
+ 
+        abstract AmazonDynamoDBClient stubbedMock();
+ 
+        void stubRunAndVerify() { // `app-config` calls `dao`, which in turn calls `mock`.
+            labelingDao.dynamoDBClient(stubbedMock()); // step 1. stub
+            val labelDefs = ddbBackedAppConfig.loadLabelDefs(); // step 2. run
+            verify(labelDefs); // step 3. verify
+        }
+ 
+        void verify(Map<String, Triple<String, String[], LRegression>> labelDefs) {
+            assertThat(labelDefs.size(), equalTo(1));
+            assertThat(labelDefs.get("rrc_pro_top_questions").first(), equalTo("2014-01-01T01:23:45Z"));
+            assertThat(labelDefs.get("rrc_pro_top_questions").second()[0], equalTo("Can I charge a restocking fee?"));
+            assertNotNull(labelDefs.get("rrc_pro_top_questions").third());
+        }
+    }
+ 
+    public static class WithBimock extends T {
+        @Autowired(required = true) AmazonDynamoDBClient dynamoDBClient;
+        @Autowired(required = true) Bimock bimock;
+ 
+        Bimock.Mode mode = Mode.Replay;
+ 
+        @Test
+        public void testRefreshLabelDefs() {
+            stubRunAndVerify();
+        }
+ 
+        @Override
+        AmazonDynamoDBClient stubbedMock() {
+            return bimock.of(dynamoDBClient, mode, new File("tst/resources/test-refresh-label-defs.json"));
+        }
+    }
+ 
+    public static class WithMockito extends T {
+        public @Rule PowerMockRule rule = new PowerMockRule();
+ 
+        @Test
+        public void testRefreshLabelDefsWithStubbedMock() {
+            stubRunAndVerify();
+        }
+ 
+        @Override
+        AmazonDynamoDBClient stubbedMock() {
+            AmazonDynamoDBClient mockObj = mock(AmazonDynamoDBClient.class);
+            String values = "[   \"Can I charge a restocking fee?\",   \"How can I issue a concession for the buyer shipping charge in addition to the refund for the order?\",   \"How can I remove individual items from an order?\",   \"How do cancellations work?\",   \"How do I cancel a refund?\",   \"How do I deal with an A-Z claim?\",   \"How do I deal with orders that have not been returned?\",   \"How do I issue a partial refund?\",   \"How do I process a return/refund?\",   \"How do I provide return labels?\",   \"How do I recharge an order?\",   \"How do I undo a cancel for an order?\",   \"How do I verify if a refund has been processed?\",   \"How should I handle a buyer who might be making up reasons to ask for a refund or return the items?\",   \"I'm concerned about negative feedback; what can I do?\",   \"If a customer failed to properly read the description of my product; am I still required to approve a return or refund?\",   \"What are the fees or costs that can be re-imbursed to me?\",   \"What do I do if a customer returns an item in a different condition?\",   \"What do I do if I receive an order for an item not in my inventory?\",   \"What do I do if I suspect customer fraud?\",   \"What do I do if my customer claims they received an item inconsistent with my listing?\",   \"What do I do if the customer claims they never received their order?\",   \"What do I do if the item is undeliverable?\",   \"What is your return/refund policy?\" ]";
+            Map<String, AttributeValue> item = ImmutableMap.of(
+                    "id", new AttributeValue("rrc_pro_top_questions"),
+                    "timecode", new AttributeValue("2014-01-01T01:23:45Z"),
+                    "model", new AttributeValue("resources/rrc_pro_6215-r.sgd"),
+                    "values", new AttributeValue(values),
+                    "analyzer", new AttributeValue("com.henry4j.text.CommTextAnalyzer"));
+            ScanResult res = new ScanResult()
+                    .withCount(1)
+                    .withScannedCount(1)
+                    .withItems(ImmutableList.of(item));
+            when(mockObj.scan(any(ScanRequest.class))).thenReturn(res);
+            return mockObj;
+        }
+    }
+}
+```
+
+#### Q&A
+
+**Q**: How to inject mocked dependencies? 
+**A**: Should use ReflectionTestUtils, or put a setter. Adding constructors may have side effects (e.g. disallowing subclassing by CGLIB), and relaxing the visibility just for the sake of testing is not a good approach. 
+**Q**: How to mock a property of a CGLIB proxied bean? 
+**A**: Should unwrap the proxy, e.g. http://stackoverflow.com/questions/8121551/is-it-possible-to-unproxy-a-spring-bean
+
+```java
+public static <T> T getTargetObject(Object proxy) {
+    if ((AopUtils.isJdkDynamicProxy(proxy))) {
+        try {
+            return (T)getTargetObject(((Advised) proxy).getTargetSource().getTarget());
+        } catch (Exception e) {
+            throw new RuntimeException("UNCHECKED: Failed to unproxy target.", e);
+        }
+    }
+    return (T)proxy;
+}
+```
