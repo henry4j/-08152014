@@ -64,7 +64,7 @@ Discussions:
 * http://java.dzone.com/articles/mockito-pros-cons-and-best - it was compared to old EasyMock v2.
 * http://blog.octo.com/en/easymock-facts-fallacies/ - EasyMock's response. But, GoodBye to expect-run-verify.
 
-##### Mackito: Stub in "when thenAnswer" style
+##### Mockito: Stub in "when thenAnswer" style
 
 Let's see how we mock and stub classes & interfaces:
 
@@ -86,7 +86,7 @@ System.out.println(mockedList.get(999)); // prints "null" because get(999) was n
 verify(mockedList).get(0);
 ```
 
-##### Mackito: Stub in "doAnswer" method family
+##### Mockito: Stub in "doAnswer" method family
 
 You can use doThrow(), doAnswer(), doNothing(), and doReturn() in place of the corresponding call with when(), for any method. It is necessary when you
 
