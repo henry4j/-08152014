@@ -54,8 +54,12 @@ def parse_options
 end
 
 def pp_zd(p_zd, threshold)
-  zi = p_zd.each_with_index.max
-  z = zi[0] > threshold ? zi[1] : -1
+  z = case
+  when p_zd[0].nan? then -1
+  else
+    zi = p_zd.each_with_index.max
+    zi[0] > threshold ? zi[1] : -1
+  end
   puts [z, p_zd.to_s.inspect].join(',')
 end
 
