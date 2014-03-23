@@ -83,7 +83,9 @@ public class NotAnEngine {}
 
 Guice avoids all this confusion in two ways: it uses actual types to wire dependencies together rather than bean names (or qualifier values), and it requires the module be in charge of resolving ambiguities using bindings.  In the Guice example above, the special binding annotation @Better not only flags the injection point of Engine, but the module MyModule then binds that annotation to the desired implementation (BetterEngine).  No need for string identifiers.  No need to understand semantic differences between @Qualifier and @Resource or to wonder whether you're wiring by qualifier value or by bean id. And everything is type-checked at compile time.
 
+#### Key Distinction
 
+Regardless of whether your framework is Spring or Guice, if you need to add a new dependency to 50 different classes, you must modify 50 different source files to declare that dependency.  However, Spring Java configuration also requires modifying 50 different @Bean methods to manually wire in that new dependency.  Guice, conversely, can handle it with a single line, or in the case of a new concrete dependency, no lines at all.  It’s difficult to understate the impact of this feature on code reusability.
 
 
 
