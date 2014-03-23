@@ -73,5 +73,18 @@ public class BetterEngine extends Engine {
 public @interface Better{}
 ```
 
+Look familiar? This is very similar to the Guice approach with one major difference: you're annotating the class to be autowired, rather than the relationship between the class and its injection point.  As such, this implementation is only providing the illusion of type safety because the compiler has no way to know if a class annotated with @Better actually matches the parameter annotated with @Better.  What's to stop me from doing the following at compile-time instead of annotating Engine?
+
+```
+@Better
+@Component
+public class NotAnEngine {}
+```
+
+Guice avoids all this confusion in two ways: it uses actual types to wire dependencies together rather than bean names (or qualifier values), and it requires the module be in charge of resolving ambiguities using bindings.  In the Guice example above, the special binding annotation @Better not only flags the injection point of Engine, but the module MyModule then binds that annotation to the desired implementation (BetterEngine).  No need for string identifiers.  No need to understand semantic differences between @Qualifier and @Resource or to wonder whether you're wiring by qualifier value or by bean id. And everything is type-checked at compile time.
+
+
+
+
 
 ***
