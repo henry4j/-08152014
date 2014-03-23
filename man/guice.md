@@ -46,6 +46,10 @@ public class BetterEngine extends Engine {
 }
 ```
 
-At first glance, it appears Spring has the advantage -- Spring lets you effect the change with only a single modification to source code and no extra configuration, while Guice requires us to not only modify configuration (the Module) but also create a new annotation (@Better).
+However, let's look at this a little more closely.  As with our duplicate Car example above, in order to substitute an alternate implementation, Spring requires that we sacrifice type safety.  The compiler has no way to verify that a bean with a qualifier value of "betterEngine" actually exists, or that it is compatible with the Engine type.  You must wait until runtime for the framework to initialize before you discover a possible error.
+
+However, let's look at this a little more closely. The compiler has no way to verify that a bean with a qualifier value of "betterEngine" actually exists, or that it is compatible with the Engine type.  You must wait until runtime for the framework to initialize before you discover a possible error.
+
+
 
 ***
