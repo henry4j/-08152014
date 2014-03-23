@@ -50,6 +50,28 @@ However, let's look at this a little more closely.  As with our duplicate Car ex
 
 However, let's look at this a little more closely. The compiler has no way to verify that a bean with a qualifier value of "betterEngine" actually exists, or that it is compatible with the Engine type.  You must wait until runtime for the framework to initialize before you discover a possible error.
 
+Or as an alternative, Spring also lets you create custom annotations to flag special implementations.
+
+```java
+@Component
+public class Car {
+    @Autowired @Better Engine engine;
+}
+
+@Better
+@Component
+public class BetterEngine extends Engine {
+    @Autowired
+    public BetterEngine(Piston piston) {
+        super(piston);  
+    }
+}
+
+@Target ({ ElementType.TYPE, ElementType.PARAMETER })
+@Retention ( RetentionPolicy.RUNTIME )
+@Qualifier
+public @interface Better{}
+```
 
 
 ***
