@@ -38,38 +38,44 @@ class TopicModeling
     end
   end
 
-  def p_topics(s, sort = false, min_value = nil)
-    a = @modeling.get_ptopic(s).to_ary
-    a = a.each_with_index.sort_by { |(e, i)| -e }.
-        reduce({}) { |h, (e, i)| e *= 100; h[i] = e.round(1) unless min_value && e < min_value; h } if sort && !a[0].nan?
-    a
+  def p_topics(s)
+    @modeling.get_ptopic(s).to_ary
   end
 end
 
 def parse_options
   options = {}
   OptionParser.new do |p|
-    p.on('-d', '--debug',                   'Prints DEBUG messages') { |v| options[:debug] = v }
-    p.on('-m', '--model_id STRING', String, 'Specifies optional model id.') { |v| options[:model_id] = v }
-    p.on('-s', '--sort',                    'Sorts out topic probability values.') { options[:sort] = true }
-    p.on('-k', '--min-value FLOAT', Float,  'Yields fields of values no smaller than specified (default 2.0).') { |v| options[:min_value] = v }
+    p.on('-d', '--debug',                    'Prints DEBUG messages') { |v| options[:debug] = v }
+    p.on('-m', '--model_id STRING', String,  'Specifies optional model id.') { |v| options[:model_id] = v }
+    p.on('-p', '--p-threshold FLOAT', Float, 'Specifies prediction threshold (default threshold: 7.1).') { |v| options[:p_threshold] = v }
   end.parse!
   options
+end
+
+def pp_zd(p_zd, threshold)
+  z = case
+  when p_zd[0].nan? then -1
+  else
+    zi = p_zd.each_with_index.max
+    zi[0] > threshold ? zi[1] : -1
+  end
+  puts [z, p_zd.to_s.inspect].join(',')
 end
 
 def run!
   options = parse_options
   debug = options[:debug]
   model_id = options[:model_id] || 'unigram-rrc-pro-22k'
-  sort = options[:sort] || false
-  min_value = options[:min_value] || 2.0
+  threshold = options[:p_threshold] || 0.071
+
   modeling = TopicModeling.new(model_id, debug)
   if ARGV.empty?
     $stderr.puts 'DEBUG: begins reading lines' if debug
-    j modeling.p_topics($_, sort, min_value) unless $_.chomp!.empty? while gets
+    pp_zd(modeling.p_topics($_), threshold) unless $_.chomp!.empty? while gets
     $stderr.puts 'DEBUG: ends reading lines' if debug
   else
-    ARGV.each { |e| j modeling.p_topics(e, sort, min_value) }
+    ARGV.each { |e| pp_zd(modeling.p_topics(e), threshold) }
   end
   exit 0
 end
