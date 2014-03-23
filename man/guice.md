@@ -1,3 +1,5 @@
+[Comparing Spring vs. Google Guice: By Example](http://www.theserverside.com/feature/Comparing-Spring-vs-Google-Guice-By-Example?vgnextfmt=print)
+
 Guice autowires all concret clasess w/ little or no configuration, while Spring identifies beans.
 * itemizing individual components, or scanning within Java package names.
 * the framework still uses string ids to track them as beans, despite claiming to wire classes by type.
