@@ -12,7 +12,7 @@ public class Car {
 
 @Component
 public class BetterEngine extends Engine {
-	private @Autowired Piston piston;
+    private @Autowired Piston piston;
 }
 ```
 
@@ -33,11 +33,11 @@ public class GuiceMain {
 }
 
 public class Car {
-    @Inject @Better Engine engine
+    private @Inject @Better Engine engine
 }
 
 public class BetterEngine extends Engine {
-    @Inject Piston piston;
+    private @Inject Piston piston;
 }
 
 @BindingAnnotation
@@ -61,10 +61,7 @@ public class Car {
 @Better
 @Component
 public class BetterEngine extends Engine {
-    @Autowired
-    public BetterEngine(Piston piston) {
-        super(piston);  
-    }
+    private @Autowired Piston piston;
 }
 
 @Qualifier
