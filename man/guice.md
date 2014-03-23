@@ -82,7 +82,7 @@ Guice avoids all this confusion in two ways: it uses actual types to wire depend
 
 #### Key Distinction
 
-Regardless of whether your framework is Spring or Guice, if you need to add a new dependency to 50 different classes, you must modify 50 different source files to declare that dependency.  However, Spring Java configuration also requires modifying 50 different @Bean methods to manually wire in that new dependency.  Guice, conversely, can handle it with a single line, or in the case of a new concrete dependency, no lines at all.  It’s difficult to understate the impact of this feature on code reusability.
+Regardless of whether your framework is Spring or Guice, if you need to add a new dependency to 50 different classes, you must modify 50 different source files to declare that dependency by @Autowired or @Inject. However, Spring Java configuration also requires defining 50 different @Bean methods or @Component classes to wire in that new dependency.  Guice, conversely, can handle it with a single line, or in the case of a new concrete dependency, no lines at all. It’s difficult to understate the impact of this feature on code reusability.
 
 The fundamental difference between Guice and Spring's approaches to DI can probably be summed up in one sentence: Spring wires classes together by bean, whereas Guice wires classes together by type.  Therein lie many of the key differences.  Hopefully these code examples give developers a better understanding of those differences and how they can benefit further from Google Guice.
 
