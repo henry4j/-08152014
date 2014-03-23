@@ -46,4 +46,6 @@ public class BetterEngine extends Engine {
 }
 ```
 
+At first glance, it appears Spring has the advantage -- Spring lets you effect the change with only a single modification to source code and no extra configuration, while Guice requires us to not only modify configuration (the Module) but also create a new annotation (@Better).
+
 ***
