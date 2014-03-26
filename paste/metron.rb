@@ -20,7 +20,7 @@ MAXIMUM_HISTORICAL_UPDATE_ATTEMPTS = 5
 INITIAL_RETRY_BACKOFF_MILLISECONDS = 1000
 MAXIMUM_HISTORICAL_UPDATES_PER_SEC = 100.0
 ACME_SINK_SERVICE_CLIENT = Amazon::BSF::HTTP::Client.new(
-  'AcmeSnapshotService', options[:hostname] || 'acme-snapshot-na.amazon.com', 8000, '/'
+  'AcmeSnapshotService', options[:hostname] || 'acme-snapshot-na', 8000, '/'
 )
 ACME_SINK_SERVICE_CLIENT.default_args = {
   '*CodigoProtocol*' => '1.5',
