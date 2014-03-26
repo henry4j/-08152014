@@ -60,7 +60,6 @@ def try_replay_in_parallel(https, lines, backoff_millis, debug, n = (lines.size 
 end
 
 def try_replay(http, lines, backoff_millis, debug)
-  p13_type, mkt_id, rating_type = 'r', 136750, 'n'
   lines.map do |l|
     (0..m = 7).times do |k| # max replay attempts (8)
       begin
@@ -76,22 +75,23 @@ def try_replay(http, lines, backoff_millis, debug)
   end
 end
 
-def replay_ppds(http, line, debug)
+def replay_ppds(http, line, debug, app_id = 11510)
   dt, uid, title_id, rating = l.split # 2013-06-01T00:00:00.053Z  ur34164904  tt1706601   9
   uid, rating = [uid.delete('^0-9'), rating].map { |e| e.to_i }
   if 0 == rating
-    del = '/%s/%s/%s/%s/%s' % [p13_type, mkt_id, uid, rating_type, title_id]
-    puts "[DEBUG] DELETE at #{http.address}#{del}" if (debug[0] -= 1) >= 0
-    http.request(Net::HTTP::Delete.new(del))
+    # del = '/%s/%s/%s/%s/%s' % [p13_type, mkt_id, uid, rating_type, title_id]
+    # puts "[DEBUG] DELETE at #{http.address}#{del}" if (debug[0] -= 1) >= 0
+    # http.request(Net::HTTP::Delete.new(del))
   else
     ms = DateTime.parse(dt).strftime('%Q')
-    put = '/%s/%s/%s/%s/%s/%s/%s' % [p13_type, mkt_id, uid, rating_type, title_id, ms, rating]
-    puts "[DEBUG] PUT at #{http.address}#{put}" if (debug[1] -= 1) >= 0
-    http.request(Net::HTTP::Put.new(put))
+    get = 'a=%s&e=%s&i=%s&m=%s&m=%s&n=%s&u=%s' % [app_id, ms, title_id, 'addRatingNumeric', rating, uid]
+    puts "[DEBUG] GET at #{http.address}#{get}" if (debug[1] -= 1) >= 0
+    http.request(Net::HTTP::Get.new(get))
   end
 end
 
 def replay_proxy(http, line, debug)
+  p13_type, mkt_id, rating_type = 'r', 136750, 'n'
   dt, uid, title_id, rating = l.split # 2013-06-01T00:00:00.053Z  ur34164904  tt1706601   9
   uid, rating = [uid.delete('^0-9'), rating].map { |e| e.to_i }
   if 0 == rating
