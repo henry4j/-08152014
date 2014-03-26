@@ -22,8 +22,8 @@ def run!
   hostname = options[:hostname] || (['pp-data-service', 'integ'] + `hostname`.chomp.split('.')[-2, 2]).join('.')
   backoff_millis = options[:backoff_millis] || 20
   max_tps = options[:tps] || 200
-  https = (options[:threads] || 16).times.map { Net::HTTP.new(hostname) }
-  debug = 2.times.map { options[:debug] || 1 }
+  https = (options[:threads] || 16).times.map { Net::HTTP.new(hostname, 8080) }
+  debug = 2.times.map { options[:debug] || 1000 }
   
   trans = 0
   trans_in_log_interval = 25
@@ -80,12 +80,12 @@ def replay_ppds(http, line, debug, app_id = 11510)
   uid, rating = [uid.delete('^0-9'), rating].map { |e| e.to_i }
   if 0 == rating
     get = '/exec/rest/?a=%s&i=%s&m=%s&u=%s' % [app_id, title_id, 'deleteRatingNumeric', uid]
-    puts "[DEBUG] GET at #{http.address}#{get}" if (debug[1] -= 1) >= 0
+    puts "[DEBUG] GET at #{http.address}#{get}" # if (debug[1] -= 1) >= 0
     http.request(Net::HTTP::Get.new(get))
   else
     ms = DateTime.parse(dt).strftime('%Q')
     get = '/exec/rest/?a=%s&e=%s&i=%s&m=%s&n=%s&u=%s' % [app_id, ms, title_id, 'addRatingNumeric', rating, uid]
-    puts "[DEBUG] GET at #{http.address}#{get}" if (debug[1] -= 1) >= 0
+    puts "[DEBUG] GET at #{http.address}#{get}" # if (debug[1] -= 1) >= 0
     http.request(Net::HTTP::Get.new(get))
   end
 end
