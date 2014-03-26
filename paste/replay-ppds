@@ -18,7 +18,8 @@ end
 
 def run!
   options = parse_options!
-  fail "Missing required --hostname option, e.g. -h p13n-proxy.integ" unless hostname = options[:hostname] # || 'p13n-proxy.integ.' + `hostname | rev | cut -d. -f1,2 | rev`.chomp
+  # fail "Missing required --hostname option, e.g. -h p13n-proxy.integ" unless hostname = options[:hostname] # || 'p13n-proxy.integ.' + `hostname | rev | cut -d. -f1,2 | rev`.chomp
+  hostname = options[:hostname] || (['pp-data-service', 'integ'] + `hostname`.chomp.split('.')[-2, 2]).join('.')
   backoff_millis = options[:backoff_millis] || 20
   max_tps = options[:tps] || 200
   https = (options[:threads] || 16).times.map { Net::HTTP.new(hostname) }
@@ -61,28 +62,47 @@ end
 def try_replay(http, lines, backoff_millis, debug)
   p13_type, mkt_id, rating_type = 'r', 136750, 'n'
   lines.map do |l|
-    8.times do |k| # max replay attempts (8)
+    (0..m = 7).times do |k| # max replay attempts (8)
       begin
-        dt, uid, title_id, rating = l.split # 2013-06-01T00:00:00.053Z  ur34164904  tt1706601   9
-        uid, rating = [uid.delete('^0-9'), rating].map { |e| e.to_i }
-        if 0 == rating
-          del = '/%s/%s/%s/%s/%s' % [p13_type, mkt_id, uid, rating_type, title_id]
-          res = http.request(Net::HTTP::Delete.new(del))
-          puts "[DEBUG] DELETE at #{http.address}#{del}" if (debug[0] -= 1) >= 0
-        else
-          ms = DateTime.parse(dt).strftime('%Q')
-          put = '/%s/%s/%s/%s/%s/%s/%s' % [p13_type, mkt_id, uid, rating_type, title_id, ms, rating]
-          res = http.request(Net::HTTP::Put.new(put))
-          puts "[DEBUG] PUT at #{http.address}#{put}" if (debug[1] -= 1) >= 0
-        end
-        break true if res.kind_of? Net::HTTPSuccess
-        puts "Failed to process a line: #{l}", res.body if 7 == k
+        response = replay(http, l, debug)
+        break true if response.kind_of? Net::HTTPSuccess
+        puts "Failed to process a line: #{l}", response.body if m == k
       rescue
         puts "Failed to process a line: #{l}", $!.inspect, $@
         sleep 2 ** k * backoff_millis / 1000.0
         next
       end
     end
+  end
+end
+
+def replay_ppds(http, line, debug)
+  dt, uid, title_id, rating = l.split # 2013-06-01T00:00:00.053Z  ur34164904  tt1706601   9
+  uid, rating = [uid.delete('^0-9'), rating].map { |e| e.to_i }
+  if 0 == rating
+    del = '/%s/%s/%s/%s/%s' % [p13_type, mkt_id, uid, rating_type, title_id]
+    puts "[DEBUG] DELETE at #{http.address}#{del}" if (debug[0] -= 1) >= 0
+    http.request(Net::HTTP::Delete.new(del))
+  else
+    ms = DateTime.parse(dt).strftime('%Q')
+    put = '/%s/%s/%s/%s/%s/%s/%s' % [p13_type, mkt_id, uid, rating_type, title_id, ms, rating]
+    puts "[DEBUG] PUT at #{http.address}#{put}" if (debug[1] -= 1) >= 0
+    http.request(Net::HTTP::Put.new(put))
+  end
+end
+
+def replay_proxy(http, line, debug)
+  dt, uid, title_id, rating = l.split # 2013-06-01T00:00:00.053Z  ur34164904  tt1706601   9
+  uid, rating = [uid.delete('^0-9'), rating].map { |e| e.to_i }
+  if 0 == rating
+    del = '/%s/%s/%s/%s/%s' % [p13_type, mkt_id, uid, rating_type, title_id]
+    puts "[DEBUG] DELETE at #{http.address}#{del}" if (debug[0] -= 1) >= 0
+    http.request(Net::HTTP::Delete.new(del))
+  else
+    ms = DateTime.parse(dt).strftime('%Q')
+    put = '/%s/%s/%s/%s/%s/%s/%s' % [p13_type, mkt_id, uid, rating_type, title_id, ms, rating]
+    puts "[DEBUG] PUT at #{http.address}#{put}" if (debug[1] -= 1) >= 0
+    http.request(Net::HTTP::Put.new(put))
   end
 end
 
