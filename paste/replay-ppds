@@ -18,7 +18,9 @@ end
 
 def run!
   options = parse_options!
-  fail "Missing required --hostname option, e.g. -h pp-data-service.integ" unless hostname = options[:hostname] # || (['pp-data-service', 'integ'] + `hostname`.chomp.split('.')[-2, 2]).join('.')
+  fail "Missing required --hostname option, e.g. -h pp-data-service.integ" unless hostname = options[:hostname]
+  hostname = (hostname.split('.') + `hostname`.chomp.split('.')[-2, 2]).join('.') if hostname.count('.') < 2
+  puts hostname
   backoff_millis = options[:backoff_millis] || 20
   max_tps = options[:tps] || 200
   https = (options[:threads] || 16).times.map { Net::HTTP.new(hostname, 80) }
