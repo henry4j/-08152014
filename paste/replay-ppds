@@ -2,7 +2,7 @@
 %w{optparse json net/http uri time fileutils}.each { |e| require e }
 
 # Usage:
-# ruby ./replay -h p13n-proxy-na -t 16 -m 200 [file...] # replays iMDB ratings with default whitespace record separator.
+# ruby ./replay -h pp-data-service.bsf -t 16 -m 200 [file...] # replays iMDB ratings with default whitespace record separator.
 # NOTE: breaking and re-running replay script for the same files resumes previous sessions from the last checkpoint file(s).
 
 def parse_options!(options = {})
@@ -18,8 +18,7 @@ end
 
 def run!
   options = parse_options!
-  # fail "Missing required --hostname option, e.g. -h p13n-proxy.integ" unless hostname = options[:hostname] # || 'p13n-proxy.integ.' + `hostname | rev | cut -d. -f1,2 | rev`.chomp
-  hostname = options[:hostname] || (['pp-data-service', 'integ'] + `hostname`.chomp.split('.')[-2, 2]).join('.')
+  fail "Missing required --hostname option, e.g. -h pp-data-service.integ" unless hostname = options[:hostname] # || (['pp-data-service', 'integ'] + `hostname`.chomp.split('.')[-2, 2]).join('.')
   backoff_millis = options[:backoff_millis] || 20
   max_tps = options[:tps] || 200
   https = (options[:threads] || 16).times.map { Net::HTTP.new(hostname, 80) }
