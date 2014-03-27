@@ -22,7 +22,7 @@ def run!
   hostname = options[:hostname] || (['pp-data-service', 'integ'] + `hostname`.chomp.split('.')[-2, 2]).join('.')
   backoff_millis = options[:backoff_millis] || 20
   max_tps = options[:tps] || 200
-  https = (options[:threads] || 16).times.map { Net::HTTP.new(hostname, 8080) }
+  https = (options[:threads] || 16).times.map { Net::HTTP.new(hostname, 80) }
   debug = 2.times.map { options[:debug] || 1000 }
   
   trans = 0
@@ -63,9 +63,9 @@ def try_replay(http, lines, backoff_millis, debug)
   lines.map do |l|
     (0..m = 7).each do |k| # max replay attempts (8)
       begin
-        response = replay_ppds(http, l, debug)
-        break true if response.kind_of? Net::HTTPSuccess
-        puts "Failed to process a line: #{l}", response.body if m == k
+        res = replay_ppds(http, l, debug)
+        break true if res.kind_of?(Net::HTTPSuccess) && (res.body.empty? || /^Successfully/ =~ res.body)
+        puts "Failed to process a line: #{l}", res.body if m == k
       rescue
         puts "Failed to process a line: #{l}", $!.inspect, $@
         sleep 2 ** k * backoff_millis / 1000.0
@@ -83,7 +83,7 @@ def replay_ppds(http, line, debug, app_id = 11510)
     puts "[DEBUG] GET at #{http.address}#{get}" # if (debug[1] -= 1) >= 0
     http.request(Net::HTTP::Get.new(get))
   else
-    ms = DateTime.parse(dt).strftime('%Q')
+    ms = DateTime.parse(dt).strftime('%s')
     get = '/exec/rest/?a=%s&e=%s&i=%s&m=%s&n=%s&u=%s' % [app_id, ms, title_id, 'addRatingNumeric', rating, uid]
     puts "[DEBUG] GET at #{http.address}#{get}" # if (debug[1] -= 1) >= 0
     http.request(Net::HTTP::Get.new(get))
