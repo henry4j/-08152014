@@ -1,3 +1,4 @@
+http://speakerdeck.com/astreal/best-practices-and-coding-style-for-python
 http://speakerdeck.com/erik/writing-clean-python-code
 http://speakerdeck.com/leroy/ruby-vs-python-1
 http://speakerdeck.com/luikore/ruby-2-dot-1-walk-thru-title-bait
