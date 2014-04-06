@@ -11,3 +11,6 @@
 * http://www.slideshare.net/felipeschmitt/ruby-an-overall-approach-12703456
 * http://www.slideshare.net/jwthompson2/introducing-ruby
 * http://www.slideshare.net/lerrua/ruby-vs-python
+* http://ochronus.com/a-rubyists-confessions-on-python/
+* http://www.senktec.com/2013/06/ruby-vs-python/
+* http://dinasource.com/site/python-vs-ruby-what-to-choose-for-your-next-project/
