@@ -15,3 +15,5 @@
 * http://www.senktec.com/2013/06/ruby-vs-python/
 * http://www.senktec.com/2013/09/one-way-to-do-it/
 * http://dinasource.com/site/python-vs-ruby-what-to-choose-for-your-next-project/
+* http://wit.io/posts/the-ugliness-of-python
+
