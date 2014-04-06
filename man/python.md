@@ -1,12 +1,12 @@
-http://docs.python-guide.org/en/latest/writing/style/
-http://speakerdeck.com/astreal/best-practices-and-coding-style-for-python
-http://speakerdeck.com/erik/writing-clean-python-code
-http://speakerdeck.com/leroy/ruby-vs-python-1
-http://speakerdeck.com/luikore/ruby-2-dot-1-walk-thru-title-bait
-http://speakerdeck.com/mleone/python-for-ruby-programmers
-http://speakerdeck.com/ogrisel/scaling-machine-learning-in-python
-http://www.slideshare.net/DrTrucho/python-solid
-http://www.slideshare.net/altrux/a-survey-of-robotics-in-ruby
-http://www.slideshare.net/felipeschmitt/ruby-an-overall-approach-12703456
-http://www.slideshare.net/jwthompson2/introducing-ruby
-http://www.slideshare.net/lerrua/ruby-vs-python
+* http://docs.python-guide.org/en/latest/writing/style/
+* http://speakerdeck.com/astreal/best-practices-and-coding-style-for-python
+* http://speakerdeck.com/erik/writing-clean-python-code
+* http://speakerdeck.com/leroy/ruby-vs-python-1
+* http://speakerdeck.com/luikore/ruby-2-dot-1-walk-thru-title-bait
+* http://speakerdeck.com/mleone/python-for-ruby-programmers
+* http://speakerdeck.com/ogrisel/scaling-machine-learning-in-python
+* http://www.slideshare.net/DrTrucho/python-solid
+* http://www.slideshare.net/altrux/a-survey-of-robotics-in-ruby
+* http://www.slideshare.net/felipeschmitt/ruby-an-overall-approach-12703456
+* http://www.slideshare.net/jwthompson2/introducing-ruby
+* http://www.slideshare.net/lerrua/ruby-vs-python
