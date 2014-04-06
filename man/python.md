@@ -1,19 +1,18 @@
-* https://www.youtube.com/watch?v=PvMDPYSlki4
+* http://dinasource.com/site/python-vs-ruby-what-to-choose-for-your-next-project/
 * http://docs.python-guide.org/en/latest/writing/style/
+* http://ochronus.com/a-rubyists-confessions-on-python/
 * http://speakerdeck.com/astreal/best-practices-and-coding-style-for-python
 * http://speakerdeck.com/erik/writing-clean-python-code
 * http://speakerdeck.com/leroy/ruby-vs-python-1
 * http://speakerdeck.com/luikore/ruby-2-dot-1-walk-thru-title-bait
 * http://speakerdeck.com/mleone/python-for-ruby-programmers
 * http://speakerdeck.com/ogrisel/scaling-machine-learning-in-python
+* http://wit.io/posts/the-ugliness-of-python
+* http://www.senktec.com/2013/06/ruby-vs-python/
+* http://www.senktec.com/2013/09/one-way-to-do-it/
 * http://www.slideshare.net/DrTrucho/python-solid
 * http://www.slideshare.net/altrux/a-survey-of-robotics-in-ruby
 * http://www.slideshare.net/felipeschmitt/ruby-an-overall-approach-12703456
 * http://www.slideshare.net/jwthompson2/introducing-ruby
 * http://www.slideshare.net/lerrua/ruby-vs-python
-* http://ochronus.com/a-rubyists-confessions-on-python/
-* http://www.senktec.com/2013/06/ruby-vs-python/
-* http://www.senktec.com/2013/09/one-way-to-do-it/
-* http://dinasource.com/site/python-vs-ruby-what-to-choose-for-your-next-project/
-* http://wit.io/posts/the-ugliness-of-python
-
+* http://www.youtube.com/watch?v=PvMDPYSlki4
