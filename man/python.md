@@ -1,3 +1,4 @@
+* https://www.youtube.com/watch?v=PvMDPYSlki4
 * http://docs.python-guide.org/en/latest/writing/style/
 * http://speakerdeck.com/astreal/best-practices-and-coding-style-for-python
 * http://speakerdeck.com/erik/writing-clean-python-code
