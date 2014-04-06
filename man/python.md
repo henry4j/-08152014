@@ -1,3 +1,7 @@
+* http://batsov.com/articles/2013/09/03/a-couple-of-useful-extensions-to-rubys-enumerable-module/
+* http://batsov.com/articles/2013/09/26/the-elements-of-style-in-ruby-number-11-invoking-lambdas-slash-procs/
+* http://batsov.com/articles/2013/12/04/using-rubys-each-with-object/
+* http://batsov.com/articles/2014/02/17/the-elements-of-style-in-ruby-number-13-length-vs-size-vs-count/
 * http://dinasource.com/site/python-vs-ruby-what-to-choose-for-your-next-project/
 * http://docs.python-guide.org/en/latest/writing/style/
 * http://ochronus.com/a-rubyists-confessions-on-python/
