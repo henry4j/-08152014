@@ -13,4 +13,5 @@
 * http://www.slideshare.net/lerrua/ruby-vs-python
 * http://ochronus.com/a-rubyists-confessions-on-python/
 * http://www.senktec.com/2013/06/ruby-vs-python/
+* http://www.senktec.com/2013/09/one-way-to-do-it/
 * http://dinasource.com/site/python-vs-ruby-what-to-choose-for-your-next-project/
