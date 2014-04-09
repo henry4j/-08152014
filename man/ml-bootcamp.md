@@ -80,7 +80,7 @@ EOF
 [x] DO get S3 creds from https://console.aws.amazon.com/iam/home?#security_credential
 
 ```bash
-s3cmd --configure # or, curl -o "$HOME/.s3cfg" -kL http://tiny/fuyiy5sx/impramazs3fis3getext # within our corp. net.
+s3cmd --configure
 ```
 
 ```bash
