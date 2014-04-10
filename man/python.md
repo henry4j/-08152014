@@ -3,8 +3,10 @@
 * http://batsov.com/articles/2013/12/04/using-rubys-each-with-object/
 * http://batsov.com/articles/2014/02/17/the-elements-of-style-in-ruby-number-13-length-vs-size-vs-count/
 * http://dinasource.com/site/python-vs-ruby-what-to-choose-for-your-next-project/
+* http://www.diveintopython3.net/porting-code-to-python-3-with-2to3.html
 * http://docs.python-guide.org/en/latest/writing/style/
 * http://ochronus.com/a-rubyists-confessions-on-python/
+* http://refcardz.dzone.com/refcardz/core-python
 * http://speakerdeck.com/astreal/best-practices-and-coding-style-for-python
 * http://speakerdeck.com/erik/writing-clean-python-code
 * http://speakerdeck.com/leroy/ruby-vs-python-1
