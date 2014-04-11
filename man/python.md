@@ -22,3 +22,8 @@
 * http://www.slideshare.net/jwthompson2/introducing-ruby
 * http://www.slideshare.net/lerrua/ruby-vs-python
 * http://www.youtube.com/watch?v=PvMDPYSlki4
+* http://www.senktec.com/2013/06/ruby-vs-python/
+* http://eradman.com/posts/ruby-python.html
+* http://grschafer.com/guides/2013/08/20/ruby-and-python-by-example/
+* http://josepferrandiz.blogspot.com/2012/12/bigger-data-with-ruby-python-and-r.html
+
