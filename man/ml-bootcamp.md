@@ -51,7 +51,7 @@
 ```bash
 brew install git ruby jruby rbenv ruby-build maven colordiff wget unrar p7zip s3cmd
 sudo gem install test-unit debugger rake
-rbenv install 1.9.3-p448 && rbenv global 1.9.3-p448
+# rbenv install 1.9.3-p448 && rbenv global 1.9.3-p448
 
 echo '[ -d $HOME/.rbenv ] && eval "$(rbenv init -)"' >> "$HOME/.profile"
 curl -o "$HOME/.irbrc" -ksL http://raw.github.com/henry4j/-/master/paste/.irbrc
