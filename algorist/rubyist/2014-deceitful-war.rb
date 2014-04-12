@@ -16,7 +16,7 @@ module CodeJam
   def self.solve(x, n, k)
     y = deceitful_war(n.dup, k.dup)
     z = war(n, k)
-    "Case #{x}: #{y} #{z}"
+    "Case ##{x}: #{y} #{z}"
   end
 
   def self.deceitful_war(n, k)
