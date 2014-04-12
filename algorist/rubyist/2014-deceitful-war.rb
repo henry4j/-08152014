@@ -1,4 +1,4 @@
-#!/usr/bin/env /usr/local/bin/ruby
+#!/usr/bin/env /usr/local/bin/jruby
 
 %w{test/unit open-uri}.each { |e| require e }
 
@@ -39,9 +39,7 @@ module CodeJam
     until n.empty?
       a = n.shift
       b = k.bsearch { |x| x > a && x != -1 }
-      p b
       b = k[k.index { |x| x != 0 }] unless b
-      p b
       k[h[b]] = 0
       w += 1 if a > b
     end
