@@ -28,11 +28,11 @@ module CodeJam
   end
 end
 
-#class TestCases < Test::Unit::TestCase
-#  def test_main
-#    test_case_uri = 'https://raw.github.com/henry4j/-/master/algorist/rubyist/bullseye-testcases/A-small-attempt0.in'
-#    open(test_case_uri) { |io| CodeJam.main(io) }
-#  end
-#end
+class TestCases < Test::Unit::TestCase
+  def test_main
+    test_case_uri = 'https://raw.github.com/henry4j/-/master/algorist/rubyist/bullseye-testcases/A-small-attempt0.in'
+    open(test_case_uri) { |io| CodeJam.main(io) }
+  end
+end
 
 CodeJam.main(STDIN)

@@ -1,3 +1,47 @@
+#!/usr/bin/env /usr/local/bin/ruby
+
+%w{test/unit open-uri}.each { |e| require e }
+
+module CodeJam
+  def self.main(io)
+    cases = 1.upto(io.readline.to_i).map do |tc|
+      io.readline
+      n, k = 2.times.map { io.readline.chomp.split.map { |e| e.to_f }.sort }
+      [tc, n, k]
+    end
+    cases.each { |e| puts solve(*e) }
+  end
+
+  def self.solve(x, n, k)
+    y = deceitful_war(n, k)
+    z = war(n, k)
+    "Case #{x}: #{y} #{z}"
+  end
+
+  def self.deceitful_war(n, k)
+    y = 0
+    until n.empty?
+      a = n.shift
+      b = k.pop
+      y += 1 if a > b
+    end
+    y
+  end
+
+  def self.war(n, k)
+    y = 0
+    -1
+  end
+end
+
+class TestCases < Test::Unit::TestCase
+  def test_main
+    test_case_uri = 'https://raw.githubusercontent.com/henry4j/-/master/algorist/rubyist/deceitful-war-testcases/small.in'
+    open(test_case_uri) { |io| CodeJam.main(io) }
+  end
+end
+
+=begin
 
 Problem
 
@@ -79,3 +123,5 @@ Case #1: 0 0
 Case #2: 1 0
 Case #3: 2 1
 Case #4: 8 4
+
+=end
