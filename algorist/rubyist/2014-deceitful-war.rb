@@ -1,6 +1,7 @@
 #!/usr/bin/env /usr/local/bin/jruby
 
-%w{test/unit open-uri}.each { |e| require e }
+# %w{test/unit open-uri}.each { |e| require e }
+%w{open-uri}.each { |e| require e }
 
 module CodeJam
   def self.main(io)
@@ -81,12 +82,14 @@ class Array
   end
 end
 
-class TestCases < Test::Unit::TestCase
-  def test_main
-    test_case_uri = 'https://raw.githubusercontent.com/henry4j/-/master/algorist/rubyist/deceitful-war-testcases/small.in'
-    open(test_case_uri) { |io| CodeJam.main(io) }
-  end
-end
+CodeJam.main(STDIN)
+
+#class TestCases < Test::Unit::TestCase
+#  def test_main
+#    test_case_uri = 'https://raw.githubusercontent.com/henry4j/-/master/algorist/rubyist/deceitful-war-testcases/small.in'
+#    open(test_case_uri) { |io| CodeJam.main(io) }
+#  end
+#end
 
 =begin
 
