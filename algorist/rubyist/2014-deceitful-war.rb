@@ -13,24 +13,73 @@ module CodeJam
   end
 
   def self.solve(x, n, k)
-    y = deceitful_war(n, k)
+    y = deceitful_war(n.dup, k.dup)
     z = war(n, k)
     "Case #{x}: #{y} #{z}"
   end
 
   def self.deceitful_war(n, k)
-    y = 0
+    w = 0
     until n.empty?
-      a = n.shift
-      b = k.pop
-      y += 1 if a > b
+      if n[-1] < k[-1]
+        a = n.shift
+        b = k.pop
+      else
+        a = n.pop
+        b = k.pop
+      end
+      w += 1 if a > b
     end
-    y
+    w
   end
 
   def self.war(n, k)
-    y = 0
-    -1
+    w = 0
+    h = k.each_with_index.reduce({}) { |h, (e, i)| h[e] = i; h }
+    until n.empty?
+      a = n.shift
+      b = k.bsearch { |x| x > a && x != -1 }
+      p b
+      b = k[k.index { |x| x != 0 }] unless b
+      p b
+      k[h[b]] = 0
+      w += 1 if a > b
+    end
+    w
+  end
+end
+
+class Array
+  def bsearch_range_by(&block)
+    if first = bsearch_first_by(&block)
+      first..bsearch_last_by(first...self.size, &block)
+    end
+  end
+
+  def bsearch_first_by(range = 0...self.size, &block)
+    if range.count > 1
+      mid = range.minmax.reduce(:+) / 2
+      case block.call(self[mid])
+      when -1 then bsearch_first_by(range.min...mid, &block)
+      when 1 then bsearch_first_by(mid+1..range.max, &block)
+      else bsearch_first_by(range.min..mid, &block)
+      end
+    else
+      range.min if 0 == block.call(self[range.min])
+    end
+  end
+
+  def bsearch_last_by(range = 0...self.size, &block)
+    if range.count > 1
+      mid = (1 + range.minmax.reduce(:+)) / 2
+      case block.call(self[mid])
+      when -1 then bsearch_last_by(range.min...mid, &block)
+      when 1 then bsearch_last_by(mid+1..range.max, &block)
+      else bsearch_last_by(mid..range.max, &block)
+      end
+    else
+      range.min if 0 == block.call(self[range.min])
+    end
   end
 end
 
