@@ -1,4 +1,5 @@
-Reference:
+Reference
+* http://ruby-doc.org/stdlib-2.0.0/libdoc/debug/rdoc/DEBUGGER__.html
 * http://benoithamelin.tumblr.com/ruby1line
 * http://zenspider.com/Languages/Ruby/QuickRef.html#pre-defined-variables
 * https://gist.github.com/KL-7/1590797
