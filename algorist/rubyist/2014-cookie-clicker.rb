@@ -1,7 +1,6 @@
 #!/usr/bin/env /usr/local/bin/jruby
 
-# %w{test/unit open-uri}.each { |e| require e }
-%w{open-uri}.each { |e| require e }
+%w{test/unit}.each { |e| require e }
 
 module CodeJam
   def self.main(io)
@@ -13,21 +12,22 @@ module CodeJam
   end
 
   def self.solve(tc, c, f, x)
-    max = x/2
-    map = lambda do |e, g|
-      a = x/g
-      if e + a > max
-        max
-      elsif a < c/g
-        e + a
-      else
-        b = map.call(e + c/g, g+f)
-        [e + a, b].min
-      end
+    e = 0.0
+    g = 2.0
+    m = x/g
+    while c/g > 1e-6
+      m = e + x/g if e + x/g < m
+      e += c/g
+      g += f
     end
-    s = map.call(0, 2.0)
-    "Case ##{tc}: #{s}"
+    sprintf("Case #%d: %.7f", tc, m)
   end
 end
 
-CodeJam.main(STDIN)
+class TestCases < Test::Unit::TestCase
+  def test_main
+    system 'curl -o /tmp/small.in -kL https://raw.githubusercontent.com/henry4j/-/master/algorist/rubyist/cookie-clicker-testcases/small.in' unless File.exists? '/tmp/small.in'
+    test_case_uri = '/tmp/small.in'
+    open(test_case_uri) { |io| CodeJam.main(io) }
+  end
+end
