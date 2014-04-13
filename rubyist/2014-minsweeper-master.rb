@@ -6,14 +6,14 @@ module CodeJam
       r, c, m = io.readline.chomp.split.map { |e| e.to_i }
       [tc, r, c, m]
     end
-    cases.each { |e| print solve(*e) }
+    cases.each { |e| puts solve(*e) }
   end
 
   def self.solve(tc, r, c, m)
     g = draw([r, c].min, [r, c].max, m)
     g = g.transpose if g && r > c
     s = g ? g.map { |e| e.join('') }.join("\n") : "Impossible"
-    sprintf('Case #%d (%d x %d of %d):\n%s', tc, r, c, m, s)
+    sprintf("Case #%d (%d x %d of %d):\n%s", tc, r, c, m, s)
   end
 
   def self.draw(r, c, m)
@@ -51,8 +51,8 @@ if ENV['DBGP_RUBY_PORT']
 
   class TestCases < Test::Unit::TestCase
     def test_main
+      dst = 'minesweeper.in'
       src = 'https://raw.github.com/henry4j/-/master/rubyist/minesweeper.in'
-      dst = '/tmp/minesweeper.in'
       system 'curl -o %s -kL %s' % [dst, src] unless File.exists?(dst)
       open(dst) { |io| CodeJam.main(io) }
     end
