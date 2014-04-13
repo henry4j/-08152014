@@ -18,30 +18,13 @@ module CodeJam
 
   def self.draw(r, c, m)
     n = r * c - m
-    case
-    when m == 0 || n == 1
-      g = Array.new(r) { Array.new(c, n == 1 ? '*' : '.') }
-      g[0][0] = 'c'
+    if r == 1 || n >= 4 && n != 5 && n != 7
+      g = Array.new(r) { Array.new(c, '*') }
+      r.times { |j| (n/r).times { |i| g[j][i] = '.' } }
+      (n%r).times { |j| g[j][n/r] = '.' }
+      g[r-1][n/r-1], g[1][n/r] = '*', '.' if n%r == 1
+      g[0][0] = 'c' if n > 0
       g
-    when r == 1 || n >= 4
-      case
-      when m % r == 0
-        g = Array.new(r) { Array.new(c, '.') }
-        m, n = m/r, n/r
-        r.times { |j| (c-m).upto(c-1) { |i| g[j][i] = '*' } }
-        g[0][0] = 'c' if n > 0
-        g
-      when r != 2 && n != 5 && n != 7
-        g = Array.new(r) { Array.new(c, '*') }
-        r.times { |j| (n/r).times { |i| g[j][i] = '.' } }
-        (n%r).times { |j| g[j][n/r] = '.' }
-        if n%r == 1
-          g[r-1][n/r-1] = '*'
-          g[1][n/r] = '.'
-        end
-        g[0][0] = 'c'
-        g
-      end
     end
   end
 end
