@@ -17,7 +17,6 @@ module CodeJam
   end
 
   def self.draw(r, c, m)
-    g = Array.new(r) { Array.new(c) }
     n = r * c - m
     case
     when m == 0 || n == 1
@@ -29,16 +28,25 @@ module CodeJam
       when m % r == 0
         g = Array.new(r) { Array.new('.') }
         m, n = m/r, n/r
-        r.times { |k| (c-m).upto(c-1) { |i| g[k][i] = '*' } }
+        r.times { |j| (c-m).upto(c-1) { |i| g[j][i] = '*' } }
         g[0][0] = 'c'
         g
-      when r != 2
-        
+      when r != 2 && m != 5 && m != 7
+        g = Array.new(r) { Array.new('*') }
+        r.times { |j| (n/r).times { |i| g[j][i] = '.' } }
+        (n%r).times { |j| g[j][n/r] = '.' }
+        if n%r == 1
+          g[r-1][n/r-1] = '*'
+          g[1][n/r] = '.'
+        end
+        g[0][0] = 'c'
+        g
       end
+    end
   end
 end
 
-puts CodeJam.solve(0, 7, 2, 4)
+puts CodeJam.solve(0, 8, 3, 13) # tc, r, c, m
 #if ENV['DBGP_RUBY_PORT']
 #  require 'test/unit'
 #
