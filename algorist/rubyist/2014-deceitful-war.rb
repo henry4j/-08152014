@@ -13,7 +13,7 @@ module CodeJam
     cases.each { |e| puts solve(*e) }
   end
 
-  def self.solve(x, n, k)
+  def self.solve(tc, n, k)
     y = deceitful_war(n.dup, k.dup)
     z = war(n, k)
     "Case ##{x}: #{y} #{z}"
@@ -45,40 +45,6 @@ module CodeJam
       w += 1 if a > b
     end
     w
-  end
-end
-
-class Array
-  def bsearch_range_by(&block)
-    if first = bsearch_first_by(&block)
-      first..bsearch_last_by(first...self.size, &block)
-    end
-  end
-
-  def bsearch_first_by(range = 0...self.size, &block)
-    if range.count > 1
-      mid = range.minmax.reduce(:+) / 2
-      case block.call(self[mid])
-      when -1 then bsearch_first_by(range.min...mid, &block)
-      when 1 then bsearch_first_by(mid+1..range.max, &block)
-      else bsearch_first_by(range.min..mid, &block)
-      end
-    else
-      range.min if 0 == block.call(self[range.min])
-    end
-  end
-
-  def bsearch_last_by(range = 0...self.size, &block)
-    if range.count > 1
-      mid = (1 + range.minmax.reduce(:+)) / 2
-      case block.call(self[mid])
-      when -1 then bsearch_last_by(range.min...mid, &block)
-      when 1 then bsearch_last_by(mid+1..range.max, &block)
-      else bsearch_last_by(mid..range.max, &block)
-      end
-    else
-      range.min if 0 == block.call(self[range.min])
-    end
   end
 end
 
