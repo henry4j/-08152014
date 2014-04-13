@@ -27,9 +27,10 @@ if ENV['DBGP_RUBY_PORT']
 
   class TestCases < Test::Unit::TestCase
     def test_main
-      system 'curl -o /tmp/small.in -kL https://raw.github.com/henry4j/-/master/algorist/rubyist/cookie-clicker-testcases/small.in' unless File.exists? '/tmp/small.in'
-      test_case_uri = '/tmp/small.in'
-      open(test_case_uri) { |io| CodeJam.main(io) }
+      src = 'https://raw.github.com/henry4j/-/master/algorist/rubyist/cookie-clicker-testcases/small.in'
+      dst = '/tmp/small.in'
+      system 'curl -o %s -kL %s' % [dst, src] unless File.exists?(dst)
+      open(dst) { |io| CodeJam.main(io) }
     end
   end
 else
