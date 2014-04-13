@@ -1,0 +1,118 @@
+Case #1 (1 x 1 of 0):
+c
+Case #2 (1 x 1 of 1):
+*
+Case #3 (1 x 2 of 0):
+c.
+Case #4 (1 x 2 of 1):
+c*
+Case #5 (1 x 2 of 2):
+**
+Case #6 (1 x 3 of 0):
+c..
+Case #7 (1 x 3 of 1):
+c.*
+Case #8 (1 x 3 of 2):
+c**
+Case #9 (1 x 3 of 3):
+***
+Case #10 (2 x 2 of 0):
+c.
+..
+Case #11 (2 x 2 of 1):
+Impossible
+Case #12 (2 x 2 of 2):
+Impossible
+Case #13 (2 x 3 of 0):
+c..
+...
+Case #14 (2 x 3 of 1):
+Impossible
+Case #15 (2 x 3 of 2):
+c.*
+..*
+Case #16 (2 x 3 of 3):
+Impossible
+Case #17 (2 x 4 of 0):
+c...
+....
+Case #18 (2 x 4 of 1):
+Impossible
+Case #19 (2 x 4 of 2):
+c..*
+...*
+Case #20 (2 x 4 of 3):
+Impossible
+Case #21 (2 x 4 of 4):
+c.**
+..**
+Case #22 (2 x 4 of 5):
+Impossible
+Case #23 (3 x 4 of 0):
+c...
+....
+....
+Case #24 (3 x 4 of 1):
+c...
+....
+...*
+Case #25 (3 x 4 of 2):
+c...
+....
+..**
+Case #26 (3 x 4 of 3):
+c..*
+...*
+...*
+Case #27 (3 x 4 of 4):
+c..*
+...*
+..**
+Case #28 (3 x 4 of 5):
+Impossible
+Case #29 (3 x 4 of 6):
+c.**
+..**
+..**
+Case #30 (3 x 4 of 7):
+Impossible
+Case #31 (4 x 5 of 0):
+c....
+.....
+.....
+.....
+Case #32 (4 x 5 of 1):
+c....
+.....
+.....
+....*
+Case #33 (4 x 5 of 2):
+c....
+.....
+....*
+....*
+Case #34 (4 x 5 of 3):
+c....
+.....
+....*
+...**
+Case #35 (4 x 5 of 4):
+c...*
+....*
+....*
+....*
+Case #36 (4 x 5 of 5):
+c...*
+....*
+....*
+...**
+Case #37 (4 x 5 of 6):
+c...*
+....*
+...**
+...**
+Case #38 (4 x 5 of 7):
+c...*
+....*
+...**
+..***
