@@ -13,13 +13,13 @@ module CodeJam
 #  end
 
   def self.solve(tc, c, f, x)
-    aa = x/2 # 50
+    max = x/2 # 50
     map = lambda do |e, g|
       a = x/g
-      if a < c/g
+      if e + c/g > max
+        max
+      elsif a < c/g
         e + a
-      elsif e + c/g > aa
-        aa
       else
         b = map.call(e + c/g, g+f)
         [e + a, b].min
@@ -34,7 +34,7 @@ end
 
 class TestCases < Test::Unit::TestCase
   def test_main
-    CodeJam.solve(2, 30.0, 2.0, 100.0)
+    CodeJam.solve(2, 500.0, 4.0, 2000.0)
     # test_case_uri = 'https://raw.githubusercontent.com/henry4j/-/master/algorist/rubyist/minesweeper-testcases/small.in'
     # open(test_case_uri) { |io| CodeJam.solve(2, 30.0, 2.0, 100.0) }
   end
