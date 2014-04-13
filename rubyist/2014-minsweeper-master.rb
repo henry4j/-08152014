@@ -18,38 +18,27 @@ module CodeJam
 
   def self.draw(r, c, m)
     g = Array.new(r) { Array.new(c) }
-    s = case
-    when r == 1
-      n = r * c - m
-      (c-m).upto(c-1) { |i| g[0][i] = '*' }
-      1.upto(n-1) { |i| g[0][i] = '.'  }
+    n = r * c - m
+    case
+    when m == 0 || n == 1
+      g = Array.new(r) { Array.new(c, n == 1 ? '*' : '.') }
       g[0][0] = 'c'
       g
-    else
-      if m > r * c - 4
-        s = "Impossible\n"
-      else
-        s = "c."
-        z = r * c - m - 4
-        r.times do |k|
-          s += ".." if k == 1
-          if c - 2 > z
-            z.times { s += "." }
-            z = 0
-            (c - 2 - z).times { s += "*" }
-          else
-            (c - 2).times { s += "." }
-            z -= c - 2
-          end
-          s += "\n"
-        end
-        s
+    when r == 1 || n >= 4
+      case
+      when m % r == 0
+        g = Array.new(r) { Array.new('.') }
+        m, n = m/r, n/r
+        r.times { |k| (c-m).upto(c-1) { |i| g[k][i] = '*' } }
+        g[0][0] = 'c'
+        g
+      when r != 2
+        
       end
-    end
   end
 end
 
-puts CodeJam.solve(0, 2, 1, 1)
+puts CodeJam.solve(0, 7, 2, 4)
 #if ENV['DBGP_RUBY_PORT']
 #  require 'test/unit'
 #
