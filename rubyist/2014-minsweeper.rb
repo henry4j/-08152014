@@ -10,13 +10,13 @@ module CodeJam
   end
 
   def self.solve(tc, r, c, m)
-    g = draw([r, c].min, [r, c].max, m)
+    g = mine_field([r, c].min, [r, c].max, m)
     g = g.transpose if g && r > c
     s = g ? g.map { |e| e.join('') }.join("\n") : "Impossible"
     sprintf("Case #%d (%d x %d of %d):\n%s", tc, r, c, m, s)
   end
 
-  def self.draw(r, c, m)
+  def self.mine_field(r, c, m)
     n = r * c - m
     if r == 1 || n >= 4 && n != 5 && n != 7
       g = Array.new(r) { Array.new(c, '*') }
