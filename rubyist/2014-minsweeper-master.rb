@@ -12,30 +12,19 @@ module CodeJam
   def self.solve(tc, r, c, m)
     g = draw([r, c].min, [r, c].max, m)
     g = g.transpose if r > c
-    s = g.map { |e| e.join('') + "\n" }
+    s = g.map { |e| e.join('') }.join("\n")
     "Case ##{tc}:\n#{s}"
   end
 
-  def self.draw(tc, r, c, m)
+  def self.draw(r, c, m)
+    g = Array.new(r) { Array.new(c) }
     s = case
     when r == 1
-      if m > c - 2
-        s = "Impossible\n"
-      else
-        s = "c"
-        (r - m - 1).times { s += "." }
-        m.times { s += "*" }
-        s += "\n"
-      end
-    when c == 1
-      if m > r - 2 
-        s = "Impossible\n"
-      else
-        s = "c\n"
-        (r - m - 1).times { s += ".\n" }
-        m.times { s += "*\n" }
-        s
-      end
+      n = r * c - m
+      (c-m).upto(c-1) { |i| g[0][i] = '*' }
+      1.upto(n-1) { |i| g[0][i] = '.'  }
+      g[0][0] = 'c'
+      g
     else
       if m > r * c - 4
         s = "Impossible\n"
@@ -57,21 +46,21 @@ module CodeJam
         s
       end
     end
-    "Case ##{tc}:\n" + s
   end
 end
 
-if ENV['DBGP_RUBY_PORT']
-  require 'test/unit'
-
-  class TestCases < Test::Unit::TestCase
-    def test_main
-      src = 'https://raw.github.com/henry4j/-/master/algorist/rubyist/minesweeper.in'
-      dst = '/tmp/minesweeper.in'
-      system 'curl -o %s -kL %s' % [dst, src] unless File.exists?(dst)
-      open(dst) { |io| CodeJam.main(io) }
-    end
-  end
-else
-  CodeJam.main(ARGF)
-end
+puts CodeJam.solve(0, 2, 1, 1)
+#if ENV['DBGP_RUBY_PORT']
+#  require 'test/unit'
+#
+#  class TestCases < Test::Unit::TestCase
+#    def test_main
+#      src = 'https://raw.github.com/henry4j/-/master/rubyist/minesweeper.in'
+#      dst = '/tmp/minesweeper.in'
+#      system 'curl -o %s -kL %s' % [dst, src] unless File.exists?(dst)
+#      open(dst) { |io| CodeJam.main(io) }
+#    end
+#  end
+#else
+#  CodeJam.main(ARGF)
+#end
