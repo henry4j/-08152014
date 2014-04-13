@@ -13,7 +13,7 @@ module CodeJam
     g = mine_field([r, c].min, [r, c].max, m)
     g = g.transpose if g && r > c
     s = g ? g.map { |e| e.join('') }.join("\n") : "Impossible"
-    sprintf("Case #%d (%d x %d of %d):\n%s", tc, r, c, m, s)
+    sprintf("Case #%d (%d x %d of %d mines):\n%s", tc, r, c, m, s)
   end
 
   def self.mine_field(r, c, m)
