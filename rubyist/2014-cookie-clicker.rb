@@ -10,15 +10,15 @@ module CodeJam
   end
 
   def self.solve(tc, c, f, x)
-    e = 0.0
+    e, m = 0.0, 1e6
     g = 2.0
-    m = Integer::MAX
-    while c/g > 1e-6 && g < x
-      m = e + x/g if e + x/g < m
+    begin
+      m = e + x/g
       e += c/g
       g += f
-    end
-    sprintf("Case #%d: %.7f", tc, m)
+      d = m - (e + x/g)
+    end until d < 1e-6
+    sprintf('Case #%d: %.7f', tc, m)
   end
 end
 
