@@ -12,7 +12,7 @@ module CodeJam
   def self.solve(tc, c, f, x)
     e = 0.0
     g = 2.0
-    m = x/g
+    m = Integer::MAX
     while c/g > 1e-6 && g < x
       m = e + x/g if e + x/g < m
       e += c/g
