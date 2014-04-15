@@ -1,4 +1,3 @@
-* http://dinasource.com/site/python-vs-ruby-what-to-choose-for-your-next-project/
 * http://www.diveintopython3.net/porting-code-to-python-3-with-2to3.html
 * http://docs.python-guide.org/en/latest/writing/style/
 * http://ochronus.com/a-rubyists-confessions-on-python/
