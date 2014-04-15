@@ -31,6 +31,10 @@ fib(3)
 ```
 
 ```python
+sorted_items = sorted(items, key=lambda item: item['width'])
+```
+
+```python
 ' '.join([word.capitalize() for word in reversed(sentence.split())])
 ```
 
