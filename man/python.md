@@ -1,6 +1,7 @@
 ##### Python Tricks
 
 ```python
+# def fib(n); memo[n] ||= fib(n-1, memo) + fib(n-2, memo); end
 fib = lambda n, memo={0:1, 1:1}: n >= 0 and (memo.get(n) or memo.setdefault(n, fib(n-1, memo) + fib(n-2, memo))) or None
 fib(-1) == None
 
