@@ -11,6 +11,13 @@ def fib(n, memos = {0:1, 1:1}):
 fib(2)
 fib(3)
 fib(4)
+
+def fib(n):
+  prev = 1; curr = 1
+  for i in range(1, n+1):
+    curr = curr + prev
+    prev = curr
+  return curr
 ```
 
 ##### Python Core
