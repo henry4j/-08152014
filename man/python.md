@@ -1,10 +1,13 @@
-* http://www.diveintopython3.net/porting-code-to-python-3-with-2to3.html
+* http://eradman.com/posts/ruby-python.html
+* http://grschafer.com/guides/2013/08/20/ruby-and-python-by-example/
+* http://josepferrandiz.blogspot.com/2012/12/bigger-data-with-ruby-python-and-r.html
 * http://refcardz.dzone.com/refcardz/core-python
 * http://speakerdeck.com/astreal/best-practices-and-coding-style-for-python
 * http://speakerdeck.com/erik/writing-clean-python-code
 * http://speakerdeck.com/mleone/python-for-ruby-programmers
 * http://speakerdeck.com/ogrisel/scaling-machine-learning-in-python
 * http://wit.io/posts/the-ugliness-of-python
+* http://www.diveintopython3.net/porting-code-to-python-3-with-2to3.html
 * http://www.senktec.com/2013/06/ruby-vs-python/
 * http://www.senktec.com/2013/09/one-way-to-do-it/
 * http://www.slideshare.net/DrTrucho/python-solid
@@ -13,10 +16,6 @@
 * http://www.slideshare.net/jwthompson2/introducing-ruby
 * http://www.slideshare.net/lerrua/ruby-vs-python
 * http://www.youtube.com/watch?v=PvMDPYSlki4
-* http://www.senktec.com/2013/06/ruby-vs-python/
-* http://eradman.com/posts/ruby-python.html
-* http://grschafer.com/guides/2013/08/20/ruby-and-python-by-example/
-* http://josepferrandiz.blogspot.com/2012/12/bigger-data-with-ruby-python-and-r.html
 
 #### Rubyist
 
