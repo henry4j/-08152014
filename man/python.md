@@ -18,6 +18,10 @@ def fib(n):
     curr = curr + prev
     prev = curr
   return curr
+fib(0)
+fib(1)
+fib(2)
+fib(3)
 ```
 
 ##### Python Core
