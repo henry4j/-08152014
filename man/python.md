@@ -30,6 +30,10 @@ fib(3)
 [i for i in [i + 1 for i in a] if i % 3 == 0] # map and select
 ```
 
+```python
+' '.join([word.capitalize() for word in reversed(sentence.split())])
+```
+
 ##### Python Core
 
 * http://eradman.com/posts/ruby-python.html
