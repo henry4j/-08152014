@@ -7,7 +7,7 @@ fib(1)
 fib(2)
 
 def fib(n, memos = {0:1, 1:1}):
-  return memos.get(n) or memos.set(n, fib(n - 1) + fib(n - 2) or memos[n]
+  return memos.get(n) or memos.set(n, fib(n - 1) + fib(n - 2)) or memos[n]
 ```
 
 ##### Python Core
