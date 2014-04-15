@@ -1,3 +1,12 @@
+##### Python Tricks
+
+```python
+fib = lambda n: n > 1 and fib(n-1) + fib(n-2) or 1
+fib(0)
+fib(1)
+fib(2)
+```
+
 ##### Python Core
 
 * http://eradman.com/posts/ruby-python.html
