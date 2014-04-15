@@ -48,6 +48,12 @@ list(map(capitalize, letters))
 list(map(str.capitalize, ['a', 'b', 'c']))
 ```
 
+```python
+s = 'string-with-palindromes-like-abbalabba'
+l = len(s)
+[s[x:y] for x in range(l) for y in range(x,l+1) if p(s[x:y])] 
+```
+
 ##### Python Core
 
 * http://eradman.com/posts/ruby-python.html
