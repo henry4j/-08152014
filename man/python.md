@@ -2,8 +2,6 @@
 * http://refcardz.dzone.com/refcardz/core-python
 * http://speakerdeck.com/astreal/best-practices-and-coding-style-for-python
 * http://speakerdeck.com/erik/writing-clean-python-code
-* http://speakerdeck.com/leroy/ruby-vs-python-1
-* http://speakerdeck.com/luikore/ruby-2-dot-1-walk-thru-title-bait
 * http://speakerdeck.com/mleone/python-for-ruby-programmers
 * http://speakerdeck.com/ogrisel/scaling-machine-learning-in-python
 * http://wit.io/posts/the-ugliness-of-python
