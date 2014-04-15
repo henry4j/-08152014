@@ -48,7 +48,7 @@ sorted_items = sorted(items, key=lambda item: item['width'])
 * http://speakerdeck.com/mleone/python-for-ruby-programmers
 * http://wit.io/posts/the-ugliness-of-python
 * http://www.diveintopython3.net/porting-code-to-python-3-with-2to3.html
-* http://www.senktec.com/2013/06/ruby-vs-python/
+* [Ruby vs Python](http://www.senktec.com/2013/06/ruby-vs-python/)
 * [One way to do it? (Ruby vs Python)](http://www.senktec.com/2013/09/one-way-to-do-it/)
 * http://www.slideshare.net/DrTrucho/python-solid
 * http://www.youtube.com/watch?v=PvMDPYSlki4
