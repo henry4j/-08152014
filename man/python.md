@@ -38,6 +38,14 @@ sorted_items = sorted(items, key=lambda item: item['width'])
 ' '.join([word.capitalize() for word in reversed(sentence.split())])
 ```
 
+```python
+letters = ['a', 'b', 'c']
+[a.capitalize() for a in letters]
+
+capitalize = lambda x: x.capitalize()
+list(map(capitalize, letters))
+```
+
 ##### Python Core
 
 * http://eradman.com/posts/ruby-python.html
