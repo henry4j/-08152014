@@ -24,6 +24,12 @@ fib(2)
 fib(3)
 ```
 
+```python
+# list comprehension
+[i + 1 for i in a if i % 3 == 0] # select and map
+[i for i in [i + 1 for i in a] if i % 3 == 0] # map and select
+```
+
 ##### Python Core
 
 * http://eradman.com/posts/ruby-python.html
