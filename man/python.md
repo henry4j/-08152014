@@ -1,5 +1,4 @@
 * http://www.diveintopython3.net/porting-code-to-python-3-with-2to3.html
-* http://docs.python-guide.org/en/latest/writing/style/
 * http://refcardz.dzone.com/refcardz/core-python
 * http://speakerdeck.com/astreal/best-practices-and-coding-style-for-python
 * http://speakerdeck.com/erik/writing-clean-python-code
