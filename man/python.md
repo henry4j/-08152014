@@ -59,8 +59,8 @@ l = len(s)
 * http://eradman.com/posts/ruby-python.html
 * http://grschafer.com/guides/2013/08/20/ruby-and-python-by-example/
 * http://refcardz.dzone.com/refcardz/core-python
-* http://speakerdeck.com/astreal/best-practices-and-coding-style-for-python
-* http://speakerdeck.com/mleone/python-for-ruby-programmers
+* [Code like Pythonista](http://speakerdeck.com/astreal/best-practices-and-coding-style-for-python)
+* [Python for Ruby Programmer](http://speakerdeck.com/mleone/python-for-ruby-programmers)
 * [The 'ugliness' of Python](http://wit.io/posts/the-ugliness-of-python)
 * [Port to Python 3](http://www.diveintopython3.net/porting-code-to-python-3-with-2to3.html)
 * [Ruby vs Python](http://www.senktec.com/2013/06/ruby-vs-python/)
