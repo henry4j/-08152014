@@ -1,16 +1,11 @@
 ##### Python Tricks
 
 ```python
-fib = lambda n: n > 1 and fib(n-1) + fib(n-2) or 1
-fib(0)
-fib(1)
-fib(2)
+fib = lambda n, memo={0:1, 1:1}: n >= 0 and (memo.get(n) or memo.setdefault(n, fib(n-1, memo) + fib(n-2, memo))) or None
+fib(-1) == None
 
-def fib(n, memos = {0:1, 1:1}):
-  return memos.get(n) or memos.setdefault(n, fib(n - 1, memos) + fib(n - 2, memos))
-fib(2)
-fib(3)
-fib(4)
+fib = lambda n, memo={0:1, 1:1}: memo.get(n) or memo.setdefault(n, fib(n-1, memo) + fib(n-2, memo)) if n >= 0 else None
+fib(-1) == None
 
 def fib(n):
   prev = 1; curr = 1
