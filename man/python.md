@@ -44,6 +44,8 @@ letters = ['a', 'b', 'c']
 
 capitalize = lambda x: x.capitalize()
 list(map(capitalize, letters))
+
+list(map(str.capitalize, ['a', 'b', 'c']))
 ```
 
 ##### Python Core
