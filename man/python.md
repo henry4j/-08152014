@@ -14,7 +14,7 @@ fib(4)
 
 def fib(n):
   prev = 1; curr = 1
-  for i in range(2, n):
+  for i in range(1, n):
     curr = curr + prev
     prev = curr
   return curr
