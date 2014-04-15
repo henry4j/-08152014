@@ -1,7 +1,3 @@
-* http://batsov.com/articles/2013/09/03/a-couple-of-useful-extensions-to-rubys-enumerable-module/
-* http://batsov.com/articles/2013/09/26/the-elements-of-style-in-ruby-number-11-invoking-lambdas-slash-procs/
-* http://batsov.com/articles/2013/12/04/using-rubys-each-with-object/
-* http://batsov.com/articles/2014/02/17/the-elements-of-style-in-ruby-number-13-length-vs-size-vs-count/
 * http://dinasource.com/site/python-vs-ruby-what-to-choose-for-your-next-project/
 * http://www.diveintopython3.net/porting-code-to-python-3-with-2to3.html
 * http://docs.python-guide.org/en/latest/writing/style/
@@ -27,3 +23,9 @@
 * http://grschafer.com/guides/2013/08/20/ruby-and-python-by-example/
 * http://josepferrandiz.blogspot.com/2012/12/bigger-data-with-ruby-python-and-r.html
 
+#### Rubyist
+
+* http://batsov.com/articles/2013/09/03/a-couple-of-useful-extensions-to-rubys-enumerable-module/
+* http://batsov.com/articles/2013/09/26/the-elements-of-style-in-ruby-number-11-invoking-lambdas-slash-procs/
+* http://batsov.com/articles/2013/12/04/using-rubys-each-with-object/
+* http://batsov.com/articles/2014/02/17/the-elements-of-style-in-ruby-number-13-length-vs-size-vs-count/
