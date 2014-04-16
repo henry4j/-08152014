@@ -17,6 +17,12 @@ def fib(n):
   for i in range(n):
     a, b = b, a + b
   return a
+
+def fib():
+  a, b = 0, 1
+  while True:
+    yield a
+    a, b = b, a + b
 ```
 
 ```python
