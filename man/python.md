@@ -2,28 +2,21 @@
 
 ```python
 # In Ruby, def fib(n, memo={0=>1, 1=>1}) memo[n] ||= fib(n-1, memo) + fib(n-2, memo) if n >= 0 end
-fib = lambda n, memo={0:1, 1:1}: n >= 0 and (memo.get(n) or memo.setdefault(n, fib(n-1, memo) + fib(n-2, memo))) or None
+fib = lambda n, memo={0:0, 1:1}: n >= 0 and (memo.get(n) or memo.setdefault(n, fib(n-1, memo) + fib(n-2, memo))) or None
 fib(-1) == None
 
-fib = lambda n, memo={0:1, 1:1}: memo.get(n) or memo.setdefault(n, fib(n-1, memo) + fib(n-2, memo)) if n >= 0 else None
+fib = lambda n, memo={0:0, 1:1}: memo.get(n) or memo.setdefault(n, fib(n-1, memo) + fib(n-2, memo)) if n >= 0 else None
 fib(-1) == None
 
 @lru_cache(maxsize = None)
 def fib(n):
-  if n < 2:
-    return 1
-  return fib(n-1) + fib(n-2)
+  return fib(n-1) + fib(n-2) if > 1 else n
 
 def fib(n):
-  prev = 1; curr = 1
-  for i in range(1, n):
-    next = curr + prev
-    prev, curr = curr, next
-  return curr
-fib(0)
-fib(1)
-fib(2)
-fib(3)
+  a, b = 0, 1
+  for i in range(n):
+    a, b = b, a + b
+  return a
 ```
 
 ```python
