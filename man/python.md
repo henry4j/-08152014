@@ -4,8 +4,14 @@
 import urllib.request, urllib.parse, urllib.error
 print(urllib.request.urlopen('http://diveintopython3.org/').read())
 
-with open("poem.txt") as f:
-  for line in f:
+with urllib.request.urlopen('http://diveintopython3.org/') as io:
+  text = io.read()
+
+with urllib.urlopen(url) as io:
+  text = io.read()
+
+with open("/tmp/io.txt") as io:
+  for line in io:
     print(line)
 ```
 
