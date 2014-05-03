@@ -10,6 +10,7 @@
 #### Amazon S3
 
 * [GetObject using Java](http://docs.aws.amazon.com/AmazonS3/latest/dev/RetrievingObjectUsingJava.html)
+* [PutObject using Java](http://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjSingleOpJava.html)
 * [GetObject over SOAP](http://docs.aws.amazon.com/AmazonS3/latest/API/SOAPGetObject.html)
 * S3 Developer Guide http://awsdocs.s3.amazonaws.com/S3/latest/s3-dg.pdf
 
