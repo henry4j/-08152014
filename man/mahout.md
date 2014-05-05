@@ -19,7 +19,9 @@
 * `userId,itemId,value` # the value denotes the strength of the interaction, e.g. the rating given to the movie.
 
 ```java
-DataModel model = new FileDataModel(new File("/path/to/dataset.csv"));
-UserSimilarity similarity = new PearsonCorrelationSimilarity(model);
-UserNeighborhood neighborhood = new ThresholdUserNeighborhood(0.1, similarity, model);
+DataModel model = new FileDataModel(new File("/path/to/dataset.csv")); // loads user interactions.
+UserSimilarity sims = new PearsonCorrelationSimilarity(model); // computes correlation coeff.
+UserNeighborhood neighborhood = new ThresholdUserNeighborhood(0.1, sims, model); // defines which similar users to leverage.
+UserBasedRecommender recommender = new GenericUserBasedRecommender(model, neighborhood, sims);
+List recommendations = recommender.recommend(2, 3); // 3 recomendations for user 2.
 ```
