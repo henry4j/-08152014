@@ -9,7 +9,7 @@
   * RowSimilarityJob
 
 
-#### [Recommender](https://builds.apache.org/job/mahout-quality/javadoc/org/apache/mahout/cf/taste/recommender/Recommender.html)
+#### [Recommender](https://builds.apache.org/job/mahout-quality/javadoc/org/apache/mahout/cf/taste/recommender/Recommender.html) -- estimatePreference, recommend, setPreference, and removePreference, getDataModel.
 
 #### User-based Recs
 
