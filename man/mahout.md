@@ -1,12 +1,10 @@
 * https://mahout.apache.org/
 * https://mahout.apache.org/users/basics/algorithms.html
-  * Collaborative Filtering
-  * User-Based Collaborative Filtering - single machine
-  * Item-Based Collaborative Filtering - single machine / MapReduce
+* Collaborative Filtering
+  * User-Based Recs. - [single machine](https://mahout.apache.org/users/recommender/userbased-5-minutes.html)
+  * Item-Based Recs. - [single machine / MapReduce](https://mahout.apache.org/users/recommender/intro-itembased-hadoop.html)
   * Matrix Factorization with Alternating Least Squares - single machine / MapReduce
   * Matrix Factorization with Alternating Least Squares on Implicit Feedback- single machine / MapReduce
-  * Weighted Matrix Factorization, SVD++, Parallel SGD - single machine
-  * RowSimilarityJob
 
 
 #### Goodby MapReduce and Hello [Spark](http://spark.apache.org/)
