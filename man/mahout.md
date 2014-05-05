@@ -14,8 +14,7 @@
 * Mahout recommenders expect interations between user and items as input; a textfile, where each lines has an interaction.
 * the idea behind user-based recs. is to find users with similar tastes, and pick recs. from their items.
   * one popular method is to compute correlation coeff. between user interactions.
-* 
-* the following:
+* evaluation/metrics: A/B test, or a statistical offline, or a hold-out test (90% for training and 10% for testing). 
 * `userId,itemId,value` # the value denotes the strength of the interaction, e.g. the rating given to the movie.
 
 ```java
