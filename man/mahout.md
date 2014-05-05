@@ -9,6 +9,8 @@
   * RowSimilarityJob
 
 
+#### [Recommender](https://builds.apache.org/job/mahout-quality/javadoc/org/apache/mahout/cf/taste/recommender/Recommender.html)
+
 #### User-based Recs
 
 * Mahout recommenders expect interations between user and items as input; a textfile, where each lines has an interaction.
