@@ -17,3 +17,8 @@
 * 
 * the following:
 * `userId,itemId,value` # the value denotes the strength of the interaction, e.g. the rating given to the movie.
+
+```java
+DataModel model = new FileDataModel(new File("/path/to/dataset.csv"));
+UserSimilarity similarity = new PearsonCorrelationSimilarity(model);
+```
