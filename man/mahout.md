@@ -3,9 +3,7 @@
 * Collaborative Filtering
   * User-Based Recs. - [single machine](https://mahout.apache.org/users/recommender/userbased-5-minutes.html)
   * Item-Based Recs. - [single machine / MapReduce](https://mahout.apache.org/users/recommender/intro-itembased-hadoop.html)
-  * Matrix Factorization with Alternating Least Squares - single machine / MapReduce
-  * Matrix Factorization with Alternating Least Squares on Implicit Feedback- single machine / MapReduce
-
+  * Matrix Factorization with Alternating Least Squares - [single machine / MapReduce](https://mahout.apache.org/users/recommender/intro-als-hadoop.html)
 
 #### Goodby MapReduce and Hello [Spark](http://spark.apache.org/)
 
