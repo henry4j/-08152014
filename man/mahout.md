@@ -24,3 +24,11 @@ UserNeighborhood neighborhood = new ThresholdUserNeighborhood(0.1, sims, model);
 UserBasedRecommender recommender = new GenericUserBasedRecommender(model, neighborhood, sims);
 List recommendations = recommender.recommend(2, 3); // 3 recomendations for user 2.
 ```
+
+#### Item-based Recs
+
+* SIMILARITY_LOGLIKELIHOOD
+
+```bash
+mahout recommenditembased -s SIMILARITY_LOGLIKELIHOOD -i /path/to/input/file -o /path/to/desired/output --numRecommendations 25
+```
