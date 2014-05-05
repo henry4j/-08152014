@@ -7,7 +7,11 @@
 
 #### Goodby MapReduce and Hello [Spark](http://spark.apache.org/)
 
+
+
 #### [Recommender](https://builds.apache.org/job/mahout-quality/javadoc/org/apache/mahout/cf/taste/recommender/Recommender.html) -- <sub>estimatePreference, recommend, setPreference, and removePreference, getDataModel.</sub>
+
+#### ALR Recs -- matrix factorization algos.
 
 #### User-based Recs
 
