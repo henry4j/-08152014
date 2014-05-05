@@ -21,4 +21,5 @@
 ```java
 DataModel model = new FileDataModel(new File("/path/to/dataset.csv"));
 UserSimilarity similarity = new PearsonCorrelationSimilarity(model);
+UserNeighborhood neighborhood = new ThresholdUserNeighborhood(0.1, similarity, model);
 ```
