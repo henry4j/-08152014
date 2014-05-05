@@ -7,3 +7,13 @@
   * Matrix Factorization with Alternating Least Squares on Implicit Feedback- single machine / MapReduce
   * Weighted Matrix Factorization, SVD++, Parallel SGD - single machine
   * RowSimilarityJob
+
+
+#### User-based Recs
+
+* Mahout recommenders expect interations between user and items as input; a textfile, where each lines has an interaction.
+* the idea behind user-based recs. is to find users with similar tastes, and pick recs. from their items.
+  * one popular method is to compute correlation coeff. between user interactions.
+* 
+* the following:
+* `userId,itemId,value` # the value denotes the strength of the interaction, e.g. the rating given to the movie.
