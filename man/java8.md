@@ -21,7 +21,7 @@ echo | mvn archetype:generate \
   -DarchetypeArtifactId=maven-archetype-quickstart \
   -DarchetypeVersion=1.1 \
   -DgroupId=com.henry4j \
-  -DartifactId=recipes \
+  -DartifactId=streams \
   -Dversion=1.0-SNAPSHOT \
   -DpackageName=com.henry4j \
   -DinteractiveMode=false
