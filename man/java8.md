@@ -1,3 +1,8 @@
+
+* Java SDK http://www.oracle.com/technetwork/java/javase/downloads/
+
+***
+
 #### Java 8, Google Guava, and Lombok 
 
 http://technology.amis.nl/2013/10/05/java-8-collection-enhancements-leveraging-lambda-expressions-or-how-java-emulates-sql/
