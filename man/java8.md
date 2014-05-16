@@ -1,5 +1,7 @@
+#### Java 8
 
-* Java SDK http://www.oracle.com/technetwork/java/javase/downloads/
+* [Java SE downloads](http://www.oracle.com/technetwork/java/javase/downloads/) - JDK  - jdk-8u5-macosx-x64.dmg 
+* 
 
 ***
 
