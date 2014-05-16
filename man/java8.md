@@ -1,3 +1,10 @@
+#### Java 8
+
+* [Java SE downloads](http://www.oracle.com/technetwork/java/javase/downloads/) - JDK  - jdk-8u5-macosx-x64.dmg 
+* http://download.eclipse.org/eclipse/updates/4.3-P-builds/
+
+***
+
 #### Java 8, Google Guava, and Lombok 
 
 http://technology.amis.nl/2013/10/05/java-8-collection-enhancements-leveraging-lambda-expressions-or-how-java-emulates-sql/
@@ -21,7 +28,7 @@ echo | mvn archetype:generate \
   -DarchetypeArtifactId=maven-archetype-quickstart \
   -DarchetypeVersion=1.1 \
   -DgroupId=com.henry4j \
-  -DartifactId=recipes \
+  -DartifactId=streams \
   -Dversion=1.0-SNAPSHOT \
   -DpackageName=com.henry4j \
   -DinteractiveMode=false
