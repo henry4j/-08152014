@@ -1665,11 +1665,11 @@ class Graph
       begin end while (ud = q.poll) && distances[ud[0]] != ud[1]
       break if ud.nil?
       edges[u].each do |e|
-        via_u = distances[u] + e.y
-        if distances[y].nil? || distances[y] > via_u
-          distances[y] = via_u
-          parents[y] = u
-          q.offer([v, via_u])
+        via_u = distances[u] + e.w
+        if distances[e.y].nil? || distances[e.y] > via_u
+          distances[e.y] = via_u
+          parents[e.y] = u
+          q.offer([e.y, via_u])
         end
       end
     end
@@ -1685,12 +1685,12 @@ class Graph
     loop do
       begin end while (ud = q.poll) && distances[ud[0]] != ud[1]
       break if ud.nil?
-      edges[u].each do |v|
-        via_u = v.y
-        if distances[v].nil? || distances[v] > via_u
-          distances[v] = via_u
-          parents[v] = u
-          q.offer([v, via_u])
+      edges[u].each do |e|
+        via_u = e.w
+        if distances[e.y].nil? || distances[e.y] > via_u
+          distances[e.y] = via_u
+          parents[e.y] = u
+          q.offer([e.y, via_u])
         end
       end
     end

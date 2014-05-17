@@ -19,21 +19,31 @@ import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import lombok.experimental.Accessors;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.Ordering;
 import com.google.common.primitives.Ints;
 
-// http://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html
-// http://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html
-// http://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html
-// http://weblog.plexobject.com/?p=1701
-// http://www.journaldev.com/2389/java-8-features-for-developers-lambdas-functional-interface-stream-and-time-api
-// https://leanpub.com/whatsnewinjava8/read#leanpub-auto-nashorn
-// http://winterbe.com/posts/2014/03/16/java-8-tutorial/
-public class Streaming {
+/*
+http://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html
+http://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html
+http://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html
+http://docs.oracle.com/javase/8/docs/api/java/util/stream/IntStream.html
+http://docs.oracle.com/javase/8/docs/api/java/util/stream/Collectors.html
+http://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html
+
+http://www.journaldev.com/2389/java-8-features-for-developers-lambdas-functional-interface-stream-and-time-api
+http://www.journaldev.com/2774/java-8-stream-api-example-tutorial
+http://www.journaldev.com/2763/java-8-lambda-expressions-and-functional-interfaces-example-tutorial
+http://leanpub.com/whatsnewinjava8/read
+http://winterbe.com/posts/2014/03/16/java-8-tutorial/
+*/
+public class Jam {
     @Test
     public void test() {
         int[] ints = { 1, 2, 3, 4 };
@@ -49,7 +59,10 @@ public class Streaming {
         edges[1] = new Edge[] { Edge.of(0), Edge.of(2), Edge.of(3) };
         edges[2] = new Edge[] { Edge.of(0), Edge.of(1), Edge.of(3) };
         edges[3] = new Edge[] { Edge.of(0), Edge.of(1), Edge.of(2) };
-//        val paths = Graph.navigate(0, 3, edges);
+        List<int[]> paths = Graph.navigate(0, 3, edges);
+//        assert_equal [[0, 1, 2, 3], [0, 1, 3], [0, 2, 3], [0, 3]], paths
+//        assert_equal ["a→b→c→d", "a→b→d", "a→c→d", "a→d"], paths.map {|a| a.map { |e| ('a'[0] + e).chr }.join('→') }
+        assertThat(paths, equalTo(IsIterableContainingInAnyOrder));
     }
 
     @Test
@@ -76,18 +89,16 @@ public class Streaming {
     }
 
     public static class Graph {
-        public static void navigate(int v, int w, Edge[][] edges) {
-            List<Integer[]> paths = new ArrayList<>();
+        public static List<int[]> navigate(int v, int w, Edge[][] edges) {
+            List<int[]> paths = new ArrayList<>();
             boolean[] entered = new boolean[edges.length];
             Function<Stack<Integer>, Stream<Integer>> expandOut = a -> {
                 entered[a.peek()] = true;
-                Stream.of(edges[a.peek()]).filter(e -> !entered[e.y()]).map(e -> e.y()).iterator();
-
                 return Stream.of(edges[a.peek()]).filter(e -> !entered[e.y()]).map(e -> e.y());
             };
             Predicate<Stack<Integer>> reduceOff = a -> {
                 if (a.peek() == w) {
-                    paths.add(a.toArray(new Integer[0]));
+                    paths.add(Ints.toArray(a));
                     return true;
                 } else {
                     return false;
@@ -96,6 +107,7 @@ public class Streaming {
             Stack<Integer> candidate = new Stack<>();
             candidate.push(v);
             Search.backtrack(candidate, expandOut, reduceOff);
+            return paths;
         }
 
         public static boolean twoColorable(int v0, Edge[][] edges) {
