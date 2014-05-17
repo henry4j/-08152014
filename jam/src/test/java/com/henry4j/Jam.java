@@ -19,14 +19,12 @@ import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import lombok.experimental.Accessors;
 
-import org.hamcrest.CoreMatchers;
+import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Test;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Ordering;
 import com.google.common.primitives.Ints;
 
 /*
@@ -60,9 +58,11 @@ public class Jam {
         edges[2] = new Edge[] { Edge.of(0), Edge.of(1), Edge.of(3) };
         edges[3] = new Edge[] { Edge.of(0), Edge.of(1), Edge.of(2) };
         List<int[]> paths = Graph.navigate(0, 3, edges);
+        
 //        assert_equal [[0, 1, 2, 3], [0, 1, 3], [0, 2, 3], [0, 3]], paths
 //        assert_equal ["a→b→c→d", "a→b→d", "a→c→d", "a→d"], paths.map {|a| a.map { |e| ('a'[0] + e).chr }.join('→') }
-        assertThat(paths, equalTo(IsIterableContainingInAnyOrder.));
+//        assertThat(paths, equalTo(IsIterableContainingInAnyOrder.containsInAnyOrder(
+//                new int[] {0, 1, 2, 3}, new int[] {0, 1, 3})));
     }
 
     @Test
