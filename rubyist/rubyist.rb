@@ -1653,26 +1653,6 @@ class Graph
     paths
   end
 
-  def self.has_cycle?(edges, directed)
-    edges.each_index.any? do |v|
-      entered = []
-      exited = []
-      tree_edges = [] # keyed by children; also called parents map.
-      back_edges = [] # keyed by ancestors, or the other end-point.
-      enter = lambda { |v| entered[v] = true unless entered[v] }
-      exit = lambda { |v| exited[v] = true }
-      cross = lambda do |x, e|
-        if not entered[e.y]
-          tree_edges[e.y] = x 
-        elsif (!directed && tree_edges[x] != e.y) || (directed && !exited[x])
-          (back_edges[e.y] ||= []) << x # x = 1, e.y = 0
-        end
-      end
-      Graph.dfs(v, edges, enter, nil, cross)
-      !back_edges.empty?
-    end
-  end
-
   def self.dijkstra(u, edges)
     # http://en.wikipedia.org/wiki/Dijkstra's_algorithm#Pseudocode
     # http://www.codeproject.com/Questions/294680/Priority-Queue-Decrease-Key-function-used-in-Dijks
@@ -1717,104 +1697,115 @@ class Graph
     parents
   end
 
+  def self.has_cycle?(edges, directed)
+    edges.each_index.any? do |v|
+      entered = []
+      exited = []
+      tree_edges = [] # keyed by children; also called parents map.
+      back_edges = [] # keyed by ancestors, or the other end-point.
+      enter = lambda { |v| entered[v] = true if not entered[v] }
+      exit = lambda { |v| exited[v] = true }
+      cross = lambda do |x, e|
+        if not entered[e.y]
+          tree_edges[e.y] = x 
+        elsif (!directed && tree_edges[x] != e.y) || (directed && !exited[x])
+          (back_edges[e.y] ||= []) << x # x = 1, e.y = 0
+        end
+      end
+      Graph.DFS(v, edges, enter, nil, cross)
+      !back_edges.empty?
+    end
+  end
+
   def self.topological_sort(edges)
     sort = []
     entered = []
     enter_v_iff = lambda { |v| entered[v] = true if not entered[v] }
     exit_v = lambda { |v| sort << v }
     edges.size.times do |v|
-      Graph.dfs(v, edges, enter_v_iff, exit_v) unless entered[v]
+      Graph.DFS(v, edges, enter_v_iff, exit_v) unless entered[v]
     end
     sort
   end
 
-  def self.find_all(source, edges)
+  def self.find_all(v, edges)
     all = {}
     entered = []
-    enter_v_iff = lambda do |v|
-      entered[v] = true if not entered[v]
-    end
-  
-    cross_e = lambda do |x, e|
-      all[e.y] = true
-    end
-  
-    Graph.dfs(source, edges, enter_v_iff, nil, cross_e)
+    enter_v_iff = lambda { |v| entered[v] = true if not entered[v] }
+    cross_e = lambda { |e, x| all[e.y] = true }
+    Graph.DFS(v, edges, enter_v_iff, nil, cross_e)
     all.keys
   end
 
   def self.color_vertex(graph)
     answers = []
     expand_out = lambda do |a|
-      v = a.size
-      (0..a.max).select { |c|
+      v = a.size # vertex v
+      c = 0..a.max # existing colors
+      c = c.select { |c|
         (0...v).all? { |w| (0 == graph[v][w]) or (c != a[w]) }
-      } + [a.max+1]
+      } # existing legal colors
+      c + [a.max+1] # a new color.
     end
-
     reduce_off = lambda do |a|
       answers << [a.max+1, a.dup] if a.size == graph.size
     end
-
     Search.backtrack([0], expand_out, reduce_off)
     answers.min_by { |e| e[0] }
   end
 
+  def self.navigate(v, w, edges)
+    paths = []
+    entered = {}
+    expand_out = lambda do |a|
+      entered[a[-1]] = true
+      edges[a[-1]].select { |e| not entered[e.y] }.map { |e| e.y }
+    end
+    reduce_off = lambda do |a|
+      paths << a.dup if a[-1] == w
+    end
+    Search.backtrack([v], expand_out, reduce_off)
+    paths
+  end
+
   def self.two_colorable?(v, edges) # two-colorable? means is_bipartite?
     bipartite = true
-    entered = []
-    colors = []
+    entered = colors = nil
     enter_v_iff = lambda { |v| entered[v] = true if bipartite && !entered[v] }
-    cross_e = lambda do |x, e|
+    cross_e = lambda do |e, x|
       bipartite &&= colors[x] != colors[e.y]
       colors[e.y] = !colors[x] # inverts the color
     end
 
     edges.each_index do |v|
       if !entered[v]
+        entered, colors = [], []
         colors[v] = true
-        bfs(v, edges, enter_v_iff, nil, cross_e)
-        colors = []
+        BFS(v, edges, enter_v_iff, nil, cross_e)
       end
     end
     bipartite
   end
 
-  def self.navigate(v, w, edges)
-    paths = []
-    entered = {}
-    expand_out = lambda do |path|
-      entered[path[-1]] = true
-      edges[path[-1]].map { |e| e.y }.select { |y| not entered[y] }
-    end
-
-    reduce_off = lambda do |path|
-      paths << path.dup if path[-1] == w
-    end
-
-    Search.backtrack([v], expand_out, reduce_off)
-    paths
-  end
-
-  def self.dfs(v, edges, enter_v_iff = nil, exit_v = nil, cross_e = nil)
+  def self.DFS(v, edges, enter_v_iff = nil, exit_v = nil, cross_e = nil)
     if enter_v_iff.nil? || enter_v_iff.call(v)
       (edges[v] or []).each do |e|
-        cross_e.call(v, e) if cross_e
+        cross_e and cross_e.call(e, v)
         dfs(e.y, edges, enter_v_iff, exit_v, cross_e)
       end
-      exit_v.call(v) if exit_v
+      exit_v and exit_v.call(v) 
     end
   end
 
-  def self.bfs(v, edges, enter_v_iff = nil, exit_v = nil, cross_e = nil)
+  def self.BFS(v, edges, enter_v_iff = nil, exit_v = nil, cross_e = nil)
     q = []
-    q << v # enque, or offer
+    q.push(v) # offer
     until q.empty?
-      v = q.shift # deque, or poll
+      v = q.shift # poll
       if enter_v_iff.nil? || enter_v_iff.call(v)
         (edges[v] or []).each do |e|
-          cross_e and cross_e.call(v, e)
-          q << e.y
+          cross_e and cross_e.call(e, v)
+          q.push(e.y)
         end
         exit_v and exit_v.call(v)
       end

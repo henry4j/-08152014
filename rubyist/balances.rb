@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 %w{test/unit open-uri}.each { |e| require e }
 
 class Edge

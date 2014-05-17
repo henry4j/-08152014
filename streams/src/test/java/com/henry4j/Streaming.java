@@ -19,7 +19,6 @@ import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import lombok.experimental.Accessors;
 
 import org.junit.Test;
@@ -31,6 +30,9 @@ import com.google.common.primitives.Ints;
 // http://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html
 // http://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html
 // http://weblog.plexobject.com/?p=1701
+// http://www.journaldev.com/2389/java-8-features-for-developers-lambdas-functional-interface-stream-and-time-api
+// https://leanpub.com/whatsnewinjava8/read#leanpub-auto-nashorn
+// http://winterbe.com/posts/2014/03/16/java-8-tutorial/
 public class Streaming {
     @Test
     public void test() {
@@ -47,8 +49,7 @@ public class Streaming {
         edges[1] = new Edge[] { Edge.of(0), Edge.of(2), Edge.of(3) };
         edges[2] = new Edge[] { Edge.of(0), Edge.of(1), Edge.of(3) };
         edges[3] = new Edge[] { Edge.of(0), Edge.of(1), Edge.of(2) };
-        val paths = Graph.navigate(0, 3, edges);
-        
+//        val paths = Graph.navigate(0, 3, edges);
     }
 
     @Test
@@ -80,7 +81,9 @@ public class Streaming {
             boolean[] entered = new boolean[edges.length];
             Function<Stack<Integer>, Stream<Integer>> expandOut = a -> {
                 entered[a.peek()] = true;
-                return Arrays.stream(edges[a.peek()]).filter(e -> !entered[e.y()]).map(e -> e.y());
+                Stream.of(edges[a.peek()]).filter(e -> !entered[e.y()]).map(e -> e.y()).iterator();
+
+                return Stream.of(edges[a.peek()]).filter(e -> !entered[e.y()]).map(e -> e.y());
             };
             Predicate<Stack<Integer>> reduceOff = a -> {
                 if (a.peek() == w) {
@@ -123,7 +126,7 @@ public class Streaming {
 
         public static void dfs(int v0, Edge[][] edges, IntPredicate enter_v_iff, IntConsumer exit_v, ObjIntConsumer<Edge> cross_e) {
             if (null == enter_v_iff || enter_v_iff.test(v0)) {
-                Arrays.stream(edges[v0]).forEach(e -> {
+                Stream.of(edges[v0]).forEach(e -> {
                     if (cross_e != null) {
                         cross_e.accept(e, v0);
                     }
@@ -141,7 +144,7 @@ public class Streaming {
             while (!q.isEmpty()) {
                 final int v = q.poll();
                 if (enter_v_iff == null || enter_v_iff.test(v)) {
-                    Arrays.stream(edges[v]).forEach(e -> {
+                    Stream.of(edges[v]).forEach(e -> {
                         if (cross_e != null) {
                             cross_e.accept(e, v);
                         }
