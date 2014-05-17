@@ -2,6 +2,7 @@
 
 * [Java SE downloads](http://www.oracle.com/technetwork/java/javase/downloads/) - JDK  - jdk-8u5-macosx-x64.dmg 
 * http://download.eclipse.org/eclipse/updates/4.3-P-builds/
+* http://weblog.plexobject.com/?p=1701
 
 ***
 
