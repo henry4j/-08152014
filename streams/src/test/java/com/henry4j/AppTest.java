@@ -7,7 +7,7 @@ import org.junit.Test;
 import com.google.common.base.Joiner;
 import com.google.common.primitives.Ints;
 
-public class MyTest {
+public class AppTest {
     @Test
     public void test() {
         int[] ints = { 1, 2, 3, 4 };
