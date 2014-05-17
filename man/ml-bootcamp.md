@@ -49,9 +49,10 @@
 #### Install CLI utilities, and Ruby environments
 
 ```bash
-brew install git ruby jruby rbenv ruby-build maven colordiff wget unrar p7zip s3cmd
+brew install git jruby maven colordiff wget unrar p7zip s3cmd
+brew install rbenv ruby-build
 rbenv install 1.9.3-p545 && rbenv global 1.9.3-p545
-sudo gem install test-unit debugger rake
+gem install test-unit debugger rake
 
 echo '[ -d $HOME/.rbenv ] && eval "$(rbenv init -)"' >> "$HOME/.profile"
 curl -o "$HOME/.irbrc" -ksL http://raw.github.com/henry4j/-/master/paste/.irbrc
