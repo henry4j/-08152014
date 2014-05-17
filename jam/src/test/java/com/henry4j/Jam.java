@@ -62,7 +62,7 @@ public class Jam {
         List<int[]> paths = Graph.navigate(0, 3, edges);
 //        assert_equal [[0, 1, 2, 3], [0, 1, 3], [0, 2, 3], [0, 3]], paths
 //        assert_equal ["a→b→c→d", "a→b→d", "a→c→d", "a→d"], paths.map {|a| a.map { |e| ('a'[0] + e).chr }.join('→') }
-        assertThat(paths, equalTo(IsIterableContainingInAnyOrder));
+        assertThat(paths, equalTo(IsIterableContainingInAnyOrder.));
     }
 
     @Test
