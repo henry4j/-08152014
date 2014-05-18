@@ -2,6 +2,295 @@
 
 %w{test/unit stringio set}.each { |e| require e }
 
+class BNode
+  attr_accessor :value, :left, :right, :parent
+
+  def initialize(value = nil, left = nil, right = nil, parent = nil)
+    @value = value
+    @left = left
+    @right = right
+    @parent = parent
+  end
+
+  def self.max_sum_of_path(node)
+    if node
+      lsum, lmax_sum = max_sum_of_path(node.left)
+      rsum, rmax_sum = max_sum_of_path(node.right)
+      sum = node.value + [lsum, rsum, 0].max
+      max_sum = [lmax_sum, rmax_sum, sum, node.value + lsum + rsum].compact.max
+      [sum, max_sum]
+    else
+      [0, nil]
+    end
+  end
+
+  def self.path_of_sum(node, sum, breadcrumbs = [], prefix_sums = [], sum_begins_from = { sum => [0] })
+    return [] if node.nil?
+    paths = []
+    breadcrumbs << node.value
+    prefix_sums << node.value + (prefix_sums[-1] || 0)
+    (sum_begins_from[prefix_sums[-1] + sum] ||= []) << breadcrumbs.size
+    (sum_begins_from[prefix_sums[-1]] || []).each do |from|
+      paths += [breadcrumbs[from..-1].join(' -> ')]
+    end
+    paths += path_of_sum(node.left, sum, breadcrumbs, prefix_sums, sum_begins_from)
+    paths += path_of_sum(node.right, sum, breadcrumbs, prefix_sums, sum_begins_from)
+    sum_begins_from[prefix_sums[-1] + sum].pop
+    prefix_sums.pop
+    breadcrumbs.pop
+    paths
+  end
+
+  def self.common_ancestors(root, p, q)
+    found = 0
+    breadcrumbs = [] # contains ancestors.
+    enter = lambda do |v|
+      if found < 2 # does not enter if 2 is found.
+        breadcrumbs << v if 0 == found
+        found += [p, q].count { |e| v.value == e }
+        true
+      end
+    end
+
+    exit = lambda do |v|
+      breadcrumbs.pop if found < 2 && breadcrumbs[-1] == v
+    end
+
+    dfs(root, enter, exit) # same as follows: order(root, nil, enter, exit)
+    breadcrumbs
+  end
+
+  def self.succ(node)
+    case
+    when node.nil? then raise ArgumentError, "'node' must be non-null."
+    when node.right then smallest(node.right)
+    else
+      while node.parent
+        break node.parent if node == node.parent.left
+        node = node.parent
+      end
+    end
+  end
+
+  def self.smallest(node)
+    node.left ? smallest(node.left) : node
+  end
+
+  def self.insert_in_order(tree, value)
+    if tree.value < value
+      if tree.right
+        insert_in_order(tree.right, value) 
+      else
+        tree.right = BNode.new(value)
+      end
+    else
+      if tree.left
+        insert_in_order(tree.left, value) 
+      else
+        tree.left = BNode.new(value)
+      end
+    end
+  end
+
+  def self.last(v, k, a = [k]) # solves the k-th largest element.
+    if v
+      (a[0] > 0 ? last(v.right, k, a) : []) +
+      (a[0] > 0 ? [v.value] : []) +
+      ((a[0] -= 1) > 0 ? last(v.left, k, a) : [])
+    else
+      []
+    end
+  end
+
+  def self.last2(v, k) # solves the k-th largest element.
+    a = []
+    reverse(v, lambda { |v| a << v.value }, lambda { |v| a.size < k  }, nil)
+    a
+  end
+
+  def self.reverse(v, process, enter_iff = nil, exit = nil)
+    if v && (enter_iff.nil? || enter_iff.call(v))
+      reverse(v.right, process, enter_iff, exit)
+      process and process.call(v)
+      reverse(v.left, process, enter_iff, exit)
+      exit and exit.call(v)
+    end
+  end
+
+  def self.order(v, process, enter_iff = nil, exit = nil)
+    if v && (enter_iff.nil? || enter_iff.call(v))
+      order(v.left, process, enter_iff, exit)
+      process and process.call(v)
+      order(v.right, process, enter_iff, exit)
+      exit and exit.call(v)
+    end
+  end
+
+  def self.order_by_stack(v, process)
+    stack = []
+    while v || !stack.empty?
+      if v
+        stack.push(v)
+        v = v.left
+      else
+        v = stack.pop
+        process.call(v)
+        v = v.right
+      end
+    end
+  end
+
+  def self.dfs(v, enter_iff = nil, exit = nil)
+    if enter_iff.nil? || enter_iff.call(v)
+      [v.left, v.right].compact.each { |w| dfs(w, enter_iff, exit) }
+      exit and exit.call(v)
+    end
+  end
+
+  def self.bfs(v, enter_iff = nil, exit = nil)
+    q = []
+    q << v # enque, or offer
+    until q.empty?
+      v = q.shift # deque, or poll
+      if enter_iff.nil? || enter_iff.call(v)
+        [v.left, v.right].compact.each { |w| q << w }
+        exit and exit.call(v)
+      end
+    end
+  end
+
+  def self.maxsum_subtree(v)
+    maxsum = 0
+    sums = {}
+    exit = lambda do |v|
+      sums[v] = [v.left, v.right].compact.reduce(v.value) do |sum, e|
+        sum += sums[e]; sums.delete(e); sum
+      end
+      maxsum = [maxsum, sums[v]].max
+    end
+    dfs(v, nil, exit)
+    maxsum
+  end
+
+  def self.parse(preorder, inorder, range_in_preorder = 0..preorder.size-1, range_in_inorder = 0..inorder.size-1)
+    # http://www.youtube.com/watch?v=PAYG5WEC1Gs&feature=plcp
+    if range_in_preorder.count > 0
+      v = preorder[range_in_preorder][0..0]
+      pivot = inorder[range_in_inorder].index(v)
+      n = BNode.new(v)
+      n.left  = parse(preorder, inorder, range_in_preorder.begin+1..range_in_preorder.begin+pivot, range_in_inorder.begin..range_in_inorder.begin+pivot-1)
+      n.right = parse(preorder, inorder, range_in_preorder.begin+pivot+1..range_in_preorder.end, range_in_inorder.begin+pivot+1..range_in_inorder.end)
+      n
+    end
+  end
+
+  def self.balanced?(tree)
+    max_depth(tree) - min_depth(tree) <= 1
+  end
+
+  def self.diameter(tree, memos = {})
+    if tree
+      [
+        max_depth(tree.left) + max_depth(tree.right) + 1,
+        self.diameter(tree.left, memos),
+        self.diameter(tree.right, memos)
+      ].max
+    else
+      0
+    end
+  end
+
+  def self.min_depth(tree)
+    tree ? 1 + [min_depth(tree.left), min_depth(tree.right)].min : 0
+  end
+
+  def self.max_depth(tree)
+    tree ? 1 + [max_depth(tree.left), max_depth(tree.right)].max : 0
+  end
+
+  def self.size(tree)
+    tree ? tree.left.size + tree.right.size + 1 : 0
+  end
+
+  def self.sorted?(tree)
+    sorted = true
+    prev_value = nil
+    process_v_iff = lambda do |v|
+      sorted &&= prev_value.nil? || prev_value <= v.value
+      prev_value = v.value
+    end
+    order(tree, process_v_iff, lambda { sorted }, nil)
+    sorted
+  end
+
+  def self.sorted_by_minmax?(tree, min = nil, max = nil)
+    if tree
+      (min.nil? || tree.value >= min) &&
+      (max.nil? || tree.value <= max) &&
+      sorted_by_minmax?(tree.left, min, tree.value) &&
+      sorted_by_minmax?(tree.right, tree.value, max)
+    else
+      true
+    end
+  end
+
+  def self.parent!(node)
+    [node.left, node.right].compact.each do |child|
+      child.parent = node
+      parent!(child)
+    end
+  end
+
+  def self.include?(tree, subtree)
+    return true if subtree.nil?
+    return false if tree.nil?
+    return true if start_with?(tree, subtree)
+    return include?(tree.left, subtree) ||
+           include?(tree.right, subtree)
+  end
+
+  def self.start_with?(tree, subtree)
+    return true if subtree.nil?
+    return false if tree.nil?
+    return false if tree.value != subtree.value
+    return start_with?(tree.left, subtree.left) &&
+           start_with?(tree.right, subtree.right)
+  end
+
+  def self.eql?(lhs, rhs)
+    return true if lhs.nil? && rhs.nil?
+    return false if lhs.nil? || rhs.nil?
+    return false if lhs.value != rhs.value
+    return eql?(lhs.left, rhs.left) &&
+           eql?(lhs.right, rhs.right)
+  end
+
+  def self.of(values, lbound = 0, rbound = values.size - 1)
+    return nil if lbound > rbound
+    pivot = (lbound + rbound) / 2;
+    bnode = BNode.new(values[pivot])
+    bnode.left = of(values, lbound, pivot - 1)
+    bnode.right = of(values, pivot + 1, rbound)
+    bnode
+  end
+
+  def self.to_doubly_linked_list(v)
+    head = pred = nil
+    exit = lambda do |v|
+      if pred
+        pred.right = v
+      else
+        head = v
+      end
+      v.left = pred
+      v.right = nil
+      pred = v
+    end
+    bfs(v, nil, exit)
+    head
+  end
+end
+
 class Graph
   def self.max_flow(source, sink, edges, capacites)
     # http://en.wikipedia.org/wiki/Edmonds-Karp_algorithm
@@ -210,6 +499,16 @@ class Graph
       end
     end
   end
+end
+
+class Edge
+  attr_accessor :y, :weight
+
+  def initialize(y, weight = 1)
+    @y = y; @weight = weight
+  end
+
+  def to_s() y end
 end
 
 class BinaryHeap # min-heap by default, http://en.wikipedia.org/wiki/Binary_heap
@@ -459,16 +758,6 @@ class DNode
   def to_s
     "#{[value, next_ ? next_.to_s: 'nil'].join(' -> ')}"
   end
-end
-
-class Edge
-  attr_accessor :y, :weight
-
-  def initialize(y, weight = 1)
-    @y = y; @weight = weight
-  end
-
-  def to_s() y end
 end
 
 module Search
