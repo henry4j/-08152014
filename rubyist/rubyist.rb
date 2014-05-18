@@ -14,7 +14,7 @@ class Graph
       parents = []
       entered = []
       enter_v_iff = lambda { |v| entered[v] = true if !entered[sink] && !entered[v] && residuals[v] }
-      cross_e = lambda do |x, e|
+      cross_e = lambda do |e, x|
         residual = capacites[x][e.y] - flows[x][e.y]
         if !entered[sink] && !entered[e.y] && residual > 0
           parents[e.y] = x
