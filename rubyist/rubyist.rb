@@ -207,6 +207,75 @@ class MedianBag
   end
 end
 
+# LRUCache is comparable to this linked hashmap in Java.
+class LRUCache
+  def initialize(capacity = 1)
+    @capacity = capacity
+    @hash = {}
+    @head = @tail = nil
+  end
+
+  def put(k, v)
+    @hash[k] and delete_node(@hash[k])
+    push_node(DNode.new([k, v]))
+    @hash[k] = @tail
+    @hash.delete(shift_node.value[0]) while @hash.size > @capacity
+    self
+  end
+
+  def get(k)
+    if @hash[k]
+      delete_node(@hash[k])
+      push_node(@hash[k])
+      @tail.value[1]
+    end
+  end
+
+  def delete_node(node)
+    if @head != node
+      node.prev_.next_ = node.next_
+    else
+      (@head = @head.next_).prev_ = nil
+    end
+    if @tail != node
+      node.next_.prev_ = node.prev_
+    else
+      (@tail = @tail.prev_).next_ = nil
+    end
+    self
+  end
+
+  def push_node(node) # push at tail
+    node.next_ = nil
+    node.prev_ = @tail
+    if @tail
+      @tail.next_ = node
+      @tail = @tail.next_
+    else
+      @head = @tail = node
+    end
+    self
+  end
+
+  def shift_node # pop at head
+    if @head
+      head = @head
+      if @head.next_
+        @head = @head.next_
+        @head.prev_ = nil
+      else
+        @head = @tail = nil
+      end
+      head
+    end
+  end
+
+  def to_a() @head.to_a end
+  def to_s() @head.to_s end
+
+  private :delete_node, :push_node, :shift_node
+end
+
 class TestCases < Test::Unit::TestCase
   def test_binary_heap
     h = BinaryHeap.new(lambda { |a, b| b[1] <=> a[1] }, lambda { |e| e[0] })
@@ -240,5 +309,17 @@ class TestCases < Test::Unit::TestCase
     assert_equal [50], bag.offer(90).median
     assert_equal [50, 60], bag.offer(60).median
     assert_equal [60, 80], bag.offer(100).median
+  end
+
+  def test_LRU_cache
+    c = LRUCache.new(3).put(1, 'a').put(2, 'b').put(3, 'c')
+    assert_equal 'a', c.get(1)
+    assert_equal [[2, "b"], [3, "c"], [1, "a"]], c.to_a
+    assert_equal 'b', c.get(2)
+    assert_equal [[3, "c"], [1, "a"], [2, "b"]], c.to_a
+    assert_equal [[1, "a"], [2, "b"], [4, "d"]], c.put(4, 'd').to_a
+    assert_equal nil, c.get(3)
+    assert_equal 'a', c.get(1)
+    assert_equal [[2, "b"], [4, "d"], [1, "a"]], c.to_a
   end
 end
