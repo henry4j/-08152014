@@ -854,43 +854,6 @@ module Math
   end
 end
 
-class String
-  def self.longest_unique_charsequence(s)
-    offset, length = 0, 1
-    h = {}
-    n = s.size
-    i = 0
-    n.times do |j|
-      if h[s[j]]
-        offset, length = i, j-i if j-i > length
-        h[s[i]], i = false, i+1 until s[i] == s[j]
-        i += 1
-      else
-        h[s[j]] = true
-      end
-    end
-    offset, length = i, n-i if n-i > length
-    s[offset, length]
-  end
-
-  def self.longest_common_substring(ary) # of k strings
-    suffix_tree = ary.each_index.reduce(Trie.new) do |trie, k| 
-      (0...ary[k].size).reduce(trie) { |trie, i| trie[ary[k][i..-1]] = k; trie }
-    end
-
-    memos = {}
-    exit_v = proc do |key, trie|
-      h = trie.value ? {trie.value => nil} : {}
-      h = trie.children.values.map { |c| memos[c][1] }.reduce(h) { |h, e| h.merge(e) }
-      memos[trie] = [key.join, h]
-    end
-
-    suffix_tree.dfs(nil, exit_v, []) # to process in postorder.
-    commons = memos.values.select { |v| v[1].size == ary.size }.map { |v| v[0] }
-    commons.group_by { |e| e.size }.max.last
-  end
-end
-
 class Integer
   def self.gcd_e(a, b) # http://en.wikipedia.org/wiki/Euclidean_algorithm#Implementations
     if b == 0
@@ -1376,32 +1339,6 @@ class TestCases < Test::Unit::TestCase
     assert !Strings.anagram?("aa", "ab")
   end
 
-  def test_2_5_sum_of_2_single_linked_lists # 524 + 495 = 1019
-    # There are two decimal numbers represented by a linked list, where each node contains a single digit.
-    # The digits are stored in reverse order, such that the 1's digit is at the head of the list.
-    # Write a function that adds the two numbers and returns the sum as a linked list.
-    i524 = SNode.new(4, SNode.new(2, SNode.new(5)))
-    i495 = SNode.new(5, SNode.new(9, SNode.new(4)))
-    assert_equal "9 → 1 → 0 → 1 → ⏚", SNode.sum(i524, i495).to_s
-  end
-
-  def test_2_6_find_cycle_n_reverse_every2!
-    # Given a linked list with a cycle, implement an algorithm which returns the node at the beginning of the loop.
-    l = SNode.new([1, 2, 3, 4, 5, 6, 7, 'a', 'b', 'c', 'd', 'e'])
-    e = l.last
-    e.next_ = l.next(7)
-    assert_equal 'e', SNode.find_cycle(l).value # has a back-link to cut off.
-    assert_equal nil, SNode.find_cycle(SNode.new([1, 2, 3]))
-  end
-
-  def test_reverse_every2!
-    assert SNode.eql?(SNode.new([5, 4, 3, 2, 1]), SNode.reverse!(SNode.new([1, 2, 3, 4, 5])))
-    assert_equal "2 → 1 → ⏚", SNode.reverse_every2!(SNode.new([1, 2])).to_s
-    assert_equal "2 → 1 → 3 → ⏚", SNode.reverse_every2!(SNode.new([1, 2, 3])).to_s
-    assert_equal "2 → 1 → 4 → 3 → ⏚", SNode.reverse_every2!(SNode.new([1, 2, 3, 4])).to_s
-    assert_equal "2 → 1 → 4 → 3 → 5 → ⏚", SNode.reverse_every2!(SNode.new([1, 2, 3, 4, 5])).to_s
-  end
-
   def test_3_2_min_stack
     # Design and implement a stack of integers that has an additional operation 'minimum' besides 'push' and 'pop',
     # that all run in constant time, e.g., push(2), push(3), push(2), push(1), pop, pop, and minimum returns 2.
@@ -1697,98 +1634,6 @@ module Kernel
   def enum(*symbols)
     symbols.each { |s| const_set(s, s.to_s) }
     const_set(:DEFAULT, symbols.first) unless symbols.nil?
-  end
-end
-
-class SNode
-  attr_accessor :value, :next_
-
-  def initialize(value, next_ = nil)
-    if value.is_a?(Array)
-      value.reverse_each do |v|
-        next_ = SNode.new(v, next_)
-      end
-      @value = next_.value
-      @next_ = next_.next_
-    else
-      @value = value; @next_ = next_
-    end
-  end
-
-  # Given a list (where k = 7, and n = 5), 1 2 3 4 5 6 7 a b c d e a.
-  # 1. do find the length of the loop, i.e. n = 5.
-  # 2. begin w/ u = 1, v = 6; advance them k times until they collide.
-  def self.find_cycle(head)
-    p1 = p2 = head
-    while p2 && p2.next_
-      p1 = p1.next_
-      p2 = p2.next_.next_
-      break if p1 == p2
-    end
-    return unless p1 == p2
-
-    n = 1; p1 = p1.next_
-    until p1 == p2
-      n += 1; p1 = p1.next_
-    end
-
-    pk = head; pn_1 = head.next(n-1)
-    until pk == pn_1.next
-      pk = pk.next; pn_1 = pn_1.next
-    end
-    pn_1
-  end
-
-  def self.sum(lhs, rhs, ones = 0)
-    return nil if lhs.nil? && rhs.nil? && 0 == ones
-    ones += lhs.value if lhs
-    ones += rhs.value if rhs
-    SNode.new(ones % 10, SNode.sum(lhs ? lhs.next_ : nil, rhs ? rhs.next_ : nil, ones / 10))
-  end
-
-  def self.reverse!(current)
-    head = nil
-    while current
-      save = current.next_
-      current.next_ = head
-      head = current
-      current = save
-    end
-    head
-  end
-
-  def self.reverse_every2!(head)
-    if head.nil? || head.next.nil?
-      head
-    else
-      next2 = head.next_.next_
-      head.next_.next_, head = head, head.next_
-      head.next_.next_ = reverse_every2!(next2)
-      head
-    end
-  end
-
-  def last
-    last = self
-    last = last.next_ while last.next_
-    last
-  end
-
-  def next(n = 1)
-    next_ = self
-    n.times { next_ = next_.next_ }
-    next_
-  end
-
-  def self.eql?(lhs, rhs)
-    return true if lhs.nil? && rhs.nil?
-    return false if lhs.nil? || rhs.nil?
-    return false if lhs.value != rhs.value
-    eql?(lhs.next_, rhs.next_)
-  end
-
-  def to_s
-    "#{[value, next_.nil? ? '⏚' : next_].join(' → ')}"
   end
 end
 
