@@ -3258,18 +3258,6 @@ HERE
     assert_equal "abc", String.longest_unique_charsequence('abcabcbb')
   end
 
-  def test_20_9_median
-    bag = MedianBag.new
-    bag.offer(30).offer(50).offer(70)
-    assert_equal [50], bag.median
-    assert_equal [30, 50], bag.offer(10).median
-    assert_equal [30], bag.offer(20).median
-    assert_equal [30, 50], bag.offer(80).median
-    assert_equal [50], bag.offer(90).median
-    assert_equal [50, 60], bag.offer(60).median
-    assert_equal [60], bag.offer(100).median
-  end
-
   def test_20_10_trans_steps_of_2_words
     # Given two words of equal length that are in a dictionary, 
     # design a method to transform one word into another word by changing only one letter at a time.
@@ -3443,44 +3431,6 @@ class DNode
 
   def to_s
     "#{[value, next_ ? next_.to_s: 'nil'].join(' -> ')}"
-  end
-end
-
-class MedianBag
-  def initialize
-    @min_heap = BinaryHeap.new
-    @max_heap = BinaryHeap.new(lambda { |a,b| b <=> a })
-  end
-
-  def offer(v)
-    if @max_heap.size == @min_heap.size
-      if @min_heap.peek.nil? || v <= @min_heap.peek
-        @max_heap.offer(v)
-      else
-        @max_heap.offer(@min_heap.poll)
-        @min_heap.offer(v)
-      end
-    else
-      if @max_heap.peek <= v
-        @min_heap.offer(v)
-      else
-        @min_heap.offer(@max_heap.poll)
-        @max_heap.offer(v)
-      end
-    end
-    self
-  end
-
-  def median
-    if @max_heap.size == @min_heap.size
-      [@max_heap.peek, @min_heap.peek]
-    else
-      [@max_heap.peek]
-    end
-  end
-
-  def to_a
-    [@max_heap.to_a, @min_heap.to_a]
   end
 end
 
