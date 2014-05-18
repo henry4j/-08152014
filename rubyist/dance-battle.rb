@@ -6,21 +6,77 @@
 
 %w{test/unit open-uri}.each { |e| require e }
 
+class TestCases < Test::Unit::TestCase
+  def test_dance_battle
+    test_case_uri = 'dance-battle-small.in'
+    open(test_case_uri) do |io|
+      (Integer(io.readline.chomp)).times do
+        h, w, *m = io.readline.split(' ')
+        h, w = h.to_i, w.to_i
+        m = m.map { |l| l.split('') }
+        portals = m.each_with_index.reduce({}) do |q, (e, r)| 
+          e.each_with_index.reduce(q) do |q, (e, c)| 
+            (q[e] ||= []) << [r, c] if m[r][c].to_i > 0; q
+          end
+        end
+        each_edge = proc do |u, blk|
+          (r, c) = u
+          ([[r-1, c], [r+1, c], [r, c-1], [r, c+1]].reject { |(p, q)|
+            p < 0 || q < 0 || p >= h || q >= w || 'W' == m[p][q]
+          } + (portals[m[r][c]] || []) - [[r, c]]).each { |v|
+            blk[v, 1]
+          }
+        end
+        each_vertex = proc do |blk|
+          m.each_index { |r| m[r].each_index { |c| blk[[r, c]] } }
+        end
+
+        s = [0, m[0].index('S')]
+        e = [h-1, m[h-1].index('E')]
+        parents = Graph.dijkstra(s, each_vertex, each_edge)
+        path = [e]
+        path.unshift(parents[path[0]]) until s == parents[path[0]]
+        puts(path.size)
+      end
+    end
+  end
+
+  def test_priority_heap
+    h = BinaryHeap.new(lambda { |a, b| b[1] <=> a[1] }, lambda { |e| e[0] })
+    h.offer(['d', 10]).offer(['e', 30]).offer(['h', 50]).
+      offer(['f', 20]).offer(['b', 40]).offer(['c', 60]).
+      offer(['a', 80]).offer(['i', 90]).offer(['g', 70])
+    h.offer(['a', 92]).offer(['b', 98]).offer(['h', 120])
+    h.offer(['i', 45]).offer(['c', 25])
+    assert_equal ["h", 120], h.peek
+    assert_equal ["h", 120], h.poll
+    assert_equal ["b", 98], h.poll
+    assert_equal ["a", 92], h.poll
+    assert_equal ["g", 70], h.poll
+    assert_equal ["i", 45], h.poll
+    assert_equal ["e", 30], h.poll
+    assert_equal ["c", 25], h.poll
+    assert_equal ["f", 20], h.poll
+    assert_equal ["d", 10], h.poll
+    assert_equal nil, h.poll
+  end
+end
+
 class Graph
   def self.dijkstra(s, each_vertex, each_edge)
     parents = {}
     distances = Hash.new(Float::MAX).merge(s => 0)
-    q = BinaryHeap.new(proc { |a, b| a[1] <=> b[1] }, proc { |e| e[0] })
-    each_vertex[proc { |v| q.offer([v, Float::MAX]) }]
+    q = BinaryHeap.new(lambda { |a, b| a[1] <=> b[1] }, lambda { |e| e[0] }) # e[0] has v; [1] has a distance.
+    each_vertex.call(lambda { |v| q.offer([v, Float::MAX]) })
     q.offer([s, 0])
     until q.empty? || Float::MAX == q.peek[1]
-      each_edge[u = q.poll[0], proc { |v, w|
+      each_edge[u = q.poll[0], lambda do |v, w|
         via_u = distances[u] + w
         if via_u < distances[v]
           q.offer([v, distances[v] = via_u])
           parents[v] = u
         end
-      }]
+      end]
     end
     parents
   end
@@ -30,7 +86,7 @@ class BinaryHeap # min-heap by default, http://en.wikipedia.org/wiki/Binary_heap
   # http://docs.oracle.com/javase/7/docs/api/java/util/PriorityQueue.html
   # a binary heap is a complete binary tree, where all levels but the last one are fully filled, and
   # each node is smaller than or equal to each of its children according to a comparer specified.
-  def initialize(comparer = proc { |a, b| a <=> b }, hash = proc { |e| e.hash }) # min-heap by default
+  def initialize(comparer = lambda { |a, b| a <=> b }, hash = lambda { |e| e.hash }) # min-heap by default
     @a = []
     @h = {}
     @comparer = comparer
@@ -91,62 +147,6 @@ class BinaryHeap # min-heap by default, http://en.wikipedia.org/wiki/Binary_heap
   def empty?() @a.empty? end
   def size() @a.size end
   def to_a() @a end
-end
-
-class TestCases < Test::Unit::TestCase
-  def test_dance_battle
-    test_case_uri = 'https://raw.github.com/henry4j/-/master/algorist/ruby/dance-battle-testcases/input00.txt'
-    open(test_case_uri) do |io|
-      (Integer(io.readline.chomp)).times do
-        h, w, *m = io.readline.split(' ')
-        h, w = h.to_i, w.to_i
-        m = m.map { |l| l.split('') }
-        portals = m.each_with_index.reduce({}) do |q, (e, r)| 
-          e.each_with_index.reduce(q) do |q, (e, c)| 
-            (q[e] ||= []) << [r, c] if m[r][c].to_i > 0; q
-          end
-        end
-        each_edge = proc do |u, blk|
-          (r, c) = u
-          ([[r-1, c], [r+1, c], [r, c-1], [r, c+1]].reject { |(p, q)|
-            p < 0 || q < 0 || p >= h || q >= w || 'W' == m[p][q]
-          } + (portals[m[r][c]] || []) - [[r, c]]).each { |v|
-            blk[v, 1]
-          }
-        end
-        each_vertex = proc do |blk|
-          m.each_index { |r| m[r].each_index { |c| blk[[r, c]] } }
-        end
-
-        s = [0, m[0].index('S')]
-        e = [h-1, m[h-1].index('E')]
-        parents = Graph.dijkstra(s, each_vertex, each_edge)
-        path = [e]
-        path.unshift(parents[path[0]]) until s == parents[path[0]]
-        puts (path.size)
-      end
-    end
-  end
-
-  def test_priority_heap
-  h = BinaryHeap.new(proc { |a, b| b[1] <=> a[1] }, proc { |e| e[0] })
-    h.offer(['d', 10]).offer(['e', 30]).offer(['h', 50]).
-      offer(['f', 20]).offer(['b', 40]).offer(['c', 60]).
-      offer(['a', 80]).offer(['i', 90]).offer(['g', 70])
-    h.offer(['a', 92]).offer(['b', 98]).offer(['h', 120])
-    h.offer(['i', 45]).offer(['c', 25])
-    assert_equal ["h", 120], h.peek
-    assert_equal ["h", 120], h.poll
-    assert_equal ["b", 98], h.poll
-    assert_equal ["a", 92], h.poll
-    assert_equal ["g", 70], h.poll
-    assert_equal ["i", 45], h.poll
-    assert_equal ["e", 30], h.poll
-    assert_equal ["c", 25], h.poll
-    assert_equal ["f", 20], h.poll
-    assert_equal ["d", 10], h.poll
-    assert_equal nil, h.poll
-  end
 end
 
 =begin
