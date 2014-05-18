@@ -590,6 +590,7 @@ class TestCases < Test::Unit::TestCase
        ↘     ↘    ↘
           C2 ⟶ E4 ⟶ F5
 HERE
+
     edges = []
     edges[0] = [Edge.new(1), Edge.new(2)]
     edges[1] = [Edge.new(3), Edge.new(4)]
@@ -606,7 +607,7 @@ HERE
     capacities[5] = [0, 0, 0, 0, 0, 0]
     max_flow = Graph.max_flow(0, 5, edges, capacities)
     assert_equal 2, max_flow.reduce(0) { |max, e| max += e[0] }
-    assert_equal [[1, "A→C→E→F"], [1, "A→B→D→F"]], max_flow.map { |e| [e[0]] + [e[1].map { |c| ('A'[0] + c).chr }.join('→')] }
+    assert_equal [[1, "A→C→E→F"], [1, "A→B→D→F"]], max_flow.map { |e| [e[0]] + [e[1].map { |c| ('A'.ord + c).chr }.join('→')] }
 
 @@graph = <<HERE
     A0 ---⟶ D3 ⟶ F5
@@ -634,7 +635,7 @@ HERE
       capacities[6] = [0, 0, 0, 0, 0, 0, 0]
       max_flow = Graph.max_flow(0, 6, edges, capacities)
       assert_equal 5, max_flow.reduce(0) { |max, e| max += e[0] }
-      assert_equal [[3, "A→D→F→G"], [1, "A→B→C→D→F→G"], [1, "A→B→C→E→G"]], max_flow.map { |e| [e[0]] + [e[1].map { |c| ('A'[0] + c).chr }.join('→')] }
+      assert_equal [[3, "A→D→F→G"], [1, "A→B→C→D→F→G"], [1, "A→B→C→E→G"]], max_flow.map { |e| [e[0]] + [e[1].map { |c| ('A'.ord + c).chr }.join('→')] }
   end
 
   def test_navigatable_n_two_colorable
