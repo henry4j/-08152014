@@ -4,9 +4,7 @@ class BinaryHeap # min-heap by default, http://en.wikipedia.org/wiki/Binary_heap
   # http://docs.oracle.com/javase/7/docs/api/java/util/PriorityQueue.html
   # a binary heap is a complete binary tree, where all levels but the last one are fully filled, and
   # each node is smaller than or equal to each of its children according to a comparer specified.
-  # In Java, new PriorityQueue<Node>(capacity, new Comparator<Node>() {
-  #     public int compare(Node a, Node b) { return a.compareTo(b); }
-  # });
+  # In Java, new PriorityQueue<Node>(capacity, (a, b) -> a.compareTo(b));
   def initialize(comparer = lambda { |a, b| a <=> b }) # min-heap by default
     @heap = []
     @comparer = comparer
