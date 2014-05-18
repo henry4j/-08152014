@@ -2497,22 +2497,6 @@ HERE
     assert_equal [120, 60, 40, 30, 24], Arrays.exclusive_products([1, 2, 3, 4, 5])
   end
 
-  def test_priority_heap
-    h = BinaryHeap.new
-    h.offer(40).offer(50).offer(80).offer(60).offer(20).offer(30).offer(10).offer(90).offer(70)
-    assert_equal 10, h.peek
-    assert_equal 10, h.poll
-    assert_equal 20, h.poll
-    assert_equal 30, h.poll
-    assert_equal 40, h.poll
-    assert_equal 50, h.poll
-    assert_equal 60, h.poll
-    assert_equal 70, h.poll
-    assert_equal 80, h.poll
-    assert_equal 90, h.poll
-    assert_equal nil, h.poll
-  end
-
   def test_partition
     assert_equal [[5]], Partitions.int_composition(5, 1)
     assert_equal [[1,4],[2,3],[3,2],[4,1]], Partitions.int_composition(5, 2)

@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
 
+%w{test/unit stringio set}.each { |e| require e }
+
 class Graph
-  def self.dijkstra(s, each_vertex, each_edge)
+  def self.dijkstra_v2(s, each_vertex, each_edge)
     parents = {}
     distances = Hash.new(Float::MAX).merge(s => 0)
     q = BinaryHeap.new(lambda { |a, b| a[1] <=> b[1] }, lambda { |e| e[0] }) # e[0] has v; [1] has a distance.
@@ -143,4 +145,26 @@ class SimpleBinaryHeap # min-heap by default, http://en.wikipedia.org/wiki/Binar
   def empty?() @heap.empty? end
   def size() @heap.size end
   def to_a() @heap end
+end
+
+class TestCases < Test::Unit::TestCase
+  def test_priority_heap
+    h = BinaryHeap.new(lambda { |a, b| b[1] <=> a[1] }, lambda { |e| e[0] })
+    h.offer(['d', 10]).offer(['e', 30]).offer(['h', 50]).
+      offer(['f', 20]).offer(['b', 40]).offer(['c', 60]).
+      offer(['a', 80]).offer(['i', 90]).offer(['g', 70])
+    h.offer(['a', 92]).offer(['b', 98]).offer(['h', 120])
+    h.offer(['i', 45]).offer(['c', 25])
+    assert_equal ["h", 120], h.peek
+    assert_equal ["h", 120], h.poll
+    assert_equal ["b", 98], h.poll
+    assert_equal ["a", 92], h.poll
+    assert_equal ["g", 70], h.poll
+    assert_equal ["i", 45], h.poll
+    assert_equal ["e", 30], h.poll
+    assert_equal ["c", 25], h.poll
+    assert_equal ["f", 20], h.poll
+    assert_equal ["d", 10], h.poll
+    assert_equal nil, h.poll
+  end
 end
