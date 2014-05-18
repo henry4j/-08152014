@@ -1542,46 +1542,6 @@ class Graph
     parents
   end
 
-  def self.has_cycle?(edges, directed)
-    edges.each_index.any? do |v|
-      entered = []
-      exited = []
-      tree_edges = [] # keyed by children; also called parents map.
-      back_edges = [] # keyed by ancestors, or the other end-point.
-      enter = lambda { |v| entered[v] = true if not entered[v] }
-      exit = lambda { |v| exited[v] = true }
-      cross = lambda do |x, e|
-        if not entered[e.y]
-          tree_edges[e.y] = x 
-        elsif (!directed && tree_edges[x] != e.y) || (directed && !exited[x])
-          (back_edges[e.y] ||= []) << x # x = 1, e.y = 0
-        end
-      end
-      Graph.DFS(v, edges, enter, nil, cross)
-      !back_edges.empty?
-    end
-  end
-
-  def self.topological_sort(edges)
-    sort = []
-    entered = []
-    enter_v_iff = lambda { |v| entered[v] = true if not entered[v] }
-    exit_v = lambda { |v| sort << v }
-    edges.size.times do |v|
-      Graph.DFS(v, edges, enter_v_iff, exit_v) unless entered[v]
-    end
-    sort
-  end
-
-  def self.find_all(v, edges)
-    all = {}
-    entered = []
-    enter_v_iff = lambda { |v| entered[v] = true if not entered[v] }
-    cross_e = lambda { |e, x| all[e.y] = true }
-    Graph.DFS(v, edges, enter_v_iff, nil, cross_e)
-    all.keys
-  end
-
   def self.DFS(v, edges, enter_v_iff = nil, exit_v = nil, cross_e = nil)
     if enter_v_iff.nil? || enter_v_iff.call(v)
       (edges[v] or []).each do |e|
@@ -2048,24 +2008,6 @@ HERE
       assert_equal [[3, "A→D→F→G"], [1, "A→B→C→D→F→G"], [1, "A→B→C→E→G"]], max_flow.map { |e| [e[0]] + [e[1].map { |c| ('A'[0] + c).chr }.join('→')] }
   end
 
-  def test_graph_coloring
-    # http://www.youtube.com/watch?v=Cl3A_9hokjU
-    graph = []
-    graph[0] = [0, 1, 0, 1]
-    graph[1] = [1, 0, 1, 1]
-    graph[2] = [0, 1, 0, 1]
-    graph[3] = [1, 1, 1, 0]
-    assert_equal [3, [0, 1, 0, 2]], Graph.color_vertex(graph)
-
-    graph = []
-    graph[0] = [0, 1, 1, 0, 1]
-    graph[1] = [1, 0, 1, 0, 1]
-    graph[2] = [1, 1, 0, 1, 0]
-    graph[3] = [0, 0, 1, 0, 1]
-    graph[4] = [1, 1, 0, 1, 0]
-    assert_equal [3, [0, 1, 2, 0, 2]], Graph.color_vertex(graph)
-  end
-
   def test_subset_of_sum
     # http://www.youtube.com/watch?v=WRT8kmFOQTw&feature=plcp
     # suppose we are given N distinct positive integers
@@ -2134,24 +2076,6 @@ HERE
     assert_equal [1, 9], Arrays.minmax([1, 3, 5, 7, 9, 2, 4, 6, 8])
     assert_equal [0, [0, 0]], Arrays.max_profit([30])
     assert_equal [30, [2, 3]], Arrays.max_profit([30, 40, 20, 50, 10])
-  end
-
-  def test_topological_sort
-    # graph:       D3 ⇾ H7
-    #              ↑
-    #    ┌──────── B1 ⇾ F5
-    #    ↓         ↑     ↑
-    #   J9 ⇽ E4 ⇽ A0 ⇾ C2 ⇾ I8
-    #              ↓
-    #              G6
-    edges = []
-    edges[0] = [Edge.new(1), Edge.new(2), Edge.new(4), Edge.new(6)] # 1, 2, 4, and 6
-    edges[1] = [Edge.new(3), Edge.new(5), Edge.new(9)] # 3, 5, and 9
-    edges[2] = [Edge.new(5), Edge.new(8)] # 5, 8
-    edges[3] = [Edge.new(7)] # 7
-    edges[4] = [Edge.new(9)] # 9
-    edges[5] = edges[6] = edges[7] = edges[8] = edges[9] = []
-    assert_equal [7, 3, 5, 9, 1, 8, 2, 4, 6, 0], Graph.topological_sort(edges)
   end
 
   def test_prime?
@@ -2564,66 +2488,6 @@ HERE
     values = []
     BNode.order_by_stack(BNode.of([1, 2, 3, 4, 8, 6, 7]), lambda {|v| values << v.value})
     assert_equal [1, 2, 3, 4, 8, 6, 7], values
-  end
-
-  def test_has_cycle_in_directed_n_undirected_graphs
-    # graph: B1 ← C2 → A0
-    #        ↓  ↗
-    #        D3 ← E4
-    edges = []
-    edges << [] # out-degree of 0
-    edges << [Edge.new(3, 4)] # B1 → D3
-    edges << [Edge.new(0, 4), Edge.new(1, 6)] # C2 → A0, C2 → B1
-    edges << [Edge.new(2, 9)] # D3 → C2
-    edges << [Edge.new(3, 3)] # E4 → D3
-    assert Graph.has_cycle?(edges, true)
-
-    
-    # graph: B1 ← C2 → A0
-    #         ↓    ↓
-    #        D3 ← E4
-    edges = []
-    edges << []
-    edges << [Edge.new(3)]
-    edges << [Edge.new(0), Edge.new(1), Edge.new(4)]
-    edges << []
-    edges << [Edge.new(3)]
-    assert Graph.has_cycle?(edges, true)
-
-    # undirected graph: A0 - B1 - C2
-    edges = []
-    edges[0] = [Edge.new(1)] # A0 - B1
-    edges[1] = [Edge.new(0), Edge.new(2)] # B1 - A0, B1 - C2
-    edges[2] = [Edge.new(1)] # C2 - B1
-    assert !Graph.has_cycle?(edges, false)
-
-    # undirected graph: A0 - B1 - C2 - A0
-    edges[0] << Edge.new(2) # A0 - C2
-    edges[2] << Edge.new(0) # C2 - A0
-    assert Graph.has_cycle?(edges, false)
-  end
-
-  def test_4_2_reachable?
-    # Given a directed graph, design an algorithm to find out whether there is a route between two nodes.
-    # http://iamsoftwareengineer.blogspot.com/2012/06/given-directed-graph-design-algorithm.html
-    # graph: B1 ← C2 → A0
-    #        ↓  ↗
-    #        D3 ← E4
-    edges = []
-    edges << [] # out-degree of 0
-    edges << [Edge.new(3)] # B1 → D3
-    edges << [Edge.new(0), Edge.new(1)] # C2 → A0, C2 → B1
-    edges << [Edge.new(2)] # D3 → C2
-    edges << [Edge.new(3)] # E4 → D3
-
-    can_reach = lambda do |source, sink|
-      all = Graph.find_all(source, edges)
-      all.index(sink)
-    end
-
-    assert can_reach.call(4, 0)
-    assert !can_reach.call(0, 4)
-    assert !can_reach.call(3, 4)
   end
 
   def test_4_3_to_binary_search_tree
