@@ -3,6 +3,60 @@
 %w{test/unit stringio set}.each { |e| require e }
 
 class Graph
+  def self.max_flow(source, sink, edges, capacites)
+    # http://en.wikipedia.org/wiki/Edmonds-Karp_algorithm
+    # http://en.wikibooks.org/wiki/Algorithm_Implementation/Graphs/Maximum_flow/Edmonds-Karp
+    paths = []
+    flows = Array.new(edges.size) { Array.new(edges.size, 0) }
+    loop do
+      residuals = [] # residual capacity minima.
+      residuals[source] = Float::MAX
+      parents = []
+      entered = []
+      enter_v_iff = lambda { |v| entered[v] = true if !entered[sink] && !entered[v] && residuals[v] }
+      cross_e = lambda do |x, e|
+        residual = capacites[x][e.y] - flows[x][e.y]
+        if !entered[sink] && !entered[e.y] && residual > 0
+          parents[e.y] = x
+          residuals[e.y] = [ residuals[x], residual ].min
+        end
+      end
+      BFS(source, edges, enter_v_iff, nil, cross_e)
+      if parents[sink]
+        path = [v = sink]
+        while parents[v]
+          u = parents[v]
+          flows[u][v] += residuals[sink]
+          flows[v][u] -= residuals[sink]
+          path.unshift(v = u)
+        end
+        paths << [residuals[sink], path]
+      else
+        break;
+      end
+    end
+    paths
+  end
+
+  def self.prim(s, edges)
+    parents = []
+    distances = []
+    distances[s] = 0
+    q = BinaryHeap.new(lambda { |a, b| a[1] <=> b[1] }, lambda { |e| e[0] }) # e[0] has v; [1] has a distance.
+    q.offer([s, 0])
+    until q.empty? || q.peek[1].nil?
+      u, d = q.poll
+      edges[u].each do |v, w|
+        via_u = w
+        if distances[v].nil? || via_u < distances[v]
+          q.offer([v, distances[v] = via_u])
+          parents[v] = u
+        end
+      end
+    end
+    parents
+  end
+
   def self.dijkstra(s, edges)
     # http://en.wikipedia.org/wiki/Dijkstra's_algorithm#Pseudocode
     # http://www.codeproject.com/Questions/294680/Priority-Queue-Decrease-Key-function-used-in-Dijks
@@ -528,6 +582,59 @@ class TestCases < Test::Unit::TestCase
     assert_equal ["f", 20], h.poll
     assert_equal ["d", 10], h.poll
     assert_equal nil, h.poll
+  end
+
+  def test_max_flow_ford_fulkerson
+@@bipartite = <<HERE
+    A0 -⟶ B1 ⟶ D3
+       ↘     ↘    ↘
+          C2 ⟶ E4 ⟶ F5
+HERE
+    edges = []
+    edges[0] = [Edge.new(1), Edge.new(2)]
+    edges[1] = [Edge.new(3), Edge.new(4)]
+    edges[2] = [Edge.new(4)]
+    edges[3] = [Edge.new(5)]
+    edges[4] = [Edge.new(5)]
+    edges[5] = []
+    capacities = []
+    capacities[0] = [0, 1, 1, 0, 0, 0]
+    capacities[1] = [0, 0, 0, 1, 1, 0]
+    capacities[2] = [0, 0, 0, 0, 1, 0]
+    capacities[3] = [0, 0, 0, 0, 0, 1]
+    capacities[4] = [0, 0, 0, 0, 0, 1]
+    capacities[5] = [0, 0, 0, 0, 0, 0]
+    max_flow = Graph.max_flow(0, 5, edges, capacities)
+    assert_equal 2, max_flow.reduce(0) { |max, e| max += e[0] }
+    assert_equal [[1, "A→C→E→F"], [1, "A→B→D→F"]], max_flow.map { |e| [e[0]] + [e[1].map { |c| ('A'[0] + c).chr }.join('→')] }
+
+@@graph = <<HERE
+    A0 ---⟶ D3 ⟶ F5
+    │ ↖   ↗ │     │
+    │   C2   │     │
+    ↓ ↗  ↘  ↓     ↓
+    B1 ⟵--- E4 ⟶ G6
+HERE
+
+      edges = []
+      edges[0] = [Edge.new(1), Edge.new(3)]
+      edges[1] = [Edge.new(2)] # B1 → C2
+      edges[2] = [Edge.new(0), Edge.new(3), Edge.new(4)] # C2 → A0, D3, D4
+      edges[3] = [Edge.new(4), Edge.new(5)] # D3 → E4, F5
+      edges[4] = [Edge.new(1), Edge.new(6)] # E4 → B1, G6
+      edges[5] = [Edge.new(6)]
+      edges[6] = []
+      capacities = []
+      capacities[0] = [0, 3, 0, 3, 0, 0, 0]
+      capacities[1] = [0, 0, 4, 0, 0, 0, 0]
+      capacities[2] = [3, 0, 0, 1, 2, 0, 0]
+      capacities[3] = [0, 0, 0, 0, 2, 6, 0]
+      capacities[4] = [0, 1, 0, 0, 0, 0, 1]
+      capacities[5] = [0, 0, 0, 0, 0, 0, 9]
+      capacities[6] = [0, 0, 0, 0, 0, 0, 0]
+      max_flow = Graph.max_flow(0, 6, edges, capacities)
+      assert_equal 5, max_flow.reduce(0) { |max, e| max += e[0] }
+      assert_equal [[3, "A→D→F→G"], [1, "A→B→C→D→F→G"], [1, "A→B→C→E→G"]], max_flow.map { |e| [e[0]] + [e[1].map { |c| ('A'[0] + c).chr }.join('→')] }
   end
 
   def test_navigatable_n_two_colorable
