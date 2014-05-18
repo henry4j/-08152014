@@ -276,6 +276,22 @@ class LRUCache
   private :delete_node, :push_node, :shift_node
 end
 
+class DNode
+  attr_accessor :value, :prev_, :next_
+
+  def initialize(value, next_ = nil, prev_ = nil)
+    @value = value; @prev_ = prev_; @next_ = next_
+  end
+
+  def to_a
+    @next_ ? [value] + @next_.to_a : [value]
+  end
+
+  def to_s
+    "#{[value, next_ ? next_.to_s: 'nil'].join(' -> ')}"
+  end
+end
+
 class TestCases < Test::Unit::TestCase
   def test_binary_heap
     h = BinaryHeap.new(lambda { |a, b| b[1] <=> a[1] }, lambda { |e| e[0] })
@@ -308,7 +324,7 @@ class TestCases < Test::Unit::TestCase
     assert_equal [30, 50], bag.offer(80).median
     assert_equal [50], bag.offer(90).median
     assert_equal [50, 60], bag.offer(60).median
-    assert_equal [60, 80], bag.offer(100).median
+    assert_equal [60], bag.offer(100).median
   end
 
   def test_LRU_cache
