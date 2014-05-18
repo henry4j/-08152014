@@ -41,6 +41,64 @@ class Graph
     end
     parents
   end
+
+  def self.navigate(v, w, edges)
+    paths = []
+    entered = {}
+    expand_out = lambda do |a|
+      entered[a[-1]] = true
+      edges[a[-1]].select { |e| not entered[e.y] }.map { |e| e.y }
+    end
+    reduce_off = lambda do |a|
+      paths << a.dup if a[-1] == w
+    end
+    Search.backtrack([v], expand_out, reduce_off)
+    paths
+  end
+
+  def self.two_colorable?(v, edges) # two-colorable? means is_bipartite?
+    bipartite = true
+    entered, colors = [], []
+    enter_v_iff = lambda { |v| entered[v] = true if bipartite && !entered[v] }
+    cross_e = lambda do |e, x|
+      bipartite &&= colors[x] != colors[e.y]
+      colors[e.y] = !colors[x] # inverts the color
+    end
+    edges.each_index do |v|
+      if !entered[v]
+        entered.clear
+        colors.clear
+        colors[v] = true
+        BFS(v, edges, enter_v_iff, nil, cross_e)
+      end
+    end
+    bipartite
+  end
+
+  def self.DFS(v, edges, enter_v_iff = nil, exit_v = nil, cross_e = nil)
+    if enter_v_iff.nil? || enter_v_iff.call(v)
+      (edges[v] or []).each do |e|
+        cross_e and cross_e.call(e, v)
+        dfs(e.y, edges, enter_v_iff, exit_v, cross_e)
+      end
+      exit_v and exit_v.call(v) 
+    end
+  end
+
+  def self.BFS(v, edges, enter_v_iff = nil, exit_v = nil, cross_e = nil)
+    q = []
+    q.push(v) # offer
+    until q.empty?
+      v = q.shift # poll
+      if enter_v_iff.nil? || enter_v_iff.call(v)
+        (edges[v] or []).each do |e|
+          cross_e and cross_e.call(e, v)
+          q.push(e.y)
+        end
+        exit_v and exit_v.call(v)
+      end
+    end
+  end
 end
 
 class BinaryHeap # min-heap by default, http://en.wikipedia.org/wiki/Binary_heap
@@ -292,6 +350,28 @@ class DNode
   end
 end
 
+class Edge
+  attr_accessor :y, :weight
+
+  def initialize(y, weight = 1)
+    @y = y; @weight = weight
+  end
+
+  def to_s() y end
+end
+
+module Search
+  def self.backtrack(candidate, expand_out, reduce_off)
+    unless reduce_off.call(candidate)
+      expand_out.call(candidate).each do |e|
+        candidate.push e
+        backtrack(candidate, expand_out, reduce_off)
+        candidate.pop
+      end
+    end
+  end
+end
+
 class TestCases < Test::Unit::TestCase
   def test_binary_heap
     h = BinaryHeap.new(lambda { |a, b| b[1] <=> a[1] }, lambda { |e| e[0] })
@@ -313,6 +393,45 @@ class TestCases < Test::Unit::TestCase
     assert_equal ["f", 20], h.poll
     assert_equal ["d", 10], h.poll
     assert_equal nil, h.poll
+  end
+
+  def test_navigatable_n_two_colorable
+    # Given a undirected graph based on a set of nodes and links, 
+    # write a program that shows all the possible paths from a source node to a destination node.
+    # It is up to you to decide what kind of structure you want to use to represent the nodes and links.
+    # A path may traverse any link at most once.
+    #
+    # e.g.  a --- d
+    #       |  X  |
+    #       b --- c
+    edges = [] # a composition of a graph
+    edges[0] = [Edge.new(1), Edge.new(2), Edge.new(3)]
+    edges[1] = [Edge.new(0), Edge.new(2), Edge.new(3)]
+    edges[2] = [Edge.new(0), Edge.new(1), Edge.new(3)]
+    edges[3] = [Edge.new(0), Edge.new(1), Edge.new(2)]
+    paths = Graph.navigate(0, 3, edges)
+#    assert_equal [[0, 1, 2, 3], [0, 1, 3], [0, 2, 3], [0, 3]], paths
+#    assert_equal ["a→b→c→d", "a→b→d", "a→c→d", "a→d"], paths.map {|a| a.map { |e| ('a'[0] + e).chr }.join('→') }
+
+    # graph: B1 ― A0
+    #        |    |
+    #        C2 ― D3
+    edges = []
+    edges << [Edge.new(1), Edge.new(3)] # A0 - B1, A0 - D3
+    edges << [Edge.new(0), Edge.new(2)] # B1 - A0, B1 - C2
+    edges << [Edge.new(1), Edge.new(3)] # C2 - B1, C2 - D3
+    edges << [Edge.new(0), Edge.new(2)] # D3 - A0, D3 - C2
+    assert Graph.two_colorable?(0, edges)
+
+    # graph: B1 ― A0
+    #        |  X
+    #        C2 ― D3
+    edges = []
+    edges << [Edge.new(1), Edge.new(2)] # A0 - B1, A0 - C2
+    edges << [Edge.new(0), Edge.new(2), Edge.new(3)] # B1 - A0, B1 - C2, B1 - D3
+    edges << [Edge.new(0), Edge.new(1), Edge.new(3)] # C2 - A0, C2 - B1, C2 - D3
+    edges << [Edge.new(1), Edge.new(2)] # D3 - B1, D3 - C2
+    assert !Graph.two_colorable?(0, edges)
   end
 
   def test_20_9_median

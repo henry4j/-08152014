@@ -2204,45 +2204,6 @@ HERE
     assert_equal [7, 3, 5, 9, 1, 8, 2, 4, 6, 0], Graph.topological_sort(edges)
   end
 
-  def test_navigatable_n_two_colorable
-    # Given a undirected graph based on a set of nodes and links, 
-    # write a program that shows all the possible paths from a source node to a destination node.
-    # It is up to you to decide what kind of structure you want to use to represent the nodes and links.
-    # A path may traverse any link at most once.
-    #
-    # e.g.  a --- d
-    #       |  X  |
-    #       b --- c
-    edges = [] # a composition of a graph
-    edges[0] = [Edge.new(1), Edge.new(2), Edge.new(3)]
-    edges[1] = [Edge.new(0), Edge.new(2), Edge.new(3)]
-    edges[2] = [Edge.new(0), Edge.new(1), Edge.new(3)]
-    edges[3] = [Edge.new(0), Edge.new(1), Edge.new(2)]
-    paths = Graph.navigate(0, 3, edges)
-    assert_equal [[0, 1, 2, 3], [0, 1, 3], [0, 2, 3], [0, 3]], paths
-    assert_equal ["a→b→c→d", "a→b→d", "a→c→d", "a→d"], paths.map {|a| a.map { |e| ('a'[0] + e).chr }.join('→') }
-
-    # graph: B1 ― A0
-    #        |    |
-    #        C2 ― D3
-    edges = []
-    edges << [Edge.new(1), Edge.new(3)] # A0 - B1, A0 - D3
-    edges << [Edge.new(0), Edge.new(2)] # B1 - A0, B1 - C2
-    edges << [Edge.new(1), Edge.new(3)] # C2 - B1, C2 - D3
-    edges << [Edge.new(0), Edge.new(2)] # D3 - A0, D3 - C2
-    assert Graph.two_colorable?(0, edges)
-
-    # graph: B1 ― A0
-    #        |  X
-    #        C2 ― D3
-    edges = []
-    edges << [Edge.new(1), Edge.new(2)] # A0 - B1, A0 - C2
-    edges << [Edge.new(0), Edge.new(2), Edge.new(3)] # B1 - A0, B1 - C2, B1 - D3
-    edges << [Edge.new(0), Edge.new(1), Edge.new(3)] # C2 - A0, C2 - B1, C2 - D3
-    edges << [Edge.new(1), Edge.new(2)] # D3 - B1, D3 - C2
-    assert !Graph.two_colorable?(0, edges)
-  end
-
   def test_prime?
     assert Numbers.prime?(2)
     assert Numbers.prime?(3)
