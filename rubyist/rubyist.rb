@@ -42,6 +42,23 @@ class Graph
     parents
   end
 
+  def self.color_vertex(graph)
+    answers = []
+    expand_out = lambda do |a|
+      v = a.size # vertex v
+      c = 0..a.max # existing colors
+      c = c.select { |c|
+        (0...v).all? { |w| (0 == graph[v][w]) or (c != a[w]) }
+      } # existing legal colors
+      c + [a.max+1] # a new color.
+    end
+    reduce_off = lambda do |a|
+      answers << [a.max+1, a.dup] if a.size == graph.size
+    end
+    Search.backtrack([0], expand_out, reduce_off)
+    answers.min_by { |e| e[0] }
+  end
+
   def self.navigate(v, w, edges)
     paths = []
     entered = {}
@@ -432,6 +449,24 @@ class TestCases < Test::Unit::TestCase
     edges << [Edge.new(0), Edge.new(1), Edge.new(3)] # C2 - A0, C2 - B1, C2 - D3
     edges << [Edge.new(1), Edge.new(2)] # D3 - B1, D3 - C2
     assert !Graph.two_colorable?(0, edges)
+  end
+
+  def test_graph_coloring
+    # http://www.youtube.com/watch?v=Cl3A_9hokjU
+    graph = []
+    graph[0] = [0, 1, 0, 1]
+    graph[1] = [1, 0, 1, 1]
+    graph[2] = [0, 1, 0, 1]
+    graph[3] = [1, 1, 1, 0]
+    assert_equal [3, [0, 1, 0, 2]], Graph.color_vertex(graph)
+
+    graph = []
+    graph[0] = [0, 1, 1, 0, 1]
+    graph[1] = [1, 0, 1, 0, 1]
+    graph[2] = [1, 1, 0, 1, 0]
+    graph[3] = [0, 0, 1, 0, 1]
+    graph[4] = [1, 1, 0, 1, 0]
+    assert_equal [3, [0, 1, 2, 0, 2]], Graph.color_vertex(graph)
   end
 
   def test_20_9_median

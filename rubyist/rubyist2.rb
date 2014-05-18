@@ -1582,56 +1582,6 @@ class Graph
     all.keys
   end
 
-  def self.color_vertex(graph)
-    answers = []
-    expand_out = lambda do |a|
-      v = a.size # vertex v
-      c = 0..a.max # existing colors
-      c = c.select { |c|
-        (0...v).all? { |w| (0 == graph[v][w]) or (c != a[w]) }
-      } # existing legal colors
-      c + [a.max+1] # a new color.
-    end
-    reduce_off = lambda do |a|
-      answers << [a.max+1, a.dup] if a.size == graph.size
-    end
-    Search.backtrack([0], expand_out, reduce_off)
-    answers.min_by { |e| e[0] }
-  end
-
-  def self.navigate(v, w, edges)
-    paths = []
-    entered = {}
-    expand_out = lambda do |a|
-      entered[a[-1]] = true
-      edges[a[-1]].select { |e| not entered[e.y] }.map { |e| e.y }
-    end
-    reduce_off = lambda do |a|
-      paths << a.dup if a[-1] == w
-    end
-    Search.backtrack([v], expand_out, reduce_off)
-    paths
-  end
-
-  def self.two_colorable?(v, edges) # two-colorable? means is_bipartite?
-    bipartite = true
-    entered = colors = nil
-    enter_v_iff = lambda { |v| entered[v] = true if bipartite && !entered[v] }
-    cross_e = lambda do |e, x|
-      bipartite &&= colors[x] != colors[e.y]
-      colors[e.y] = !colors[x] # inverts the color
-    end
-
-    edges.each_index do |v|
-      if !entered[v]
-        entered, colors = [], []
-        colors[v] = true
-        BFS(v, edges, enter_v_iff, nil, cross_e)
-      end
-    end
-    bipartite
-  end
-
   def self.DFS(v, edges, enter_v_iff = nil, exit_v = nil, cross_e = nil)
     if enter_v_iff.nil? || enter_v_iff.call(v)
       (edges[v] or []).each do |e|
