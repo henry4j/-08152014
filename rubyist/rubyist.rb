@@ -1007,4 +1007,214 @@ HERE
     assert_equal 'a', c.get(1)
     assert_equal [[2, "b"], [4, "d"], [1, "a"]], c.to_a
   end
+
+  def test_diameter_of_btree
+    # tree input:   a
+    #             b
+    #          c    f
+    #           d     g
+    #            e
+    tree = BNode.parse('abcdefg', 'cdebfga')
+    assert_equal 6, BNode.diameter(tree)
+  end
+
+  def test_from_strings
+    # preorder: abcdefg
+    # inorder:  cdebagf
+    # tree:      a
+    #         b    f
+    #       c     g
+    #        d
+    #         e
+    #
+    tree = BNode.parse('abcdefg', 'cdebagf')
+    assert_equal 'a', tree.value
+    assert_equal 'b', tree.left.value
+    assert_equal 'c', tree.left.left.value
+    assert_equal 'd', tree.left.left.right.value
+    assert_equal 'e', tree.left.left.right.right.value
+    assert_equal 'f', tree.right.value
+    assert_equal 'g', tree.right.left.value
+    assert_equal nil, tree.left.right
+    assert_equal nil, tree.left.left.left
+    assert_equal nil, tree.left.left.right.left
+    assert_equal nil, tree.left.left.right.right.left
+    assert_equal nil, tree.left.left.right.right.right
+    assert_equal nil, tree.right.right
+    assert_equal nil, tree.right.left.left
+    assert_equal nil, tree.right.left.right
+  end
+
+  def test_4_1_balanced_n_4_5_binary_search_tree?
+    # 4.1. Implement a function to check if a binary tree is balanced.
+    # 4.5. Implement a function to check if a binary tree is a binary search tree.
+    assert BNode.balanced?(BNode.of([1, 3, 4, 7, 2, 5, 6]))
+    assert BNode.sorted?(BNode.of([1, 2, 3, 4, 5, 6, 7]))
+    assert !BNode.sorted?(BNode.of([1, 2, 3, 4, 8, 6, 7]))
+    assert BNode.sorted_by_minmax?(BNode.of([1, 2, 3, 4, 5, 6, 7]))
+    assert !BNode.sorted_by_minmax?(BNode.of([1, 2, 3, 4, 8, 6, 7]))
+    values = []
+    BNode.order_by_stack(BNode.of([1, 2, 3, 4, 8, 6, 7]), lambda {|v| values << v.value})
+    assert_equal [1, 2, 3, 4, 8, 6, 7], values
+  end
+
+  def test_4_3_to_binary_search_tree
+    # Given a sorted (increasing order) array, implement an algorithm to create a binary search tree with minimal height.
+    # tree:   4
+    #       2    6
+    #      1 3  5 7
+    expected = BNode.new(4, BNode.new(2, BNode.new(1), BNode.new(3)), BNode.new(6, BNode.new(5), BNode.new(7)))
+    assert BNode.eql?(expected, BNode.of([1, 3, 5, 7, 2, 4, 6].sort))
+  end
+
+  def test_convert_binary_tree_to_doubly_linked_list
+    # http://www.youtube.com/watch?v=WJZtqZJpSlQ
+    # http://codesam.blogspot.com/2011/04/convert-binary-tree-to-double-linked.html
+    # tree:   1
+    #       2    3
+    #      4 5  6 7
+    tree = BNode.of([4, 2, 5, 1, 6, 3, 7])
+    head = read = BNode.to_doubly_linked_list(tree)
+    assert_equal nil, head.left
+    values = []
+    while read
+      values << read.value
+      read = read.right
+    end
+    assert_equal [1, 2, 3, 4, 5, 6, 7], values
+  end
+
+  def test_4_6_successor_in_order_traversal
+    # tree:   f
+    #       a
+    #         b
+    #           e
+    #         d
+    #       c
+    c = BNode.new('c')
+    d = BNode.new('d', c, nil)
+    e = BNode.new('e', d, nil)
+    b = BNode.new('b', nil, e)
+    a = BNode.new('a', nil, b)
+    f = BNode.new('f', a, nil)
+    BNode.parent!(f)
+
+    assert_equal 'c', BNode.succ(b).value
+    assert_equal 'f', BNode.succ(e).value
+
+    assert_equal 'b', BNode.succ(a).value
+    assert_equal 'd', BNode.succ(c).value
+    assert_equal 'e', BNode.succ(d).value
+    assert_equal nil, BNode.succ(f)
+
+    assert_equal ["f"], BNode.last(f, 1)
+    assert_equal ["f", "e", "d"], BNode.last(f, 3)
+    assert_equal ["f", "e", "d", "c", "b", "a"], BNode.last(f, 6)
+    assert_equal ["f", "e", "d", "c", "b", "a"], BNode.last(f, 7)
+
+    assert_equal ["f"], BNode.last2(f, 1)
+    assert_equal ["f", "e", "d", "c", "b", "a"], BNode.last2(f, 7)
+  end
+
+  def test_dfs_in_binary_trees
+    # tree:  a
+    #         b
+    #        c
+    #       d e
+    d = BNode.new('d')
+    e = BNode.new('e')
+    c = BNode.new('c', d, e)
+    b = BNode.new('b', c, nil)
+    a = BNode.new('a', nil, b)
+
+    preorder = []
+    postorder = []
+    bfs = []
+    BNode.dfs(a, lambda { |v| preorder << v.value })
+    BNode.dfs(a, nil, lambda { |v| postorder << v.value })
+    BNode.bfs(a, lambda { |v| bfs << v.value }, nil)
+    assert_equal 'abcde', preorder.join
+    assert_equal 'decba', postorder.join
+    assert_equal 'abcde', bfs.join
+  end
+
+  def test_maxsum_subtree
+    # tree:  -2
+    #          1
+    #        3  -2
+    #      -1
+    e = BNode.new(-1)
+    c = BNode.new(3, e, nil)
+    d = BNode.new(-2, nil, nil)
+    b = BNode.new(1, c, d)
+    a = BNode.new(-2, b, nil)
+    assert_equal 2, BNode.maxsum_subtree(a)
+  end
+
+  def test_4_7_lowest_common_ancestor_in_linear_time
+    # tree    a
+    #           b
+    #        c
+    #      d   e
+    d = BNode.new('d')
+    e = BNode.new('e')
+    c = BNode.new('c', d, e)
+    b = BNode.new('b', c, nil)
+    a = BNode.new('a', nil, b)
+    assert_equal c, BNode.common_ancestors(a, 'd', 'e')[-1]
+    assert_equal c, BNode.common_ancestors(a, 'c', 'd')[-1]
+    assert_equal c, BNode.common_ancestors(a, 'c', 'e')[-1]
+    assert_equal b, BNode.common_ancestors(a, 'b', 'e')[-1]
+    assert_equal nil, BNode.common_ancestors(a, 'b', 'x')[-1]
+    assert_equal nil, BNode.common_ancestors(a, 'x', 'y')[-1]
+  end
+
+  def test_4_8_binary_tree_value_include
+    tree = BNode.new('a', nil, BNode.new('b', BNode.new('c', nil, BNode.new('d')), nil))
+    assert BNode.include?(tree, nil)
+    assert BNode.include?(tree, tree)
+    assert !BNode.include?(tree, BNode.new('e'))
+    assert !BNode.include?(tree, BNode.new('c', nil, BNode.new('e')))
+    assert BNode.include?(tree, BNode.new('b'))
+    assert BNode.include?(tree, BNode.new('c'))
+    assert BNode.include?(tree, BNode.new('d'))
+    assert BNode.include?(tree, tree.right)
+    assert BNode.include?(tree, tree.right.left)
+    assert BNode.include?(tree, tree.right.left.right)
+    assert BNode.include?(tree, BNode.new('a'))
+    assert BNode.include?(tree, BNode.new('a', nil, BNode.new('b')))
+    assert BNode.include?(tree, BNode.new('a', nil, BNode.new('b', BNode.new('c'), nil)))
+  end
+
+  def test_4_9_find_path_of_sum_in_linear_time
+    # You are given a binary tree in which each node contains a value.
+    # Design an algorithm to print all paths which sum up to that value.
+    # Note that it can be any path in the tree - it does not have to start at the root.
+    #
+    # tree: -1
+    #         ↘
+    #           3
+    #         ↙
+    #       -1
+    #      ↙ ↘
+    #     2    3
+    tree = BNode.new(-1, nil, BNode.new(3, BNode.new(-1, BNode.new(2), BNode.new(3)), nil))
+    assert_equal ["-1 -> 3", "3 -> -1", "2", "-1 -> 3"], BNode.path_of_sum(tree, 2)
+
+    #        -5
+    #     -3     4
+    #    2   8
+    #  -6
+    # 7   9
+    tree = BNode.new(-5, BNode.new(-3, BNode.new(2, BNode.new(-6, BNode.new(7), BNode.new(9)), nil), BNode.new(8)), BNode.new(4))
+    assert_equal 10, BNode.max_sum_of_path(tree)[1]
+    tree = BNode.new(-3, BNode.new(-2, BNode.new(-1), nil), nil)
+    assert_equal -1, BNode.max_sum_of_path(tree)[1]
+    tree = BNode.new(-1, BNode.new(-2, BNode.new(-3), nil), nil)
+    assert_equal -1, BNode.max_sum_of_path(tree)[1]
+  end
+
+  def test_7_7_kth_integer_of_prime_factors_3_5_n_7
+    assert_equal 45, Math.integer_of_prime_factors(10)
+  end
 end
