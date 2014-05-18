@@ -19,7 +19,7 @@ class TestCases < Test::Unit::TestCase
             (q[e] ||= []) << [r, c] if m[r][c].to_i > 0; q
           end
         end
-        each_edge = proc do |u, blk|
+        each_edge = lambda do |u, blk|
           (r, c) = u
           ([[r-1, c], [r+1, c], [r, c-1], [r, c+1]].reject { |(p, q)|
             p < 0 || q < 0 || p >= h || q >= w || 'W' == m[p][q]
@@ -27,10 +27,9 @@ class TestCases < Test::Unit::TestCase
             blk[v, 1]
           }
         end
-        each_vertex = proc do |blk|
+        each_vertex = lambda do |blk|
           m.each_index { |r| m[r].each_index { |c| blk[[r, c]] } }
         end
-
         s = [0, m[0].index('S')]
         e = [h-1, m[h-1].index('E')]
         parents = Graph.dijkstra(s, each_vertex, each_edge)
