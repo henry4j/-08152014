@@ -1656,32 +1656,6 @@ class TestCases < Test::Unit::TestCase
     assert_equal 'doityourself', s
   end
 
-  def test_20_8_find_query_strings
-    # Given a string s and an array of smaller strings Q, write a program that searches s for each string in Q.
-    # a suffix tree of bananas
-    s = 'bananas'
-    suffix_tree = (0...s.size).reduce(Trie.new) { |trie, i| trie[s[i..-1]] = i; trie } # a trie of suffixes
-    assert_equal (0..6).to_a, suffix_tree.values.sort
-
-    # all indices of query strings
-    q = %w(b ba n na nas s bas)
-    indices_of = lambda { |q| (trie = suffix_tree.of(q)) ? trie.values : nil }
-    assert_equal [[0], [0], [4, 2], [4, 2], [4], [6], nil], q.reduce([]) { |a, q| a << indices_of[q] }.sort
-
-    # auto-complete a prefix
-    d = %w(the they they their they're them)
-    trie = d.reduce(Trie.new) { |t, w| t[w] = w; t }
-    assert_equal ["the", "them", "their", "they", "they're"], trie.of("the").values
-    assert_equal "they", trie["they"]
-
-    # longest common substring, or palindrome
-    assert_equal ["anana"], String.longest_common_substring(['bananas', 'bananas'.reverse])
-    assert_equal ["aba", "bab"], String.longest_common_substring(['abab', 'baba']).sort
-    assert_equal ["ab"], String.longest_common_substring(['abab', 'baba', 'aabb'])
-    assert_equal ["ab"], String.longest_common_substring(['abab', 'baba', 'aabb'])
-    assert_equal "abc", String.longest_unique_charsequence('abcabcbb')
-  end
-
   def test_20_10_trans_steps_of_2_words
     # Given two words of equal length that are in a dictionary, 
     # design a method to transform one word into another word by changing only one letter at a time.
