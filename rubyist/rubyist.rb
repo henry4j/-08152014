@@ -3,13 +3,34 @@
 %w{test/unit stringio set}.each { |e| require e }
 
 class Graph
+  def self.dijkstra(s, edges)
+    # http://en.wikipedia.org/wiki/Dijkstra's_algorithm#Pseudocode
+    # http://www.codeproject.com/Questions/294680/Priority-Queue-Decrease-Key-function-used-in-Dijks
+    parents = []
+    distances = []
+    distances[s] = 0
+    q = BinaryHeap.new(lambda { |a, b| a[1] <=> b[1] }, lambda { |e| e[0] }) # e[0] has v; [1] has a distance.
+    q.offer([s, 0])
+    until q.empty? || q.peek[1].nil?
+      u, d = q.poll
+      edges[u].each do |v, w|
+        via_u = distances[u] + w
+        if distances[v].nil? || via_u < distances[v]
+          q.offer([v, distances[v] = via_u])
+          parents[v] = u
+        end
+      end
+    end
+    parents
+  end
+
   def self.dijkstra_v2(s, each_vertex, each_edge)
     parents = {}
     distances = Hash.new(Float::MAX).merge(s => 0)
     q = BinaryHeap.new(lambda { |a, b| a[1] <=> b[1] }, lambda { |e| e[0] }) # e[0] has v; [1] has a distance.
     each_vertex.call(lambda { |v| q.offer([v, Float::MAX]) })
     q.offer([s, 0])
-    until q.empty? || Float::MAX == q.peek[1]
+    until q.empty? || q.peek[1] == Float::MAX
       each_edge[u = q.poll[0], lambda do |v, w|
         via_u = distances[u] + w
         if via_u < distances[v]

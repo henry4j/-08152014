@@ -1653,29 +1653,6 @@ class Graph
     paths
   end
 
-  def self.dijkstra(u, edges)
-    # http://en.wikipedia.org/wiki/Dijkstra's_algorithm#Pseudocode
-    # http://www.codeproject.com/Questions/294680/Priority-Queue-Decrease-Key-function-used-in-Dijks
-    parents = []
-    distances = []
-    distances[u] = 0
-    BinaryHeap q = BinaryHeap.new(lambda { |a, b| a[1] <=> b[1] })
-    q.offer([u, 0])
-    loop do
-      begin end while (ud = q.poll) && distances[ud[0]] != ud[1]
-      break if ud.nil?
-      edges[u].each do |e|
-        via_u = distances[u] + e.w
-        if distances[e.y].nil? || distances[e.y] > via_u
-          distances[e.y] = via_u
-          parents[e.y] = u
-          q.offer([e.y, via_u])
-        end
-      end
-    end
-    parents
-  end
-
   def self.prim(u, edges)
     parents = []
     distances = []
