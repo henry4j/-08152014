@@ -18,7 +18,7 @@ class SNode
   end
 
   # Given a list (where k = 7, and n = 5), 1 2 3 4 5 6 7 a b c d e a.
-  # 1. do find the length of the loop, i.e. n = 5.
+  # 1. do find the length of the loop, i.e., n = 5.
   # 2. begin w/ u = 1, v = 6; advance them k times until they collide.
   def self.find_cycle(head)
     p1 = p2 = head
@@ -27,11 +27,11 @@ class SNode
       p2 = p2.next_.next_
       break if p1 == p2
     end
-    return unless p1 == p2
+    return if p2.nil?
 
     n = 1; p1 = p1.next_
     until p1 == p2
-      n += 1; p1 = p1.next_
+      p1 = p1.next_; n += 1
     end
 
     pk = head; pn_1 = head.next(n-1)
