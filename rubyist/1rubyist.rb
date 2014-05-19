@@ -2,6 +2,169 @@
 
 %w{test/unit stringio set}.each { |e| require e }
 
+module Strings
+  def self.min_window(positions) # e.g. [[0, 89, 130], [95, 123, 177, 199], [70, 105, 117]], O(L*logK)
+    min_window = window = positions.map { |e| e.shift } # [0, 95, 70]
+    heap = BinaryHeap.new(lambda { |a, b| a[1] <=> b[1] })
+    heap = window.each_index.reduce(heap) { |h, i| h.offer([i, window[i]]) }
+    until positions[i = heap.poll[0]].empty?
+      window[i] = positions[i].shift
+      min_window = [min_window, window].min_by { |w| w.max - w.min }
+      heap.offer([i, window[i]])
+    end
+    min_window.minmax
+  end
+
+  def self.min_window_string(text, pattern) # O(|text| + |pattern| + |indices| * log(|pattern|))
+    p = pattern.each_char.reduce({}) { |h, e| h.merge(e => 1+(h[e]||0)) } # O(|pattern|)
+    t = text.size.times.reduce({}) { |h, i| (h[text[i, 1]] ||= []) << i if p[text[i, 1]]; h } # O(|text|)
+    heap = BinaryHeap.new(lambda { |a, b| a[1] <=> b[1] }) # comparator on found indices.
+    heap = p.reduce(heap) { |h, (k, v)| v.times { h.offer([k, t[k].shift]) }; h } # offers key-index pairs.
+    min_window = window = heap.to_a.map { |kv| kv[1] }.minmax
+    until t[k = heap.poll[0]].empty?
+      heap.offer([k, t[k].shift]) # offers a key-index pair for the min-index key.
+      window = heap.to_a.map { |kv| kv[1] }.minmax
+      min_window = [min_window, window].min_by { |w| w.last - w.first }
+    end
+    text[min_window.first..min_window.last]
+  end
+
+  def self.index_of_by_rabin_karp(t, p)
+    n = t.size
+    m = p.size
+    hash_p = hash(p, 0, m)
+    hash_t = hash(t, 0, m)
+    return 0 if hash_p == hash_t
+
+    a_to_m = 31 ** m
+    (0...n-m).each do |offset|
+      hash_t = hash_succ(t, offset, m, a_to_m, hash_t)
+      return offset+1 if hash_p == hash_t
+    end
+
+    -1
+  end
+
+  def self.hash_succ(chars, offset, m, a_to_m, hash)
+    hash = (hash << 5) - hash
+    hash - a_to_m * chars[offset] + chars[offset+m]
+  end
+
+  def self.hash(chars, offset, length)
+    (offset...offset+length).reduce(0) { |h, i| ((h << 5) - h) + chars[i] }
+  end
+
+  def self.regex_match?(text, pattern, i = text.size-1, j = pattern.size-1)
+    case
+    when j == -1
+      i == -1
+    when i == -1
+      j == -1 || (j == 1 && pattern[1].chr == '*')
+    when pattern[j].chr == '*'
+      regex_match?(text, pattern, i, j-2) ||
+      (pattern[j-1].chr == '.' || pattern[j-1] == text[i]) && regex_match?(text, pattern, i-1, j)
+    when pattern[j].chr == '.' || pattern[j] == text[i]
+      regex_match?(text, pattern, i-1, j-1)
+    else
+      false
+    end
+  end
+
+  def self.wildcard_match?(text, pattern)
+    case
+    when pattern == '*'
+      true
+    when text.empty? || pattern.empty?
+      text.empty? && pattern.empty?
+    when pattern[0].chr == '*'
+      wildcard_match?(text, pattern[1..-1]) || 
+      wildcard_match?(text[1..-1], pattern)
+    when pattern[0].chr == '?' || pattern[0] == text[0]
+      wildcard_match?(text[1..-1], pattern[1..-1])
+    else
+      false
+    end
+  end
+
+  def self.bracket_match?(s)
+    a = []
+    s.each_char do |c|
+      case c
+        when '(' then a.push(')')
+        when '[' then a.push(']')
+        when '{' then a.push('}')
+        when ')', ']', '}'
+          return false if a.empty? || c != a.pop
+        end
+    end
+    a.empty?
+  end
+
+  def self.combine_parens(n)
+    answers = []
+    expand_out = lambda do |a|
+      opens = a.last[1]
+      case
+      when a.size == 2*opens then [['(', 1+opens]] # open
+      when n == opens then [[')', opens]] # close
+      else [['(', 1+opens], [')', opens]]  # open, or close
+      end
+    end
+
+    reduce_off = lambda do |a|
+      answers << a.map { |e| e[0] }.join if a.size == 2*n
+    end
+
+    Search.backtrack([['(', 1]], expand_out, reduce_off)
+    answers
+  end
+
+  def self.interleave(a, b)
+    answers = []
+    expand_out = lambda do |s|
+      e = s.last
+      [ [e[0]+1, e[1]], [e[0], e[1]+1] ].select { |e| e[0] < a.size && e[1] < b.size }
+    end
+
+    reduce_off = lambda do |s|
+      if s.size-1 == a.size + b.size
+        answers << (1...s.size).reduce('') { |z,i|
+          z += a[s[i][0], 1] if s[i-1][0] != s[i][0]
+          z += b[s[i][1], 1] if s[i-1][1] != s[i][1]
+          z
+        }
+      end
+    end
+
+    Search.backtrack([[-1, -1]], expand_out, reduce_off)
+    answers
+  end
+
+  def self.anagram?(lhs, rhs) # left- and right-hand sides
+    return true if lhs.equal?(rhs) # reference-equals
+    return false unless lhs.size == rhs.size # value-equals
+
+    counts = lhs.each_char.reduce({}) { |h, c| h.merge(c => 1 + (h[c] || 0)) }
+
+    rhs.each_char do |c|
+      return false unless counts.has_key? c
+      counts[c] -= 1
+    end
+
+    counts.empty? || counts.values.all? { |e| 0 == e }
+  end
+
+  def self.non_repeated(s)
+    h = s.each_char.reduce({}) { |h, e| h.merge(e => 1 + (h[e] || 0)) }
+    h.keys.select { |k| h[k] == 1 }.sort.join
+  end
+
+  def self.lcp(strings = []) # LCP: longest common prefix
+    # strings.reduce { |l,s| l.chop! until l==s[0...l.size]; l }
+    strings.reduce { |l,s| k = 0; k += 1 while l[k] == s[k]; l[0...k] }
+  end
+end
+
 class SNode
   attr_accessor :value, :next_
 
@@ -45,7 +208,7 @@ class SNode
     return nil if lhs.nil? && rhs.nil? && 0 == ones
     ones += lhs.value if lhs
     ones += rhs.value if rhs
-    SNode.new(ones % 10, SNode.sum(lhs ? lhs.next_ : nil, rhs ? rhs.next_ : nil, ones / 10))
+    SNode.new(ones % 10, sum(lhs ? lhs.next_ : nil, rhs ? rhs.next_ : nil, ones / 10))
   end
 
   def self.reverse!(current)
