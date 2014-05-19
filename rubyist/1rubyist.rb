@@ -100,6 +100,20 @@ module Strings
     a.empty?
   end
 
+  def self.combine_parentheses(o, c, s = '')
+    case
+    when o == 0 && c == 0
+      [s]
+    when o == c
+      combine_parentheses(o-1, c, s + '(')
+    when o == 0
+      combine_parentheses(o, c-1, s + ')')
+    else
+      combine_parentheses(o-1, c, s + '(') +
+      combine_parentheses(o, c-1, s + ')')
+    end
+  end
+
   def self.combine_parens(n)
     answers = []
     expand_out = lambda do |a|
