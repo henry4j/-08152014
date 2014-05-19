@@ -689,14 +689,11 @@ class BNode
   end
 
   def self.sorted_by_minmax?(tree, min = nil, max = nil)
-    if tree
-      (min.nil? || tree.value >= min) &&
-      (max.nil? || tree.value <= max) &&
-      sorted_by_minmax?(tree.left, min, tree.value) &&
-      sorted_by_minmax?(tree.right, tree.value, max)
-    else
-      true
-    end
+    tree.nil? ||
+    (min.nil? || tree.value >= min) &&
+    (max.nil? || tree.value <= max) &&
+    sorted_by_minmax?(tree.left, min, tree.value) &&
+    sorted_by_minmax?(tree.right, tree.value, max)
   end
 
   def self.parent!(node)
@@ -2124,5 +2121,14 @@ HERE
     assert_equal "2 → 1 → 3 → ⏚", SNode.reverse_every2!(SNode.new([1, 2, 3])).to_s
     assert_equal "2 → 1 → 4 → 3 → ⏚", SNode.reverse_every2!(SNode.new([1, 2, 3, 4])).to_s
     assert_equal "2 → 1 → 4 → 3 → 5 → ⏚", SNode.reverse_every2!(SNode.new([1, 2, 3, 4, 5])).to_s
+  end
+
+  def test_8_5_combine_parenthesis
+    # Write a program that returns all valid combinations of n-pairs of parentheses that are properly opened and closed.
+    # input: 3 (e.g., 3 pairs of parentheses)
+    # output: ()()(), ()(()), (())(), ((()))
+    assert_equal ["((()))", "(()())", "(())()", "()(())", "()()()"], Strings.combine_parens(3)
+    assert_equal ["ab12", "a1b2", "a12b", "1ab2", "1a2b", "12ab"], Strings.interleave('ab', '12')
+    assert_equal 20, Strings.interleave('abc', '123').size
   end
 end

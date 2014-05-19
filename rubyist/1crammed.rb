@@ -1214,15 +1214,6 @@ class TestCases < Test::Unit::TestCase
     assert_equal [-4, -3, 1, 2, 5, 6], Arrays.sort_using_stack!([5, -3, 1, 2, -4, 6])
   end
 
-  def test_8_5_combine_parenthesis
-    # Write a program that returns all valid combinations of n-pairs of parentheses that are properly opened and closed.
-    # input: 3 (e.g., 3 pairs of parentheses)
-    # output: ()()(), ()(()), (())(), ((()))
-    assert_equal ["((()))", "(()())", "(())()", "()(())", "()()()"], Strings.combine_parens(3)
-    assert_equal ["ab12", "a1b2", "a12b", "1ab2", "1a2b", "12ab"], Strings.interleave('ab', '12')
-    assert_equal 20, Strings.interleave('abc', '123').size
-  end
-
   def test_9_3_min_n_index_out_of_cycle
     assert_equal 10, Arrays.index_out_of_cycle([10, 14, 15, 16, 19, 20, 25, 1, 3, 4, 5, 7], 5)
     assert_equal 7, Arrays.index_out_of_cycle([16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14, 15], 5)
