@@ -1177,6 +1177,98 @@ module Search
       end
     end
   end
+
+  def self.solve_boggle(d, m, k, n = m.size) # k is a max length of a word.
+    words = []
+    branch_out = lambda do |a| # branches out from the last position (p)
+      p = a[-1]
+      [ # branches out in 8 directions
+        [p[0], p[1]-1], [p[0], p[1]+1], [p[0]-1, p[1]], [p[0]+1, p[1]],
+        [p[0]-1, p[1]-1], [p[0]-1, p[1]+1], [p[0]+1, p[1]-1], [p[0]+1, p[1]+1]
+      ].reject { |q| # rejects invalid branches
+        q[0] < 0 || q[0] >= n || q[1] < 0 || q[1] >= n || p[-1][n*q[0]+q[1]]
+      }.map { |q| # attaches a hash of encountered positions
+        q << p[-1].merge(n*q[0]+q[1] => true)
+      }
+    end
+    reduce_off = lambda do |a|
+      w = a.map { |e| m[e[0]][e[1]] }.join # joins chars into a word
+      words << w if d[w] # collects a dictionary word
+      a.size >= k # tells when to stop backtracking
+    end
+    n.times { |i|
+      n.times { |j|
+        backtrack([[i, j, {n*i+j => true}]], branch_out, reduce_off)
+      }
+    }
+    words
+  end
+
+  # a k-combination of a set S is a subset of k distinct elements of S, and 
+  # the # of k-combinations is equals to the binomial coefficient, n! / (k! * (n-k)!).
+  def self.combination(ary, k = nil, n = ary.size)
+    nCk = []
+    expand_out = lambda { |c| [ary[c.size], nil] }
+    reduce_off = lambda { |c| nCk << c.compact if c.size == n }
+    Search.backtrack([], expand_out, reduce_off)
+    (k ? nCk.select { |c| c.size == k } : nCk).uniq
+  end
+
+  # a k-permutation of a set S is an ordered sequence of k distinct elements of S, and 
+  # the # of k-permutation of n objects is denoted variously nPk, and P(n,k), and its value is given by n! / (n-k)!.
+  def self.permutation(ary, n = ary.size)
+    nPn = []
+    indices = (0...n).to_a
+    expand_out = lambda { |p| indices - p }
+    reduce_off = lambda { |p| nPn << p.map { |i| ary[i] } if p.size == n }
+    Search.backtrack([], expand_out, reduce_off)
+    nPn.uniq
+  end
+
+  def self.permutate(ary, n = ary.size)
+    if 1 == n
+      [ ary.dup ]
+    else
+      h = {}
+      (0...n).
+        select { |i| h[ary[i]] = true unless h[ary[i]] }.
+        map do |i|
+          ary[n-1], ary[i] = ary[i], ary[n-1]
+          p = permutate(ary, n-1)
+          ary[n-1], ary[i] = ary[i], ary[n-1]
+          p
+        end.reduce(:+)
+    end
+  end
+
+  def self.permutate_succ(ary, n = ary.size)
+    (n-1).downTo(1) do |i|
+      if ary[i] > ary[i-1]
+        ((n-i)/2).times { |j| ary[i+j], ary[n-1-j] = ary[n-1-j], ary[i+j] }
+        (i...n).each { |j| if ary[j] > ary[i-1]; ary[i], ary[j] = ary[j], ary[i]; return end }
+      end
+    end
+    (n/2).times { |j| ary[j], ary[n-1-j] = ary[n-1-j], ary[j] }
+  end
+
+  # http://www.youtube.com/watch?v=p4_QnaTIxkQ
+  def self.queens_in_peace(n)
+    answers = []
+    peaceful_at = lambda do |queens, c|
+      queens.each_with_index { |e, i| e != c && queens.size - i != (e - c).abs }
+    end
+
+    expand_out = lambda do |queens|
+      n.times.select { |c| peaceful_at.call(queens, c) }
+    end
+
+    reduce_off = lambda do |queens|
+      answers << queens.dup if queens.size == n
+    end
+
+    Search.backtrack([], expand_out, reduce_off)
+    answers
+  end
 end
 
 module DP # http://basicalgos.blogspot.com/search/label/dynamic%20programming
