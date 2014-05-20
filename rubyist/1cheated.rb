@@ -1155,7 +1155,7 @@ class DNode
   attr_accessor :value, :prev_, :next_
 
   def initialize(value, next_ = nil, prev_ = nil)
-    @value = value; @prev_ = prev_; @next_ = next_
+    @value, @prev_, @next_ = value, prev_, next_
   end
 
   def to_a

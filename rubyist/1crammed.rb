@@ -860,22 +860,6 @@ module Kernel
   end
 end
 
-class DNode
-  attr_accessor :value, :prev_, :next_
-
-  def initialize(value, next_ = nil, prev_ = nil)
-    @value = value; @prev_ = prev_; @next_ = next_
-  end
-
-  def to_a
-    @next_ ? [value] + @next_.to_a : [value]
-  end
-
-  def to_s
-    "#{[value, next_ ? next_.to_s: 'nil'].join(' -> ')}"
-  end
-end
-
 ###########################################################
 # System and Object-Oriented Design
 ###########################################################
