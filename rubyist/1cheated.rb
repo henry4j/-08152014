@@ -1730,7 +1730,676 @@ class String
   end
 end
 
+class MinStack
+  attr_reader :minimum
+
+  def initialize
+    @stack = []
+    @minimum = nil
+  end
+
+  def push(element)
+    if @minimum.nil? || element <= @minimum
+      @stack.push(@minimum)
+      @minimum = element
+    end
+    @stack.push element
+  end
+
+  def pop
+    element = @stack.pop
+    @minimum = @stack.pop if @minimum == element
+    element
+  end
+end
+
+module Numbers # discrete maths and bit twiddling http://graphics.stanford.edu/~seander/bithacks.html
+  def self.prime?(n)
+    n == 2 || n.odd? && 2.step(Math.sqrt(n).floor, 2).all? { |a| 0 != a % n }
+  end
+
+  def self.prime(n, certainty = 5)
+    # returns when the probability that the number is prime exceeds 96.875% (1 - 0.5 ** certainty)
+    # http://rosettacode.org/wiki/Miller-Rabin_primality_test#Ruby
+    if n < 4
+      n
+    else
+      n += 1 if n.even?
+      logN = Math.log(n).ceil
+      loop do
+        break n if certainty.times.all? do 
+          a = 2 + rand(n - 3) # i.e. a is in range (2..n-2).
+          1 == a ** (n-1) % n # Miller-Rabin primality test
+        end
+        break nil if n > n + logN*3/2
+        n += 2
+      end
+    end
+  end
+
+  def self.abs(i)
+    negative1or0 = i >> (0.size * 8 - 1) # 63
+    (i + negative1or0) ^ negative1or0
+  end
+
+  def self.minmax(a, b)
+    negative1or0 = a - b >> (0.size * 8 - 1)
+    [ b ^ ((a ^ b) & negative1or0), a ^ ((a ^ b) & negative1or0) ]
+  end
+
+  def self.sum(a, b)
+    if 0 == b
+      a
+    else
+      units = (a ^ b)
+      carry = (a & b) << 1
+      sum(units, carry)
+    end
+  end
+
+  def self.divide(dividend, divisor) # implement division w/o using the divide operator, obviously.
+    bit = 1
+    while divisor <= dividend
+      divisor <<= 1
+      bit <<= 1
+    end
+
+    quotient = 0
+    while bit > 0
+      divisor >>= 1
+      bit >>= 1
+      if dividend >= divisor
+        dividend -= divisor
+        quotient |= bit
+      end
+    end
+    quotient
+  end
+
+  def self.opposite_in_sign?(a, b)
+    a ^ b < 0
+  end
+
+  def self.power_of_2?(x)
+    x > 0 && (0 == x & x - 1)
+  end
+
+  def self.knuth_suffle!(ary, n = ary.size)
+    ary.each_index do |i|
+      j = i + rand(n - i) # to index: i + ary.size - i - 1
+      ary[j], ary[i] = ary[i], ary[j]
+    end
+    ary
+  end
+
+  def self.reservoir_samples(io, k = 1)
+    samples = []
+    count = 0
+    until io.eof? do
+      count += 1
+      if samples.size < k
+        samples << io.gets.chomp
+      else
+        s = rand(count)
+        samples[s] = io.gets.chomp if s < k
+      end
+    end
+
+    samples
+  end
+
+  def self.weighted_choice(weights)
+    pick = rand(weights.reduce(:+))
+    weights.size.times do |i|
+      pick -= weights[i]
+      return i if pick < 0
+    end
+  end
+
+  def self.rand7()
+    begin
+      rand21 = 5 * (rand5 - 1) + rand5
+    end until rand21 <= 21
+    rand21 % 7 + 1 # 1, 2, ..., 7
+  end
+
+  def self.rand5()
+    rand(5) + 1
+  end
+
+  def self.from_excel_column(s)
+    columns = 0; cases = 26
+    (s.size - 1).times do
+      columns += cases; cases *= 26
+    end
+
+    ord_a = 'A'.bytes.to_a[0]
+    bytes = s.bytes.to_a
+    cases = 1
+    -1.downto(-s.size) do |k|
+      columns += cases * (bytes[k] - ord_a); cases *= 26
+    end
+
+    columns + 1
+  end
+
+  def self.to_excel_column(n)
+    k = 0; cases = 26
+    while n > cases
+      n -= cases; cases *= 26; k += 1
+    end
+
+    n -= 1
+    s = ''
+    ord_a = 'A'.bytes.to_a[0]
+    (k + 1).times do
+      s = (n % 26 + ord_a).chr + s
+      n /= 26
+    end
+
+    s
+  end
+
+  def self.reverse_decimal(n)
+    reversed = 0
+    while n > 0
+      reversed *= 10
+      reversed += n % 10
+      n /= 10
+    end
+    reversed
+  end
+
+  def self.fibonacci(k, memos = [0, 1]) # F0 = 0, F1 = 1, ...
+    memos[k] ||= fibonacci(k - 1, memos) + fibonacci(k - 2, memos) if k >= 0
+  end
+end
+
+class Queueable
+  def initialize
+    @stack1 = []
+    @stack2 = []
+  end
+
+  def offer(element)
+    @stack1.push(element)
+    self
+  end
+
+  def poll
+    @stack2.push(@stack1.pop) until @stack1.empty? if @stack2.empty?
+    @stack2.pop
+  end
+end
+
+
+module Arrays
+  def self.max_area_in_histogram(heights)
+    l = []
+    max_area = 0
+    area = lambda do |r| # exclusive right end
+      h, w = heights[l.pop], r - (l.empty? ? 0 : l.last+1)
+      h * w
+    end
+    heights.each_index do |r|
+      until l.empty? || heights[r] > heights[l.last]
+        max_area = [max_area, area.call(r)].max
+      end
+      l.push(r)
+    end
+    max_area = [max_area, area.call(heights.size)].max until l.empty?
+    max_area
+  end
+
+  def self.three_sum_closest(ary, q = 0, n = ary.size)
+    ary = ary.sort
+    tuples = []
+    min_diff = nil
+    n.times do |i| # 0...n
+      pivot, l, r = ary[i], i+1, n-1
+      while l < r
+        tuple = [pivot, ary[l], ary[r]]
+        diff = (q - tuple.reduce(:+)).abs
+        case
+        when min_diff.nil? || diff < min_diff
+          tuples = [tuple]; min_diff = diff
+        when diff == min_diff
+          tuples << tuple
+        end
+        case q <=> tuple.reduce(:+)
+        when -1 then l += 1
+        when  1 then r -= 1
+        else l += 1; r -= 1
+        end
+      end
+    end
+    tuples
+  end
+
+  def self.three_sum(ary, q = 0, n = ary.size) # q is the target number.
+    ary = ary.sort
+    tuples = []
+    n.times do |i| # 0...n
+      pivot, l, r = ary[i], i+1, n-1
+      while l < r
+        tuple = [pivot, ary[l], ary[r]]
+        case q <=> tuple.reduce(:+)
+        when -1 then l += 1
+        when  1 then r -= 1
+        else l += 1; r -= 1; tuples << tuple
+        end
+      end
+    end
+    tuples
+  end
+
+  # http://discuss.leetcode.com/questions/1070/longest-consecutive-sequence
+  def self.longest_ranges(ary)
+    h = ary.reduce({}) do |h, e|
+      ub = e + h[e+1].to_i # upper bound
+      lb = e - h[e-1].to_i # lower bound
+      h[lb] = h[ub] = ub - lb + 1
+      h
+    end
+    h.group_by { |_,v| v }.max_by { |k,v| k }[1].map { |e| e[0] }.sort
+  end
+
+  # http://en.wikipedia.org/wiki/In-place_matrix_transposition
+  # http://stackoverflow.com/questions/9227747/in-place-transposition-of-a-matrix
+  def self.transpose_to_v1(a, n_c) # to n columns
+    case a.size
+    when n_c * n_c # square
+      n = n_c
+      for r in 0..n-2
+        for c in r+1..n-1
+          v = r*n + c; w = c*n + r
+          a[v], a[w] = a[w], a[v]
+        end
+      end
+    else
+      transpose = lambda do |i, m_n, n_c| 
+        i * n_c % (m_n-1) # mod by m x n - 1.
+      end
+
+      h = [] # keeps track of what elements are already transposed.
+      m_n = a.size
+      (1...m_n-1).each do |i|
+        unless h[i]
+          j = i
+          until i == (j = transpose.call(i, m_n, n_c))
+            a[j], a[i] = a[i], a[j] # swaps elements by parallel assignment.
+            h[j] = true
+          end
+        end
+      end
+    end
+    a
+  end
+
+  def self.transpose_to(a, n_c) # to n columns
+    transpose = lambda do |i, m_n, n| 
+      i * n_c % (m_n-1) # mod by m x n - 1.
+    end
+
+    tranposed_yet = lambda do |i, m_n, n_c|
+      min = i # i must be minimum.
+      loop do
+        break i == min if min >= (i = transpose.call(i, m_n, n_c))
+      end
+    end
+
+    m_n = a.size # a.size equals to m x n.
+    transposed = 2 # a[0], and a[m_n-1] are transposed.
+    (1..m_n-2).each do |i|
+      if 1 == i || (transposed < m_n && tranposed_yet.call(i, m_n, n_c))
+        j = i
+        until i == (j = transpose.call(j, m_n, n_c))
+          a[j], a[i] = a[i], a[j] # swaps elements by parallel assignment.
+          transposed += 1
+        end
+        transposed += 1
+      end
+    end
+    a
+  end
+
+  def self.min_out_of_cycle(ary, left = 0, right = ary.size - 1)
+    # also called the smallest from a rotated list of sorted numbers.
+    if right == left
+      ary[left]
+    else
+      pivot = (left + right)/2
+      if ary[right] < ary[pivot]
+        min_out_of_cycle(ary, pivot + 1, right)
+      else
+        min_out_of_cycle(ary, left, pivot)
+      end
+    end
+  end
+
+  def self.index_out_of_cycle(ary, key, left = 0, right = ary.size-1)
+    while left <= right
+      pivot = (left + right) / 2
+      if key == ary[pivot]
+        return pivot
+      else
+        if ary[left] <= ary[pivot]
+          if ary[pivot] < key || key < ary[left]
+            left = pivot + 1
+          else
+            right = pivot - 1
+          end
+        else
+          if key < ary[pivot] || key > ary[left]
+            right = pivot - 1
+          else
+            left = pivot + 1
+          end
+        end
+      end
+    end
+  end
+
+  def self.find_occurences(ary, key)
+    first_index = first_index(ary, key)
+    if first_index
+      first_index .. last_index(ary, key, first_index...ary.size)
+    end
+  end
+
+  def self.first_index(ary, key, range = 0...ary.size)
+    if range.count > 1
+      pivot = range.minmax.reduce(:+) / 2
+      case key <=> ary[pivot]
+      when -1 then first_index(ary, key, range.min..pivot-1)
+      when 1 then first_index(ary, key, pivot+1..range.max)
+      else first_index(ary, key, range.min..pivot) # up to pivot index
+      end
+    else
+      range.min if key == ary[range.min] # nil otherwise
+    end
+  end
+
+  def self.last_index(ary, key, range = 0...ary.size)
+    if range.count > 1
+      pivot = (1 + range.minmax.reduce(:+)) / 2
+      case key <=> ary[pivot]
+      when -1 then last_index(ary, key, range.min..pivot-1)
+      when 1 then last_index(ary, key, pivot+1..range.max)
+      else last_index(ary, key, pivot..range.max)
+      end
+    else
+      key == ary[range.min] ? range.min : nil
+    end
+  end
+
+  def self.pairs_of_sum(ary, sum)
+    h = {}
+    ary.each do |x|
+      if h.has_key?(x)
+        h[sum - x] = x
+      else
+        h[sum - x] = nil unless h.has_key?(sum - x)
+      end
+    end
+
+    h.each.select { |k, v| v }
+  end
+
+  def self.sort_using_stack!(a)
+    s = []
+    until a.empty?
+      e = a.pop
+      a.push(s.pop) until s.empty? || s.last < e
+      s.push(e)
+    end
+
+    a.replace(s) # returns s
+  end
+
+  def self.indexes_out_of_matrix(m, x)
+    row = 0
+    col = m[0].size - 1
+    while row < m.size && col >= 0
+      return [row, col] if x == m[row][col]
+      if (m[row][col] > x)
+        col -= 1
+      else
+        row += 1
+      end
+    end
+
+    [-1, -1]
+  end
+
+  def self.merge_sort!(ary = [], range = 0...ary.size, tmp = Array.new(ary.size))
+    if range.max - range.min > 0
+      pivot = (range.min + range.max) / 2
+      merge_sort!(ary, range.min..pivot, tmp)
+      merge_sort!(ary, pivot+1..range.max, tmp)
+      merge!(ary, range.min, pivot+1, range.max, tmp)
+    end
+  end
+
+  def self.merge!(ary, left, left2, right2, tmp)
+    left1 = left
+    right1 = left2 - 1
+    last = 0
+    while left1 <= right1 && left2 <= right2
+      if ary[left1] < ary[left2]
+        tmp[last] = ary[left1]; last += 1; left1 += 1
+      else
+        tmp[last] = ary[left2]; last += 1; left2 += 1
+      end
+    end
+
+    while left1 <= right1 do tmp[last] = ary[left1]; last += 1; left1 += 1 end
+    while left2 <= right2 do tmp[last] = ary[left2]; last += 1; left2 += 1 end
+    ary[left..right2] = tmp[0..last-1]
+  end
+
+  def self.max_profit(ary) # from a list of stock prices.
+    left = 0; max_left = max_right = -1; max_profit = 0
+    ary.each_index do |right|
+      if ary[right] < ary[left]
+        left = right
+      elsif (profit = ary[right] - ary[left]) >= max_profit
+        max_left = left; max_right = right; max_profit = profit
+      end
+    end
+
+    [max_profit, [max_left, max_right]]
+  end
+
+  def self.maxsum_subarray(a)
+    # Kadane's algorithm http://en.wikipedia.org/wiki/Maximum_subarray_problem
+    left = 0; max_left = max_right = -1; sum = max_sum = 0
+    a.size.times do |right|
+      if sum > 0
+        sum = sum + a[right]
+      else
+        left = right; sum = a[right]
+      end
+      if sum >= max_sum
+        max_left = left; max_right = right; max_sum = sum
+      end
+    end
+    [max_sum, [max_left, max_right]]
+  end
+
+  def self.maxsum_submatrix(m)
+    prefix_sums_v = Array.new(m.size) { Array.new(m[0].size, 0) } # vertically
+    m.size.times do |r|
+      m[0].size.times do |c|
+        prefix_sums_v[r][c] = (r > 0 ? prefix_sums_v[r - 1][c] : 0) + m[r][c]
+      end
+    end
+
+    max_top = 0, max_left = 0, max_bottom = 0, max_right = 0; max_sum = m[0][0];
+    m.size.times do |top| # O (n*(n+1)/2) * O(m) for n * m matrix
+      (top...m.size).each do |bottom|
+        sum = 0;
+        left = 0;
+        m[0].size.times do |right| # O(m) given m columns
+          sum_v = prefix_sums_v[bottom][right] - (top > 0 ? prefix_sums_v[top-1][right] : 0)
+          if sum > 0
+            sum += sum_v
+          else
+            sum = sum_v; left = right
+          end
+
+          if sum >= max_sum
+            max_top = top;
+            max_bottom = bottom;
+            max_left = left;
+            max_right = right;
+            max_sum = sum;
+          end
+        end
+      end
+    end
+
+    [max_sum, [max_top, max_left, max_bottom, max_right]]
+  end
+
+  def self.max_size_subsquare(m = [[1]])
+    m.size.times do |r|
+      raise "row[#{r}].size must be '#{m.size}'." unless m.size == m[r].size
+    end
+
+    prefix_sums_v = Array.new(m.size) { [] } # vertically
+    prefix_sums_h = Array.new(m.size) { [] } # horizontally
+    m.size.times do |r|
+      m.size.times do |c|
+        prefix_sums_v[r][c] = (r > 0 ? prefix_sums_v[r - 1][c] : 0) + m[r][c]
+        prefix_sums_h[r][c] = (c > 0 ? prefix_sums_h[r][c - 1] : 0) + m[r][c]
+      end
+    end
+
+    max_r = max_c = max_size = -1
+    m.size.times do |r|
+      m.size.times do |c|
+        (m.size - [r, c].max).downto(1) do |size|
+          if size > max_size && forms_border?(r, c, size, prefix_sums_v, prefix_sums_h)
+            max_r = r; max_c = c; max_size = size
+          end
+        end
+      end
+    end
+
+    [max_size, [max_r, max_c]]
+  end
+
+  def self.forms_border?(r, c, s, prefix_sums_v, prefix_sums_h)
+    s == prefix_sums_h[r][c+s-1] - (c > 0 ? prefix_sums_h[r][c-1] : 0) &&
+    s == prefix_sums_v[r+s-1][c] - (r > 0 ? prefix_sums_v[r-1][c] : 0) &&
+    s == prefix_sums_h[r+s-1][c+s-1] - (c > 0 ? prefix_sums_h[r+s-1][c-1] : 0) &&
+    s == prefix_sums_v[r+s-1][c+s-1] - (r > 0 ? prefix_sums_v[r-1][c+s-1] : 0)
+  end
+
+  def self.peak(ary, range = 0...ary.size)
+    if range.min # nil otherwise
+      k = (range.min + range.max) / 2
+      case
+      when ary[k-1] < ary[k] && ary[k] > ary[k+1] # at peak
+        k
+      when ary[k-1] < ary[k] && ary[k] < ary[k+1] # ascending
+        peak(ary, k+1..range.max)
+      else # descending
+        peak(ary, range.min..k-1)
+      end
+    end
+  end
+
+  def self.minmax(ary, range = 0...ary.size)
+    if range.min >= range.max
+      [ary[range.min], ary[range.max]]
+    else
+      pivot = [range.min, range.max].reduce(:+) / 2
+      mm1 = minmax(ary, range.min..pivot)
+      mm2 = minmax(ary, pivot+1..range.max)
+      [[mm1[0], mm2[0]].min, [mm1[1], mm2[1]].max]
+    end
+  end
+
+  def self.exclusive_products(ary) # exclusive products without divisions.
+    prefix_products = ary.reduce([]) { |a,e| a + [(a[-1] || 1) * e] }
+    postfix_products = ary.reverse_each.reduce([]) { |a,e| [(a[0] || 1) * e] + a }
+    (0...ary.size).reduce([]) { |a,i| a + [(i > 0 ? prefix_products[i-1] : 1) * (postfix_products[i+1] || 1)] }
+  end
+
+  def self.find_odd(ary)
+    ary.group_by { |e| e }.detect { |k, v| v.size % 2 == 1 }[0]
+  end
+
+  def self.missing_numbers(ary)
+    minmax = ary.minmax # by divide and conquer in O(log N)
+    h = ary.reduce({}) { |h,e| h.merge(e => 1 + (h[e] || 0)) }
+    (minmax[0]..minmax[1]).select { |i| !h.has_key?(i) }
+  end
+
+  def self.find_modes_using_map(ary)
+    max_occurence = 0 # it doesn't matter whether we begin w/ 0, or 1.
+    occurrences = {}
+    ary.reduce([]) do |a,e|
+      occurrences[e] = 1 + (occurrences[e] || 0)
+      if occurrences[e] > max_occurence
+        max_occurence = occurrences[e]
+        a = [e]
+      elsif occurrences[e] == max_occurence
+        a <<= e
+      else
+        a
+      end
+    end
+  end
+
+  def self.find_modes_using_array(ary)
+    if ary
+      min = ary.min
+      max_hits = 1
+      modes = []
+      hits_by_number = []
+      ary.each do |i|
+        hits_by_number[i-min] = 1 + (hits_by_number[i-min] || 0)
+        if hits_by_number[i-min] > max_hits
+          modes.clear
+          max_hits = hits_by_number[i-min]
+        end
+        modes << i if hits_by_number[i-min] == max_hits
+      end
+      modes
+    end
+  end
+
+  def self.move_disk(from, to, which)
+    puts "move disk #{which} from #{from} to #{to}"
+  end
+
+  def self.move_tower(from, to, spare, n)
+    if 1 == n
+      move_disk(from, to, 1)
+    else
+      move_tower(from, spare, to, n-1)
+      move_disk(from, to, n)
+      move_tower(spare, to, from, n-1)
+    end
+  end
+end # end of Arrays
+
 class TestCases < Test::Unit::TestCase
+  def test_3_5_queque_by_good_code_coverage # this test case satisfies condition & loop coverage(s). http://en.wikipedia.org/wiki/Code_coverage
+    # Implement a queue using two stacks.
+    q = Queueable.new         # stack1: [ ], stack2: [ ]
+    q.offer 1                   # stack1: [1], stack2: [ ]
+    q.offer 2                   # stack1: [1, 2], stack2: [ ]
+    assert_equal 1, q.poll     # stack1: [ ], stack2: [2], coverage: true, and 2 iterations
+    assert_equal 2, q.poll     # stack1: [ ], stack2: [ ], coverage: false
+    q.offer 3                   # stack1: [3], stack2: [ ]
+    assert_equal 3, q.poll     # stack1: [ ], stack2: [ ], coverage: true, and 1 iteration
+    assert_equal nil, q.poll   # stack1: [ ], stack2: [ ], coverage: true, and 0 iteration
+  end
+
   def test_topological_sort
     # graph:       D3 ⇾ H7
     #              ↑
@@ -2236,6 +2905,26 @@ HERE
     assert_equal ["((()))", "(()())", "(())()", "()(())", "()()()"], Strings.combine_parens(3)
     assert_equal ["ab12", "a1b2", "a12b", "1ab2", "1a2b", "12ab"], Strings.interleave('ab', '12')
     assert_equal 20, Strings.interleave('abc', '123').size
+  end
+
+  def test_3_2_min_stack
+    # Design and implement a stack of integers that has an additional operation 'minimum' besides 'push' and 'pop',
+    # that all run in constant time, e.g., push(2), push(3), push(2), push(1), pop, pop, and minimum returns 2.
+    stack = MinStack.new
+    assert stack.minimum.nil?
+    stack.push 2                  # [nil, 2]
+    stack.push 3                  # [nil, 2, 3]
+    stack.push 2                  # [nil, 2, 3, 2, 2]
+    stack.push 1                  # [nil, 2, 3, 2, 2, 2, 1]
+    assert_equal 1, stack.minimum
+    assert_equal 1, stack.pop     # [nil, 2, 3, 2, 2]
+    assert_equal 2, stack.minimum
+    assert_equal 2, stack.pop     # [nil, 2, 3]
+    assert_equal 2, stack.minimum
+    assert_equal 3, stack.pop     # [nil, 2]
+    assert_equal 2, stack.minimum
+    assert_equal 2, stack.pop     # []
+    assert stack.minimum.nil?
   end
 
   def test_1_3_anagram?
