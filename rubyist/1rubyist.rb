@@ -2145,4 +2145,17 @@ HERE
     assert_equal ["ab12", "a1b2", "a12b", "1ab2", "1a2b", "12ab"], Strings.interleave('ab', '12')
     assert_equal 20, Strings.interleave('abc', '123').size
   end
+
+  def test_1_3_anagram?
+    # Given two strings, write a method to determine if one is a permutation of the other.
+    assert Strings.anagram?(nil, nil)
+    assert Strings.anagram?("", "")
+    assert !Strings.anagram?("", "x")
+    assert Strings.anagram?("a", "a")
+    assert Strings.anagram?("ab", "ba")
+    assert Strings.anagram?("aab", "aba")
+    assert Strings.anagram?("aabb", "abab")
+    assert !Strings.anagram?("a", "b")
+    assert !Strings.anagram?("aa", "ab")
+  end
 end

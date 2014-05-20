@@ -1161,19 +1161,6 @@ class TestCases < Test::Unit::TestCase
   #       that you are given a function that will identify the character and its position on
   #       the reverse side of the page for any given character position.
 
-  def test_1_3_anagram?
-    # Given two strings, write a method to determine if one is a permutation of the other.
-    assert Strings.anagram?(nil, nil)
-    assert Strings.anagram?("", "")
-    assert !Strings.anagram?("", "x")
-    assert Strings.anagram?("a", "a")
-    assert Strings.anagram?("ab", "ba")
-    assert Strings.anagram?("aab", "aba")
-    assert Strings.anagram?("aabb", "abab")
-    assert !Strings.anagram?("a", "b")
-    assert !Strings.anagram?("aa", "ab")
-  end
-
   def test_3_2_min_stack
     # Design and implement a stack of integers that has an additional operation 'minimum' besides 'push' and 'pop',
     # that all run in constant time, e.g., push(2), push(3), push(2), push(1), pop, pop, and minimum returns 2.
