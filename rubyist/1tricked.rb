@@ -48,9 +48,9 @@ module Partitions
     restricted_keys = Array.new(ary.size, 0)
     partitions = []
     while succ!(restricted_keys, prefix_maximums)
-      partitions << ary.each_index.reduce([]) { |p, i|
+      partitions << ary.each_index.reduce([]) do |p, i|
         (p[restricted_keys[i]] ||= []) << ary[i]; p
-      }
+      end
     end
     partitions
   end
