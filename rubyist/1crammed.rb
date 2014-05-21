@@ -2983,6 +2983,10 @@ HERE
     assert_equal 20, Strings.interleave('abc', '123').size
   end
 
+  def test_3_6_sort_by_stack
+    assert_equal [-4, -3, 1, 2, 5, 6], Arrays.sort_using_stack!([5, -3, 1, 2, -4, 6])
+  end
+
   def test_3_2_min_stack
     # Design and implement a stack of integers that has an additional operation 'minimum' besides 'push' and 'pop',
     # that all run in constant time, e.g., push(2), push(3), push(2), push(1), pop, pop, and minimum returns 2.

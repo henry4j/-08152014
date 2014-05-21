@@ -530,10 +530,6 @@ class TestCases < Test::Unit::TestCase
     Arrays.move_tower('A', 'C', 'B', 3) # from 'A' to 'C' via 'B'.
   end
 
-  def test_3_6_sort_by_stack
-    assert_equal [-4, -3, 1, 2, 5, 6], Arrays.sort_using_stack!([5, -3, 1, 2, -4, 6])
-  end
-
   def test_9_3_min_n_index_out_of_cycle
     assert_equal 10, Arrays.index_out_of_cycle([10, 14, 15, 16, 19, 20, 25, 1, 3, 4, 5, 7], 5)
     assert_equal 7, Arrays.index_out_of_cycle([16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14, 15], 5)
