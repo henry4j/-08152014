@@ -320,7 +320,7 @@ class SNode
 
     pk = head; pn_1 = head.next(n-1)
     until pk == pn_1.next
-      pk = pk.next; pn_1 = pn_1.next
+      pk, pn_1 = pk.next, pn_1.next
     end
     pn_1
   end
@@ -361,9 +361,9 @@ class SNode
   end
 
   def next(n = 1)
-    next_ = self
-    n.times { next_ = next_.next_ }
-    next_
+    n3xt = self
+    n.times { n3xt = n3xt.next_ }
+    n3xt
   end
 
   def self.eql?(lhs, rhs)
