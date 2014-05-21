@@ -14,64 +14,6 @@
 
 %w{test/unit stringio set}.each { |e| require e }
 
-module Partitions
-  def self.int_partition(n) # http://en.wikipedia.org/wiki/Partition_(number_theory)
-    # e.g., the seven distinct integer partitions of 5 are 5, 4+1, 3+2, 3+1+1, 2+2+1, 2+1+1+1, and 1+1+1+1+1.
-    case
-    when 0 == n then []
-    when 1 == n then [[1]]
-    else
-      int_partition(n-1).reduce([]) do |a, p| # partition 'p'
-        a << p[0..-2] + [p[-1]+1] if p[-2].nil? || p[-2] > p[-1]
-        a << p + [1] # evaluates to self.
-      end
-    end
-  end
-
-  def self.int_composition(n) # http://en.wikipedia.org/wiki/Composition_(number_theory)
-    memos = {}
-    map = lambda do |n, k|
-      memos[n] ||= {}
-      memos[n][k] ||= case
-      when 0 == k then []
-      when 1 == k then [[n]]
-      else
-        (1...n).reduce([]) { |a, e| a += map.call(n-e, k-1).map { |c| [e] + c } }
-      end
-    end
-    (1..n).reduce([]) { |a, k| a += map.call(n, k) }
-  end
-
-  def self.set_partition(ary = [])
-    # http://oeis.org/wiki/User:Peter_Luschny/SetPartitions
-    prefix_maximums = Array.new(ary.size, 0)
-    restricted_keys = Array.new(ary.size, 0)
-    partitions = []
-    while succ!(restricted_keys, prefix_maximums)
-      partitions << ary.each_index.reduce([]) do |p, i|
-        (p[restricted_keys[i]] ||= []) << ary[i]; p
-      end
-    end
-    partitions
-  end
-
-  def self.succ!(restricted_keys, prefix_maximums)
-    k = (restricted_keys.size - 1).downto(0) do |k|
-      break k if 0 == k || restricted_keys[k] < prefix_maximums[k - 1] + 1
-    end
-
-    if k > 0 # else nil
-      restricted_keys[k] += 1
-      prefix_maximums[k] = [prefix_maximums[k], restricted_keys[k]].max
-      (k + 1).upto(restricted_keys.size - 1) do |i|
-        restricted_keys[i] = 0
-        prefix_maximums[i] = prefix_maximums[i - 1]
-      end
-      restricted_keys
-    end
-  end
-end
-
 module Math
   def self.negate(a)
     neg = 0
