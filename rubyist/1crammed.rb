@@ -232,8 +232,7 @@ module Strings
   end
 
   def self.lcp(strings = []) # LCP: longest common prefix
-    # strings.reduce { |l,s| l.chop! until l==s[0...l.size]; l }
-    strings.reduce { |l,s| k = 0; k += 1 while l[k] == s[k]; l[0...k] }
+    strings.reduce { |l, s| k = 0; k += 1 while l[k] == s[k]; l[0...k] }
   end
 
   def self.sum(a, b)
@@ -249,6 +248,41 @@ module Strings
     end
     c += (tens + zero).chr if tens > 0
     c.reverse
+  end
+
+  def self.longest_unique_charsequence(s)
+    offset, length = 0, 1
+    h = {}
+    n = s.size
+    i = 0
+    n.times do |j|
+      if h[s[j]]
+        offset, length = i, j-i if j-i > length
+        h[s[i]], i = false, i+1 until s[i] == s[j]
+        i += 1
+      else
+        h[s[j]] = true
+      end
+    end
+    offset, length = i, n-i if n-i > length
+    s[offset, length]
+  end
+
+  def self.longest_common_substring(ary) # of k strings
+    suffix_tree = ary.each_index.reduce(Trie.new) do |trie, k| 
+      (0...ary[k].size).reduce(trie) { |trie, i| trie[ary[k][i..-1]] = k; trie }
+    end
+
+    memos = {}
+    exit_v = proc do |key, trie|
+      h = trie.value ? {trie.value => nil} : {}
+      h = trie.children.values.map { |c| memos[c][1] }.reduce(h) { |h, e| h.merge(e) }
+      memos[trie] = [key.join, h]
+    end
+
+    suffix_tree.dfs(nil, exit_v, []) # to process in postorder.
+    commons = memos.values.select { |v| v[1].size == ary.size }.map { |v| v[0] }
+    commons.group_by { |e| e.size }.max.last
   end
 end
 
@@ -1763,43 +1797,6 @@ module DP # http://basicalgos.blogspot.com/search/label/dynamic%20programming
       end
     end
     d
-  end
-end
-
-class String
-  def self.longest_unique_charsequence(s)
-    offset, length = 0, 1
-    h = {}
-    n = s.size
-    i = 0
-    n.times do |j|
-      if h[s[j]]
-        offset, length = i, j-i if j-i > length
-        h[s[i]], i = false, i+1 until s[i] == s[j]
-        i += 1
-      else
-        h[s[j]] = true
-      end
-    end
-    offset, length = i, n-i if n-i > length
-    s[offset, length]
-  end
-
-  def self.longest_common_substring(ary) # of k strings
-    suffix_tree = ary.each_index.reduce(Trie.new) do |trie, k| 
-      (0...ary[k].size).reduce(trie) { |trie, i| trie[ary[k][i..-1]] = k; trie }
-    end
-
-    memos = {}
-    exit_v = proc do |key, trie|
-      h = trie.value ? {trie.value => nil} : {}
-      h = trie.children.values.map { |c| memos[c][1] }.reduce(h) { |h, e| h.merge(e) }
-      memos[trie] = [key.join, h]
-    end
-
-    suffix_tree.dfs(nil, exit_v, []) # to process in postorder.
-    commons = memos.values.select { |v| v[1].size == ary.size }.map { |v| v[0] }
-    commons.group_by { |e| e.size }.max.last
   end
 end
 
