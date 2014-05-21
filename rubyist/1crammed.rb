@@ -236,6 +236,7 @@ module Strings
   end
 
   def self.sum(a, b)
+    a, b = a.reverse, b.reverse
     c = ''
     zero = '0'.ord
     tens = ones = 0
@@ -318,9 +319,11 @@ class SNode
       p1 = p1.next_; n += 1
     end
 
-    pk = head; pn_1 = head.next(n-1)
+    pk = head
+    pn_1 = head.next(n-1)
     until pk == pn_1.next
       pk, pn_1 = pk.next, pn_1.next
+      puts pn_1
     end
     pn_1
   end
@@ -2941,11 +2944,11 @@ HERE
     assert_equal "they", trie["they"]
 
     # longest common substring, or palindrome
-    assert_equal ["anana"], String.longest_common_substring(['bananas', 'bananas'.reverse])
-    assert_equal ["aba", "bab"], String.longest_common_substring(['abab', 'baba']).sort
-    assert_equal ["ab"], String.longest_common_substring(['abab', 'baba', 'aabb'])
-    assert_equal ["ab"], String.longest_common_substring(['abab', 'baba', 'aabb'])
-    assert_equal "abc", String.longest_unique_charsequence('abcabcbb')
+    assert_equal ["anana"], Strings.longest_common_substring(['bananas', 'bananas'.reverse])
+    assert_equal ["aba", "bab"], Strings.longest_common_substring(['abab', 'baba']).sort
+    assert_equal ["ab"], Strings.longest_common_substring(['abab', 'baba', 'aabb'])
+    assert_equal ["ab"], Strings.longest_common_substring(['abab', 'baba', 'aabb'])
+    assert_equal "abc", Strings.longest_unique_charsequence('abcabcbb')
   end
 
   def test_2_5_sum_of_2_single_linked_lists # 524 + 495 = 1019
