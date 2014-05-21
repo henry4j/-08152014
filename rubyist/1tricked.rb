@@ -28,15 +28,18 @@ module Partitions
     end
   end
 
-  def self.int_composition(n, k = 1..n) # http://en.wikipedia.org/wiki/Composition_(number_theory)
-    case
-    when 0 == k then []
-    when 1 == k then [[n]]
-    when k.respond_to?(:reduce)
-      k.reduce([]) { |a, e| a += int_composition(n, e) }
-    else
-      (1...n).reduce([]) { |a, i| a += int_composition(n-i, k-1).map { |c| [i] + c } }
+  def self.int_composition(n) # http://en.wikipedia.org/wiki/Composition_(number_theory)
+    memos = {}
+    map = lambda do |n, k|
+      memos[n] ||= {}
+      memos[n][k] ||= case
+      when 0 == k then []
+      when 1 == k then [[n]]
+      else
+        (1...n).reduce([]) { |a, e| a += map.call(n-e, k-1).map { |c| [e] + c } }
+      end
     end
+    (1..n).reduce([]) { |a, k| a += map.call(n, k) }
   end
 
   def self.set_partition(ary = [])
