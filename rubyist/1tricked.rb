@@ -15,7 +15,7 @@
 %w{test/unit stringio set}.each { |e| require e }
 
 module Partitions
-  def self.int_partition(n = 0) # http://en.wikipedia.org/wiki/Partition_(number_theory)
+  def self.int_partition(n) # http://en.wikipedia.org/wiki/Partition_(number_theory)
     # e.g., the seven distinct integer partitions of 5 are 5, 4+1, 3+2, 3+1+1, 2+2+1, 2+1+1+1, and 1+1+1+1+1.
     case
     when 0 == n then []
