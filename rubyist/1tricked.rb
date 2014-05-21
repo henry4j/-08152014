@@ -123,28 +123,6 @@ class TestCases < Test::Unit::TestCase
     assert_equal 24, max_area
   end
 
-  def test_multiply_two_strings
-    # https://gist.github.com/pdu/4978107
-  end
-
-  def test_sum_two_strings
-    a = '12345'.reverse
-    b = '123456789'.reverse
-    c = ''
-    zero = '0'.each_byte.next
-    tens = ones = 0
-    [a.size, b.size].max.times do |i|
-      ones = tens
-      ones += a[i,1].each_byte.next - zero if i < a.size
-      ones += b[i,1].each_byte.next - zero if i < b.size
-      tens, ones = ones / 10, ones % 10
-      c += (ones + zero).chr
-    end
-    c += (tens + zero).chr if tens > 0
-    c = c.reverse
-    assert_equal '123469134', c
-  end
-
   def test_rain_water
     a = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]
     prefix_m = a.reduce([]) { |p, e| p.push(p.empty? ? e : [p.last, e].max) }

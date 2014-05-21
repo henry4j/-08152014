@@ -235,6 +235,21 @@ module Strings
     # strings.reduce { |l,s| l.chop! until l==s[0...l.size]; l }
     strings.reduce { |l,s| k = 0; k += 1 while l[k] == s[k]; l[0...k] }
   end
+
+  def self.sum(a, b)
+    c = ''
+    zero = '0'.ord
+    tens = ones = 0
+    [a.size, b.size].max.times do |i|
+      ones = tens
+      ones += a[i,1].ord - zero if i < a.size
+      ones += b[i,1].ord - zero if i < b.size
+      tens, ones = ones / 10, ones % 10
+      c += (ones + zero).chr
+    end
+    c += (tens + zero).chr if tens > 0
+    c.reverse
+  end
 end
 
 class SNode
@@ -2446,6 +2461,12 @@ module Arrays
 end # end of Arrays
 
 class TestCases < Test::Unit::TestCase
+  def test_sum_two_strings
+    a = '12345'
+    b = '123456789'
+    assert_equal '123469134', Strings.sum(a, b)
+  end
+
   def test_3_5_queque_by_good_code_coverage # this test case satisfies condition & loop coverage(s). http://en.wikipedia.org/wiki/Code_coverage
     # Implement a queue using two stacks.
     q = Queueable.new         # stack1: [ ], stack2: [ ]
