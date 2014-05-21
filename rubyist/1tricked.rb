@@ -21,7 +21,7 @@ module Partitions
     when 0 == n then []
     when 1 == n then [[1]]
     else
-      int_partition(n-1).reduce([]) do |a,p|
+      int_partition(n-1).reduce([]) do |a, p| # partition 'p'
         a << p[0..-2] + [p[-1]+1] if p[-2].nil? || p[-2] > p[-1]
         a << p + [1] # evaluates to self.
       end
