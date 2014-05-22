@@ -77,14 +77,6 @@ module Math
 end
 
 ###########################################################
-# Test Cases of algorithm design manual & exercises
-###########################################################
-
-class TestCases < Test::Unit::TestCase
-
-end
-
-###########################################################
 # Miscellaneous Modules & Classes: SNode, and DNode
 ###########################################################
 

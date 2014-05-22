@@ -251,15 +251,12 @@ module Strings
   def self.anagram?(lhs, rhs) # left- and right-hand sides
     return true if lhs.equal?(rhs) # reference-equals
     return false unless lhs.size == rhs.size # value-equals
-
-    counts = lhs.each_char.reduce({}) { |h, c| h.merge(c => 1 + (h[c] || 0)) }
-
-    rhs.each_char do |c|
-      return false unless counts.has_key? c
-      counts[c] -= 1
+    occurrences = lhs.chars.reduce({}) { |h, e| h[e] = (h[e] || 0) + 1; h }
+    rhs.chars do |c|
+      return false unless occurrences[c]
+      occurrences[c] -= 1
     end
-
-    counts.empty? || counts.values.all? { |e| 0 == e }
+    occurrences.values.all?(:zero?)
   end
 
   def self.non_repeated(s)
@@ -2496,8 +2493,16 @@ module Arrays
 end # end of Arrays
 
 class TestCases < Test::Unit::TestCase
-  # 1_1 Implement an algorithm to determine if a string has all unique characters.
-  #     What if you cannot use additional data structures? http://ideone.com/TLKPBy
+  # Questions from CTCI https://github.com/henry4j/-/blob/master/man/questions.md
+  # https://gist.github.com/henry4j/35002f63b3e9b6a13b78
+
+  # 1_1 Write a program to determine if a string has all unique characters.
+  #     What if you cannot use additional data structures? http://ideone.com/sYfu9m
+  # 1_2 Write a function, void reverse(char* str), which reverses a null-terminated string. http://ideone.com/YcU4fh
+  # 1_3 Write a program to determine if a string is a permutation of the other. http://ideone.com/F8z77b
+  # 1_4 Write a method to replace all spaces in a string with %20. http://ideone.com/7mILyX
+  # 1_5 Write a method to compress a string using counts of repeated chars, e.g. aabcccccaaa becomes a2b1c5a3.
+  # 1_6 
 
   def test_largest_rectangle_in_histogram
     h = [0, 3, 2, 1, 4, 7, 9, 6, 5, 4, 3, 2] # heights
@@ -3193,19 +3198,6 @@ HERE
     assert_equal 2, stack.minimum
     assert_equal 2, stack.pop     # []
     assert stack.minimum.nil?
-  end
-
-  def test_1_3_anagram?
-    # Given two strings, write a method to determine if one is a permutation of the other.
-    assert Strings.anagram?(nil, nil)
-    assert Strings.anagram?("", "")
-    assert !Strings.anagram?("", "x")
-    assert Strings.anagram?("a", "a")
-    assert Strings.anagram?("ab", "ba")
-    assert Strings.anagram?("aab", "aba")
-    assert Strings.anagram?("aabb", "abab")
-    assert !Strings.anagram?("a", "b")
-    assert !Strings.anagram?("aa", "ab")
   end
 
   def test_9_3_min_n_index_out_of_cycle
