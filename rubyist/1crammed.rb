@@ -2502,7 +2502,39 @@ class TestCases < Test::Unit::TestCase
   # 1_3 Write a program to determine if a string is a permutation of the other. http://ideone.com/F8z77b
   # 1_4 Write a method to replace all spaces in a string with %20. http://ideone.com/7mILyX
   # 1_5 Write a method to compress a string using counts of repeated chars, e.g. aabcccccaaa becomes a2b1c5a3.
-  # 1_6 
+  # 1_6 Given an image represented by an NxN matrix, write a method to rotate the image by 90 degrees; in-place, in O(1) space.
+
+  def test_1_6_rotate_square_image_in_matrix
+    rotate = lambda do |g|
+      n = g.size # 4
+      for layer in 0...n/2 # 0..1
+        top = layer
+        bottom = n - layer - 1
+        for i in top...bottom
+          offset = i - top
+          save = g[top][i] # top
+          g[top][i] = g[bottom - offset][top] # left to top
+          g[bottom - offset][top] = g[bottom][bottom - offset] # bottom to left 
+          g[bottom][bottom - offset] = g[i][bottom] # right to bottom
+          g[i][bottom] = save # top to right
+        end
+      end
+      g
+    end
+    g = [
+      [ 1, 2, 3, 4 ],
+      [ 5, 6, 7, 8 ],
+      [ 9, 0, 1, 2 ],
+      [ 3, 4, 5, 6 ]
+    ]
+    r = rotate.call(g)
+    assert_equal [
+      [3, 9, 5, 1],
+      [4, 0, 6, 2],
+      [5, 1, 7, 3],
+      [6, 2, 8, 4]
+    ], r
+  end
 
   def test_largest_rectangle_in_histogram
     h = [0, 3, 2, 1, 4, 7, 9, 6, 5, 4, 3, 2] # heights
