@@ -2460,6 +2460,154 @@ module Arrays
 end # end of Arrays
 
 class TestCases < Test::Unit::TestCase
+  def test_largest_rectangle_in_histogram
+    h = [0, 3, 2, 1, 4, 7, 9, 6, 5, 4, 3, 2] # heights
+    max_area = Arrays.max_area_in_histogram(h)
+    assert_equal 24, max_area
+  end
+
+  def test_rain_water
+    a = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]
+    prefix_m = a.reduce([]) { |p, e| p.push(p.empty? ? e : [p.last, e].max) }
+    suffix_m = a.reverse_each.reduce([]) { |p, e| p.push(p.empty? ? e : [p.last, e].max) }.reverse
+    maxima = a.each_index.map { |i| [prefix_m[i], suffix_m[i]].min }
+    volume = a.each_index.map { |i| maxima[i] - a[i] }
+    assert_equal 6, volume.reduce(:+)
+  end
+
+  def test_longest_ranges
+    assert_equal [1, 4], Arrays.longest_ranges([100, 4, 200, 1, 3, 2])
+    assert_equal [1, 3, 5, 7], Arrays.longest_ranges([6, 7, 3, 9, 5, 1, 2])
+    assert_equal [[-1, -1, 2], [-1, 0, 1]], Arrays.three_sum([-1, 0, 1, 2, -1, -4])
+    assert_equal [[-1, 1, 2]], Arrays.three_sum_closest([-1, 2, 1, -4])
+  end
+
+  def test_solve_boggle
+    m = [
+      ['D', 'G', 'H', 'I'],
+      ['K', 'L', 'P', 'S'],
+      ['Y', 'E', 'U', 'T'],
+      ['E', 'O', 'R', 'N']
+    ]
+    d = ['SUPER', 'LOB', 'TUX', 'SEA', 'FAME', 'HI', 'YOU', 'YOUR', 'I']
+    d = d.reduce({}) { |h, e| h[e] = 0; h } # dictionary
+    assert_equal ['HI', 'I', 'SUPER', 'YOU', 'YOUR'], Search.solve_boggle(d, m, 5) # max length (5)
+  end
+
+  def test_10_x_gcd_n_lcm
+    assert_equal [2, 2, 3], 12.factorize
+    assert_equal [2, 2, 3, 3], 36.factorize
+    assert_equal [2, 2, 3, 3, 3], 108.factorize
+    assert_equal [2, 2, 2, 3, 3], 72.factorize2
+    assert_equal [2, 2, 2, 3], 24.factorize2
+    assert_equal [101], 101.factorize2
+    assert_equal 2**2 * 3**2, Integer.gcd_e(108, 72)
+  end
+
+  def test_traveling_salesman_problem
+    # Problem: Robot Tour Optimization
+    # Input: A set S of n points in the plane.
+    # Output: What is the shortest cycle tour that visits each point in the set S?
+    graph = []
+    graph[0] = [0, 10, 15, 20]
+    graph[1] = [5, 0, 9, 10]
+    graph[2] = [6, 13, 0, 12]
+    graph[3] = [8, 8, 9, 0]
+    assert_equal [35, [0, 1, 3, 2, 0]], DP.optimal_tour(graph)
+  end
+
+  def test_subset_of_sum
+    # http://www.youtube.com/watch?v=WRT8kmFOQTw&feature=plcp
+    # suppose we are given N distinct positive integers
+    # find subsets of these integers that sum up to m.
+    assert_equal [[2, 5], [3, 4], [1, 2, 4]], DP.subset_of_sum([1, 2, 3, 4, 5], 7)
+    assert_equal [[1, 2, 3]], DP.ordinal_of_sum(6, 3)
+    assert_equal [[1, 5], [2, 4]], DP.ordinal_of_sum(6, 2)
+  end
+
+  def test_make_equation
+    # Given N numbers, 1 _ 2 _ 3 _ 4 _ 5 = 10,
+    # Find how many ways to fill blanks with + or - to make valid equation.
+  end
+
+  def test_bookshelf_partition
+    assert_equal [[1, 2, 3, 4, 5], [6, 7], [8, 9]], DP.partition_bookshelf([1, 2, 3, 4, 5, 6, 7, 8, 9], 3)
+  end
+
+  def test_optimal_binary_search_tree
+    keys = [5, 9, 12, 16, 25, 30, 45]
+    probs = [0.22, 0.18, 0.20, 0.05, 0.25, 0.02, 0.08]
+    assert_equal 1000, (1000 * probs.reduce(:+)).to_i
+    assert_equal 2150, (1000 * DP.optimal_binary_search_tree(keys, probs)).to_i
+  end
+
+  def test_maze
+    maze = []
+    maze[0] = [1, 1, 1, 1, 1, 0]
+    maze[1] = [1, 0, 1, 0, 1, 1]
+    maze[2] = [1, 1, 1, 0, 0, 1]
+    maze[3] = [1, 0, 0, 1, 1, 1]
+    maze[4] = [1, 1, 0, 1, 0, 0]
+    maze[5] = [1, 1, 0, 1, 1, 1]
+
+    answers = []
+    entered = [] # maze.size * r + c, e.g. 6*r + c
+    expand_out = lambda do |a|
+      r, c = a[-1]
+      (entered[r] ||= [])[c] = true
+      [[r-1, c], [r+1, c], [r, c-1], [r, c+1]].select { |p|
+        p[0] > -1 && p[0] < maze.size && p[1] > -1 && p[1] < maze[0].size
+      }.select { |p| !(entered[p[0]] ||= [])[p[1]] && 1 == maze[p[0]][p[1]] }
+    end
+
+    reduce_off = lambda do |a|
+      answers << a.dup if a[-1][0] == maze.size-1 && a[-1][1] == maze[0].size-1
+    end
+
+    Search.backtrack([[0, 0]], expand_out, reduce_off) # a, i, input, branch, reduce
+    assert_equal 1, answers.size
+    assert_equal [5, 5], answers.last.last
+  end
+
+  def test_minmax_by_divide_n_conquer
+    assert_equal 6, Arrays.peak([1, 5, 7, 9, 15, 18, 21, 19, 14])
+    assert_equal [1, 9], Arrays.minmax([1, 3, 5, 7, 9, 2, 4, 6, 8])
+    assert_equal [0, [0, 0]], Arrays.max_profit([30])
+    assert_equal [30, [2, 3]], Arrays.max_profit([30, 40, 20, 50, 10])
+  end
+
+  def test_prime?
+    assert Numbers.prime?(2)
+    assert Numbers.prime?(3)
+    assert Numbers.prime?(101)
+    assert_equal 11, Numbers.prime(9)
+  end
+
+  def test_saurab_peaceful_queens
+    assert_equal [[1, 3, 0, 2], [2, 0, 3, 1]], Search.queens_in_peace(4)
+  end
+
+  def test_order_matrix_chain_multiplication
+    assert_equal [4500, [0, 1]], DP.order_matrix_chain_multiplication([10, 30, 5, 60])
+    assert_equal [3500, [1, 0]], DP.order_matrix_chain_multiplication([50, 10, 20, 5])
+  end
+
+  def test_longest_common_n_increasing_subsequences
+    assert_equal ["eca"], DP.longest_common_subsequence('democrat', 'republican')
+    assert_equal ["1", "a"], DP.longest_common_subsequence('a1', '1a').sort
+    assert_equal ["ac1", "ac2", "bc1", "bc2"], DP.longest_common_subsequence('abc12', 'bac21').sort
+    assert_equal ["aba", "bab"], DP.longest_common_substring('abab', 'baba')
+    assert_equal ["abacd", "dcaba"], DP.longest_common_substring('abacdfgdcaba', 'abacdgfdcaba')
+    assert_equal 5, DP.longest_palindromic_subsequence('xaybzba')
+    assert_equal [1, 3, 3], DP.longest_increasing_subsequence([1, 3, 3, 2])
+    assert_equal [1, 2, 3], DP.longest_increasing_subsequence([7, 8, 1, 5, 6, 2, 3])
+    assert_equal [1, 5, 6], DP.longest_increasing_subsequence_v2([7, 8, 1, 5, 6, 2, 3])
+  end
+
+  def test_edit_distance
+    assert_equal [3, "SMMMSMI"], DP.edit('kitten', 'sitting')
+  end
+
   def test_sum_two_strings
     a = '12345'
     b = '123456789'
