@@ -2538,6 +2538,35 @@ class TestCases < Test::Unit::TestCase
     ], r
   end
 
+  def test_1_7_set_rows_n_columns_to_zero
+    g = [
+      [ 1, 2, 3, 4 ],
+      [ 5, 6, 7, 8 ],
+      [ 9, 0, 1, 2 ],
+      [ 3, 4, 5, 6 ]
+    ]
+    zero_out = lambda do |g|
+      columns, rows = {}, {}
+      g.each_index do |r|
+        g[r].each_index do |c|
+          columns[c] = rows[r] = true if g[r][c] == 0
+        end
+      end
+      g.each_index do |r|
+        g[r].each_index do |c|
+          g[r][c] = 0 if columns[c] || rows[r]
+        end
+      end
+      g
+    end
+    assert_equal [
+      [1, 0, 3, 4],
+      [5, 0, 7, 8],
+      [0, 0, 0, 0],
+      [3, 0, 5, 6]
+    ], zero_out.call(g)
+  end
+
   def test_largest_rectangle_in_histogram
     h = [0, 3, 2, 1, 4, 7, 9, 6, 5, 4, 3, 2] # heights
     max_area = Arrays.max_area_in_histogram(h)
