@@ -392,31 +392,6 @@ class TestCases < Test::Unit::TestCase
     Search.backtrack(['DAMP'], branch_out, reduce_off)
     assert_equal ['DAMP', 'LAMP', 'LIMP', 'LIME', 'LIKE'], solutions.last
   end
-
-  def test_20_11_max_size_subsquare
-    # Imagine you have a square matrix, where each cell is filled with either black (1) or white (0).
-    # Design an algorithm to find the maximum sub-square such that all four borders are filled with black pixels.
-    m = [
-      [0, 1, 1, 0, 1, 0],
-      [1, 1, 1, 1, 0, 1],
-      [1, 1, 0, 1, 1, 0],
-      [1, 0, 1, 1, 1, 1],
-      [0, 1, 1, 1, 1, 1],
-      [1, 0, 1, 1, 1, 0]
-    ]
-    assert_equal [3, [3, 2]], Arrays.max_size_subsquare(m)
-  end
-
-  def test_20_12_maxsum_submatrix
-    m = [ # 4 x 3 matrix
-      [ 1,  0, 1], 
-      [ 0, -1, 0], 
-      [ 1,  0, 1], 
-      [-5,  2, 5]
-    ]
-    assert_equal [8, [2, 1, 3, 2]], Arrays.maxsum_submatrix(m)
-    assert_equal [3, [0, 0, 0, 1]], Arrays.maxsum_submatrix([[1, 2, -1], [-3, -1, -4], [1, -5, 2]])
-  end
 end
 
 ###########################################################
