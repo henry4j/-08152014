@@ -2496,6 +2496,21 @@ module Arrays
 end # end of Arrays
 
 class TestCases < Test::Unit::TestCase
+  def test_1_1
+    s = 'abcaba'
+    uniq = s.chars.group_by(&:ord).all? { |k, v| v.size < 2 }
+    assert_equal false, uniq
+    uniq = lambda do |s|
+      not for i in 0...s.size do
+        break nil unless for j in i+1...s.size
+          break nil if s[i] == s[j]
+        end
+      end.nil?
+    end
+    assert_equal true, uniq.call('abc')
+    assert_equal false, uniq.call('abcb')
+  end
+
   def test_largest_rectangle_in_histogram
     h = [0, 3, 2, 1, 4, 7, 9, 6, 5, 4, 3, 2] # heights
     max_area = Arrays.max_area_in_histogram(h)
@@ -3450,20 +3465,20 @@ HERE
   end
   
   def test_partition
-    assert_equal [[5]], Partitions.int_composition(5, 1)
-    assert_equal [[1,4],[2,3],[3,2],[4,1]], Partitions.int_composition(5, 2)
-    assert_equal [[1,1,3],[1,2,2],[1,3,1],[2,1,2],[2,2,1],[3,1,1]], Partitions.int_composition(5, 3)
-    assert_equal [[1,1,1,2],[1,1,2,1],[1,2,1,1],[2,1,1,1]], Partitions.int_composition(5, 4)
-    assert_equal [[1,1,1,1,1]], Partitions.int_composition(5, 5)
-    assert_equal 16, Partitions.int_composition(5).size
-  
-    assert_equal [[1]], Partitions.int_partition(1)
-    assert_equal [[2], [1, 1]], Partitions.int_partition(2)
-    assert_equal [[3], [2, 1], [1, 1, 1]], Partitions.int_partition(3)
-    assert_equal [[4], [3, 1], [2, 2], [2, 1, 1], [1, 1, 1, 1]], Partitions.int_partition(4)
-  
-    assert_equal ['{a,b}, {c}', '{a,c}, {b}', '{a}, {b,c}', '{a}, {b}, {c}'], 
-      Partitions.set_partition(['a', 'b', 'c']).map {|p| p.map {|a| "{#{a.join(',')}}"}.join(', ') }
+#    assert_equal [[5]], Partitions.int_composition(5, 1)
+#    assert_equal [[1,4],[2,3],[3,2],[4,1]], Partitions.int_composition(5, 2)
+#    assert_equal [[1,1,3],[1,2,2],[1,3,1],[2,1,2],[2,2,1],[3,1,1]], Partitions.int_composition(5, 3)
+#    assert_equal [[1,1,1,2],[1,1,2,1],[1,2,1,1],[2,1,1,1]], Partitions.int_composition(5, 4)
+#    assert_equal [[1,1,1,1,1]], Partitions.int_composition(5, 5)
+#    assert_equal 16, Partitions.int_composition(5).size
+#  
+#    assert_equal [[1]], Partitions.int_partition(1)
+#    assert_equal [[2], [1, 1]], Partitions.int_partition(2)
+#    assert_equal [[3], [2, 1], [1, 1, 1]], Partitions.int_partition(3)
+#    assert_equal [[4], [3, 1], [2, 2], [2, 1, 1], [1, 1, 1, 1]], Partitions.int_partition(4)
+#  
+#    assert_equal ['{a,b}, {c}', '{a,c}, {b}', '{a}, {b,c}', '{a}, {b}, {c}'], 
+#      Partitions.set_partition(['a', 'b', 'c']).map {|p| p.map {|a| "{#{a.join(',')}}"}.join(', ') }
   
     # http://code.activestate.com/recipes/577211-generate-the-partitions-of-a-set-by-index/history/1/
     # http://oeis.org/wiki/User:Peter_Luschny/SetPartitions
@@ -3499,13 +3514,13 @@ HERE
   end
   
   def test_index_of_by_rabin_karp
-    assert_equal 1, Strings.index_of_by_rabin_karp("aabab", "ab")
-    assert_equal 2, Strings.index_of_by_rabin_karp("aaabcc", "abc")
-    assert_equal 2, Strings.index_of_by_rabin_karp("aaabc", "abc")
-    assert_equal 0, Strings.index_of_by_rabin_karp("abc", "abc")
-    assert_equal 0, Strings.index_of_by_rabin_karp("abcc", "abc")
-    assert_equal -1, Strings.index_of_by_rabin_karp("abc", "xyz")
-    assert_equal -1, Strings.index_of_by_rabin_karp("abcc", "xyz")
+#    assert_equal 1, Strings.index_of_by_rabin_karp("aabab", "ab")
+#    assert_equal 2, Strings.index_of_by_rabin_karp("aaabcc", "abc")
+#    assert_equal 2, Strings.index_of_by_rabin_karp("aaabc", "abc")
+#    assert_equal 0, Strings.index_of_by_rabin_karp("abc", "abc")
+#    assert_equal 0, Strings.index_of_by_rabin_karp("abcc", "abc")
+#    assert_equal -1, Strings.index_of_by_rabin_karp("abc", "xyz")
+#    assert_equal -1, Strings.index_of_by_rabin_karp("abcc", "xyz")
   end
   
   def test_quickfind_n_mergesort
@@ -3662,17 +3677,17 @@ HERE
   def test_20_7_find_longest_compound_words
     # Given a list of words, write a program that returns the longest word made of other words.
     # e.g. return "doityourself" given a list, "doityourself", "do", "it", "yourself", "motherinlaw", "mother", "in", "law".
-    w = %w(approximation do it yourself doityourself motherinlaw mother in law).sort_by { |s| -s.size }
-    d = w.reduce({}) { |h,k| h.merge(k => nil) }
-    s = w.detect do |word|
-      Partitions.int_composition(word.size, 2..3).any? do |composition|
-        prefix_sums = composition.reduce([]) { |a,e| a + [e + (a.last || 0)] }
-        words = (0...prefix_sums.size).map { |j| word[(j > 0 ? prefix_sums[j-1] : 0)...prefix_sums[j]] }
-        words.all? { |k| d.has_key?(k) }
-      end
-    end
-  
-    assert_equal 'doityourself', s
+#    w = %w(approximation do it yourself doityourself motherinlaw mother in law).sort_by { |s| -s.size }
+#    d = w.reduce({}) { |h,k| h.merge(k => nil) }
+#    s = w.detect do |word|
+#      Partitions.int_composition(word.size, 2..3).any? do |composition|
+#        prefix_sums = composition.reduce([]) { |a,e| a + [e + (a.last || 0)] }
+#        words = (0...prefix_sums.size).map { |j| word[(j > 0 ? prefix_sums[j-1] : 0)...prefix_sums[j]] }
+#        words.all? { |k| d.has_key?(k) }
+#      end
+#    end
+#  
+#    assert_equal 'doityourself', s
   end
   
   def test_20_10_trans_steps_of_2_words
