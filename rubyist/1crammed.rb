@@ -2496,22 +2496,8 @@ module Arrays
 end # end of Arrays
 
 class TestCases < Test::Unit::TestCase
-  def test_1_1_uniq_chars_in_a_string
-    # group_by runs in O(n) space.
-    s = 'wxyzx'
-    uniq = s.chars.group_by(&:ord).all? { |k, v| v.size < 2 }
-    assert_equal false, uniq
-    # double for-loop runs in O(n^2) time.
-    uniq = lambda do |s|
-      not for i in 0...s.size do
-        break nil unless for j in i+1...s.size
-          break nil if s[i] == s[j]
-        end
-      end.nil?
-    end
-    assert_equal true, uniq.call('abc')
-    assert_equal false, uniq.call('abcb')
-  end
+  # 1_1 Implement an algorithm to determine if a string has all unique characters.
+  #     What if you cannot use additional data structures? http://ideone.com/TLKPBy
 
   def test_largest_rectangle_in_histogram
     h = [0, 3, 2, 1, 4, 7, 9, 6, 5, 4, 3, 2] # heights
