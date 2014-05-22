@@ -2496,15 +2496,15 @@ class TestCases < Test::Unit::TestCase
   # Questions from CTCI https://github.com/henry4j/-/blob/master/man/questions.md
   # https://gist.github.com/henry4j/35002f63b3e9b6a13b78
 
-  # 1_1 Write a program to determine if a string has all unique characters.
-  #     What if you cannot use additional data structures? http://ideone.com/sYfu9m
-  # 1_2 Write a function, void reverse(char* str), which reverses a null-terminated string. http://ideone.com/YcU4fh
-  # 1_3 Write a program to determine if a string is a permutation of the other. http://ideone.com/F8z77b
-  # 1_4 Write a method to replace all spaces in a string with %20. http://ideone.com/7mILyX
-  # 1_5 Write a method to compress a string using counts of repeated chars, e.g. aabcccccaaa becomes a2b1c5a3.
-  # 1_6 Given an image represented by an NxN matrix, write a method to rotate the image by 90 degrees; in-place, in O(1) space. http://ideone.com/N48c72
-  # 1_7 Given an NxN matrix, write a program to set entire row and column to 0 if an element has a value of 0.
-  # 1_8 Given two strings, write a program to determine if a string is a rotation of the other using isSubstring method. http://ideone.com/iIhGT4
+# 1_1 Write a program to determine if a string has all unique characters.
+#     What if you cannot use additional data structures? http://ideone.com/sYfu9m
+# 1_2 Write a function, void reverse(char* str), which reverses a null-terminated string. http://ideone.com/YcU4fh
+# 1_3 Write a program to determine if a string is a permutation of the other. http://ideone.com/F8z77b
+# 1_4 Write a method to replace all spaces in a string with %20. http://ideone.com/7mILyX
+# 1_5 Write a method to compress a string using counts of repeated chars, e.g. aabcccccaaa becomes a2b1c5a3.
+# 1_6 Given an image represented by an NxN matrix, write a method to rotate the image by 90 degrees; in-place, in O(1) space. http://ideone.com/N48c72
+# 1_7 Given an NxN matrix, write a program to set entire row and column to 0 if an element has a value of 0. http://ideone.com/HX28Ok
+# 1_8 Given two strings, write a program to determine if a string is a rotation of the other using isSubstring method. http://ideone.com/iIhGT4
 
   def test_1_6_rotate_square_image_in_matrix
     rotate = lambda do |g|
