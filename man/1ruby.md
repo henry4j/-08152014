@@ -19,3 +19,5 @@ ruby -ne 'BEGIN{$n=0}; if ~/^$/; print; else $n += 1; printf "%5d: %s", $n, $_; 
 ruby -ane 'puts $F.map(&:to_i).reduce(:+)' # sums fields of each line.
 ruby -ane 'puts $F.map(&:to_i).map(&:abs).join(" ")' # changes to absolute values.
 ```
+
+<script src="http://ideone.com/e.js/TLKPBy" type="text/javascript" ></script>
