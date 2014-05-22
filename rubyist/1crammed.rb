@@ -2507,34 +2507,40 @@ class TestCases < Test::Unit::TestCase
 # 1_8 Given two strings, write a program to determine if a string is a rotation of the other using isSubstring method. http://ideone.com/iIhGT4
 
   def test_1_6_rotate_square_image_in_matrix
+    g = [
+      [ 1,  2,  3,  4,  5],
+      [ 6,  7,  8,  9, 10],
+      [11, 12, 13, 14, 15],
+      [16, 17, 18, 19, 20],
+      [21, 22, 23, 24, 25]
+    ]
+    print_graph = lambda do |g|
+      g.each do |row|
+        puts row.map { |e| sprintf('%2d', e) }.join(', ')
+      end
+    end
+    n = g.size # assumes NxN matrix
     rotate = lambda do |g|
-      n = g.size # 4
-      for layer in 0...n/2 # 0..1
-        top = layer
-        bottom = n - layer - 1
-        for i in top...bottom
-          offset = i - top
-          save = g[top][i] # top
-          g[top][i] = g[bottom - offset][top] # left to top
-          g[bottom - offset][top] = g[bottom][bottom - offset] # bottom to left 
-          g[bottom][bottom - offset] = g[i][bottom] # right to bottom
-          g[i][bottom] = save # top to right
+      (0...n/2).each do |layer|
+        head = layer
+        tail = n - layer - 1
+        for i in head...tail
+          top = g[layer][i]
+          g[layer][i] = g[n-i-1][head] # to top
+          g[n-i-1][head] = g[tail][n-i-1] # to left
+          g[tail][n-i-1] = g[i][tail] # to bottom
+          g[i][tail] = top # top to right
         end
       end
       g
     end
-    g = [
-      [ 1, 2, 3, 4 ],
-      [ 5, 6, 7, 8 ],
-      [ 9, 0, 1, 2 ],
-      [ 3, 4, 5, 6 ]
-    ]
     r = rotate.call(g)
     assert_equal [
-      [3, 9, 5, 1],
-      [4, 0, 6, 2],
-      [5, 1, 7, 3],
-      [6, 2, 8, 4]
+      [21, 16, 11,  6, 1],
+      [22, 17, 12,  7, 2],
+      [23, 18, 13,  8, 3],
+      [24, 19, 14,  9, 4],
+      [25, 20, 15, 10, 5]
     ], r
   end
 
