@@ -2504,7 +2504,7 @@ class TestCases < Test::Unit::TestCase
   # 1_5 Write a method to compress a string using counts of repeated chars, e.g. aabcccccaaa becomes a2b1c5a3.
   # 1_6 Given an image represented by an NxN matrix, write a method to rotate the image by 90 degrees; in-place, in O(1) space. http://ideone.com/N48c72
   # 1_7 Given an NxN matrix, write a program to set entire row and column to 0 if an element has a value of 0.
-  # 1_8 Assume you have a method isSubstring which checks if a string is a substring of another. Given two strings, s1 and s2, write a method to check if s2 is a rotation of s1 using only one call to isSubstring, e.g., "waterbottle" is a rotation of "erbottlewat".
+  # 1_8 Given two strings, write a program to determine if a string is a rotation of the other using isSubstring method. http://ideone.com/iIhGT4
 
   def test_1_6_rotate_square_image_in_matrix
     rotate = lambda do |g|
