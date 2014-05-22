@@ -2496,10 +2496,12 @@ module Arrays
 end # end of Arrays
 
 class TestCases < Test::Unit::TestCase
-  def test_1_1
-    s = 'abcaba'
+  def test_1_1_uniq_chars_in_a_string
+    # group_by runs in O(n) space.
+    s = 'wxyzx'
     uniq = s.chars.group_by(&:ord).all? { |k, v| v.size < 2 }
     assert_equal false, uniq
+    # double for-loop runs in O(n^2) time.
     uniq = lambda do |s|
       not for i in 0...s.size do
         break nil unless for j in i+1...s.size
