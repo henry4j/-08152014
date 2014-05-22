@@ -3059,17 +3059,17 @@ HERE
     assert_equal [3, 2], Arrays.indexes_out_of_matrix(m, 61)
   end
 
-  def test_10_4_arithmetic_operations
-    # 10-4. Write a method to implement *, - , / operations. You should use only the + operator.
-    assert_equal -7, Math.negate(7)
-    assert_equal 0, Math.negate(0)
-    assert_equal -4, Math.subtract(3, 7)
-    assert_equal 10, Math.subtract(3, -7)
-    assert_equal -21, Math.multiply(3, -7)
-    assert_equal 21, Math.multiply(-3, -7)
-    assert_equal -3, Math.divide(11, -3)
-    assert_equal 3, Math.divide(-11, -3)
-  end
+#  def test_10_4_arithmetic_operations
+#    # 10-4. Write a method to implement *, - , / operations. You should use only the + operator.
+#    assert_equal -7, Math.negate(7)
+#    assert_equal 0, Math.negate(0)
+#    assert_equal -4, Math.subtract(3, 7)
+#    assert_equal 10, Math.subtract(3, -7)
+#    assert_equal -21, Math.multiply(3, -7)
+#    assert_equal 21, Math.multiply(-3, -7)
+#    assert_equal -3, Math.divide(11, -3)
+#    assert_equal 3, Math.divide(-11, -3)
+#  end
 
   def test_10_5_line_of_cutting_two_squares
     # 10-5. Given two squares on a two dimensional plane, find a line that would cut these two squares in half.
