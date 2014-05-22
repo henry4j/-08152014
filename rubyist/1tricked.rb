@@ -76,42 +76,6 @@ module Math
   end
 end
 
-class Integer
-  def self.gcd_e(a, b) # http://en.wikipedia.org/wiki/Euclidean_algorithm#Implementations
-    if b == 0
-      a
-    else
-      gcd_e(b, a % b)
-    end
-  end
-
-  def factorize(m = 2) # http://benanne.net/code/?p=9
-    @factors ||= case
-    when 1 == self then []
-    when 0 == self % m then [m] + (self / m).factorize(m)
-    when Math.sqrt(self) <= m then [self]
-    else factorize(m + (m == 2 ? 1 : 2))
-    end
-  end
-
-  def factorize2
-    n, m = self, 2
-    factors = []
-    loop do
-      if 1 == n
-        break factors
-      elsif n % m == 0
-        factors << m
-        n /= m
-      elsif Math.sqrt(n) <= m
-        break factors << n
-      else
-        m += (m == 2 ? 1 : 2)
-      end
-    end
-  end
-end
-
 ###########################################################
 # Test Cases of algorithm design manual & exercises
 ###########################################################

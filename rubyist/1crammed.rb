@@ -2,6 +2,42 @@
 
 %w{test/unit stringio set}.each { |e| require e }
 
+class Integer
+  def self.gcd_e(a, b) # http://en.wikipedia.org/wiki/Euclidean_algorithm#Implementations
+    if b == 0
+      a
+    else
+      gcd_e(b, a % b)
+    end
+  end
+
+  def factorize(m = 2) # http://benanne.net/code/?p=9
+    @factors ||= case
+    when 1 == self then []
+    when 0 == self % m then [m] + (self / m).factorize(m)
+    when Math.sqrt(self) <= m then [self]
+    else factorize(m + (m == 2 ? 1 : 2))
+    end
+  end
+
+  def factorize2
+    n, m = self, 2
+    factors = []
+    loop do
+      if 1 == n
+        break factors
+      elsif n % m == 0
+        factors << m
+        n /= m
+      elsif Math.sqrt(n) <= m
+        break factors << n
+      else
+        m += (m == 2 ? 1 : 2)
+      end
+    end
+  end
+end
+
 module Partitions
   def self.int_partition(n) # http://en.wikipedia.org/wiki/Partition_(number_theory)
     # e.g., the seven distinct integer partitions of 5 are 5, 4+1, 3+2, 3+1+1, 2+2+1, 2+1+1+1, and 1+1+1+1+1.
@@ -2494,15 +2530,15 @@ class TestCases < Test::Unit::TestCase
     assert_equal ['HI', 'I', 'SUPER', 'YOU', 'YOUR'], Search.solve_boggle(d, m, 5) # max length (5)
   end
 
-  def test_10_x_gcd_n_lcm
-    assert_equal [2, 2, 3], 12.factorize
-    assert_equal [2, 2, 3, 3], 36.factorize
-    assert_equal [2, 2, 3, 3, 3], 108.factorize
-    assert_equal [2, 2, 2, 3, 3], 72.factorize2
-    assert_equal [2, 2, 2, 3], 24.factorize2
-    assert_equal [101], 101.factorize2
-    assert_equal 2**2 * 3**2, Integer.gcd_e(108, 72)
-  end
+#  def test_10_x_gcd_n_lcm
+#    assert_equal [2, 2, 3], 12.factorize
+#    assert_equal [2, 2, 3, 3], 36.factorize
+#    assert_equal [2, 2, 3, 3, 3], 108.factorize
+#    assert_equal [2, 2, 2, 3, 3], 72.factorize2
+#    assert_equal [2, 2, 2, 3], 24.factorize2
+#    assert_equal [101], 101.factorize2
+#    assert_equal 2**2 * 3**2, Integer.gcd_e(108, 72)
+#  end
 
   def test_traveling_salesman_problem
     # Problem: Robot Tour Optimization
@@ -2583,30 +2619,30 @@ class TestCases < Test::Unit::TestCase
     assert_equal 11, Numbers.prime(9)
   end
 
-  def test_saurab_peaceful_queens
-    assert_equal [[1, 3, 0, 2], [2, 0, 3, 1]], Search.queens_in_peace(4)
-  end
+#  def test_saurab_peaceful_queens
+#    assert_equal [[1, 3, 0, 2], [2, 0, 3, 1]], Search.queens_in_peace(4)
+#  end
 
   def test_order_matrix_chain_multiplication
     assert_equal [4500, [0, 1]], DP.order_matrix_chain_multiplication([10, 30, 5, 60])
     assert_equal [3500, [1, 0]], DP.order_matrix_chain_multiplication([50, 10, 20, 5])
   end
 
-  def test_longest_common_n_increasing_subsequences
-    assert_equal ["eca"], DP.longest_common_subsequence('democrat', 'republican')
-    assert_equal ["1", "a"], DP.longest_common_subsequence('a1', '1a').sort
-    assert_equal ["ac1", "ac2", "bc1", "bc2"], DP.longest_common_subsequence('abc12', 'bac21').sort
-    assert_equal ["aba", "bab"], DP.longest_common_substring('abab', 'baba')
-    assert_equal ["abacd", "dcaba"], DP.longest_common_substring('abacdfgdcaba', 'abacdgfdcaba')
-    assert_equal 5, DP.longest_palindromic_subsequence('xaybzba')
-    assert_equal [1, 3, 3], DP.longest_increasing_subsequence([1, 3, 3, 2])
-    assert_equal [1, 2, 3], DP.longest_increasing_subsequence([7, 8, 1, 5, 6, 2, 3])
-    assert_equal [1, 5, 6], DP.longest_increasing_subsequence_v2([7, 8, 1, 5, 6, 2, 3])
-  end
+#  def test_longest_common_n_increasing_subsequences
+#    assert_equal ["eca"], DP.longest_common_subsequence('democrat', 'republican')
+#    assert_equal ["1", "a"], DP.longest_common_subsequence('a1', '1a').sort
+#    assert_equal ["ac1", "ac2", "bc1", "bc2"], DP.longest_common_subsequence('abc12', 'bac21').sort
+#    assert_equal ["aba", "bab"], DP.longest_common_substring('abab', 'baba')
+#    assert_equal ["abacd", "dcaba"], DP.longest_common_substring('abacdfgdcaba', 'abacdgfdcaba')
+#    assert_equal 5, DP.longest_palindromic_subsequence('xaybzba')
+#    assert_equal [1, 3, 3], DP.longest_increasing_subsequence([1, 3, 3, 2])
+#    assert_equal [1, 2, 3], DP.longest_increasing_subsequence([7, 8, 1, 5, 6, 2, 3])
+#    assert_equal [1, 5, 6], DP.longest_increasing_subsequence_v2([7, 8, 1, 5, 6, 2, 3])
+#  end
 
-  def test_edit_distance
-    assert_equal [3, "SMMMSMI"], DP.edit('kitten', 'sitting')
-  end
+#  def test_edit_distance
+#    assert_equal [3, "SMMMSMI"], DP.edit('kitten', 'sitting')
+#  end
 
   def test_sum_two_strings
     a = '12345'
