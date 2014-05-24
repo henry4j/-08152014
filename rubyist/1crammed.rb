@@ -321,37 +321,31 @@ module Strings
 end
 
 class SNode
-  attr_accessor :value, :next_
+  attr_accessor :value, :succ
 
-  def initialize(value, next_ = nil)
-    @value, @next_ = value, next_
-  end
-
-  def next(n = 1)
-    last = self
-    n.times { last = last.next_ }
-    last
+  def initialize(value, succ = nil)
+    @value, @succ = value, succ
   end
 
   def ==(other)
     other &&
     value == other.value &&
-    next_ == other.next_
+    succ == other.succ
   end
 
   def to_s
     a, h, last = [], {}, self
     begin
       a << h[last] = last.value
-      last = last.next_
+      last = last.succ
     end until last.nil? || h[last]
     a << (last.nil? ? "\u2400" : last.value) # U+2400 (NULL)
     a.join(" \u2192 ") # U+2192 (rightwards arrow)
   end
 
-  def self.list(values, next_ = nil)
-    values.reverse_each { |v| next_ = SNode.new(v, next_) }
-    next_
+  def self.list(values, succ = nil)
+    values.reverse_each { |v| succ = SNode.new(v, succ) }
+    succ
   end
 end
 
@@ -2539,7 +2533,9 @@ class TestCases < Test::Unit::TestCase
 # 1_7 Given an NxN matrix, write a program to set entire row and column to 0 if an element has a value of 0. http://ideone.com/HX28Ok
 # 1_8 Given two strings, write a program to determine if a string is a rotation of the other using isSubstring method. http://ideone.com/iIhGT4
 
-# 2_1 Write a program to remove duplicates from an unsorted linked list. What if you cannot use additional memory?
+# 2_1 Write a program to remove duplicates from an unsorted linked list. What if you cannot use additional memory? http://ideone.com/fMom0l
+# 2_2 Write a program to find the k-th to last element of a singly linked list. http://ideone.com/WAiYVn
+# 2_3 Given a node, implement an algorithm to delete that node in the middle of a singly linked list. http://ideone.com/YDjYUu
 
   def test_1_6_rotate_square_image_in_matrix
     g = [
