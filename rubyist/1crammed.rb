@@ -327,10 +327,16 @@ class SNode
     @value, @next_ = value, next_
   end
 
-  def ==(rhs)
-    rhs &&
-    value == rhs.value &&
-    next_ == rhs.next_
+  def next(n = 1)
+    last = self
+    n.times { last = last.next_ }
+    last
+  end
+
+  def ==(other)
+    other &&
+    value == other.value &&
+    next_ == other.next_
   end
 
   def to_s
