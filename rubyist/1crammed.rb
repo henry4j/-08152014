@@ -324,15 +324,42 @@ class SNode
   attr_accessor :value, :next_
 
   def initialize(value, next_ = nil)
-    if value.is_a?(Array)
-      value.reverse_each do |v|
-        next_ = SNode.new(v, next_)
-      end
-      @value = next_.value
-      @next_ = next_.next_
-    else
-      @value = value; @next_ = next_
-    end
+    @value, @next_ = value, next_
+  end
+
+  def ==(rhs)
+    rhs &&
+    value == rhs.value &&
+    next_ == rhs.next_
+  end
+
+  def to_s
+    a, h, last = [], {}, self
+    begin
+      a << h[last] = last.value
+      last = last.next_
+    end until last.nil? || h[last]
+    a << (last.nil? ? "\u2400" : last.value) # U+2400 (NULL)
+    a.join(" \u2192 ") # U+2192 (rightwards arrow)
+  end
+
+  def self.list(values, next_ = nil)
+    values.reverse_each { |v| next_ = SNode.new(v, next_) }
+    next_
+  end
+end
+
+class SNodeOld
+  attr_accessor :value, :next_
+
+  def initialize(value, next_ = nil)
+    @value, @next_ = value, next_
+  end
+
+  def self.list(values, next_ = nil)
+    values.reverse_each { |e| next_ = SNode.new(e, next_) }
+    @value = next_.value
+    @next_ = next_.next_
   end
 
   # Given a list (where k = 7, and n = 5), 1 2 3 4 5 6 7 a b c d e a.
@@ -2505,6 +2532,8 @@ class TestCases < Test::Unit::TestCase
 # 1_6 Given an image represented by an NxN matrix, write a method to rotate the image by 90 degrees; in-place, in O(1) space. http://ideone.com/N48c72
 # 1_7 Given an NxN matrix, write a program to set entire row and column to 0 if an element has a value of 0. http://ideone.com/HX28Ok
 # 1_8 Given two strings, write a program to determine if a string is a rotation of the other using isSubstring method. http://ideone.com/iIhGT4
+
+# 2_1 Write a program to remove duplicates from an unsorted linked list. What if you cannot use additional memory?
 
   def test_1_6_rotate_square_image_in_matrix
     g = [
