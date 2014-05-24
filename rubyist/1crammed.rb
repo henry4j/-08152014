@@ -333,6 +333,13 @@ class SNode
     succ == other.succ
   end
 
+  def last(k = 1)
+    p1 = pk = self
+    k.times { p1 = p1.succ }
+    p1, pk = p1.succ, pk.succ while p1
+    pk
+  end
+
   def to_s
     a, h, last = [], {}, self
     begin
@@ -346,90 +353,6 @@ class SNode
   def self.list(values, succ = nil)
     values.reverse_each { |v| succ = SNode.new(v, succ) }
     succ
-  end
-end
-
-class SNodeOld
-  attr_accessor :value, :next_
-
-  def initialize(value, next_ = nil)
-    @value, @next_ = value, next_
-  end
-
-  def self.list(values, next_ = nil)
-    values.reverse_each { |e| next_ = SNode.new(e, next_) }
-    @value = next_.value
-    @next_ = next_.next_
-  end
-
-  # Given a list (where k = 7, and n = 5), 1 2 3 4 5 6 7 a b c d e a.
-  # 1. do find the length of the loop, i.e., n = 5.
-  # 2. begin w/ u = 1, v = 6; advance them k times until they collide.
-  def self.find_cycle(head)
-    p1 = p2 = head
-    while p2 && p2.next_
-      p1 = p1.next_
-      p2 = p2.next_.next_
-      break if p1 == p2
-    end
-    return if p2.nil?
-
-    n = 1; p1 = p1.next_
-    until p1 == p2
-      p1 = p1.next_; n += 1
-    end
-
-    pk = head
-    pn_1 = head.next(n-1)
-    until pk == pn_1.next_
-      pk, pn_1 = pk.next_, pn_1.next_
-    end
-    pn_1
-  end
-
-  def self.reverse!(current)
-    head = nil
-    while current
-      save = current.next_
-      current.next_ = head
-      head = current
-      current = save
-    end
-    head
-  end
-
-  def self.reverse_every2!(head)
-    if head.nil? || head.next.nil?
-      head
-    else
-      next2 = head.next_.next_
-      head.next_.next_, head = head, head.next_
-      head.next_.next_ = reverse_every2!(next2)
-      head
-    end
-  end
-
-  def last
-    last = self
-    last = last.next_ while last.next_
-    last
-  end
-
-  def next(n = 1)
-    n3xt = self
-    n.times { n3xt = n3xt.next_ if n3xt }
-    n3xt
-  end
-
-  def self.eql?(lhs, rhs)
-    return true if lhs.nil? && rhs.nil?
-    return false if lhs.nil? || rhs.nil?
-    return false if lhs.value != rhs.value
-    eql?(lhs.next_, rhs.next_)
-  end
-
-  def to_s
-    "#{[value, next_.nil? ? '⏚' : next_].join(' → ')}"
   end
 end
 
@@ -2515,6 +2438,7 @@ end # end of Arrays
 class TestCases < Test::Unit::TestCase
   # Questions from CTCI https://github.com/henry4j/-/blob/master/man/questions.md
   # https://gist.github.com/henry4j/35002f63b3e9b6a13b78
+  # http://xaviershay.github.io/writing/docs/ruby_style_guide.html
 
 # 1_1 Write a program to determine if a string has all unique characters.
 #     What if you cannot use additional data structures? http://ideone.com/sYfu9m
@@ -2530,30 +2454,41 @@ class TestCases < Test::Unit::TestCase
 # 2_2 Write a program to find the k-th to last element of a singly linked list. http://ideone.com/WAiYVn
 # 2_3 Given a node, implement an algorithm to delete that node in the middle of a singly linked list. http://ideone.com/YDjYUu
 # 2_4 Write a program to partition a linked list around a value of x, such that all nodes less than x come before all nodes greater than or equal to x. http://ideone.com/F7PWKX
-# 2_5  There are two decimal numbers represented by a linked list, where each node contains a single digit. The digits are stored in reverse order, such that the 1's digit is at the head of the list. Write a function that adds the two numbers and returns the sum as a linked list.
+# 2_5 There are two decimal numbers represented by a linked list, where each node contains a single digit. The digits are stored in reverse order, such that the 1's digit is at the head of the list. Write a function that adds the two numbers and returns the sum as a linked list.
+# 2_6 Given a circular linked list, write a program that returns the node at the beginning of the loop.
+# 2_7 Write a program to determine if a linked list is a palindrome.
 
-  def test_2_5_sum_of_2_single_linked_lists # 524 + 495 = 1019
-    # There are two decimal numbers represented by a linked list, where each node contains a single digit.
-    # The digits are stored in reverse order, such that the 1's digit is at the head of the list.
-    # Write a function that adds the two numbers and returns the sum as a linked list.
-    i524 = SNode.list([4, 2, 5])
-    i495 = SNode.list([5, 9, 4])
-    sum = lambda do |lhs, rhs, ones = 0|
-      if lhs || rhs || ones > 0
-        ones += lhs.value if lhs
-        ones += rhs.value if rhs
-        SNode.new(ones % 10, sum.call(lhs ? lhs.succ : nil, rhs ? rhs.succ : nil, ones / 10))
-      end
+  def test_2_7_is_palindrome?
+    palindrome = lambda do |head|
+      p1 = p2 = head
+      p1, p2 = p1.succ && p2.succ.succ while p2 && p2.succ
+      
     end
-    assert_equal SNode.list([9, 1, 0, 1]), sum.call(i524, i495)
+    
   end
 
   def test_2_6_find_cycle_n_reverse_every2!
-    # Given a linked list with a cycle, implement an algorithm which returns the node at the beginning of the loop.
-    l = SNode.new([1, 2, 3, 4, 5, 6, 7, 'a', 'b', 'c', 'd', 'e'])
-    l.last.next_ = l.next(7)
-#    assert_equal 'e', SNode.find_cycle(l).value # has a back-link to cut off.
-#    assert_equal nil, SNode.find_cycle(SNode.new([1, 2, 3]))
+    # Given a list (where k = 7, and n = 5), 1 2 3 4 5 6 7 a b c d e a.
+    # 1. do find the length of the loop, i.e., n = 5.
+    # 2. begin w/ u = 1, v = 6; advance them k times until they collide.
+    find_cycle = lambda do |head|
+      p1 = p2 = head
+      return unless while p2 && p2.succ
+        p1, p2 = p1.succ, p2.succ.succ
+        break true if p1.equal?(p2)
+      end
+      p1, n = p1.succ, 1
+      p1, n = p1.succ, n + 1 until p1.equal?(p2)
+      pk, pn_1 = head, head
+      (n-1).times { pn_1 = pn_1.succ }
+      pk, pn_1 = pk.succ, pn_1.succ until pk.equal?(pn_1.succ)
+      pn_1
+    end
+
+    l = SNode.list([1, 2, 3, 4, 5, 6, 7, 'a', 'b', 'c', 'd', 'e'])
+    l.last.succ = l.last(5)
+    assert_equal 'e', find_cycle.call(l).value # has a back-link to cut off.
+    assert_equal nil, find_cycle.call(SNode.new([1, 2, 3]))
   end
 
   def test_2_4_partition_a_linked_list
@@ -3288,14 +3223,6 @@ HERE
     assert_equal ["ab"], Strings.longest_common_substring(['abab', 'baba', 'aabb'])
     assert_equal ["ab"], Strings.longest_common_substring(['abab', 'baba', 'aabb'])
     assert_equal "abc", Strings.longest_unique_charsequence('abcabcbb')
-  end
-
-  def test_reverse_every2!
-    assert SNode.eql?(SNode.new([5, 4, 3, 2, 1]), SNode.reverse!(SNode.new([1, 2, 3, 4, 5])))
-    assert_equal "2 → 1 → ⏚", SNode.reverse_every2!(SNode.new([1, 2])).to_s
-    assert_equal "2 → 1 → 3 → ⏚", SNode.reverse_every2!(SNode.new([1, 2, 3])).to_s
-    assert_equal "2 → 1 → 4 → 3 → ⏚", SNode.reverse_every2!(SNode.new([1, 2, 3, 4])).to_s
-    assert_equal "2 → 1 → 4 → 3 → 5 → ⏚", SNode.reverse_every2!(SNode.new([1, 2, 3, 4, 5])).to_s
   end
 
   def test_8_5_combine_parenthesis
