@@ -387,13 +387,6 @@ class SNodeOld
     pn_1
   end
 
-  def self.sum(lhs, rhs, ones = 0)
-    return nil if lhs.nil? && rhs.nil? && 0 == ones
-    ones += lhs.value if lhs
-    ones += rhs.value if rhs
-    SNode.new(ones % 10, sum(lhs ? lhs.next_ : nil, rhs ? rhs.next_ : nil, ones / 10))
-  end
-
   def self.reverse!(current)
     head = nil
     while current
@@ -2536,6 +2529,61 @@ class TestCases < Test::Unit::TestCase
 # 2_1 Write a program to remove duplicates from an unsorted linked list. What if you cannot use additional memory? http://ideone.com/fMom0l
 # 2_2 Write a program to find the k-th to last element of a singly linked list. http://ideone.com/WAiYVn
 # 2_3 Given a node, implement an algorithm to delete that node in the middle of a singly linked list. http://ideone.com/YDjYUu
+# 2_4 Write a program to partition a linked list around a value of x, such that all nodes less than x come before all nodes greater than or equal to x. http://ideone.com/F7PWKX
+# 2_5  There are two decimal numbers represented by a linked list, where each node contains a single digit. The digits are stored in reverse order, such that the 1's digit is at the head of the list. Write a function that adds the two numbers and returns the sum as a linked list.
+
+  def test_2_5_sum_of_2_single_linked_lists # 524 + 495 = 1019
+    # There are two decimal numbers represented by a linked list, where each node contains a single digit.
+    # The digits are stored in reverse order, such that the 1's digit is at the head of the list.
+    # Write a function that adds the two numbers and returns the sum as a linked list.
+    i524 = SNode.list([4, 2, 5])
+    i495 = SNode.list([5, 9, 4])
+    sum = lambda do |lhs, rhs, ones = 0|
+      if lhs || rhs || ones > 0
+        ones += lhs.value if lhs
+        ones += rhs.value if rhs
+        SNode.new(ones % 10, sum.call(lhs ? lhs.succ : nil, rhs ? rhs.succ : nil, ones / 10))
+      end
+    end
+    assert_equal SNode.list([9, 1, 0, 1]), sum.call(i524, i495)
+  end
+
+  def test_2_6_find_cycle_n_reverse_every2!
+    # Given a linked list with a cycle, implement an algorithm which returns the node at the beginning of the loop.
+    l = SNode.new([1, 2, 3, 4, 5, 6, 7, 'a', 'b', 'c', 'd', 'e'])
+    l.last.next_ = l.next(7)
+#    assert_equal 'e', SNode.find_cycle(l).value # has a back-link to cut off.
+#    assert_equal nil, SNode.find_cycle(SNode.new([1, 2, 3]))
+  end
+
+  def test_2_4_partition_a_linked_list
+    partition = lambda do |head, x|
+      curr, head, bind, tail = head, nil, nil, nil
+      while curr
+        succ = curr.succ
+        case
+        when curr.value < x
+          curr.succ = head
+          head = curr
+        when curr.value > x
+          curr.succ = tail
+          tail = curr
+        else
+          curr.succ = bind
+          bind = curr
+        end
+        curr = succ
+      end
+      curr = head
+      curr = curr.succ while curr.succ
+      curr.succ = bind
+      curr = curr.succ while curr.succ
+      curr.succ = tail
+      head
+    end
+    nine = SNode.list([9, 1, 8, 2, 5, 7, 3, 6, 4, 5])
+    assert_equal SNode.list([4, 3, 2, 1, 5, 5, 6, 7, 8, 9]), partition.call(nine, 5)
+  end
 
   def test_1_6_rotate_square_image_in_matrix
     g = [
@@ -3240,23 +3288,6 @@ HERE
     assert_equal ["ab"], Strings.longest_common_substring(['abab', 'baba', 'aabb'])
     assert_equal ["ab"], Strings.longest_common_substring(['abab', 'baba', 'aabb'])
     assert_equal "abc", Strings.longest_unique_charsequence('abcabcbb')
-  end
-
-  def test_2_5_sum_of_2_single_linked_lists # 524 + 495 = 1019
-    # There are two decimal numbers represented by a linked list, where each node contains a single digit.
-    # The digits are stored in reverse order, such that the 1's digit is at the head of the list.
-    # Write a function that adds the two numbers and returns the sum as a linked list.
-    i524 = SNode.new(4, SNode.new(2, SNode.new(5)))
-    i495 = SNode.new(5, SNode.new(9, SNode.new(4)))
-    assert_equal "9 → 1 → 0 → 1 → ⏚", SNode.sum(i524, i495).to_s
-  end
-
-  def test_2_6_find_cycle_n_reverse_every2!
-    # Given a linked list with a cycle, implement an algorithm which returns the node at the beginning of the loop.
-    l = SNode.new([1, 2, 3, 4, 5, 6, 7, 'a', 'b', 'c', 'd', 'e'])
-    l.last.next_ = l.next(7)
-#    assert_equal 'e', SNode.find_cycle(l).value # has a back-link to cut off.
-#    assert_equal nil, SNode.find_cycle(SNode.new([1, 2, 3]))
   end
 
   def test_reverse_every2!
