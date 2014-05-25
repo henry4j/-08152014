@@ -2468,12 +2468,10 @@ class TestCases < Test::Unit::TestCase
 # 2_7 Write a program to determine if a linked list is a palindrome.
 
 # 3_1 Design and implement three stacks using a single array.
-# 3_2 Design and implement a stack ...
+# 3_2 Design and implement a stack of integers that has an additional operation 'minimum' besides 'push' and 'pop', that all run in constant time. http://ideone.com/VtFtJc
+# 3_3 
 
   def test_3_2_min_stack
-    # Design and implement a stack of integers that has an additional operation 'minimum' 
-    # besides 'push' and 'pop', that all run in constant time,
-    # e.g., push(2).push(3).push(2).push(1), pop(), pop(), and minimum() returns 2.
     stack = MinStack.new
     assert stack.minimum.nil?
     stack.push(2).push(3).push(2).push(1)
