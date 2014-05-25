@@ -2482,11 +2482,12 @@ class TestCases < Test::Unit::TestCase
     end
 
     assert palindrome.call(SNode.list([1]))
+    assert palindrome.call(SNode.list([1, 1]))
     assert palindrome.call(SNode.list([1, 2, 1]))
     assert palindrome.call(SNode.list([1, 2, 2, 1]))
     assert palindrome.call(SNode.list([1, 2, 3, 2, 1]))
-    assert palindrome.call(SNode.list([1, 2, 3, 2, 1]))
-    assert !palindrome.call(SNode.list([1, 2, 3, 3, 2]))
+    assert !palindrome.call(SNode.list([1, 2]))
+    assert !palindrome.call(SNode.list([1, 2, 3, 3, 1]))
   end
 
   def test_2_6_find_cycle_n_reverse_every2!
