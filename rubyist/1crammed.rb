@@ -2461,6 +2461,83 @@ class TestCases < Test::Unit::TestCase
 # 3_6 Write a program to sort a stack in ascending order with biggest items on top. 
 # 3_7 Write a program to enqueue and dequeue dogs and cats at animal shelter.
 
+  def test_4_1_balanced_n_4_5_binary_search_tree?
+    # 4.1. Implement a function to check if a binary tree is balanced.
+    # 4.5. Implement a function to check if a binary tree is a binary search tree.
+    assert BNode.balanced?(BNode.of([1, 3, 4, 7, 2, 5, 6]))
+    assert BNode.sorted?(BNode.of([1, 2, 3, 4, 5, 6, 7]))
+    assert !BNode.sorted?(BNode.of([1, 2, 3, 4, 8, 6, 7]))
+    assert BNode.sorted_by_minmax?(BNode.of([1, 2, 3, 4, 5, 6, 7]))
+    assert !BNode.sorted_by_minmax?(BNode.of([1, 2, 3, 4, 8, 6, 7]))
+    values = []
+    BNode.order_by_stack(BNode.of([1, 2, 3, 4, 8, 6, 7]), lambda {|v| values << v.value})
+    assert_equal [1, 2, 3, 4, 8, 6, 7], values
+  end
+
+  def test_4_2_reachable?
+    # Given a directed graph, design an algorithm to find out whether there is a route between two nodes.
+    # http://iamsoftwareengineer.blogspot.com/2012/06/given-directed-graph-design-algorithm.html
+    # graph: B1 ← C2 → A0
+    #        ↓  ↗
+    #        D3 ← E4
+    edges = []
+    edges << [] # out-degree of 0
+    edges << [Edge.new(3)] # B1 → D3
+    edges << [Edge.new(0), Edge.new(1)] # C2 → A0, C2 → B1
+    edges << [Edge.new(2)] # D3 → C2
+    edges << [Edge.new(3)] # E4 → D3
+
+    can_reach = lambda do |source, sink|
+      all = Graph.find_all(source, edges)
+      all.index(sink)
+    end
+
+    assert can_reach.call(4, 0)
+    assert !can_reach.call(0, 4)
+    assert !can_reach.call(3, 4)
+  end
+
+  def test_4_3_to_binary_search_tree
+    # Given a sorted (increasing order) array, implement an algorithm to create a binary search tree with minimal height.
+    # tree:   4
+    #       2    6
+    #      1 3  5 7
+    expected = BNode.new(4, BNode.new(2, BNode.new(1), BNode.new(3)), BNode.new(6, BNode.new(5), BNode.new(7)))
+    assert BNode.eql?(expected, BNode.of([1, 3, 5, 7, 2, 4, 6].sort))
+  end
+
+  def test_4_6_successor_in_order_traversal
+    # tree:   f
+    #       a
+    #         b
+    #           e
+    #         d
+    #       c
+    c = BNode.new('c')
+    d = BNode.new('d', c, nil)
+    e = BNode.new('e', d, nil)
+    b = BNode.new('b', nil, e)
+    a = BNode.new('a', nil, b)
+    f = BNode.new('f', a, nil)
+    BNode.parent!(f)
+
+    assert_equal 'c', BNode.succ(b).value
+    assert_equal 'f', BNode.succ(e).value
+
+    assert_equal 'b', BNode.succ(a).value
+    assert_equal 'd', BNode.succ(c).value
+    assert_equal 'e', BNode.succ(d).value
+    assert_equal nil, BNode.succ(f)
+
+    assert_equal ["f"], BNode.last(f, 1)
+    assert_equal ["f", "e", "d"], BNode.last(f, 3)
+    assert_equal ["f", "e", "d", "c", "b", "a"], BNode.last(f, 6)
+    assert_equal ["f", "e", "d", "c", "b", "a"], BNode.last(f, 7)
+
+    assert_equal ["f"], BNode.last2(f, 1)
+    assert_equal ["f", "e", "d", "c", "b", "a"], BNode.last2(f, 7)
+  end
+
   def test_3_2_min_stack
     stack = MinStack.new
     assert_nil stack.minimum
@@ -2868,28 +2945,6 @@ class TestCases < Test::Unit::TestCase
     assert Graph.has_cycle?(edges, false)
   end
 
-  def test_4_2_reachable?
-    # Given a directed graph, design an algorithm to find out whether there is a route between two nodes.
-    # http://iamsoftwareengineer.blogspot.com/2012/06/given-directed-graph-design-algorithm.html
-    # graph: B1 ← C2 → A0
-    #        ↓  ↗
-    #        D3 ← E4
-    edges = []
-    edges << [] # out-degree of 0
-    edges << [Edge.new(3)] # B1 → D3
-    edges << [Edge.new(0), Edge.new(1)] # C2 → A0, C2 → B1
-    edges << [Edge.new(2)] # D3 → C2
-    edges << [Edge.new(3)] # E4 → D3
-
-    can_reach = lambda do |source, sink|
-      all = Graph.find_all(source, edges)
-      all.index(sink)
-    end
-
-    assert can_reach.call(4, 0)
-    assert !can_reach.call(0, 4)
-    assert !can_reach.call(3, 4)
-  end
 
   def test_binary_heap
     h = BinaryHeap.new(lambda { |a, b| b[1] <=> a[1] }, lambda { |e| e[0] })
@@ -3085,28 +3140,6 @@ HERE
     assert_equal nil, tree.right.left.right
   end
 
-  def test_4_1_balanced_n_4_5_binary_search_tree?
-    # 4.1. Implement a function to check if a binary tree is balanced.
-    # 4.5. Implement a function to check if a binary tree is a binary search tree.
-    assert BNode.balanced?(BNode.of([1, 3, 4, 7, 2, 5, 6]))
-    assert BNode.sorted?(BNode.of([1, 2, 3, 4, 5, 6, 7]))
-    assert !BNode.sorted?(BNode.of([1, 2, 3, 4, 8, 6, 7]))
-    assert BNode.sorted_by_minmax?(BNode.of([1, 2, 3, 4, 5, 6, 7]))
-    assert !BNode.sorted_by_minmax?(BNode.of([1, 2, 3, 4, 8, 6, 7]))
-    values = []
-    BNode.order_by_stack(BNode.of([1, 2, 3, 4, 8, 6, 7]), lambda {|v| values << v.value})
-    assert_equal [1, 2, 3, 4, 8, 6, 7], values
-  end
-
-  def test_4_3_to_binary_search_tree
-    # Given a sorted (increasing order) array, implement an algorithm to create a binary search tree with minimal height.
-    # tree:   4
-    #       2    6
-    #      1 3  5 7
-    expected = BNode.new(4, BNode.new(2, BNode.new(1), BNode.new(3)), BNode.new(6, BNode.new(5), BNode.new(7)))
-    assert BNode.eql?(expected, BNode.of([1, 3, 5, 7, 2, 4, 6].sort))
-  end
-
   def test_convert_binary_tree_to_doubly_linked_list
     # http://www.youtube.com/watch?v=WJZtqZJpSlQ
     # http://codesam.blogspot.com/2011/04/convert-binary-tree-to-double-linked.html
@@ -3122,38 +3155,6 @@ HERE
       read = read.right
     end
     assert_equal [1, 2, 3, 4, 5, 6, 7], values
-  end
-
-  def test_4_6_successor_in_order_traversal
-    # tree:   f
-    #       a
-    #         b
-    #           e
-    #         d
-    #       c
-    c = BNode.new('c')
-    d = BNode.new('d', c, nil)
-    e = BNode.new('e', d, nil)
-    b = BNode.new('b', nil, e)
-    a = BNode.new('a', nil, b)
-    f = BNode.new('f', a, nil)
-    BNode.parent!(f)
-
-    assert_equal 'c', BNode.succ(b).value
-    assert_equal 'f', BNode.succ(e).value
-
-    assert_equal 'b', BNode.succ(a).value
-    assert_equal 'd', BNode.succ(c).value
-    assert_equal 'e', BNode.succ(d).value
-    assert_equal nil, BNode.succ(f)
-
-    assert_equal ["f"], BNode.last(f, 1)
-    assert_equal ["f", "e", "d"], BNode.last(f, 3)
-    assert_equal ["f", "e", "d", "c", "b", "a"], BNode.last(f, 6)
-    assert_equal ["f", "e", "d", "c", "b", "a"], BNode.last(f, 7)
-
-    assert_equal ["f"], BNode.last2(f, 1)
-    assert_equal ["f", "e", "d", "c", "b", "a"], BNode.last2(f, 7)
   end
 
   def test_dfs_in_binary_trees
