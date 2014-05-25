@@ -1409,7 +1409,6 @@ module DP # http://basicalgos.blogspot.com/search/label/dynamic%20programming
         }.min
       end
     end
-
     map.call(0, keys.size-1)
   end
 
@@ -1494,7 +1493,6 @@ module DP # http://basicalgos.blogspot.com/search/label/dynamic%20programming
       s += ordinal_of_sum(m, k, n-1)
     end
   end
-
 
   # Given two strings of size m, n and set of operations replace (R), insert (I) and delete (D) all at equal cost.
   # Find minimum number of edits (operations) required to convert one string into another.
@@ -1961,7 +1959,7 @@ class Queueable
   end
 
   def poll
-    @stack2.push(@stack1.pop).pop if if @stack2.empty? && !@stack1.empty?
+    @stack2.push(@stack1.pop).pop if @stack2.empty? && !@stack1.empty?
   end
 end
 
