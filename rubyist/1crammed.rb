@@ -2459,7 +2459,7 @@ class TestCases < Test::Unit::TestCase
 # 3_4 Write a program that solves the tower of Hanoi puzzle of N disks between three rods.
 # 3_5 Implement a queue using two stacks.
 # 3_6 Write a program to sort a stack in ascending order with biggest items on top. 
-# 3_7 Write a program to ...
+# 3_7 Write a program to enqueue and dequeue dogs and cats at animal shelter.
 
   def test_3_2_min_stack
     stack = MinStack.new
