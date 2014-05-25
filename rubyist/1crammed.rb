@@ -1788,29 +1788,6 @@ module DP # http://basicalgos.blogspot.com/search/label/dynamic%20programming
   end
 end
 
-class MinStack
-  attr_reader :minimum
-
-  def initialize
-    @stack = []
-    @minimum = nil
-  end
-
-  def push(element)
-    if @minimum.nil? || element <= @minimum
-      @stack.push(@minimum)
-      @minimum = element
-    end
-    @stack.push element
-  end
-
-  def pop
-    element = @stack.pop
-    @minimum = @stack.pop if @minimum == element
-    element
-  end
-end
-
 module Numbers # discrete maths and bit twiddling http://graphics.stanford.edu/~seander/bithacks.html
   def self.prime?(n)
     n == 2 || n.odd? && 2.step(Math.sqrt(n).floor, 2).all? { |a| 0 != a % n }
@@ -1990,6 +1967,28 @@ class Queueable
   end
 end
 
+class MinStack
+  attr_reader :minimum
+
+  def initialize
+    @stack, @minimum = [], nil
+  end
+
+  def push(element)
+    if @minimum.nil? || element <= @minimum
+      @stack.push(@minimum)
+      @minimum = element
+    end
+    @stack.push(element)
+    self
+  end
+
+  def pop
+    element = @stack.pop
+    @minimum = @stack.pop if @minimum == element
+    element
+  end
+end
 
 module Arrays
   def self.max_area_in_histogram(heights)
@@ -2468,6 +2467,49 @@ class TestCases < Test::Unit::TestCase
 # 2_6 Given a circular linked list, write a program that returns the node at the beginning of the loop.
 # 2_7 Write a program to determine if a linked list is a palindrome.
 
+# 3_1 Design and implement three stacks using a single array.
+# 3_2 Design and implement a stack ...
+
+  def test_3_2_min_stack
+    # Design and implement a stack of integers that has an additional operation 'minimum' besides 'push' and 'pop',
+    # that all run in constant time, e.g., push(2), push(3), push(2), push(1), pop, pop, and minimum returns 2.
+    stack = MinStack.new
+    assert stack.minimum.nil?
+    stack.push 2                  # [nil, 2]
+    stack.push 3                  # [nil, 2, 3]
+    stack.push 2                  # [nil, 2, 3, 2, 2]
+    stack.push 1                  # [nil, 2, 3, 2, 2, 2, 1]
+    assert_equal 1, stack.minimum
+    assert_equal 1, stack.pop     # [nil, 2, 3, 2, 2]
+    assert_equal 2, stack.minimum
+    assert_equal 2, stack.pop     # [nil, 2, 3]
+    assert_equal 2, stack.minimum
+    assert_equal 3, stack.pop     # [nil, 2]
+    assert_equal 2, stack.minimum
+    assert_equal 2, stack.pop     # []
+    assert stack.minimum.nil?
+  end
+
+  def test_3_4_hanoi
+    Arrays.move_tower('A', 'C', 'B', 3) # from 'A' to 'C' via 'B'.
+  end
+
+  def test_3_5_queque_by_good_code_coverage # this test case satisfies condition & loop coverage(s). http://en.wikipedia.org/wiki/Code_coverage
+    # Implement a queue using two stacks.
+    q = Queueable.new         # stack1: [ ], stack2: [ ]
+    q.offer 1                   # stack1: [1], stack2: [ ]
+    q.offer 2                   # stack1: [1, 2], stack2: [ ]
+    assert_equal 1, q.poll     # stack1: [ ], stack2: [2], coverage: true, and 2 iterations
+    assert_equal 2, q.poll     # stack1: [ ], stack2: [ ], coverage: false
+    q.offer 3                   # stack1: [3], stack2: [ ]
+    assert_equal 3, q.poll     # stack1: [ ], stack2: [ ], coverage: true, and 1 iteration
+    assert_equal nil, q.poll   # stack1: [ ], stack2: [ ], coverage: true, and 0 iteration
+  end
+
+  def test_3_6_sort_by_stack
+    assert_equal [-4, -3, 1, 2, 5, 6], Arrays.sort_using_stack!([5, -3, 1, 2, -4, 6])
+  end
+
   def test_2_4_partition_a_linked_list
     partition = lambda do |head, x|
       curr, head, bind, tail = head, nil, nil, nil
@@ -2762,18 +2804,6 @@ class TestCases < Test::Unit::TestCase
     a = '12345'
     b = '123456789'
     assert_equal '123469134', Strings.sum(a, b)
-  end
-
-  def test_3_5_queque_by_good_code_coverage # this test case satisfies condition & loop coverage(s). http://en.wikipedia.org/wiki/Code_coverage
-    # Implement a queue using two stacks.
-    q = Queueable.new         # stack1: [ ], stack2: [ ]
-    q.offer 1                   # stack1: [1], stack2: [ ]
-    q.offer 2                   # stack1: [1, 2], stack2: [ ]
-    assert_equal 1, q.poll     # stack1: [ ], stack2: [2], coverage: true, and 2 iterations
-    assert_equal 2, q.poll     # stack1: [ ], stack2: [ ], coverage: false
-    q.offer 3                   # stack1: [3], stack2: [ ]
-    assert_equal 3, q.poll     # stack1: [ ], stack2: [ ], coverage: true, and 1 iteration
-    assert_equal nil, q.poll   # stack1: [ ], stack2: [ ], coverage: true, and 0 iteration
   end
 
   def test_topological_sort
@@ -3257,30 +3287,6 @@ HERE
     assert_equal 20, Strings.interleave('abc', '123').size
   end
 
-  def test_3_6_sort_by_stack
-    assert_equal [-4, -3, 1, 2, 5, 6], Arrays.sort_using_stack!([5, -3, 1, 2, -4, 6])
-  end
-
-  def test_3_2_min_stack
-    # Design and implement a stack of integers that has an additional operation 'minimum' besides 'push' and 'pop',
-    # that all run in constant time, e.g., push(2), push(3), push(2), push(1), pop, pop, and minimum returns 2.
-    stack = MinStack.new
-    assert stack.minimum.nil?
-    stack.push 2                  # [nil, 2]
-    stack.push 3                  # [nil, 2, 3]
-    stack.push 2                  # [nil, 2, 3, 2, 2]
-    stack.push 1                  # [nil, 2, 3, 2, 2, 2, 1]
-    assert_equal 1, stack.minimum
-    assert_equal 1, stack.pop     # [nil, 2, 3, 2, 2]
-    assert_equal 2, stack.minimum
-    assert_equal 2, stack.pop     # [nil, 2, 3]
-    assert_equal 2, stack.minimum
-    assert_equal 3, stack.pop     # [nil, 2]
-    assert_equal 2, stack.minimum
-    assert_equal 2, stack.pop     # []
-    assert stack.minimum.nil?
-  end
-
   def test_9_3_min_n_index_out_of_cycle
     assert_equal 10, Arrays.index_out_of_cycle([10, 14, 15, 16, 19, 20, 25, 1, 3, 4, 5, 7], 5)
     assert_equal 7, Arrays.index_out_of_cycle([16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14, 15], 5)
@@ -3730,11 +3736,7 @@ HERE
   #       you can generate a given string by pasting cutouts from a given magazine. Assume
   #       that you are given a function that will identify the character and its position on
   #       the reverse side of the page for any given character position.
-  
-  def test_3_4_hanoi
-    Arrays.move_tower('A', 'C', 'B', 3) # from 'A' to 'C' via 'B'.
-  end
-  
+
   def test_20_7_find_longest_compound_words
     # Given a list of words, write a program that returns the longest word made of other words.
     # e.g. return "doityourself" given a list, "doityourself", "do", "it", "yourself", "motherinlaw", "mother", "in", "law".
