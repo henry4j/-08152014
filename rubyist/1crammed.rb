@@ -2486,20 +2486,20 @@ class TestCases < Test::Unit::TestCase
     assert_nil stack.minimum
   end
 
-  def test_3_4_hanoi
-    move_disk = lambda do |from, to, which|
-      [which, from, to]
-    end
+  def test_3_4_tower_of_hanoi_from_a_to_c_via_b
+    move_disk = lambda do |from, to, which| [from, to, which] end
     move_tower = lambda do |from, to, spare, n|
       if 1 == n
-        move_disk.call(from, to, 1)
+        [move_disk.call(from, to, 1)]
       else
-        move_tower.call(from, spare, to, n-1)
-        move_disk.call(from, to, n)
+        move_tower.call(from, spare, to, n-1) +
+        [move_disk.call(from, to, n)] +
         move_tower.call(spare, to, from, n-1)
       end
     end
-    move_tower.call('A', 'C', 'B', 3) # from 'A' to 'C' via 'B'.
+    a = move_tower.call('A', 'C', 'B', 3) # from 'A' to 'C' via 'B'.
+    a = a.map { |e| sprintf("%s \u2192 %s: %s", e[0], e[1], e[2]) }
+    assert_equal ["A → C: 1", "A → B: 2", "C → B: 1", "A → C: 3", "B → A: 1", "B → C: 2", "A → C: 1"], a
   end
 
   def test_3_5_queque_by_good_code_coverage # this test case satisfies condition & loop coverage(s). http://en.wikipedia.org/wiki/Code_coverage
