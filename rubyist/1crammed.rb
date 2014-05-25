@@ -2538,6 +2538,69 @@ class TestCases < Test::Unit::TestCase
     assert_equal ["f", "e", "d", "c", "b", "a"], BNode.last2(f, 7)
   end
 
+  def test_4_7_lowest_common_ancestor_in_linear_time
+    # tree    a
+    #           b
+    #        c
+    #      d   e
+    d = BNode.new('d')
+    e = BNode.new('e')
+    c = BNode.new('c', d, e)
+    b = BNode.new('b', c, nil)
+    a = BNode.new('a', nil, b)
+    assert_equal c, BNode.common_ancestors(a, 'd', 'e')[-1]
+    assert_equal c, BNode.common_ancestors(a, 'c', 'd')[-1]
+    assert_equal c, BNode.common_ancestors(a, 'c', 'e')[-1]
+    assert_equal b, BNode.common_ancestors(a, 'b', 'e')[-1]
+    assert_equal nil, BNode.common_ancestors(a, 'b', 'x')[-1]
+    assert_equal nil, BNode.common_ancestors(a, 'x', 'y')[-1]
+  end
+
+  def test_4_8_binary_tree_value_include
+    tree = BNode.new('a', nil, BNode.new('b', BNode.new('c', nil, BNode.new('d')), nil))
+    assert BNode.include?(tree, nil)
+    assert BNode.include?(tree, tree)
+    assert !BNode.include?(tree, BNode.new('e'))
+    assert !BNode.include?(tree, BNode.new('c', nil, BNode.new('e')))
+    assert BNode.include?(tree, BNode.new('b'))
+    assert BNode.include?(tree, BNode.new('c'))
+    assert BNode.include?(tree, BNode.new('d'))
+    assert BNode.include?(tree, tree.right)
+    assert BNode.include?(tree, tree.right.left)
+    assert BNode.include?(tree, tree.right.left.right)
+    assert BNode.include?(tree, BNode.new('a'))
+    assert BNode.include?(tree, BNode.new('a', nil, BNode.new('b')))
+    assert BNode.include?(tree, BNode.new('a', nil, BNode.new('b', BNode.new('c'), nil)))
+  end
+
+  def test_4_9_find_path_of_sum_in_linear_time
+    # You are given a binary tree in which each node contains a value.
+    # Design an algorithm to print all paths which sum up to that value.
+    # Note that it can be any path in the tree - it does not have to start at the root.
+    #
+    # tree: -1
+    #         ↘
+    #           3
+    #         ↙
+    #       -1
+    #      ↙ ↘
+    #     2    3
+    tree = BNode.new(-1, nil, BNode.new(3, BNode.new(-1, BNode.new(2), BNode.new(3)), nil))
+    assert_equal ["-1 -> 3", "3 -> -1", "2", "-1 -> 3"], BNode.path_of_sum(tree, 2)
+
+    #        -5
+    #     -3     4
+    #    2   8
+    #  -6
+    # 7   9
+    tree = BNode.new(-5, BNode.new(-3, BNode.new(2, BNode.new(-6, BNode.new(7), BNode.new(9)), nil), BNode.new(8)), BNode.new(4))
+    assert_equal 10, BNode.max_sum_of_path(tree)[1]
+    tree = BNode.new(-3, BNode.new(-2, BNode.new(-1), nil), nil)
+    assert_equal -1, BNode.max_sum_of_path(tree)[1]
+    tree = BNode.new(-1, BNode.new(-2, BNode.new(-3), nil), nil)
+    assert_equal -1, BNode.max_sum_of_path(tree)[1]
+  end
+
   def test_3_2_min_stack
     stack = MinStack.new
     assert_nil stack.minimum
@@ -3190,69 +3253,6 @@ HERE
     b = BNode.new(1, c, d)
     a = BNode.new(-2, b, nil)
     assert_equal 2, BNode.maxsum_subtree(a)
-  end
-
-  def test_4_7_lowest_common_ancestor_in_linear_time
-    # tree    a
-    #           b
-    #        c
-    #      d   e
-    d = BNode.new('d')
-    e = BNode.new('e')
-    c = BNode.new('c', d, e)
-    b = BNode.new('b', c, nil)
-    a = BNode.new('a', nil, b)
-    assert_equal c, BNode.common_ancestors(a, 'd', 'e')[-1]
-    assert_equal c, BNode.common_ancestors(a, 'c', 'd')[-1]
-    assert_equal c, BNode.common_ancestors(a, 'c', 'e')[-1]
-    assert_equal b, BNode.common_ancestors(a, 'b', 'e')[-1]
-    assert_equal nil, BNode.common_ancestors(a, 'b', 'x')[-1]
-    assert_equal nil, BNode.common_ancestors(a, 'x', 'y')[-1]
-  end
-
-  def test_4_8_binary_tree_value_include
-    tree = BNode.new('a', nil, BNode.new('b', BNode.new('c', nil, BNode.new('d')), nil))
-    assert BNode.include?(tree, nil)
-    assert BNode.include?(tree, tree)
-    assert !BNode.include?(tree, BNode.new('e'))
-    assert !BNode.include?(tree, BNode.new('c', nil, BNode.new('e')))
-    assert BNode.include?(tree, BNode.new('b'))
-    assert BNode.include?(tree, BNode.new('c'))
-    assert BNode.include?(tree, BNode.new('d'))
-    assert BNode.include?(tree, tree.right)
-    assert BNode.include?(tree, tree.right.left)
-    assert BNode.include?(tree, tree.right.left.right)
-    assert BNode.include?(tree, BNode.new('a'))
-    assert BNode.include?(tree, BNode.new('a', nil, BNode.new('b')))
-    assert BNode.include?(tree, BNode.new('a', nil, BNode.new('b', BNode.new('c'), nil)))
-  end
-
-  def test_4_9_find_path_of_sum_in_linear_time
-    # You are given a binary tree in which each node contains a value.
-    # Design an algorithm to print all paths which sum up to that value.
-    # Note that it can be any path in the tree - it does not have to start at the root.
-    #
-    # tree: -1
-    #         ↘
-    #           3
-    #         ↙
-    #       -1
-    #      ↙ ↘
-    #     2    3
-    tree = BNode.new(-1, nil, BNode.new(3, BNode.new(-1, BNode.new(2), BNode.new(3)), nil))
-    assert_equal ["-1 -> 3", "3 -> -1", "2", "-1 -> 3"], BNode.path_of_sum(tree, 2)
-
-    #        -5
-    #     -3     4
-    #    2   8
-    #  -6
-    # 7   9
-    tree = BNode.new(-5, BNode.new(-3, BNode.new(2, BNode.new(-6, BNode.new(7), BNode.new(9)), nil), BNode.new(8)), BNode.new(4))
-    assert_equal 10, BNode.max_sum_of_path(tree)[1]
-    tree = BNode.new(-3, BNode.new(-2, BNode.new(-1), nil), nil)
-    assert_equal -1, BNode.max_sum_of_path(tree)[1]
-    tree = BNode.new(-1, BNode.new(-2, BNode.new(-3), nil), nil)
-    assert_equal -1, BNode.max_sum_of_path(tree)[1]
   end
 
 #  def test_7_7_kth_integer_of_prime_factors_3_5_n_7
