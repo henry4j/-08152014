@@ -2468,52 +2468,6 @@ class TestCases < Test::Unit::TestCase
 # 2_6 Given a circular linked list, write a program that returns the node at the beginning of the loop.
 # 2_7 Write a program to determine if a linked list is a palindrome.
 
-  def test_2_7_is_palindrome?
-    palindrome = lambda do |head|
-      p1 = p2 = head
-      p1, p2 = p1.succ, p2.succ.succ while p2 && p2.succ
-      p1 = p1.succ if p2 # skips the middle one given odd # of nodes.
-      a = p1.to_a
-      p1 = head
-      !until a.empty?
-        break true if a.pop != p1.value
-        p1 = p1.succ
-      end
-    end
-
-    assert palindrome.call(SNode.list([1]))
-    assert palindrome.call(SNode.list([1, 1]))
-    assert palindrome.call(SNode.list([1, 2, 1]))
-    assert palindrome.call(SNode.list([1, 2, 2, 1]))
-    assert palindrome.call(SNode.list([1, 2, 3, 2, 1]))
-    assert !palindrome.call(SNode.list([1, 2]))
-    assert !palindrome.call(SNode.list([1, 2, 3, 3, 1]))
-  end
-
-  def test_2_6_find_cycle_n_reverse_every2!
-    # Given a list (where k = 7, and n = 5), 1 2 3 4 5 6 7 a b c d e a.
-    # 1. do find the length of the loop, i.e., n = 5.
-    # 2. begin w/ u = 1, v = 6; advance them k times until they collide.
-    find_cycle = lambda do |head|
-      p1 = p2 = head
-      return unless while p2 && p2.succ
-        p1, p2 = p1.succ, p2.succ.succ
-        break true if p1.equal?(p2)
-      end
-      p1, n = p1.succ, 1
-      p1, n = p1.succ, n + 1 until p1.equal?(p2)
-      pk, pn_1 = head, head
-      (n-1).times { pn_1 = pn_1.succ }
-      pk, pn_1 = pk.succ, pn_1.succ until pk.equal?(pn_1.succ)
-      pn_1
-    end
-
-    l = SNode.list([1, 2, 3, 4, 5, 6, 7, 'a', 'b', 'c', 'd', 'e'])
-    l.last.succ = l.last(5)
-    assert_equal 'e', find_cycle.call(l).value # has a back-link to cut off.
-    assert_equal nil, find_cycle.call(SNode.new([1, 2, 3]))
-  end
-
   def test_2_4_partition_a_linked_list
     partition = lambda do |head, x|
       curr, head, bind, tail = head, nil, nil, nil
@@ -2541,6 +2495,52 @@ class TestCases < Test::Unit::TestCase
     end
     nine = SNode.list([9, 1, 8, 2, 5, 7, 3, 6, 4, 5])
     assert_equal SNode.list([4, 3, 2, 1, 5, 5, 6, 7, 8, 9]), partition.call(nine, 5)
+  end
+
+  def test_2_6_find_cycle_n_reverse_every2!
+    # Given a list (where k = 7, and n = 5), 1 2 3 4 5 6 7 a b c d e a.
+    # 1. do find the length of the loop, i.e., n = 5.
+    # 2. begin w/ u = 1, v = 6; advance them k times until they collide.
+    find_cycle = lambda do |head|
+      p1 = p2 = head
+      return unless while p2 && p2.succ
+        p1, p2 = p1.succ, p2.succ.succ
+        break true if p1.equal?(p2)
+      end
+      p1, n = p1.succ, 1
+      p1, n = p1.succ, n + 1 until p1.equal?(p2)
+      pk, pn_1 = head, head
+      (n-1).times { pn_1 = pn_1.succ }
+      pk, pn_1 = pk.succ, pn_1.succ until pk.equal?(pn_1.succ)
+      pn_1
+    end
+
+    l = SNode.list([1, 2, 3, 4, 5, 6, 7, 'a', 'b', 'c', 'd', 'e'])
+    l.last.succ = l.last(5)
+    assert_equal 'e', find_cycle.call(l).value # has a back-link to cut off.
+    assert_equal nil, find_cycle.call(SNode.new([1, 2, 3]))
+  end
+
+  def test_2_7_is_palindrome?
+    palindrome = lambda do |head|
+      p1 = p2 = head
+      p1, p2 = p1.succ, p2.succ.succ while p2 && p2.succ
+      # p1 = p1.succ if p2 # skips the middle one if given odd # of nodes.
+      a = p1.to_a
+      p1 = head
+      !until a.empty?
+        break true if a.pop != p1.value
+        p1 = p1.succ
+      end
+    end
+
+    assert palindrome.call(SNode.list([1]))
+    assert palindrome.call(SNode.list([1, 1]))
+    assert palindrome.call(SNode.list([1, 2, 1]))
+    assert palindrome.call(SNode.list([1, 2, 2, 1]))
+    assert palindrome.call(SNode.list([1, 2, 3, 2, 1]))
+    assert !palindrome.call(SNode.list([1, 2]))
+    assert !palindrome.call(SNode.list([1, 2, 3, 3, 1]))
   end
 
   def test_1_6_rotate_square_image_in_matrix
