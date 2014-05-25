@@ -2471,14 +2471,12 @@ class TestCases < Test::Unit::TestCase
 # 3_2 Design and implement a stack ...
 
   def test_3_2_min_stack
-    # Design and implement a stack of integers that has an additional operation 'minimum' besides 'push' and 'pop',
-    # that all run in constant time, e.g., push(2), push(3), push(2), push(1), pop, pop, and minimum returns 2.
+    # Design and implement a stack of integers that has an additional operation 'minimum' 
+    # besides 'push' and 'pop', that all run in constant time,
+    # e.g., push(2).push(3).push(2).push(1), pop(), pop(), and minimum() returns 2.
     stack = MinStack.new
     assert stack.minimum.nil?
-    stack.push 2                  # [nil, 2]
-    stack.push 3                  # [nil, 2, 3]
-    stack.push 2                  # [nil, 2, 3, 2, 2]
-    stack.push 1                  # [nil, 2, 3, 2, 2, 2, 1]
+    stack.push(2).push(3).push(2).push(1)
     assert_equal 1, stack.minimum
     assert_equal 1, stack.pop     # [nil, 2, 3, 2, 2]
     assert_equal 2, stack.minimum
