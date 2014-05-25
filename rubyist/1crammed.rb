@@ -2502,16 +2502,15 @@ class TestCases < Test::Unit::TestCase
     assert_equal ["A → C: 1", "A → B: 2", "C → B: 1", "A → C: 3", "B → A: 1", "B → C: 2", "A → C: 1"], a
   end
 
-  def test_3_5_queque_by_good_code_coverage # this test case satisfies condition & loop coverage(s). http://en.wikipedia.org/wiki/Code_coverage
-    # Implement a queue using two stacks.
+  def test_3_5_queque_by_good_code_coverage
     q = Queueable.new         # stack1: [ ], stack2: [ ]
-    q.offer 1                   # stack1: [1], stack2: [ ]
-    q.offer 2                   # stack1: [1, 2], stack2: [ ]
-    assert_equal 1, q.poll     # stack1: [ ], stack2: [2], coverage: true, and 2 iterations
-    assert_equal 2, q.poll     # stack1: [ ], stack2: [ ], coverage: false
-    q.offer 3                   # stack1: [3], stack2: [ ]
-    assert_equal 3, q.poll     # stack1: [ ], stack2: [ ], coverage: true, and 1 iteration
-    assert_equal nil, q.poll   # stack1: [ ], stack2: [ ], coverage: true, and 0 iteration
+    q.offer(1)                # stack1: [1], stack2: [ ]
+    q.offer(2)                # stack1: [1, 2], stack2: [ ]
+    assert_equal 1, q.poll    # stack1: [ ], stack2: [2], coverage: true, and 2 iterations
+    assert_equal 2, q.poll    # stack1: [ ], stack2: [ ], coverage: false
+    q.offer(3)                # stack1: [3], stack2: [ ]
+    assert_equal 3, q.poll    # stack1: [ ], stack2: [ ], coverage: true, and 1 iteration
+    assert_equal nil, q.poll  # stack1: [ ], stack2: [ ], coverage: true, and 0 iteration
   end
 
   def test_3_6_sort_by_stack
