@@ -1952,8 +1952,7 @@ end
 
 class Queueable
   def initialize
-    @stack1 = []
-    @stack2 = []
+    @stack1, @stack2 = [], []
   end
 
   def offer(element)
@@ -1962,8 +1961,7 @@ class Queueable
   end
 
   def poll
-    @stack2.push(@stack1.pop) until @stack1.empty? if @stack2.empty?
-    @stack2.pop
+    @stack2.push(@stack1.pop).pop if if @stack2.empty? && !@stack1.empty?
   end
 end
 
@@ -2201,17 +2199,6 @@ module Arrays
     end
 
     h.each.select { |k, v| v }
-  end
-
-  def self.sort_using_stack!(a)
-    s = []
-    until a.empty?
-      e = a.pop
-      a.push(s.pop) until s.empty? || s.last < e
-      s.push(e)
-    end
-
-    a.replace(s) # returns s
   end
 
   def self.indexes_out_of_matrix(m, x)
@@ -2470,6 +2457,9 @@ class TestCases < Test::Unit::TestCase
 # 3_1 Design and implement three stacks using a single array.
 # 3_2 Design and implement a stack of integers that has an additional operation 'minimum' besides 'push' and 'pop', that all run in constant time. http://ideone.com/VtFtJc
 # 3_4 Write a program that solves the tower of Hanoi puzzle of N disks between three rods.
+# 3_5 Implement a queue using two stacks.
+# 3_6 Write a program to sort a stack in ascending order with biggest items on top. 
+# 3_7 Write a program to ...
 
   def test_3_2_min_stack
     stack = MinStack.new
@@ -2497,12 +2487,12 @@ class TestCases < Test::Unit::TestCase
         move_tower.call(spare, to, from, n-1)
       end
     end
-    a = move_tower.call('A', 'C', 'B', 3) # from 'A' to 'C' via 'B'.
-    a = a.map { |e| sprintf("%s \u2192 %s: %s", e[0], e[1], e[2]) }
+    a = move_tower.call('A', 'C', 'B', 3)
+    a = a.map { |e| sprintf("%s → %s: %s", e[0], e[1], e[2]) }
     assert_equal ["A → C: 1", "A → B: 2", "C → B: 1", "A → C: 3", "B → A: 1", "B → C: 2", "A → C: 1"], a
   end
 
-  def test_3_5_queque_by_good_code_coverage
+  def test_3_5_queque_by_using_two_stacks
     q = Queueable.new         # stack1: [ ], stack2: [ ]
     q.offer(1)                # stack1: [1], stack2: [ ]
     q.offer(2)                # stack1: [1, 2], stack2: [ ]
@@ -2514,7 +2504,17 @@ class TestCases < Test::Unit::TestCase
   end
 
   def test_3_6_sort_by_stack
-    assert_equal [-4, -3, 1, 2, 5, 6], Arrays.sort_using_stack!([5, -3, 1, 2, -4, 6])
+    sort_using_stack = lambda do |a|
+      s = []
+      until a.empty?
+        e = a.pop
+        a.push(s.pop) until s.empty? || s.last < e
+        s.push(e)
+      end
+      a.replace(s) # returns s
+    end
+
+    assert_equal [-4, -3, 1, 2, 5, 6], sort_using_stack.call([5, -3, 1, 2, -4, 6])
   end
 
   def test_2_4_partition_a_linked_list
