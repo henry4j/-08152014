@@ -2469,11 +2469,11 @@ class TestCases < Test::Unit::TestCase
 
 # 3_1 Design and implement three stacks using a single array.
 # 3_2 Design and implement a stack of integers that has an additional operation 'minimum' besides 'push' and 'pop', that all run in constant time. http://ideone.com/VtFtJc
-# 3_3 
+# 3_4 Write a program that solves the tower of Hanoi puzzle of N disks between three rods.
 
   def test_3_2_min_stack
     stack = MinStack.new
-    assert stack.minimum.nil?
+    assert_nil stack.minimum
     stack.push(2).push(3).push(2).push(1)
     assert_equal 1, stack.minimum
     assert_equal 1, stack.pop     # [nil, 2, 3, 2, 2]
@@ -2483,11 +2483,23 @@ class TestCases < Test::Unit::TestCase
     assert_equal 3, stack.pop     # [nil, 2]
     assert_equal 2, stack.minimum
     assert_equal 2, stack.pop     # []
-    assert stack.minimum.nil?
+    assert_nil stack.minimum
   end
 
   def test_3_4_hanoi
-    Arrays.move_tower('A', 'C', 'B', 3) # from 'A' to 'C' via 'B'.
+    move_disk = lambda do |from, to, which|
+      [which, from, to]
+    end
+    move_tower = lambda do |from, to, spare, n|
+      if 1 == n
+        move_disk.call(from, to, 1)
+      else
+        move_tower.call(from, spare, to, n-1)
+        move_disk.call(from, to, n)
+        move_tower.call(spare, to, from, n-1)
+      end
+    end
+    move_tower.call('A', 'C', 'B', 3) # from 'A' to 'C' via 'B'.
   end
 
   def test_3_5_queque_by_good_code_coverage # this test case satisfies condition & loop coverage(s). http://en.wikipedia.org/wiki/Code_coverage
