@@ -340,6 +340,16 @@ class SNode
     pk
   end
 
+  def to_a
+    last = self
+    a = []
+    begin
+      a << last.value
+      last = last.succ
+    end until last.nil?
+    a
+  end
+
   def to_s
     a, h, last = [], {}, self
     begin
@@ -2461,10 +2471,22 @@ class TestCases < Test::Unit::TestCase
   def test_2_7_is_palindrome?
     palindrome = lambda do |head|
       p1 = p2 = head
-      p1, p2 = p1.succ && p2.succ.succ while p2 && p2.succ
-      
+      p1, p2 = p1.succ, p2.succ.succ while p2 && p2.succ
+      p1 = p1.succ if p2 # skips the middle one given odd # of nodes.
+      a = p1.to_a
+      p1 = head
+      !until a.empty?
+        break true if a.pop != p1.value
+        p1 = p1.succ
+      end
     end
-    
+
+    assert palindrome.call(SNode.list([1]))
+    assert palindrome.call(SNode.list([1, 2, 1]))
+    assert palindrome.call(SNode.list([1, 2, 2, 1]))
+    assert palindrome.call(SNode.list([1, 2, 3, 2, 1]))
+    assert palindrome.call(SNode.list([1, 2, 3, 2, 1]))
+    assert !palindrome.call(SNode.list([1, 2, 3, 3, 2]))
   end
 
   def test_2_6_find_cycle_n_reverse_every2!
