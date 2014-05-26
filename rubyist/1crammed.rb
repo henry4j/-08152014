@@ -633,13 +633,15 @@ class BNode
 
   def self.succ(node)
     case
-    when node.nil? then raise ArgumentError, "'node' must be non-null."
-    when node.right then smallest(node.right)
+    when node.nil?
+      raise ArgumentError, "'node' must be non-null."
+    when node.right
+      node = node.right
+      node = node.left while node.left
+      node
     else
-      while node.parent
-        break node.parent if node == node.parent.left
-        node = node.parent
-      end
+      node = node.parent while node.parent && node == node.parent.right
+      node.parent
     end
   end
 
@@ -2459,7 +2461,7 @@ class TestCases < Test::Unit::TestCase
       sorted
     end
 
-    is_sorted_by_minmax = lambda do |tree, min = nil, max = nil|
+    is_sorted_by_minmax = lambda do |tree, min, max|
       tree.nil? ||
       (min.nil? || tree.value >= min) &&
       (max.nil? || tree.value <= max) &&
@@ -2469,8 +2471,8 @@ class TestCases < Test::Unit::TestCase
 
     assert is_sorted.call(BNode.tree([1, 2, 3, 4, 5, 6, 7]))
     assert !is_sorted.call(BNode.tree([1, 2, 3, 4, 8, 6, 7]))
-    assert is_sorted_by_minmax.call(BNode.tree([1, 2, 3, 4, 5, 6, 7]))
-    assert !is_sorted_by_minmax.call(BNode.tree([1, 2, 3, 4, 8, 6, 7]))
+    assert is_sorted_by_minmax.call(BNode.tree([1, 2, 3, 4, 5, 6, 7]), nil, nil)
+    assert !is_sorted_by_minmax.call(BNode.tree([1, 2, 3, 4, 8, 6, 7]), nil, nil)
 
     order_by_stack = lambda do |v, process|
       stack = []
@@ -2519,7 +2521,7 @@ class TestCases < Test::Unit::TestCase
     #       2    6
     #      1 3  5 7
     expected = BNode.new(4, BNode.new(2, BNode.new(1), BNode.new(3)), BNode.new(6, BNode.new(5), BNode.new(7)))
-    assert BNode.eql?(expected, BNode.of([1, 3, 5, 7, 2, 4, 6].sort))
+    assert BNode.eql?(expected, BNode.tree([1, 2, 3, 4, 5, 6, 7]))
   end
 
   def test_4_6_successor_in_order_traversal
@@ -2564,29 +2566,59 @@ class TestCases < Test::Unit::TestCase
     c = BNode.new('c', d, e)
     b = BNode.new('b', c, nil)
     a = BNode.new('a', nil, b)
-    assert_equal c, BNode.common_ancestors(a, 'd', 'e')[-1]
-    assert_equal c, BNode.common_ancestors(a, 'c', 'd')[-1]
-    assert_equal c, BNode.common_ancestors(a, 'c', 'e')[-1]
-    assert_equal b, BNode.common_ancestors(a, 'b', 'e')[-1]
-    assert_equal nil, BNode.common_ancestors(a, 'b', 'x')[-1]
-    assert_equal nil, BNode.common_ancestors(a, 'x', 'y')[-1]
+
+    common_ancestors = lambda do |root, p, q|
+      found = 0
+      breadcrumbs = [] # contains ancestors.
+      enter = lambda do |v|
+        if found < 2 # does not enter if 2 is found.
+          breadcrumbs << v if 0 == found
+          found += [p, q].count { |e| v.value == e }
+          true
+        end
+      end
+      exit = lambda do |v|
+        breadcrumbs.pop if found < 2 && breadcrumbs[-1] == v
+      end
+      BNode.dfs(root, enter, exit) # same as follows: order(root, nil, enter, exit)
+      breadcrumbs
+    end
+
+    assert_equal c, common_ancestors.call(a, 'd', 'e')[-1]
+    assert_equal c, common_ancestors.call(a, 'c', 'd')[-1]
+    assert_equal c, common_ancestors.call(a, 'c', 'e')[-1]
+    assert_equal b, common_ancestors.call(a, 'b', 'e')[-1]
+    assert_equal nil, common_ancestors.call(a, 'b', 'x')[-1]
+    assert_equal nil, common_ancestors.call(a, 'x', 'y')[-1]
   end
 
   def test_4_8_binary_tree_value_include
+    starts_with = lambda do |tree, subtree|
+      subtree.nil? ||
+      tree && tree.value == subtree.value &&
+      starts_with.call(tree.left, subtree.left) &&
+      starts_with.call(tree.right, subtree.right)
+    end
+    contains = lambda do |tree, subtree|
+      subtree.nil? ||
+      start_with.call(tree, subtree) ||
+      tree && (contains.call(tree.left, subtree) || contains.call(tree.right, subtree))
+    end
+
     tree = BNode.new('a', nil, BNode.new('b', BNode.new('c', nil, BNode.new('d')), nil))
-    assert BNode.include?(tree, nil)
-    assert BNode.include?(tree, tree)
-    assert !BNode.include?(tree, BNode.new('e'))
-    assert !BNode.include?(tree, BNode.new('c', nil, BNode.new('e')))
-    assert BNode.include?(tree, BNode.new('b'))
-    assert BNode.include?(tree, BNode.new('c'))
-    assert BNode.include?(tree, BNode.new('d'))
-    assert BNode.include?(tree, tree.right)
-    assert BNode.include?(tree, tree.right.left)
-    assert BNode.include?(tree, tree.right.left.right)
-    assert BNode.include?(tree, BNode.new('a'))
-    assert BNode.include?(tree, BNode.new('a', nil, BNode.new('b')))
-    assert BNode.include?(tree, BNode.new('a', nil, BNode.new('b', BNode.new('c'), nil)))
+    assert contains.call(tree, nil)
+    assert contains.call(tree, tree)
+    assert !contains.call(tree, BNode.new('e'))
+    assert !contains.call(tree, BNode.new('c', nil, BNode.new('e')))
+    assert contains.call(tree, BNode.new('b'))
+    assert contains.call(tree, BNode.new('c'))
+    assert contains.call(tree, BNode.new('d'))
+    assert contains.call(tree, tree.right)
+    assert contains.call(tree, tree.right.left)
+    assert contains.call(tree, tree.right.left.right)
+    assert contains.call(tree, BNode.new('a'))
+    assert contains.call(tree, BNode.new('a', nil, BNode.new('b')))
+    assert contains.call(tree, BNode.new('a', nil, BNode.new('b', BNode.new('c'), nil)))
   end
 
   def test_4_9_find_path_of_sum_in_linear_time
