@@ -786,17 +786,6 @@ class BNode
     tree ? tree.left.size + tree.right.size + 1 : 0
   end
 
-  def self.sorted?(tree)
-    sorted = true
-    prev_value = nil
-    process_v_iff = lambda do |v|
-      sorted &&= prev_value.nil? || prev_value <= v.value
-      prev_value = v.value
-    end
-    order(tree, process_v_iff, lambda { |_| sorted }, nil)
-    sorted
-  end
-
   def self.sorted_by_minmax?(tree, min = nil, max = nil)
     tree.nil? ||
     (min.nil? || tree.value >= min) &&
@@ -836,13 +825,14 @@ class BNode
            eql?(lhs.right, rhs.right)
   end
 
-  def self.of(values, lbound = 0, rbound = values.size - 1)
-    return nil if lbound > rbound
-    pivot = (lbound + rbound) / 2;
-    bnode = BNode.new(values[pivot])
-    bnode.left = of(values, lbound, pivot - 1)
-    bnode.right = of(values, pivot + 1, rbound)
-    bnode
+  def self.tree(values, range = 0...values.size)
+    if range.count > 0
+      pivot =  (range.min + range.max) / 2;
+      bnode = BNode.new(values[pivot])
+      bnode.left = BNode.tree(values, range.min...pivot)
+      bnode.right = BNode.tree(values, (pivot+1)..range.max)
+      bnode
+    end
   end
 
   def self.to_doubly_linked_list(v)
@@ -2462,13 +2452,58 @@ class TestCases < Test::Unit::TestCase
   def test_4_1_balanced_n_4_5_binary_search_tree?
     # 4.1. Implement a function to check if a binary tree is balanced.
     # 4.5. Implement a function to check if a binary tree is a binary search tree.
-    assert BNode.balanced?(BNode.of([1, 3, 4, 7, 2, 5, 6]))
-    assert BNode.sorted?(BNode.of([1, 2, 3, 4, 5, 6, 7]))
-    assert !BNode.sorted?(BNode.of([1, 2, 3, 4, 8, 6, 7]))
-    assert BNode.sorted_by_minmax?(BNode.of([1, 2, 3, 4, 5, 6, 7]))
-    assert !BNode.sorted_by_minmax?(BNode.of([1, 2, 3, 4, 8, 6, 7]))
+    min_depth = lambda do |tree|
+      tree ? 1 + [min_depth.call(tree.left), min_depth.call(tree.right)].min : 0
+    end
+    max_depth = lambda do |tree|
+      tree ? 1 + [max_depth.call(tree.left), max_depth.call(tree.right)].max : 0
+    end
+    is_balanced = lambda do |tree|
+      max_depth.call(tree) - min_depth.call(tree) < 2
+    end
+    tree = BNode.tree([1, 3, 4, 7, 2, 5, 6])
+    assert is_balanced.call(tree)
+
+    is_sorted = lambda do |tree|
+      sorted = true
+      pred = nil
+      process = lambda do |v|
+        sorted &&= pred.nil? || pred.value <= v.value
+        pred = v
+      end
+      enter_iff = lambda do |v| sorted end
+      BNode.order(tree, process, enter_iff, nil)
+      sorted
+    end
+
+    is_sorted_by_minmax = lambda do |tree, min = nil, max = nil|
+      tree.nil? ||
+      (min.nil? || tree.value >= min) &&
+      (max.nil? || tree.value <= max) &&
+      is_sorted_by_minmax.call(tree.left, min, tree.value) &&
+      is_sorted_by_minmax.call(tree.right, tree.value, max)
+    end
+
+    assert is_sorted.call(BNode.tree([1, 2, 3, 4, 5, 6, 7]))
+    assert !is_sorted.call(BNode.tree([1, 2, 3, 4, 8, 6, 7]))
+    assert is_sorted_by_minmax.call(BNode.tree([1, 2, 3, 4, 5, 6, 7]))
+    assert !is_sorted_by_minmax.call(BNode.tree([1, 2, 3, 4, 8, 6, 7]))
+
+    order_by_stack = lambda do |v, process|
+      stack = []
+      while v || !stack.empty?
+        if v
+          stack.push(v)
+          v = v.left
+        else
+          v = stack.pop
+          process.call(v)
+          v = v.right
+        end
+      end
+    end
     values = []
-    BNode.order_by_stack(BNode.of([1, 2, 3, 4, 8, 6, 7]), lambda {|v| values << v.value})
+    order_by_stack.call(BNode.tree([1, 2, 3, 4, 8, 6, 7]), lambda { |v| values << v.value })
     assert_equal [1, 2, 3, 4, 8, 6, 7], values
   end
 
