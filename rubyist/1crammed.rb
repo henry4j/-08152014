@@ -580,10 +580,7 @@ class BNode
   attr_accessor :value, :left, :right, :parent
 
   def initialize(value = nil, left = nil, right = nil, parent = nil)
-    @value = value
-    @left = left
-    @right = right
-    @parent = parent
+    @value, @left, @right, @parent = value, left, right, parent
   end
 
   def self.max_sum_of_path(node)
@@ -697,20 +694,6 @@ class BNode
       process and process.call(v)
       order(v.right, process, enter_iff, exit)
       exit and exit.call(v)
-    end
-  end
-
-  def self.order_by_stack(v, process)
-    stack = []
-    while v || !stack.empty?
-      if v
-        stack.push(v)
-        v = v.left
-      else
-        v = stack.pop
-        process.call(v)
-        v = v.right
-      end
     end
   end
 
