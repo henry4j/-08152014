@@ -1934,7 +1934,8 @@ class Queueable
   end
 
   def poll
-    @stack2.push(@stack1.pop).pop if @stack2.empty? && !@stack1.empty?
+    @stack2.push(@stack1.pop) if @stack2.empty? && !@stack1.empty?
+    @stack2.pop
   end
 end
 
@@ -2595,7 +2596,8 @@ class TestCases < Test::Unit::TestCase
   def test_4_8_binary_tree_value_include
     starts_with = lambda do |tree, subtree|
       subtree.nil? ||
-      tree && tree.value == subtree.value &&
+      tree &&
+      tree.value == subtree.value &&
       starts_with.call(tree.left, subtree.left) &&
       starts_with.call(tree.right, subtree.right)
     end
