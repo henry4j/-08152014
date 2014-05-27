@@ -2435,6 +2435,16 @@ class TestCases < Test::Unit::TestCase
 # 3_6 Write a program to sort a stack in ascending order with biggest items on top. 
 # 3_7 Write a program to enqueue and dequeue dogs and cats at animal shelter.
 
+# 4_1 Write a program to determine if a binary tree is balanced.
+# 4_2 Write a program to determine if there is a route between two nodes in a directed graph.
+# 4_3 Write a program to create a binary search tree given a sorted (increasing order) array.
+# 4_4 Write a program to create an linked list of all nodes at each depth given a binary tree. D linked lists given a tree of depth D.
+# 4_5 Write a program to determine if a binary tree is a binary search tree.
+# 4_6 Write a program to find the successor given a node in a binary search tree where each node has a link to its parent.
+# 4_7 Write a program to find the lowest common ancestor of two nodes in a binary tree.
+# 4_8 Given two very large trees T1 and T2, determine if T1 is a subtree of T2.
+# 4_9 Given a binary tree where each node has a value, write a program to print all paths that sum to a given value.
+
   def test_4_1_balanced_n_4_5_binary_search_tree?
     # 4.1. Implement a function to check if a binary tree is balanced.
     # 4.5. Implement a function to check if a binary tree is a binary search tree.
