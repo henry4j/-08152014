@@ -661,20 +661,8 @@ class BNode
     end
   end
 
-  def self.balanced?(tree)
-    max_depth(tree) - min_depth(tree) <= 1
-  end
-
   def self.size(tree)
     tree ? tree.left.size + tree.right.size + 1 : 0
-  end
-
-  def self.sorted_by_minmax?(tree, min = nil, max = nil)
-    tree.nil? ||
-    (min.nil? || tree.value >= min) &&
-    (max.nil? || tree.value <= max) &&
-    sorted_by_minmax?(tree.left, min, tree.value) &&
-    sorted_by_minmax?(tree.right, tree.value, max)
   end
 
   def self.parent!(node)
@@ -682,22 +670,6 @@ class BNode
       child.parent = node
       parent!(child)
     end
-  end
-
-  def self.include?(tree, subtree)
-    return true if subtree.nil?
-    return false if tree.nil?
-    return true if start_with?(tree, subtree)
-    return include?(tree.left, subtree) ||
-           include?(tree.right, subtree)
-  end
-
-  def self.start_with?(tree, subtree)
-    return true if subtree.nil?
-    return false if tree.nil?
-    return false if tree.value != subtree.value
-    return start_with?(tree.left, subtree.left) &&
-           start_with?(tree.right, subtree.right)
   end
 
   def self.eql?(lhs, rhs)
