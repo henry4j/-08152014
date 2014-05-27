@@ -2657,8 +2657,26 @@ class TestCases < Test::Unit::TestCase
     #       -1
     #      ↙ ↘
     #     2    3
+
+    path_of_sum = lambda do |node, sum, breadcrumbs = [], prefix_sums = [], sum_begins_from = { sum => [0] }|
+      return [] if node.nil?
+      paths = []
+      breadcrumbs << node.value
+      prefix_sums << node.value + (prefix_sums[-1] || 0)
+      (sum_begins_from[prefix_sums[-1] + sum] ||= []) << breadcrumbs.size
+      (sum_begins_from[prefix_sums[-1]] || []).each do |from|
+        paths += [breadcrumbs[from..-1].join(' -> ')]
+      end
+      paths += path_of_sum.call(node.left, sum, breadcrumbs, prefix_sums, sum_begins_from)
+      paths += path_of_sum.call(node.right, sum, breadcrumbs, prefix_sums, sum_begins_from)
+      sum_begins_from[prefix_sums[-1] + sum].pop
+      prefix_sums.pop
+      breadcrumbs.pop
+      paths
+    end
+
     tree = BNode.new(-1, nil, BNode.new(3, BNode.new(-1, BNode.new(2), BNode.new(3)), nil))
-    assert_equal ["-1 -> 3", "3 -> -1", "2", "-1 -> 3"], BNode.path_of_sum(tree, 2)
+    assert_equal ["-1 -> 3", "3 -> -1", "2", "-1 -> 3"], path_of_sum.call(tree, 2)
 
     #        -5
     #     -3     4
