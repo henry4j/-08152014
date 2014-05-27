@@ -2671,7 +2671,7 @@ class TestCases < Test::Unit::TestCase
     tree = BNode.new(-3, BNode.new(-2, BNode.new(-1), nil), nil)
     assert_equal -1, max_sum_of_path.call(tree)[1]
     tree = BNode.new(-1, BNode.new(-2, BNode.new(-3), nil), nil)
-    assert_equal -1, BNode.max_sum_of_path(tree)[1]
+    assert_equal -1, max_sum_of_path.call(tree)[1]
   end
 
   def test_3_2_min_stack
