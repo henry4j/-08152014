@@ -314,7 +314,7 @@ module Strings
       memos[trie] = [key.join, h]
     end
 
-    suffix_tree.dfs(nil, exit_v, []) # to process in postorder.
+    suffix_tree.dfs(nil, exit_v, []) # to process in post-order.
     commons = memos.values.select { |v| v[1].size == ary.size }.map { |v| v[0] }
     commons.group_by { |e| e.size }.max.last
   end
@@ -2601,8 +2601,9 @@ class TestCases < Test::Unit::TestCase
     end
     contains = lambda do |tree, subtree|
       subtree.nil? ||
-      start_with.call(tree, subtree) ||
-      tree && (contains.call(tree.left, subtree) || contains.call(tree.right, subtree))
+      tree &&
+      starts_with.call(tree, subtree) ||
+      (contains.call(tree.left, subtree) || contains.call(tree.right, subtree))
     end
 
     tree = BNode.new('a', nil, BNode.new('b', BNode.new('c', nil, BNode.new('d')), nil))
