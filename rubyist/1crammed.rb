@@ -2603,9 +2603,8 @@ class TestCases < Test::Unit::TestCase
     end
     contains = lambda do |tree, subtree|
       subtree.nil? ||
-      tree && (
-        starts_with.call(tree, subtree) ||
-        (contains.call(tree.left, subtree) || contains.call(tree.right, subtree)))
+      starts_with.call(tree, subtree) ||
+      tree && (contains.call(tree.left, subtree) || contains.call(tree.right, subtree))
     end
 
     tree = BNode.new('a', nil, BNode.new('b', BNode.new('c', nil, BNode.new('d')), nil))
