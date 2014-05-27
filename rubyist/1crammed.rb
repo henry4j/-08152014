@@ -1934,7 +1934,7 @@ class Queueable
   end
 
   def poll
-    @stack2.push(@stack1.pop) if @stack2.empty? && !@stack1.empty?
+    @stack2.push(@stack1.pop) until @stack1.empty?
     @stack2.pop
   end
 end
@@ -3260,7 +3260,7 @@ HERE
     # tree:   1
     #       2    3
     #      4 5  6 7
-    tree = BNode.of([4, 2, 5, 1, 6, 3, 7])
+    tree = BNode.tree([4, 2, 5, 1, 6, 3, 7])
     head = read = BNode.to_doubly_linked_list(tree)
     assert_equal nil, head.left
     values = []
