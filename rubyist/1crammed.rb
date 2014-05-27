@@ -599,22 +599,6 @@ class BNode
     end
   end
 
-  def self.last(v, k, a = [k]) # solves the k-th largest element.
-    if v
-      (a[0] > 0 ? last(v.right, k, a) : []) +
-      (a[0] > 0 ? [v.value] : []) +
-      ((a[0] -= 1) > 0 ? last(v.left, k, a) : [])
-    else
-      []
-    end
-  end
-
-  def self.last2(v, k) # solves the k-th largest element.
-    a = []
-    reverse(v, lambda { |v| a << v.value }, lambda { |v| a.size < k  }, nil)
-    a
-  end
-
   def self.reverse(v, process, enter_iff = nil, exit = nil)
     if v && (enter_iff.nil? || enter_iff.call(v))
       reverse(v.right, process, enter_iff, exit)
@@ -2506,13 +2490,29 @@ class TestCases < Test::Unit::TestCase
     assert_equal 'e', succ.call(d).value
     assert_equal nil, succ.call(f)
 
-    assert_equal ["f"], BNode.last(f, 1)
-    assert_equal ["f", "e", "d"], BNode.last(f, 3)
-    assert_equal ["f", "e", "d", "c", "b", "a"], BNode.last(f, 6)
-    assert_equal ["f", "e", "d", "c", "b", "a"], BNode.last(f, 7)
+    last = lambda do |v, k, a = [k]| # solves the k-th largest element.
+      if v
+        (a[0] > 0 ? last.call(v.right, k, a) : []) +
+        (a[0] > 0 ? [v.value] : []) +
+        ((a[0] -= 1) > 0 ? last.call(v.left, k, a) : [])
+      else
+        []
+      end
+    end
+  
+    last2 = lambda do |v, k| # solves the k-th largest element.
+      a = []
+      BNode.reverse(v, lambda { |v| a << v.value }, lambda { |v| a.size < k  }, nil)
+      a
+    end
 
-    assert_equal ["f"], BNode.last2(f, 1)
-    assert_equal ["f", "e", "d", "c", "b", "a"], BNode.last2(f, 7)
+    assert_equal ["f"], last.call(f, 1)
+    assert_equal ["f", "e", "d"], last.call(f, 3)
+    assert_equal ["f", "e", "d", "c", "b", "a"], last.call(f, 6)
+    assert_equal ["f", "e", "d", "c", "b", "a"], last.call(f, 7)
+
+    assert_equal ["f"], last2.call(f, 1)
+    assert_equal ["f", "e", "d", "c", "b", "a"], last2.call(f, 7)
   end
 
   def test_4_7_lowest_common_ancestor_in_linear_time
