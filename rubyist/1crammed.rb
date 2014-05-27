@@ -583,35 +583,6 @@ class BNode
     @value, @left, @right, @parent = value, left, right, parent
   end
 
-  def self.max_sum_of_path(node)
-    if node
-      lsum, lmax_sum = max_sum_of_path(node.left)
-      rsum, rmax_sum = max_sum_of_path(node.right)
-      sum = node.value + [lsum, rsum, 0].max
-      max_sum = [lmax_sum, rmax_sum, sum, node.value + lsum + rsum].compact.max
-      [sum, max_sum]
-    else
-      [0, nil]
-    end
-  end
-
-  def self.path_of_sum(node, sum, breadcrumbs = [], prefix_sums = [], sum_begins_from = { sum => [0] })
-    return [] if node.nil?
-    paths = []
-    breadcrumbs << node.value
-    prefix_sums << node.value + (prefix_sums[-1] || 0)
-    (sum_begins_from[prefix_sums[-1] + sum] ||= []) << breadcrumbs.size
-    (sum_begins_from[prefix_sums[-1]] || []).each do |from|
-      paths += [breadcrumbs[from..-1].join(' -> ')]
-    end
-    paths += path_of_sum(node.left, sum, breadcrumbs, prefix_sums, sum_begins_from)
-    paths += path_of_sum(node.right, sum, breadcrumbs, prefix_sums, sum_begins_from)
-    sum_begins_from[prefix_sums[-1] + sum].pop
-    prefix_sums.pop
-    breadcrumbs.pop
-    paths
-  end
-
   def self.common_ancestors(root, p, q)
     found = 0
     breadcrumbs = [] # contains ancestors.
