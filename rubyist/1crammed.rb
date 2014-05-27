@@ -636,19 +636,6 @@ class BNode
     end
   end
 
-  def self.maxsum_subtree(v)
-    maxsum = 0
-    sums = {}
-    exit = lambda do |v|
-      sums[v] = [v.left, v.right].compact.reduce(v.value) do |sum, e|
-        sum += sums[e]; sums.delete(e); sum
-      end
-      maxsum = [maxsum, sums[v]].max
-    end
-    dfs(v, nil, exit)
-    maxsum
-  end
-
   def self.parse(preorder, inorder, range_in_preorder = 0..preorder.size-1, range_in_inorder = 0..inorder.size-1)
     # http://www.youtube.com/watch?v=PAYG5WEC1Gs&feature=plcp
     if range_in_preorder.count > 0
@@ -3265,7 +3252,20 @@ HERE
     d = BNode.new(-2, nil, nil)
     b = BNode.new(1, c, d)
     a = BNode.new(-2, b, nil)
-    assert_equal 2, BNode.maxsum_subtree(a)
+
+    maxsum_subtree = lambda do |v|
+      maxsum = 0
+      sums = {}
+      exit = lambda do |v|
+        sums[v] = [v.left, v.right].compact.reduce(v.value) do |sum, e|
+          sum += sums[e]; sums.delete(e); sum
+        end
+        maxsum = [maxsum, sums[v]].max
+      end
+      BNode.dfs(v, nil, exit)
+      maxsum
+    end
+    assert_equal 2, maxsum_subtree.call(a)
   end
 
 #  def test_7_7_kth_integer_of_prime_factors_3_5_n_7
