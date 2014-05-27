@@ -2675,6 +2675,18 @@ class TestCases < Test::Unit::TestCase
       paths
     end
 
+    max_sum_of_path = lambda do |node|
+      if node
+        lsum, lmax_sum = max_sum_of_path.call(node.left)
+        rsum, rmax_sum = max_sum_of_path.call(node.right)
+        sum = node.value + [lsum, rsum, 0].max
+        max_sum = [lmax_sum, rmax_sum, sum, node.value + lsum + rsum].compact.max
+        [sum, max_sum]
+      else
+        [0, nil]
+      end
+    end
+
     tree = BNode.new(-1, nil, BNode.new(3, BNode.new(-1, BNode.new(2), BNode.new(3)), nil))
     assert_equal ["-1 -> 3", "3 -> -1", "2", "-1 -> 3"], path_of_sum.call(tree, 2)
 
@@ -2684,9 +2696,9 @@ class TestCases < Test::Unit::TestCase
     #  -6
     # 7   9
     tree = BNode.new(-5, BNode.new(-3, BNode.new(2, BNode.new(-6, BNode.new(7), BNode.new(9)), nil), BNode.new(8)), BNode.new(4))
-    assert_equal 10, BNode.max_sum_of_path(tree)[1]
+    assert_equal 10, max_sum_of_path.call(tree)[1]
     tree = BNode.new(-3, BNode.new(-2, BNode.new(-1), nil), nil)
-    assert_equal -1, BNode.max_sum_of_path(tree)[1]
+    assert_equal -1, max_sum_of_path.call(tree)[1]
     tree = BNode.new(-1, BNode.new(-2, BNode.new(-3), nil), nil)
     assert_equal -1, BNode.max_sum_of_path(tree)[1]
   end
