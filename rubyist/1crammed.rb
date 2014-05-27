@@ -665,26 +665,6 @@ class BNode
     max_depth(tree) - min_depth(tree) <= 1
   end
 
-  def self.diameter(tree, memos = {})
-    if tree
-      [
-        max_depth(tree.left) + max_depth(tree.right) + 1,
-        self.diameter(tree.left, memos),
-        self.diameter(tree.right, memos)
-      ].max
-    else
-      0
-    end
-  end
-
-  def self.min_depth(tree)
-    tree ? 1 + [min_depth(tree.left), min_depth(tree.right)].min : 0
-  end
-
-  def self.max_depth(tree)
-    tree ? 1 + [max_depth(tree.left), max_depth(tree.right)].max : 0
-  end
-
   def self.size(tree)
     tree ? tree.left.size + tree.right.size + 1 : 0
   end
@@ -3222,8 +3202,24 @@ HERE
     #          c    f
     #           d     g
     #            e
+    max_depth = lambda do |tree|
+      tree ? 1 + [max_depth.call(tree.left), max_depth.call(tree.right)].max : 0
+    end
+
+    diameter = lambda do |tree, memos = {}|
+      if tree
+        [
+          max_depth.call(tree.left) + max_depth.call(tree.right) + 1,
+          diameter.call(tree.left, memos),
+          diameter.call(tree.right, memos)
+        ].max
+      else
+        0
+      end
+    end
+
     tree = BNode.parse('abcdefg', 'cdebfga')
-    assert_equal 6, BNode.diameter(tree)
+    assert_equal 6, diameter.call(tree)
   end
 
   def test_from_strings
