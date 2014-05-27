@@ -672,14 +672,6 @@ class BNode
     end
   end
 
-  def self.eql?(lhs, rhs)
-    return true if lhs.nil? && rhs.nil?
-    return false if lhs.nil? || rhs.nil?
-    return false if lhs.value != rhs.value
-    return eql?(lhs.left, rhs.left) &&
-           eql?(lhs.right, rhs.right)
-  end
-
   def self.tree(values, range = 0...values.size)
     if range.count > 0
       pivot =  (range.min + range.max) / 2;
@@ -2402,7 +2394,14 @@ class TestCases < Test::Unit::TestCase
     #       2    6
     #      1 3  5 7
     expected = BNode.new(4, BNode.new(2, BNode.new(1), BNode.new(3)), BNode.new(6, BNode.new(5), BNode.new(7)))
-    assert BNode.eql?(expected, BNode.tree([1, 2, 3, 4, 5, 6, 7]))
+    value_equal = lambda do |lhs, rhs|
+      lhs.nil? && rhs.nil? ||
+      lhs && rhs &&
+      lhs.value == rhs.value &&
+      value_equal.call(lhs.left, rhs.left) &&
+      value_equal.call(lhs.right, rhs.right)
+    end
+    assert value_equal.call(expected, BNode.tree([1, 2, 3, 4, 5, 6, 7]))
   end
 
   def test_4_6_successor_in_order_traversal
