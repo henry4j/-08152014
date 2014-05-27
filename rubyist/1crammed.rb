@@ -2610,7 +2610,6 @@ class TestCases < Test::Unit::TestCase
         is_subtree.call(tree.left, subtree) ||
         is_subtree.call(tree.right, subtree))
     end
-
     starts_with = lambda do |tree, subtree|
       subtree.nil? ||
       tree &&
@@ -2625,6 +2624,7 @@ class TestCases < Test::Unit::TestCase
     end
 
     tree = BNode.new('a', nil, BNode.new('b', BNode.new('c', nil, BNode.new('d')), nil))
+    assert is_subtree.call(tree, tree)
     assert is_subtree.call(tree, tree.left)
     assert is_subtree.call(tree, tree.right)
     assert is_subtree.call(tree, tree.right.left)
