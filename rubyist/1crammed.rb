@@ -661,10 +661,6 @@ class BNode
     end
   end
 
-  def self.size(tree)
-    tree ? tree.left.size + tree.right.size + 1 : 0
-  end
-
   def self.parent!(node)
     [node.left, node.right].compact.each do |child|
       child.parent = node
