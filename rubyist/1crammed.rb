@@ -583,43 +583,6 @@ class BNode
     @value, @left, @right, @parent = value, left, right, parent
   end
 
-  def self.common_ancestors(root, p, q)
-    found = 0
-    breadcrumbs = [] # contains ancestors.
-    enter = lambda do |v|
-      if found < 2 # does not enter if 2 is found.
-        breadcrumbs << v if 0 == found
-        found += [p, q].count { |e| v.value == e }
-        true
-      end
-    end
-
-    exit = lambda do |v|
-      breadcrumbs.pop if found < 2 && breadcrumbs[-1] == v
-    end
-
-    dfs(root, enter, exit) # same as follows: order(root, nil, enter, exit)
-    breadcrumbs
-  end
-
-  def self.succ(node)
-    case
-    when node.nil?
-      raise ArgumentError, "'node' must be non-null."
-    when node.right
-      node = node.right
-      node = node.left while node.left
-      node
-    else
-      node = node.parent while node.parent && node == node.parent.right
-      node.parent
-    end
-  end
-
-  def self.smallest(node)
-    node.left ? smallest(node.left) : node
-  end
-
   def self.insert_in_order(tree, value)
     if tree.value < value
       if tree.right
@@ -2521,13 +2484,27 @@ class TestCases < Test::Unit::TestCase
     f = BNode.new('f', a, nil)
     BNode.parent!(f)
 
-    assert_equal 'c', BNode.succ(b).value
-    assert_equal 'f', BNode.succ(e).value
+    succ = lambda do |node|
+      case
+      when node.nil?
+        raise ArgumentError, "'node' must be non-null."
+      when node.right
+        node = node.right
+        node = node.left while node.left
+        node
+      else
+        node = node.parent while node.parent && node == node.parent.right
+        node.parent
+      end
+    end
 
-    assert_equal 'b', BNode.succ(a).value
-    assert_equal 'd', BNode.succ(c).value
-    assert_equal 'e', BNode.succ(d).value
-    assert_equal nil, BNode.succ(f)
+    assert_equal 'c', succ.call(b).value
+    assert_equal 'f', succ.call(e).value
+
+    assert_equal 'b', succ.call(a).value
+    assert_equal 'd', succ.call(c).value
+    assert_equal 'e', succ.call(d).value
+    assert_equal nil, succ.call(f)
 
     assert_equal ["f"], BNode.last(f, 1)
     assert_equal ["f", "e", "d"], BNode.last(f, 3)
