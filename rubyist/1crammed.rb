@@ -2603,7 +2603,14 @@ class TestCases < Test::Unit::TestCase
     assert_equal nil, common_ancestors.call(a, 'x', 'y')[-1]
   end
 
-  def test_4_8_binary_tree_value_include
+  def test_4_8_binary_tree_contains?
+    is_subtree = lambda do |tree, subtree|
+      tree.equal?(subtree) ||
+      tree && (
+        is_subtree.call(tree.left, subtree) ||
+        is_subtree.call(tree.right, subtree))
+    end
+
     starts_with = lambda do |tree, subtree|
       subtree.nil? ||
       tree &&
@@ -2618,10 +2625,13 @@ class TestCases < Test::Unit::TestCase
     end
 
     tree = BNode.new('a', nil, BNode.new('b', BNode.new('c', nil, BNode.new('d')), nil))
+    assert is_subtree.call(tree, tree.left)
+    assert is_subtree.call(tree, tree.right)
+    assert is_subtree.call(tree, tree.right.left)
+    assert is_subtree.call(tree, tree.right.left.right)
+
     assert contains.call(tree, nil)
     assert contains.call(tree, tree)
-    e = contains.call(tree, BNode.new('e'))
-    puts 'e contains?' + e.to_s
     assert !contains.call(tree, BNode.new('e'))
     assert !contains.call(tree, BNode.new('c', nil, BNode.new('e')))
     assert contains.call(tree, BNode.new('b'))
