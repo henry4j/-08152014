@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntConsumer;
 import java.util.function.IntPredicate;
@@ -21,7 +22,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
-import org.hamcrest.collection.IsIterableContainingInAnyOrder;
+import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Test;
 
 import com.google.common.base.Joiner;
@@ -86,6 +87,80 @@ public class Jam {
         edges[2] = new Edge[] { Edge.of(0), Edge.of(1), Edge.of(3) }; // C2 - A0, C2 - B1, C2 - D3
         edges[3] = new Edge[] { Edge.of(1), Edge.of(2) }; // D3 - B1, D3 - C2
         assertThat(Graph.twoColorable(0, edges), equalTo(false));
+    }
+
+    @Test
+    public void testTraverseBiTree() {
+        /* tree:   4
+         *      ↙   ↘ 
+         *   ↙2↘    ↙6↘
+         *  1    3  5    7
+         */
+        BNode<Integer> tree = BNode.of(4,
+                BNode.of(2, BNode.of(1), BNode.of(3)),
+                BNode.of(6, BNode.of(5), BNode.of(7)));
+
+        List<Integer> inordered = new ArrayList<>();
+        List<Integer> preordered = new ArrayList<>();
+        List<Integer> postordered = new ArrayList<>();
+        tree.traverse(
+                v -> inordered.add(v.value()),
+                v -> preordered.add(v.value()),
+                v -> postordered.add(v.value()));
+        assertThat(inordered, IsIterableContainingInOrder.contains(1, 2, 3, 4, 5, 6, 7));
+        assertThat(preordered, IsIterableContainingInOrder.contains(4, 2, 1, 3, 6, 5, 7));
+        assertThat(postordered, IsIterableContainingInOrder.contains(1, 3, 2, 5, 7, 6, 4));
+
+        inordered.clear();
+        preordered.clear();
+        tree.traverse(
+                v -> inordered.add(v.value()),
+                v -> preordered.add(v.value()),
+                null);
+        assertThat(inordered, IsIterableContainingInOrder.contains(1, 2, 3, 4, 5, 6, 7));
+        assertThat(preordered, IsIterableContainingInOrder.contains(4, 2, 1, 3, 6, 5, 7));
+    }
+
+    @Data
+    @Accessors(fluent = true)
+    @AllArgsConstructor(staticName="of")
+    @RequiredArgsConstructor(staticName="of")
+    public static class BNode<E> {
+        private final E value;
+        private BNode<E> left;
+        private BNode<E> right;
+
+        public void traverse(final Consumer<BNode<E>> process, final Consumer<BNode<E>> enter, final Consumer<BNode<E>> exit) {
+            Stack<BNode<E>> stack = new Stack<>();
+            BNode<E> v = this;
+            while (null != v || !stack.isEmpty()) {
+                if (null != v) {
+                    if (enter != null) {
+                        enter.accept(v);
+                    }
+                    if (null != exit) {
+                        stack.push(v.right());
+                    }
+                    stack.push(v);
+                    v = v.left();
+                } else {
+                    v = stack.pop();
+                    if (null == exit || !stack.empty() && v.right() == stack.peek()) {
+                        if (null != process) {
+                            process.accept(v);
+                        }
+                        if (null != exit) {
+                            stack.pop();
+                            stack.push(v);
+                        }
+                        v = v.right();
+                    } else {
+                        exit.accept(v);
+                        v = null;
+                    }
+                }
+            }
+        }
     }
 
     public static class Graph {
