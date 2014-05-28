@@ -9,12 +9,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
-import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.BiFunction;
+import java.util.function.IntFunction;
+import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.IntConsumer;
-import java.util.function.IntPredicate;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Predicate;
+import java.util.function.BiPredicate;
+import java.util.function.IntPredicate;
+import java.util.function.Supplier;
+import java.util.function.IntSupplier;
 import java.util.stream.Stream;
 
 import lombok.AllArgsConstructor;
@@ -130,7 +136,10 @@ public class Jam {
         private BNode<E> left;
         private BNode<E> right;
 
-        public void traverse(final Consumer<BNode<E>> process, final Consumer<BNode<E>> enter, final Consumer<BNode<E>> exit) {
+        interface C0nsumer<E> extends java.util.function.Consumer<BNode<E>> {
+        }
+
+        public void traverse(C0nsumer<E> process, C0nsumer<E> enter, C0nsumer<E> exit) {
             Stack<BNode<E>> stack = new Stack<>();
             BNode<E> v = this;
             while (null != v || !stack.isEmpty()) {
