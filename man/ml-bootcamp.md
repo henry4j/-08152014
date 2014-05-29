@@ -51,7 +51,7 @@
 ```bash
 brew install git jruby maven colordiff wget unrar p7zip s3cmd
 brew install rbenv ruby-build
-rbenv install 1.9.3-p548 && rbenv global 1.9.3-p548
+rbenv install 1.9.3-p547 && rbenv global 1.9.3-p547
 gem install test-unit debugger rake
 
 echo '[ -d $HOME/.rbenv ] && eval "$(rbenv init -)"' >> "$HOME/.profile"
