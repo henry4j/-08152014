@@ -2313,7 +2313,10 @@ class TestCases < Test::Unit::TestCase
     assert_equal 20, count_2s_upto.call(99)
     assert_equal 300, count_2s_upto.call(999)
     assert_equal 3059, count_2s_upto.call(6789)
-    assert_equal 2, count_2s.call(1232)
+
+    count_2s = lambda do |x|
+      
+    end
   end
 
   def test_4_1_balanced_n_4_5_binary_search_tree?
