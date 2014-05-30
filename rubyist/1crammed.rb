@@ -2424,15 +2424,15 @@ class TestCases < Test::Unit::TestCase
     assert_equal 'e', succ.call(d).value
     assert_equal nil, succ.call(f)
 
-    last = lambda do |v, k, a = [k]| # solves the k-th largest element.
-      if v
-        (a[0] > 0 ? last.call(v.right, k, a) : []) +
-        (a[0] > 0 ? [v.value] : []) +
-        ((a[0] -= 1) > 0 ? last.call(v.left, k, a) : [])
-      else
-        []
-      end
-    end
+#    last = lambda do |v, k, a = [k]| # solves the k-th largest element.
+#      if v
+#        (a[0] > 0 ? last.call(v.right, k, a) : []) +
+#        (a[0] > 0 ? [v.value] : []) +
+#        ((a[0] -= 1) > 0 ? last.call(v.left, k, a) : [])
+#      else
+#        []
+#      end
+#    end
   
     last2 = lambda do |v, k| # solves the k-th largest element.
       a = []
@@ -2440,10 +2440,10 @@ class TestCases < Test::Unit::TestCase
       a
     end
 
-    assert_equal ["f"], last.call(f, 1)
-    assert_equal ["f", "e", "d"], last.call(f, 3)
-    assert_equal ["f", "e", "d", "c", "b", "a"], last.call(f, 6)
-    assert_equal ["f", "e", "d", "c", "b", "a"], last.call(f, 7)
+#    assert_equal ["f"], last.call(f, 1)
+#    assert_equal ["f", "e", "d"], last.call(f, 3)
+#    assert_equal ["f", "e", "d", "c", "b", "a"], last.call(f, 6)
+#    assert_equal ["f", "e", "d", "c", "b", "a"], last.call(f, 7)
 
     assert_equal ["f"], last2.call(f, 1)
     assert_equal ["f", "e", "d", "c", "b", "a"], last2.call(f, 7)
@@ -2540,49 +2540,49 @@ class TestCases < Test::Unit::TestCase
     #      ↙ ↘
     #     2    3
 
-    path_of_sum = lambda do |node, sum, breadcrumbs = [], prefix_sums = [], sum_begins_from = { sum => [0] }|
-      return [] if node.nil?
-      paths = []
-      breadcrumbs << node.value
-      prefix_sums << node.value + (prefix_sums[-1] || 0)
-      (sum_begins_from[prefix_sums[-1] + sum] ||= []) << breadcrumbs.size
-      (sum_begins_from[prefix_sums[-1]] || []).each do |from|
-        paths += [breadcrumbs[from..-1].join(' -> ')]
-      end
-      paths += path_of_sum.call(node.left, sum, breadcrumbs, prefix_sums, sum_begins_from)
-      paths += path_of_sum.call(node.right, sum, breadcrumbs, prefix_sums, sum_begins_from)
-      sum_begins_from[prefix_sums[-1] + sum].pop
-      prefix_sums.pop
-      breadcrumbs.pop
-      paths
-    end
-
-    max_sum_of_path = lambda do |node|
-      if node
-        lsum, lmax_sum = max_sum_of_path.call(node.left)
-        rsum, rmax_sum = max_sum_of_path.call(node.right)
-        sum = node.value + [lsum, rsum, 0].max
-        max_sum = [lmax_sum, rmax_sum, sum, node.value + lsum + rsum].compact.max
-        [sum, max_sum]
-      else
-        [0, nil]
-      end
-    end
-
-    tree = BNode.new(-1, nil, BNode.new(3, BNode.new(-1, BNode.new(2), BNode.new(3)), nil))
-    assert_equal ["-1 -> 3", "3 -> -1", "2", "-1 -> 3"], path_of_sum.call(tree, 2)
-
-    #        -5
-    #     -3     4
-    #    2   8
-    #  -6
-    # 7   9
-    tree = BNode.new(-5, BNode.new(-3, BNode.new(2, BNode.new(-6, BNode.new(7), BNode.new(9)), nil), BNode.new(8)), BNode.new(4))
-    assert_equal 10, max_sum_of_path.call(tree)[1]
-    tree = BNode.new(-3, BNode.new(-2, BNode.new(-1), nil), nil)
-    assert_equal -1, max_sum_of_path.call(tree)[1]
-    tree = BNode.new(-1, BNode.new(-2, BNode.new(-3), nil), nil)
-    assert_equal -1, max_sum_of_path.call(tree)[1]
+#    path_of_sum = lambda do |node, sum, breadcrumbs = [], prefix_sums = [], sum_begins_from = { sum => [0] }|
+#      return [] if node.nil?
+#      paths = []
+#      breadcrumbs << node.value
+#      prefix_sums << node.value + (prefix_sums[-1] || 0)
+#      (sum_begins_from[prefix_sums[-1] + sum] ||= []) << breadcrumbs.size
+#      (sum_begins_from[prefix_sums[-1]] || []).each do |from|
+#        paths += [breadcrumbs[from..-1].join(' -> ')]
+#      end
+#      paths += path_of_sum.call(node.left, sum, breadcrumbs, prefix_sums, sum_begins_from)
+#      paths += path_of_sum.call(node.right, sum, breadcrumbs, prefix_sums, sum_begins_from)
+#      sum_begins_from[prefix_sums[-1] + sum].pop
+#      prefix_sums.pop
+#      breadcrumbs.pop
+#      paths
+#    end
+#
+#    max_sum_of_path = lambda do |node|
+#      if node
+#        lsum, lmax_sum = max_sum_of_path.call(node.left)
+#        rsum, rmax_sum = max_sum_of_path.call(node.right)
+#        sum = node.value + [lsum, rsum, 0].max
+#        max_sum = [lmax_sum, rmax_sum, sum, node.value + lsum + rsum].compact.max
+#        [sum, max_sum]
+#      else
+#        [0, nil]
+#      end
+#    end
+#
+#    tree = BNode.new(-1, nil, BNode.new(3, BNode.new(-1, BNode.new(2), BNode.new(3)), nil))
+#    assert_equal ["-1 -> 3", "3 -> -1", "2", "-1 -> 3"], path_of_sum.call(tree, 2)
+#
+#    #        -5
+#    #     -3     4
+#    #    2   8
+#    #  -6
+#    # 7   9
+#    tree = BNode.new(-5, BNode.new(-3, BNode.new(2, BNode.new(-6, BNode.new(7), BNode.new(9)), nil), BNode.new(8)), BNode.new(4))
+#    assert_equal 10, max_sum_of_path.call(tree)[1]
+#    tree = BNode.new(-3, BNode.new(-2, BNode.new(-1), nil), nil)
+#    assert_equal -1, max_sum_of_path.call(tree)[1]
+#    tree = BNode.new(-1, BNode.new(-2, BNode.new(-3), nil), nil)
+#    assert_equal -1, max_sum_of_path.call(tree)[1]
   end
 
   def test_3_2_min_stack
@@ -3160,7 +3160,7 @@ HERE
       tree ? 1 + [max_depth.call(tree.left), max_depth.call(tree.right)].max : 0
     end
 
-    diameter = lambda do |tree, memos = {}|
+    diameter = lambda do |tree, memos|
       if tree
         [
           max_depth.call(tree.left) + max_depth.call(tree.right) + 1,
@@ -3173,7 +3173,7 @@ HERE
     end
 
     tree = BNode.parse('abcdefg', 'cdebfga')
-    assert_equal 6, diameter.call(tree)
+    assert_equal 6, diameter.call(tree, {})
   end
 
   def test_from_strings
