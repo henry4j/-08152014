@@ -2290,6 +2290,12 @@ class TestCases < Test::Unit::TestCase
 # 4_8 Given two very large trees T1 and T2, determine if T1 is a subtree of T2.
 # 4_9 Given a binary tree where each node has a value, write a program to print all paths that sum to a given value.
 
+# 14_8 Write a function to count the number of 2s that appear in all the numbers between 0 and n (inclusive), e.g., input: 25, output: 9 (2, 12, 20, 21, 22, 23, 24, and 25); note that 22 counts for two 2s.
+
+  def test_14_8_count_twos
+    
+  end
+
   def test_4_1_balanced_n_4_5_binary_search_tree?
     # 4.1. Implement a function to check if a binary tree is balanced.
     # 4.5. Implement a function to check if a binary tree is a binary search tree.
