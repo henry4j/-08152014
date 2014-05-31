@@ -2293,18 +2293,18 @@ class TestCases < Test::Unit::TestCase
 # 14_8 Write a function to count the number of 2s that appear in all the numbers between 0 and n (inclusive), e.g., input: 25, output: 9 (2, 12, 20, 21, 22, 23, 24, and 25); note that 22 counts for two 2s.
 
   def test_14_8_count_twos
-    count_2s = lambda do |x|
+    count_2s = lambda do |d|
       count = 0
-      while x > 0
-        count += 1 if x % 10 == 2
-        x /= 10
+      while d > 0
+        count += 1 if d % 10 == 2
+        d /= 10
       end
       count
     end
-    count_2s_upto = lambda do |x|
+    count_2s_upto = lambda do |n|
       count = 0
-      for y in 0..x
-        count += count_2s.call(y)
+      for d in 0..n
+        count += count_2s.call(s)
       end
       count
     end
