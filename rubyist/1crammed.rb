@@ -2314,9 +2314,30 @@ class TestCases < Test::Unit::TestCase
     assert_equal 300, count_2s_upto.call(999)
     assert_equal 3059, count_2s_upto.call(6789)
 
-    count_2s = lambda do |x|
-      
+    count_2s_upto_E = lambda do |e|
+      e > 0 ? e * 10 ** (e-1) : 0
     end
+
+    count_2s_upto = lambda do |x|
+      b, d, c = 0, x, 0
+      while d > 0
+        a = d % 10 # we look at a digit (aE+b) in each iteration.
+        c += a * count_2s_upto_E.call(b)
+        a
+        c += case
+        when a >= 3 then 10**b
+        when a == 2 then x % 10**b + 1
+        else 0
+        end
+        b, d = b+1, d/10
+      end
+      c
+    end
+
+    assert_equal 1, count_2s_upto.call(9)
+    assert_equal 20, count_2s_upto.call(99)
+    assert_equal 300, count_2s_upto.call(999)
+    assert_equal 3059, count_2s_upto.call(6789)
   end
 
   def test_4_1_balanced_n_4_5_binary_search_tree?
