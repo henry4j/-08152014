@@ -52,24 +52,18 @@ module Partitions
     end
   end
 
-  def self.int_composition(n, parts = 1..n)
-    memos = {}
-    map = lambda do |m, k| # compositions of m in k parts
-      memos[m] ||= {}
-      memos[m][k] ||= case
-      when 0 == m || 0 == k
-        []
-      when 1 == k
-        [[m]]
-      else
-        (1...m).each_with_object([]) do |e, compositions|
-          map.call(m-e, k-1).each_with_object(compositions) do |r, c|
-            c << r + [e]
-          end
-        end
+  def self.compose(n, k, memos = {}) # compose n into k parts
+    memos[n] ||= {}
+    memos[n][k] ||= case
+    when 0 == n || 0 == k
+      []
+    when 1 == n || 1 == k
+      [[n]]
+    else
+      (1...n).reduce([]) do |compositions, e|
+        compositions += compose(n-e, k-1, memos).map { |c| c + [e] }
       end
     end
-    parts.each_with_object([]) do |k, c| c.concat(map.call(n, k)) end
   end
 
   def self.set_partition(ary = [])
@@ -2304,10 +2298,13 @@ class TestCases < Test::Unit::TestCase
     w = %w(approximation do it yourself doityourself motherinlaw mother in law).sort_by { |s| -s.size }
     d = w.each_with_object({}) { |e, d| d[e] = true }
     s = w.detect do |word|
-      Partitions.int_composition(word.size, 2..3).any? do |composition|
-        prefix_sums = composition.reduce([]) { |a, e| a << e + (a.last || 0) }
-        words = (0...prefix_sums.size).map { |j| word[(j > 0 ? prefix_sums[j-1] : 0)...prefix_sums[j]] }
-        words.all? { |k| d.has_key?(k) }
+      (2..3).any? do |k|
+        comositions = Partitions.compose(word.size, k)
+        Partitions.compose(word.size, k).any? do |composition|
+          prefix_sums = composition.reduce([]) { |a, e| a << e + (a[-1] || 0) }
+          words = (0...prefix_sums.size).map { |j| word[(j > 0 ? prefix_sums[j-1] : 0)...prefix_sums[j]] }
+          words.all? { |k| d.has_key?(k) }
+        end
       end
     end
     assert_equal 'doityourself', s
