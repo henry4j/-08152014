@@ -52,18 +52,24 @@ module Partitions
     end
   end
 
-  def self.int_composition(n) # http://en.wikipedia.org/wiki/Composition_(number_theory)
+  def self.int_composition(n, parts = 1..n)
     memos = {}
-    map = lambda do |n, k|
-      memos[n] ||= {}
-      memos[n][k] ||= case
-      when 0 == k then []
-      when 1 == k then [[n]]
+    map = lambda do |m, k| # compositions of m in k parts
+      memos[m] ||= {}
+      memos[m][k] ||= case
+      when 0 == m || 0 == k
+        []
+      when 1 == k
+        [[m]]
       else
-        (1...n).reduce([]) { |a, e| a += map.call(n-e, k-1).map { |c| [e] + c } }
+        (1...m).each_with_object([]) do |e, compositions|
+          map.call(m-e, k-1).each_with_object(compositions) do |r, c|
+            c << r + [e]
+          end
+        end
       end
     end
-    (1..n).reduce([]) { |a, k| a += map.call(n, k) }
+    parts.each_with_object([]) do |k, c| c.concat(map.call(n, k)) end
   end
 
   def self.set_partition(ary = [])
@@ -2299,7 +2305,7 @@ class TestCases < Test::Unit::TestCase
     d = w.each_with_object({}) { |e, d| d[e] = true }
     s = w.detect do |word|
       Partitions.int_composition(word.size, 2..3).any? do |composition|
-        prefix_sums = composition.reduce([]) { |a,e| a + [e + (a.last || 0)] }
+        prefix_sums = composition.reduce([]) { |a, e| a << e + (a.last || 0) }
         words = (0...prefix_sums.size).map { |j| word[(j > 0 ? prefix_sums[j-1] : 0)...prefix_sums[j]] }
         words.all? { |k| d.has_key?(k) }
       end
