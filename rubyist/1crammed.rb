@@ -2292,6 +2292,21 @@ class TestCases < Test::Unit::TestCase
 
 # 14_8 Write a function to count the number of 2s that appear in all the numbers between 0 and n (inclusive), e.g., input: 25, output: 9 (2, 12, 20, 21, 22, 23, 24, and 25); note that 22 counts for two 2s.
 
+  def test_18_7_find_longest_compound_words
+    # Given a list of words, write a program that returns the longest word made of other words.
+    # e.g. return "doityourself" given a list, "doityourself", "do", "it", "yourself", "motherinlaw", "mother", "in", "law".
+    w = %w(approximation do it yourself doityourself motherinlaw mother in law).sort_by { |s| -s.size }
+    d = w.each_with_object({}) { |e, d| d[e] = true }
+    s = w.detect do |word|
+      Partitions.int_composition(word.size, 2..3).any? do |composition|
+        prefix_sums = composition.reduce([]) { |a,e| a + [e + (a.last || 0)] }
+        words = (0...prefix_sums.size).map { |j| word[(j > 0 ? prefix_sums[j-1] : 0)...prefix_sums[j]] }
+        words.all? { |k| d.has_key?(k) }
+      end
+    end
+    assert_equal 'doityourself', s
+  end
+
   def test_14_8_count_twos
     count_2s = lambda do |d|
       count = 0
@@ -3808,22 +3823,6 @@ HERE
   #       that you are given a function that will identify the character and its position on
   #       the reverse side of the page for any given character position.
 
-  def test_20_7_find_longest_compound_words
-    # Given a list of words, write a program that returns the longest word made of other words.
-    # e.g. return "doityourself" given a list, "doityourself", "do", "it", "yourself", "motherinlaw", "mother", "in", "law".
-#    w = %w(approximation do it yourself doityourself motherinlaw mother in law).sort_by { |s| -s.size }
-#    d = w.reduce({}) { |h,k| h.merge(k => nil) }
-#    s = w.detect do |word|
-#      Partitions.int_composition(word.size, 2..3).any? do |composition|
-#        prefix_sums = composition.reduce([]) { |a,e| a + [e + (a.last || 0)] }
-#        words = (0...prefix_sums.size).map { |j| word[(j > 0 ? prefix_sums[j-1] : 0)...prefix_sums[j]] }
-#        words.all? { |k| d.has_key?(k) }
-#      end
-#    end
-#  
-#    assert_equal 'doityourself', s
-  end
-  
   def test_20_10_trans_steps_of_2_words
     # Given two words of equal length that are in a dictionary, 
     # design a method to transform one word into another word by changing only one letter at a time.
