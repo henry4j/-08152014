@@ -2346,7 +2346,7 @@ class TestCases < Test::Unit::TestCase
     count_2s_upto = lambda do |n|
       count = 0
       for d in 0..n
-        count += count_2s.call(s)
+        count += count_2s.call(d)
       end
       count
     end
