@@ -2292,9 +2292,10 @@ class TestCases < Test::Unit::TestCase
 
 # 14_8 Write a function to count the number of 2s that appear in all the numbers between 0 and n (inclusive), e.g., input: 25, output: 9 (2, 12, 20, 21, 22, 23, 24, and 25); note that 22 counts for two 2s.
 
+# 18_7 Given a list of words, write a program that returns the longest word made of other words.
+# e.g. return "doityourself" given a list, "doityourself", "do", "it", "yourself", "motherinlaw", "mother", "in", "law".
+
   def test_18_7_find_longest_compound_words
-    # Given a list of words, write a program that returns the longest word made of other words.
-    # e.g. return "doityourself" given a list, "doityourself", "do", "it", "yourself", "motherinlaw", "mother", "in", "law".
     w = %w(approximation do it yourself doityourself motherinlaw mother in law).sort_by { |s| -s.size }
     d = w.each_with_object({}) { |e, d| d[e] = true }
     s = w.detect do |word|
