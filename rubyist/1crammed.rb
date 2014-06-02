@@ -2291,8 +2291,32 @@ class TestCases < Test::Unit::TestCase
 # 4_9 Given a binary tree where each node has a value, write a program to print all paths that sum to a given value.
 
 # 18_4 Write a function to count the number of 2s that appear in all the numbers between 0 and n (inclusive), e.g., input: 25, output: 9 (2, 12, 20, 21, 22, 23, 24, and 25); note that 22 counts for two 2s.
-# 18_7 Given a list of words, write a program that returns the longest word made of other words.
-# e.g. return "doityourself" given a list, "doityourself", "do", "it", "yourself", "motherinlaw", "mother", "in", "law".
+# 18_7 Given a list of words, write a program that returns the longest word made of other words., e.g., return "doityourself" given a list, "doityourself", "do", "it", "yourself", "motherinlaw", "mother", "in", "law".
+# 18_
+
+  def test_18_5_smallest_snippet_of_k_words
+    # Given a search string of three words, find the smallest snippet of the document that contains all three of 
+    # the search words --- i.e., the snippet with smallest number of words in it. You are given the index positions 
+    # where these words occur in search strings, such as word1: (1, 4, 5), word2: (3, 9, 10), word3: (2, 6, 15). 
+    # Each of the lists are in sorted order as above.
+    # http://rcrezende.blogspot.com/2010/08/smallest-relevant-text-snippet-for.html
+    # http://blog.panictank.net/tag/algorithm-design-manual/
+
+    min_window = lambda do |positions| # e.g. [[0, 89, 130], [95, 123, 177, 199], [70, 105, 117]], O(L*logK)
+      min_window = window = positions.map { |e| e.shift } # [0, 95, 70]
+      heap = BinaryHeap.new(lambda { |a, b| a[1] <=> b[1] })
+      heap = window.each_index.reduce(heap) { |h, i| h.offer([i, window[i]]) }
+      until positions[i = heap.poll[0]].empty?
+        window[i] = positions[i].shift
+        min_window = [min_window, window].min_by { |w| w.max - w.min }
+        heap.offer([i, window[i]])
+      end
+      min_window.minmax
+    end
+
+    assert_equal [117, 130], min_window.call([[0, 89, 130], [95, 123, 177, 199], [70, 105, 117]])
+    # assert_equal 'adab', min_window_string('abracadabra', 'abad')
+  end
 
   def test_18_7_find_longest_compound_words
     w = %w(approximation do it yourself doityourself motherinlaw mother in law).sort_by { |s| -s.size }
@@ -3776,10 +3800,10 @@ HERE
     assert_equal [117, 130], Strings.min_window([[0, 89, 130], [95, 123, 177, 199], [70, 105, 117]])
     assert_equal 'adab', Strings.min_window_string('abracadabra', 'abad')
   end
-  
+
   # 4-45. Given 12 coins. One of them is heavier or lighter than the rest. Identify this coin in just three weightings.
   # http://learntofish.wordpress.com/2008/11/30/solution-of-the-12-balls-problem/
-  
+
   def test_manual_7_14_permutate
     # 7-14. Write a function to find all permutations of the letters in a particular string.
     permutations = ["aabb", "abab", "abba", "baab", "baba", "bbaa"]
