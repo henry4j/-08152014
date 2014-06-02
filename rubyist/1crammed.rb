@@ -2290,8 +2290,7 @@ class TestCases < Test::Unit::TestCase
 # 4_8 Given two very large trees T1 and T2, determine if T1 is a subtree of T2.
 # 4_9 Given a binary tree where each node has a value, write a program to print all paths that sum to a given value.
 
-# 14_8 Write a function to count the number of 2s that appear in all the numbers between 0 and n (inclusive), e.g., input: 25, output: 9 (2, 12, 20, 21, 22, 23, 24, and 25); note that 22 counts for two 2s.
-
+# 18_4 Write a function to count the number of 2s that appear in all the numbers between 0 and n (inclusive), e.g., input: 25, output: 9 (2, 12, 20, 21, 22, 23, 24, and 25); note that 22 counts for two 2s.
 # 18_7 Given a list of words, write a program that returns the longest word made of other words.
 # e.g. return "doityourself" given a list, "doityourself", "do", "it", "yourself", "motherinlaw", "mother", "in", "law".
 
@@ -2311,7 +2310,7 @@ class TestCases < Test::Unit::TestCase
     assert_equal 'doityourself', s
   end
 
-  def test_14_8_count_twos
+  def test_18_4_count_twos
     count_2s = lambda do |d|
       count = 0
       while d > 0
