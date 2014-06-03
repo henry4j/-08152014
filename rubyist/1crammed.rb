@@ -2034,13 +2034,6 @@ module Arrays
     [max_sum, [max_left, max_right]]
   end
 
-  def self.forms_border?(r, c, s, prefix_sums_v, prefix_sums_h)
-    s == prefix_sums_h[r][c+s-1] - (c > 0 ? prefix_sums_h[r][c-1] : 0) &&
-    s == prefix_sums_v[r+s-1][c] - (r > 0 ? prefix_sums_v[r-1][c] : 0) &&
-    s == prefix_sums_h[r+s-1][c+s-1] - (c > 0 ? prefix_sums_h[r+s-1][c-1] : 0) &&
-    s == prefix_sums_v[r+s-1][c+s-1] - (r > 0 ? prefix_sums_v[r-1][c+s-1] : 0)
-  end
-
   def self.peak(ary, range = 0...ary.size)
     if range.min # nil otherwise
       k = (range.min + range.max) / 2
@@ -2189,6 +2182,13 @@ class TestCases < Test::Unit::TestCase
       [1, 0, 1, 1, 1, 0]
     ]
 
+    forms_border = lambda do |r, c, s, prefix_sums_v, prefix_sums_h|
+      s == prefix_sums_h[r][c+s-1] - (c > 0 ? prefix_sums_h[r][c-1] : 0) &&
+      s == prefix_sums_v[r+s-1][c] - (r > 0 ? prefix_sums_v[r-1][c] : 0) &&
+      s == prefix_sums_h[r+s-1][c+s-1] - (c > 0 ? prefix_sums_h[r+s-1][c-1] : 0) &&
+      s == prefix_sums_v[r+s-1][c+s-1] - (r > 0 ? prefix_sums_v[r-1][c+s-1] : 0)
+    end
+
     max_subsquare = lambda do m
       m.size.times do |r|
         raise "row[#{r}].size must be '#{m.size}'." unless m.size == m[r].size
@@ -2207,7 +2207,7 @@ class TestCases < Test::Unit::TestCase
       m.size.times do |r|
         m.size.times do |c|
           (m.size - [r, c].max).downto(1) do |size|
-            if size > max_size && forms_border?(r, c, size, prefix_sums_v, prefix_sums_h)
+            if size > max_size && forms_border.call(r, c, size, prefix_sums_v, prefix_sums_h)
               max_r = r; max_c = c; max_size = size
             end
           end
