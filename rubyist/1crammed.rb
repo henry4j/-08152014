@@ -474,9 +474,9 @@ class Trie # constructs in O(n^2) time & O(n^2) space; O(n) time & space if opti
   end
 
   def values
-    @children.values.reduce([@value]) do
+    @children.values.reduce(@value ? [@value] : []) do
       |a, c| c.values.reduce(a) { |a, v| a << v } 
-    end.compact
+    end
   end
 
   def dfs(enter_v_iff = nil, exit_v = nil, key = [])
@@ -1584,16 +1584,6 @@ module Numbers # discrete maths and bit twiddling http://graphics.stanford.edu/~
     [ b ^ ((a ^ b) & negative1or0), a ^ ((a ^ b) & negative1or0) ]
   end
 
-  def self.sum(a, b)
-    if 0 == b
-      a
-    else
-      units = (a ^ b)
-      carry = (a & b) << 1
-      sum(units, carry)
-    end
-  end
-
   def self.divide(dividend, divisor) # implement division w/o using the divide operator, obviously.
     bit = 1
     while divisor <= dividend
@@ -2444,7 +2434,17 @@ class TestCases < Test::Unit::TestCase
   end
 
   def test_20_1_addition
-    assert_equal 1110 + 323, Numbers.sum(1110, 323)
+    sum = lambda do |a, b|
+      if 0 == b
+        a
+      else
+        units = (a ^ b)
+        carry = (a & b) << 1
+        sum.call(units, carry)
+      end
+    end
+
+    assert_equal 1110 + 323, sum.call(1110, 323)
   end
 
   def test_20_2_knuth_shuffle
