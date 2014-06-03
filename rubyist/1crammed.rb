@@ -2069,34 +2069,6 @@ module Arrays
     [max_sum, [max_top, max_left, max_bottom, max_right]]
   end
 
-  def self.max_size_subsquare(m = [[1]])
-    m.size.times do |r|
-      raise "row[#{r}].size must be '#{m.size}'." unless m.size == m[r].size
-    end
-
-    prefix_sums_v = Array.new(m.size) { [] } # vertically
-    prefix_sums_h = Array.new(m.size) { [] } # horizontally
-    m.size.times do |r|
-      m.size.times do |c|
-        prefix_sums_v[r][c] = (r > 0 ? prefix_sums_v[r - 1][c] : 0) + m[r][c]
-        prefix_sums_h[r][c] = (c > 0 ? prefix_sums_h[r][c - 1] : 0) + m[r][c]
-      end
-    end
-
-    max_r = max_c = max_size = -1
-    m.size.times do |r|
-      m.size.times do |c|
-        (m.size - [r, c].max).downto(1) do |size|
-          if size > max_size && forms_border?(r, c, size, prefix_sums_v, prefix_sums_h)
-            max_r = r; max_c = c; max_size = size
-          end
-        end
-      end
-    end
-
-    [max_size, [max_r, max_c]]
-  end
-
   def self.forms_border?(r, c, s, prefix_sums_v, prefix_sums_h)
     s == prefix_sums_h[r][c+s-1] - (c > 0 ? prefix_sums_h[r][c-1] : 0) &&
     s == prefix_sums_v[r+s-1][c] - (r > 0 ? prefix_sums_v[r-1][c] : 0) &&
@@ -2239,6 +2211,60 @@ class TestCases < Test::Unit::TestCase
 # 18_8 Given a string s and an array of smaller strings Q, write a program to search s for each small string in Q.
 # 18_9 Write a program that can quickly answer a median value, while random numbers are being generated and offered (a median bag). 
 # 18_10 Given two words of equal length that are in a dictionary, write a method to transform one word into another word by changing only one letter at a time. The new word you get in each step must be in the dictionary.
+
+  def test_18_11_max_subsquare
+    # Imagine you have a square matrix, where each cell is filled with either black (1) or white (0).
+    # Design an algorithm to find the maximum sub-square such that all four borders are filled with black pixels.
+    m = [
+      [0, 1, 1, 0, 1, 0],
+      [1, 1, 1, 1, 0, 1],
+      [1, 1, 0, 1, 1, 0],
+      [1, 0, 1, 1, 1, 1],
+      [0, 1, 1, 1, 1, 1],
+      [1, 0, 1, 1, 1, 0]
+    ]
+
+    max_subsquare = lambda do m
+      m.size.times do |r|
+        raise "row[#{r}].size must be '#{m.size}'." unless m.size == m[r].size
+      end
+
+      prefix_sums_v = Array.new(m.size) { [] } # vertically
+      prefix_sums_h = Array.new(m.size) { [] } # horizontally
+      m.size.times do |r|
+        m.size.times do |c|
+          prefix_sums_v[r][c] = (r > 0 ? prefix_sums_v[r - 1][c] : 0) + m[r][c]
+          prefix_sums_h[r][c] = (c > 0 ? prefix_sums_h[r][c - 1] : 0) + m[r][c]
+        end
+      end
+
+      max_r = max_c = max_size = -1
+      m.size.times do |r|
+        m.size.times do |c|
+          (m.size - [r, c].max).downto(1) do |size|
+            if size > max_size && forms_border?(r, c, size, prefix_sums_v, prefix_sums_h)
+              max_r = r; max_c = c; max_size = size
+            end
+          end
+        end
+      end
+
+      [max_size, [max_r, max_c]]
+    end
+
+    assert_equal [3, [3, 2]], max_subsquare.call(m)
+  end
+
+  def test_18_12_maxsum_submatrix
+    m = [ # 4 x 3 matrix
+      [ 1,  0, 1], 
+      [ 0, -1, 0], 
+      [ 1,  0, 1], 
+      [-5,  2, 5]
+    ]
+    assert_equal [8, [2, 1, 3, 2]], Arrays.maxsum_submatrix(m)
+    assert_equal [3, [0, 0, 0, 1]], Arrays.maxsum_submatrix([[1, 2, -1], [-3, -1, -4], [1, -5, 2]])
+  end
 
   def test_18_10_trans_steps_of_2_words
     d = %w{CAMP DAMP LAMP RAMP LIMP LUMP LIMO LITE LIME LIKE}.each_with_object({}) { |w, d| d[k] = true }
@@ -2770,8 +2796,8 @@ class TestCases < Test::Unit::TestCase
       end
     end
     a = move_tower.call('A', 'C', 'B', 3)
-    a = a.map { |e| sprintf("%s → %s: %s", e[0], e[1], e[2]) }
-    assert_equal ["A → C: 1", "A → B: 2", "C → B: 1", "A → C: 3", "B → A: 1", "B → C: 2", "A → C: 1"], a
+    a = a.map { |e| sprintf("%s -> %s: %s", e[0], e[1], e[2]) }
+    assert_equal ["A -> C: 1", "A -> B: 2", "C -> B: 1", "A -> C: 3", "B -> A: 1", "B -> C: 2", "A -> C: 1"], a
   end
 
   def test_3_5_queque_by_using_two_stacks
@@ -3175,9 +3201,9 @@ class TestCases < Test::Unit::TestCase
 
   def test_max_flow_ford_fulkerson
 @@bipartite = <<HERE
-    A0 -⟶ B1 ⟶ D3
-       ↘     ↘    ↘
-          C2 ⟶ E4 ⟶ F5
+    A0 --> B1 --> D3
+       \     \     \
+        C2 --> E4 --> F5
 HERE
 
     edges = []
@@ -3553,31 +3579,6 @@ HERE
   #   the receiver immediately sends an acknowledgment (ACK), with the ACK number set to the sequence number that seems to be missing.
   #   The receiver sends another ACK for that sequence number for each additional TCP segment in the incoming stream 
   #   that arrives with a sequence number higher than the missing one.
-
-  def test_20_11_max_size_subsquare
-    # Imagine you have a square matrix, where each cell is filled with either black (1) or white (0).
-    # Design an algorithm to find the maximum sub-square such that all four borders are filled with black pixels.
-    m = [
-      [0, 1, 1, 0, 1, 0],
-      [1, 1, 1, 1, 0, 1],
-      [1, 1, 0, 1, 1, 0],
-      [1, 0, 1, 1, 1, 1],
-      [0, 1, 1, 1, 1, 1],
-      [1, 0, 1, 1, 1, 0]
-    ]
-    assert_equal [3, [3, 2]], Arrays.max_size_subsquare(m)
-  end
-
-  def test_20_12_maxsum_submatrix
-    m = [ # 4 x 3 matrix
-      [ 1,  0, 1], 
-      [ 0, -1, 0], 
-      [ 1,  0, 1], 
-      [-5,  2, 5]
-    ]
-    assert_equal [8, [2, 1, 3, 2]], Arrays.maxsum_submatrix(m)
-    assert_equal [3, [0, 0, 0, 1]], Arrays.maxsum_submatrix([[1, 2, -1], [-3, -1, -4], [1, -5, 2]])
-  end
 
   def test_18_3_singleton
     # double-check locking
