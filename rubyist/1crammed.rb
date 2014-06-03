@@ -2034,41 +2034,6 @@ module Arrays
     [max_sum, [max_left, max_right]]
   end
 
-  def self.maxsum_submatrix(m)
-    prefix_sums_v = Array.new(m.size) { Array.new(m[0].size, 0) } # vertically
-    m.size.times do |r|
-      m[0].size.times do |c|
-        prefix_sums_v[r][c] = (r > 0 ? prefix_sums_v[r - 1][c] : 0) + m[r][c]
-      end
-    end
-
-    max_top = 0, max_left = 0, max_bottom = 0, max_right = 0; max_sum = m[0][0];
-    m.size.times do |top| # O (n*(n+1)/2) * O(m) for n * m matrix
-      (top...m.size).each do |bottom|
-        sum = 0;
-        left = 0;
-        m[0].size.times do |right| # O(m) given m columns
-          sum_v = prefix_sums_v[bottom][right] - (top > 0 ? prefix_sums_v[top-1][right] : 0)
-          if sum > 0
-            sum += sum_v
-          else
-            sum = sum_v; left = right
-          end
-
-          if sum >= max_sum
-            max_top = top;
-            max_bottom = bottom;
-            max_left = left;
-            max_right = right;
-            max_sum = sum;
-          end
-        end
-      end
-    end
-
-    [max_sum, [max_top, max_left, max_bottom, max_right]]
-  end
-
   def self.forms_border?(r, c, s, prefix_sums_v, prefix_sums_h)
     s == prefix_sums_h[r][c+s-1] - (c > 0 ? prefix_sums_h[r][c-1] : 0) &&
     s == prefix_sums_v[r+s-1][c] - (r > 0 ? prefix_sums_v[r-1][c] : 0) &&
@@ -2262,8 +2227,44 @@ class TestCases < Test::Unit::TestCase
       [ 1,  0, 1], 
       [-5,  2, 5]
     ]
-    assert_equal [8, [2, 1, 3, 2]], Arrays.maxsum_submatrix(m)
-    assert_equal [3, [0, 0, 0, 1]], Arrays.maxsum_submatrix([[1, 2, -1], [-3, -1, -4], [1, -5, 2]])
+
+    maxsum_submatrix = lambda do |m|
+      prefix_sums_v = Array.new(m.size) { Array.new(m[0].size, 0) } # vertically
+      m.size.times do |r|
+        m[0].size.times do |c|
+          prefix_sums_v[r][c] = (r > 0 ? prefix_sums_v[r - 1][c] : 0) + m[r][c]
+        end
+      end
+
+      max_top = 0, max_left = 0, max_bottom = 0, max_right = 0; max_sum = m[0][0];
+      m.size.times do |top| # O (n*(n+1)/2) * O(m) for n * m matrix
+        (top...m.size).each do |bottom|
+          sum = 0;
+          left = 0;
+          m[0].size.times do |right| # O(m) given m columns
+            sum_v = prefix_sums_v[bottom][right] - (top > 0 ? prefix_sums_v[top-1][right] : 0)
+            if sum > 0
+              sum += sum_v
+            else
+              sum = sum_v; left = right
+            end
+
+            if sum >= max_sum
+              max_top = top;
+              max_bottom = bottom;
+              max_left = left;
+              max_right = right;
+              max_sum = sum;
+            end
+          end
+        end
+      end
+
+      [max_sum, [max_top, max_left, max_bottom, max_right]]
+    end
+
+    assert_equal [8, [2, 1, 3, 2]], maxsum_submatrix.call(m)
+    assert_equal [3, [0, 0, 0, 1]], maxsum_submatrix.call([[1, 2, -1], [-3, -1, -4], [1, -5, 2]])
   end
 
   def test_18_10_trans_steps_of_2_words
