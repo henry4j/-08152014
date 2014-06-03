@@ -2241,18 +2241,19 @@ class TestCases < Test::Unit::TestCase
 # 18_10 Given two words of equal length that are in a dictionary, write a method to transform one word into another word by changing only one letter at a time. The new word you get in each step must be in the dictionary.
 
   def test_18_10_trans_steps_of_2_words
-    d = %w{CAMP DAMP LAMP RAMP LIMP LUMP LIMO LITE LIME LIKE}.reduce({}) { |h, k| h.merge(k => nil) }
-    reproduced = {}
+    d = %w{CAMP DAMP LAMP RAMP LIMP LUMP LIMO LITE LIME LIKE}.each_with_object({}) { |w, d| d[k] = true }
+    entered = {}
     solutions = []
     branch_out = lambda do |a|
       candidates = []
-      a.last.size.times do |i|
-        s = a.last.dup
+      word = a.last
+      word.size.times do |i|
+        s = word.dup
         ('A'..'Z').each do |c|
           s[i] = c
-          if !reproduced.has_key?(s) && d.has_key?(s)
-            candidates.push(s.dup)
-            reproduced[candidates.last] = nil
+          if d[s] && !entered[s]
+            entered[s] = true
+            candidates << s.dup
           end
         end
       end
@@ -2260,10 +2261,10 @@ class TestCases < Test::Unit::TestCase
     end
 
     reduce_off = lambda do |a|
-      solutions.push(a.dup) if a.last.eql?('LIKE')
+      solutions << a.dup if a.last.eql?('LIKE')
     end
 
-    reproduced['DAMP'] = true
+    entered['DAMP'] = true
     Search.backtrack(['DAMP'], branch_out, reduce_off)
     assert_equal ['DAMP', 'LAMP', 'LIMP', 'LIME', 'LIKE'], solutions.last
   end
