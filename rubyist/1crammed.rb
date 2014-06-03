@@ -2238,6 +2238,35 @@ class TestCases < Test::Unit::TestCase
 # 18_7 Given a list of words, write a program that returns the longest word made of other words., e.g., return "doityourself" given a list, "doityourself", "do", "it", "yourself", "motherinlaw", "mother", "in", "law".
 # 18_8 Given a string s and an array of smaller strings Q, write a program to search s for each small string in Q.
 # 18_9 Write a program that can quickly answer a median value, while random numbers are being generated and offered (a median bag). 
+# 18_10 Given two words of equal length that are in a dictionary, write a method to transform one word into another word by changing only one letter at a time. The new word you get in each step must be in the dictionary.
+
+  def test_18_10_trans_steps_of_2_words
+    d = %w{CAMP DAMP LAMP RAMP LIMP LUMP LIMO LITE LIME LIKE}.reduce({}) { |h, k| h.merge(k => nil) }
+    reproduced = {}
+    solutions = []
+    branch_out = lambda do |a|
+      candidates = []
+      a.last.size.times do |i|
+        s = a.last.dup
+        ('A'..'Z').each do |c|
+          s[i] = c
+          if !reproduced.has_key?(s) && d.has_key?(s)
+            candidates.push(s.dup)
+            reproduced[candidates.last] = nil
+          end
+        end
+      end
+      candidates
+    end
+
+    reduce_off = lambda do |a|
+      solutions.push(a.dup) if a.last.eql?('LIKE')
+    end
+
+    reproduced['DAMP'] = true
+    Search.backtrack(['DAMP'], branch_out, reduce_off)
+    assert_equal ['DAMP', 'LAMP', 'LIMP', 'LIME', 'LIKE'], solutions.last
+  end
 
   def test_18_9_median
     max_heap = BinaryHeap.new(lambda { |a,b| b <=> a })
@@ -3846,36 +3875,4 @@ HERE
   #       you can generate a given string by pasting cutouts from a given magazine. Assume
   #       that you are given a function that will identify the character and its position on
   #       the reverse side of the page for any given character position.
-
-  def test_20_10_trans_steps_of_2_words
-    # Given two words of equal length that are in a dictionary, 
-    # design a method to transform one word into another word by changing only one letter at a time.
-    # The new word you get in each step must be in the dictionary.
-    d = %w{CAMP DAMP LAMP RAMP LIMP LUMP LIMO LITE LIME LIKE}.reduce({}) { |h, k| h.merge(k => nil) }
-    reproduced = {}
-    solutions = []
-    branch_out = lambda do |a|
-      candidates = []
-      a.last.size.times do |i|
-        s = a.last.dup
-        ('A'..'Z').each do |c|
-          s[i] = c
-          if !reproduced.has_key?(s) && d.has_key?(s)
-            candidates.push(s.dup)
-            reproduced[candidates.last] = nil
-          end
-        end
-      end
-      candidates
-    end
-  
-    reduce_off = lambda do |a|
-      solutions.push(a.dup) if a.last.eql?('LIKE')
-    end
-  
-    reproduced['DAMP'] = nil
-    Search.backtrack(['DAMP'], branch_out, reduce_off)
-    assert_equal ['DAMP', 'LAMP', 'LIMP', 'LIME', 'LIKE'], solutions.last
-  end
-
 end
