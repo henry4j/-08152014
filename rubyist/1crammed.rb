@@ -2276,7 +2276,7 @@ class TestCases < Test::Unit::TestCase
 # 18_7 Given a list of words, write a program that returns the longest word made of other words., e.g., return "doityourself" given a list, "doityourself", "do", "it", "yourself", "motherinlaw", "mother", "in", "law".
 # 18_8 Given a string s and an array of smaller strings Q, write a program to search s for each small string in Q.
 
-  def test_20_8_find_query_strings
+  def test_18_8_find_query_strings
     # a suffix tree of bananas
     s = 'bananas'
     t = Trie.new
