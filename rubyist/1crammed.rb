@@ -475,25 +475,25 @@ class Trie # constructs in O(n^2) time & O(n^2) space; O(n) time & space if opti
   def [](key = [])
     key = key.split('') if key.is_a?(String)
     if key.empty?
-      @value
-    elsif @children[key[0]]
-      @children[key[0]][key[1..-1]]
+      self
+    elsif child = @children[key[0]]
+      child[key[1..-1]]
     end
   end
 
-  def of(key)
+  def path(key)
     key = key.split('') if key.is_a?(String)
     if key.empty?
       self
-    elsif @children[key[0]]
-      @children[key[0]].of(key[1..-1])
+    elsif child = @children[key[0]]
+      child.path(key[1..-1])
     end
   end
 
   def values
-    @children.values.reduce([@value]) {
+    @children.values.reduce([@value]) do
       |a, c| c.values.reduce(a) { |a, v| a << v } 
-    }.compact
+    end.compact
   end
 
   def dfs(enter_v_iff = nil, exit_v = nil, key = [])
@@ -506,8 +506,7 @@ class Trie # constructs in O(n^2) time & O(n^2) space; O(n) time & space if opti
   end
 
   def initialize
-    @value = nil
-    @children = {}
+    @value, @children = nil, {}
   end
 
   attr_reader :value, :children
@@ -2292,7 +2291,34 @@ class TestCases < Test::Unit::TestCase
 
 # 18_4 Write a function to count the number of 2s that appear in all the numbers between 0 and n (inclusive), e.g., input: 25, output: 9 (2, 12, 20, 21, 22, 23, 24, and 25); note that 22 counts for two 2s.
 # 18_7 Given a list of words, write a program that returns the longest word made of other words., e.g., return "doityourself" given a list, "doityourself", "do", "it", "yourself", "motherinlaw", "mother", "in", "law".
-# 18_
+# 18_8 Given a string s and an array of smaller strings Q, write a program to search s for each small string in Q.
+
+  def test_20_8_find_query_strings
+    # a suffix tree of bananas
+    s = 'bananas'
+    t = Trie.new
+    suffix_tree = (0...s.size).each_with_object(Trie.new) { |i, trie| trie[s[i..-1]] = i } # a trie of suffixes
+    assert_equal s.size.times.to_a, suffix_tree.values.sort
+
+    # all indices of query strings
+    q = %w(b ba n na nas s bas)
+    indices_of = lambda { |q| (trie = suffix_tree.path(q)) ? trie.values : nil }
+    indices = q.reduce([]) { |a, q| a << indices_of.call(q) }
+    assert_equal [[0], [0], [2, 4], [2, 4], [4], [6], nil], indices
+
+    # auto-complete a prefix
+    d = %w(the they they their they're them)
+    trie = d.each_with_object(Trie.new) { |w, trie| trie[w] = w }
+    assert_equal ["the", "their", "them", "they", "they're"], trie.path("the").values.sort
+    assert_equal "they", trie["they"]
+
+    # longest common substring, or palindrome
+#    assert_equal ["anana"], Strings.longest_common_substring(['bananas', 'bananas'.reverse])
+#    assert_equal ["aba", "bab"], Strings.longest_common_substring(['abab', 'baba']).sort
+#    assert_equal ["ab"], Strings.longest_common_substring(['abab', 'baba', 'aabb'])
+#    assert_equal ["ab"], Strings.longest_common_substring(['abab', 'baba', 'aabb'])
+#    assert_equal "abc", Strings.longest_unique_charsequence('abcabcbb')
+  end
 
   def test_18_5_smallest_snippet_of_k_words
     # Given a search string of three words, find the smallest snippet of the document that contains all three of 
@@ -3363,33 +3389,6 @@ HERE
 #  def test_7_7_kth_integer_of_prime_factors_3_5_n_7
 #    assert_equal 45, Math.integer_of_prime_factors(10)
 #  end
-
-  def test_20_8_find_query_strings
-    # Given a string s and an array of smaller strings Q, write a program that searches s for each string in Q.
-    # a suffix tree of bananas
-    s = 'bananas'
-    suffix_tree = (0...s.size).reduce(Trie.new) { |trie, i| trie[s[i..-1]] = i; trie } # a trie of suffixes
-    assert_equal s.size.times.to_a, suffix_tree.values.sort
-
-    # all indices of query strings
-    q = %w(b ba n na nas s bas)
-    indices_of = lambda { |q| (trie = suffix_tree.of(q)) ? trie.values : nil }
-    indices = q.reduce([]) { |a, q| a << indices_of[q] }
-    assert_equal [[0], [0], [2, 4], [2, 4], [4], [6], nil], indices
-
-    # auto-complete a prefix
-    d = %w(the they they their they're them)
-    trie = d.reduce(Trie.new) { |t, w| t[w] = w; t }
-    assert_equal ["the", "their", "them", "they", "they're"], trie.of("the").values.sort
-    assert_equal "they", trie["they"]
-
-    # longest common substring, or palindrome
-    assert_equal ["anana"], Strings.longest_common_substring(['bananas', 'bananas'.reverse])
-    assert_equal ["aba", "bab"], Strings.longest_common_substring(['abab', 'baba']).sort
-    assert_equal ["ab"], Strings.longest_common_substring(['abab', 'baba', 'aabb'])
-    assert_equal ["ab"], Strings.longest_common_substring(['abab', 'baba', 'aabb'])
-    assert_equal "abc", Strings.longest_unique_charsequence('abcabcbb')
-  end
 
   def test_8_5_combine_parenthesis
     # Write a program that returns all valid combinations of n-pairs of parentheses that are properly opened and closed.
