@@ -1010,44 +1010,6 @@ class SimpleBinaryHeap # min-heap by default, http://en.wikipedia.org/wiki/Binar
   def to_a() @heap end
 end
 
-class MedianBag
-  def initialize
-    @min_heap = BinaryHeap.new
-    @max_heap = BinaryHeap.new(lambda { |a,b| b <=> a })
-  end
-
-  def offer(v)
-    if @max_heap.size == @min_heap.size
-      if @min_heap.peek.nil? || v <= @min_heap.peek
-        @max_heap.offer(v)
-      else
-        @max_heap.offer(@min_heap.poll)
-        @min_heap.offer(v)
-      end
-    else
-      if @max_heap.peek <= v
-        @min_heap.offer(v)
-      else
-        @min_heap.offer(@max_heap.poll)
-        @max_heap.offer(v)
-      end
-    end
-    self
-  end
-
-  def median
-    if @max_heap.size == @min_heap.size
-      [@max_heap.peek, @min_heap.peek]
-    else
-      [@max_heap.peek]
-    end
-  end
-
-  def to_a
-    [@max_heap.to_a, @min_heap.to_a]
-  end
-end
-
 class DNode
   attr_accessor :value, :prev_, :next_
 
@@ -2275,6 +2237,54 @@ class TestCases < Test::Unit::TestCase
 # 18_4 Write a function to count the number of 2s that appear in all the numbers between 0 and n (inclusive), e.g., input: 25, output: 9 (2, 12, 20, 21, 22, 23, 24, and 25); note that 22 counts for two 2s.
 # 18_7 Given a list of words, write a program that returns the longest word made of other words., e.g., return "doityourself" given a list, "doityourself", "do", "it", "yourself", "motherinlaw", "mother", "in", "law".
 # 18_8 Given a string s and an array of smaller strings Q, write a program to search s for each small string in Q.
+# 18_9 Write a program that can quickly answer a median value, while random numbers are being generated and offered (a median bag). 
+
+  def test_18_9_median
+    max_heap = BinaryHeap.new(lambda { |a,b| b <=> a })
+    min_heap = BinaryHeap.new
+
+    offer = lambda do |v|
+      if max_heap.size == min_heap.size
+        if min_heap.peek.nil? || v <= min_heap.peek
+          max_heap.offer(v)
+        else
+          max_heap.offer(min_heap.poll)
+          min_heap.offer(v)
+        end
+      else
+        if max_heap.peek <= v
+          min_heap.offer(v)
+        else
+          min_heap.offer(max_heap.poll)
+          max_heap.offer(v)
+        end
+      end
+      self
+    end
+  
+    median = lambda do
+      if max_heap.size == min_heap.size
+        [max_heap.peek, min_heap.peek]
+      else
+        [max_heap.peek]
+      end
+    end
+
+    [30, 50, 70].each(&offer)
+    assert_equal [50], median.call
+    offer.call(10)
+    assert_equal [30, 50], median.call
+    offer.call(20)
+    assert_equal [30], median.call
+    offer.call(80)
+    assert_equal [30, 50], median.call
+    offer.call(90)
+    assert_equal [50], median.call
+    offer.call(60)
+    assert_equal [50, 60], median.call
+    offer.call(100)
+    assert_equal [60], median.call
+  end
 
   def test_18_8_find_query_strings
     # a suffix tree of bananas
@@ -3242,18 +3252,6 @@ HERE
     graph[3] = [0, 0, 1, 0, 1]
     graph[4] = [1, 1, 0, 1, 0]
     assert_equal [3, [0, 1, 2, 0, 2]], Graph.color_vertex(graph)
-  end
-
-  def test_20_9_median
-    bag = MedianBag.new
-    bag.offer(30).offer(50).offer(70)
-    assert_equal [50], bag.median
-    assert_equal [30, 50], bag.offer(10).median
-    assert_equal [30], bag.offer(20).median
-    assert_equal [30, 50], bag.offer(80).median
-    assert_equal [50], bag.offer(90).median
-    assert_equal [50, 60], bag.offer(60).median
-    assert_equal [60], bag.offer(100).median
   end
 
   def test_LRU_cache
