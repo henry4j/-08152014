@@ -301,23 +301,6 @@ module Strings
     offset, length = i, n-i if n-i > length
     s[offset, length]
   end
-
-  def self.longest_common_substring(ary) # of k strings
-    suffix_tree = ary.each_index.reduce(Trie.new) do |trie, k| 
-      (0...ary[k].size).reduce(trie) { |trie, i| trie[ary[k][i..-1]] = k; trie }
-    end
-
-    memos = {}
-    exit_v = proc do |key, trie|
-      h = trie.value ? {trie.value => nil} : {}
-      h = trie.children.values.map { |c| memos[c][1] }.reduce(h) { |h, e| h.merge(e) }
-      memos[trie] = [key.join, h]
-    end
-
-    suffix_tree.dfs(nil, exit_v, []) # to process in post-order.
-    commons = memos.values.select { |v| v[1].size == ary.size }.map { |v| v[0] }
-    commons.group_by { |e| e.size }.max.last
-  end
 end
 
 class SNode
@@ -475,7 +458,7 @@ class Trie # constructs in O(n^2) time & O(n^2) space; O(n) time & space if opti
   def [](key = [])
     key = key.split('') if key.is_a?(String)
     if key.empty?
-      self
+      @value
     elsif child = @children[key[0]]
       child[key[1..-1]]
     end
@@ -2313,11 +2296,28 @@ class TestCases < Test::Unit::TestCase
     assert_equal "they", trie["they"]
 
     # longest common substring, or palindrome
-#    assert_equal ["anana"], Strings.longest_common_substring(['bananas', 'bananas'.reverse])
-#    assert_equal ["aba", "bab"], Strings.longest_common_substring(['abab', 'baba']).sort
-#    assert_equal ["ab"], Strings.longest_common_substring(['abab', 'baba', 'aabb'])
-#    assert_equal ["ab"], Strings.longest_common_substring(['abab', 'baba', 'aabb'])
-#    assert_equal "abc", Strings.longest_unique_charsequence('abcabcbb')
+    longest_common_substring = lambda do |ary| # of k strings
+      suffix_tree = ary.each_index.reduce(Trie.new) do |trie, k| 
+        (0...ary[k].size).reduce(trie) { |trie, i| trie[ary[k][i..-1]] = k; trie }
+      end
+
+      memos = {}
+      exit_v = lambda do |key, trie|
+        h = trie.value ? {trie.value => nil} : {}
+        h = trie.children.values.map { |c| memos[c][1] }.reduce(h) { |h, e| h.merge(e) }
+        memos[trie] = [key.join, h]
+      end
+
+      suffix_tree.dfs(nil, exit_v, []) # to process in post-order.
+      commons = memos.values.select { |v| v[1].size == ary.size }.map { |v| v[0] }
+      commons.group_by { |e| e.size }.max.last
+    end
+
+    assert_equal ["anana"], longest_common_substring.call(['bananas', 'bananas'.reverse])
+    assert_equal ["aba", "bab"], longest_common_substring.call(['abab', 'baba']).sort
+    assert_equal ["ab"], longest_common_substring.call(['abab', 'baba', 'aabb'])
+    assert_equal ["ab"], longest_common_substring.call(['abab', 'baba', 'aabb'])
+    assert_equal "abc", longest_common_substring.call('abcabcbb')
   end
 
   def test_18_5_smallest_snippet_of_k_words
