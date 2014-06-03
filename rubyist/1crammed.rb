@@ -1621,38 +1621,6 @@ module Numbers # discrete maths and bit twiddling http://graphics.stanford.edu/~
     x > 0 && (0 == x & x - 1)
   end
 
-  def self.knuth_suffle!(ary, n = ary.size)
-    ary.each_index do |i|
-      j = i + rand(n - i) # to index: i + ary.size - i - 1
-      ary[j], ary[i] = ary[i], ary[j]
-    end
-    ary
-  end
-
-  def self.reservoir_samples(io, k = 1)
-    samples = []
-    count = 0
-    until io.eof? do
-      count += 1
-      if samples.size < k
-        samples << io.gets.chomp
-      else
-        s = rand(count)
-        samples[s] = io.gets.chomp if s < k
-      end
-    end
-
-    samples
-  end
-
-  def self.weighted_choice(weights)
-    pick = rand(weights.reduce(:+))
-    weights.size.times do |i|
-      pick -= weights[i]
-      return i if pick < 0
-    end
-  end
-
   def self.rand7()
     begin
       rand21 = 5 * (rand5 - 1) + rand5
@@ -2473,6 +2441,53 @@ class TestCases < Test::Unit::TestCase
     assert_equal 20, count_2s_upto.call(99)
     assert_equal 300, count_2s_upto.call(999)
     assert_equal 3059, count_2s_upto.call(6789)
+  end
+
+  def test_20_1_addition
+    assert_equal 1110 + 323, Numbers.sum(1110, 323)
+  end
+
+  def test_20_2_knuth_shuffle
+    knuth_suffle = lambda do |ary|
+      ary.each_index do |i|
+        j = i + rand(n - i) # to index: i + ary.size - i - 1
+        ary[j], ary[i] = ary[i], ary[j]
+      end
+      ary
+    end
+
+    ary = knuth_suffle.call((1..52).to_a) # shuffles a deck of 52 cards
+    assert_equal 52, ary.size
+  end
+
+  def test_20_3_reservoir_samples_n_weighted_choice
+    io = StringIO.new("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n")
+    reservoir_samples = lambda do |io, k|
+      samples = []
+      count = 0
+      until io.eof? do
+        count += 1
+        if samples.size < k
+          samples << io.gets.chomp
+        else
+          s = rand(count)
+          samples[s] = io.gets.chomp if s < k
+        end
+      end
+      samples
+    end
+
+    assert_equal 3, reservoir_samples.call(io, 3).size
+
+    weighted_choice = lambda do |weights|
+      pick = rand(weights.reduce(:+))
+      weights.each_with_index do |e, i|
+        pick -= e
+        return i if pick < 0
+      end
+    end
+
+    assert -1 < weighted_choice.call([10, 20, 30, 40])
   end
 
   def test_4_1_balanced_n_4_5_binary_search_tree?
@@ -3601,21 +3616,6 @@ HERE
     pairs = Arrays.pairs_of_sum([1, 2, 1, 5, 5, 5, 3, 9, 9, 8], 10)
     expected = [[5, 5], [1, 9], [2, 8]]
     assert expected.eql?(pairs)
-  end
-
-  def test_20_1_addition
-    assert_equal 1110 + 323, Numbers.sum(1110, 323)
-  end
-
-  def test_20_2_knuth_shuffle
-    ary = Numbers.knuth_suffle!((1..52).to_a) # shuffles a deck of 52 cards
-    assert_equal 52, ary.size
-  end
-
-  def test_20_3_reservoir_samples_n_weighted_choice
-    io = StringIO.new("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n")
-    assert_equal 3, Numbers.reservoir_samples(io, 3).size
-    assert -1 < Numbers.weighted_choice([10, 20, 30, 40])
   end
 
   def test_one_sided_binary_search # algorithm design manual 4.9.2
