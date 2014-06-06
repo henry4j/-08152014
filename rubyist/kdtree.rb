@@ -54,7 +54,7 @@ end
 
 class TestCases < Test::Unit::TestCase
   def test_small_world
-    test_case_uri = 'https://raw.github.com/henry4j/-/master/algorist/ruby/small-world-testcases/input00.txt'
+    test_case_uri = 'https://raw.githubusercontent.com/henry4j/-/master/rubyist/small-world-testcases/input00.txt'
     points = []
     open(test_case_uri) do |io|
       until io.eof?
