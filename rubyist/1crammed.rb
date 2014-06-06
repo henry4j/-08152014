@@ -2133,10 +2133,35 @@ class TestCases < Test::Unit::TestCase
 # 18_13 Given millions of words, write a program to create the largest possible rectangle of letters such that every row forms a word (reading left to right) and every column forms a word (reading top to bottom).
 
   def test_18_13_largest_rectangle_of_letters
-    d = %w{cat ate tea strafer taeniae resters antiflu fiefdom earlobe resumes schools coconut acacias oracle largest fingernails}
-    d = d.each_with_object({}) { |e, d| d[e] = true }
+    d = %w{a cat ate tea strafer taeniae resters antiflu fiefdom earlobe resumes schools coconut acacias oracle largest fingernails}
+    d = d.each_with_object({}) { |e, d| l = e.length; (d[l] ||= {})[e] = true }
+    w = d.keys.max # w = 11
+    a = w ** 2 # a = w * w = 121
+    r = nil
+    a.downto(1) do |area|
+      break if r
+      w.downto(1) do |width|
+        break if r
+        height = area / width
+        if 0 == area % width
+          next if !d[width] || !d[height] || height > width
+          words_w, words_h = d[width].keys, d[height].keys
+          r = words_w.permutation(height).find do |p|
+            s = ""
+            !for c in 0...width
+              for r in 0...height
+                s[r] = p[r][c]
+              end
+              break false unless d[height].key?(s)
+            end
+          end
+        end
+      end
+    end
 
+    assert_equal ["strafer", "taeniae", "resters", "antiflu", "fiefdom", "earlobe", "schools"], r
   end
+
 
   def test_18_12_maxsum_submatrix
     m = [ # 4 x 3 matrix
