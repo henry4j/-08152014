@@ -2118,6 +2118,9 @@ class TestCases < Test::Unit::TestCase
 # 4_8 Given two very large trees T1 and T2, determine if T1 is a subtree of T2.
 # 4_9 Given a binary tree where each node has a value, write a program to print all paths that sum to a given value.
 
+# 18_1 Write a method that adds two numbers. You should not use the addition (+) arithmetic operator.
+# 18_2 Write a method to shuffle a deck of cards. Each of the 52! permutations of the deck has to be equally probable.
+# 18_3 Write a method to randomly generate a set of m integers from an array of size n. Each element must have equal probability of being chosen.
 # 18_4 Write a function to count the number of 2s that appear in all the numbers between 0 and n (inclusive), e.g., input: 25, output: 9 (2, 12, 20, 21, 22, 23, 24, and 25); note that 22 counts for two 2s.
 # 18_7 Given a list of words, write a program that returns the longest word made of other words., e.g., return "doityourself" given a list, "doityourself", "do", "it", "yourself", "motherinlaw", "mother", "in", "law".
 # 18_8 Given a string s and an array of smaller strings Q, write a program to search s for each small string in Q.
@@ -2429,7 +2432,7 @@ class TestCases < Test::Unit::TestCase
     assert_equal 3059, count_2s_upto.call(6789)
   end
 
-  def test_20_1_addition
+  def test_18_1_addition
     sum = lambda do |a, b|
       if 0 == b
         a
@@ -2443,7 +2446,7 @@ class TestCases < Test::Unit::TestCase
     assert_equal 1110 + 323, sum.call(1110, 323)
   end
 
-  def test_20_2_knuth_shuffle
+  def test_18_2_knuth_shuffle
     knuth_suffle = lambda do |ary|
       ary.each_index do |i|
         j = i + rand(n - i) # to index: i + ary.size - i - 1
@@ -2456,7 +2459,7 @@ class TestCases < Test::Unit::TestCase
     assert_equal 52, ary.size
   end
 
-  def test_20_3_reservoir_samples_n_weighted_choice
+  def test_18_3_reservoir_samples_n_weighted_choice
     io = StringIO.new("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n")
     reservoir_samples = lambda do |io, k|
       samples = []
