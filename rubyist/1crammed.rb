@@ -2132,6 +2132,20 @@ class TestCases < Test::Unit::TestCase
 # 18_12 Given a square matrix of positive and negatives integers, write a program to find the sub-matrix with the largest possible sum.
 # 18_13 Given millions of words, write a program to create the largest possible rectangle of letters such that every row forms a word (reading left to right) and every column forms a word (reading top to bottom).
 
+# 17_2 Write a program to determine if someone has won a game of tic-tac-toe.
+# 17_3 Write a method to compute the number of trailing zeros in n factorial.
+# 17_4 Write a method to find the maximum of two numbers.
+# 
+
+  def test_17_3_trailing_zeros
+    count_trailing_zeros = lambda do |n|
+      count, five = 0, 5
+      count, n = count + n/five, n/5 while n > five
+      count
+    end
+    assert_equal 5, count_trailing_zeros.call(26)
+  end
+
   def test_18_13_largest_rectangle_of_letters
     rectable = lambda do |words|
       d = words.each_with_object({}) { |e, d| l = e.length; (d[l] ||= {})[e] = true }
