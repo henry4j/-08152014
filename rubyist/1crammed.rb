@@ -1438,21 +1438,6 @@ module DP # http://basicalgos.blogspot.com/search/label/dynamic%20programming
     [map.call(capacity)[1], reduce.call(capacity)]
   end
 
-  def self.jump_game2(ary, n = ary.size)
-    memos = []
-    map = lambda do |i|
-      memos[i] ||= case
-      when ary[i] >= n-1-i then [n-1-i] # takes at most n-1-i steps.
-      when ary[i] == 0 then [0] # the last '0' means it's unreachable.
-      else
-        (1..ary[i]).
-          map { |j| [j] + map.call(i + j) }. # concatenates two arrays.
-          min_by { |e| e.size } # finds the minimun-size array.
-      end
-    end
-    map.call(0)
-  end
-
   def self.knapsack01(skus, capacity)
     memos = [] # maximum values by i items, and w capacity.
     map = lambda do |n, w|
@@ -1479,6 +1464,21 @@ module DP # http://basicalgos.blogspot.com/search/label/dynamic%20programming
     end
 
     [map.call(skus.size, capacity), reduce.call(skus.size, capacity)]
+  end
+
+  def self.jump_game2(ary, n = ary.size)
+    memos = []
+    map = lambda do |i|
+      memos[i] ||= case
+      when ary[i] >= n-1-i then [n-1-i] # takes at most n-1-i steps.
+      when ary[i] == 0 then [0] # the last '0' means it's unreachable.
+      else
+        (1..ary[i]).
+          map { |j| [j] + map.call(i + j) }. # concatenates two arrays.
+          min_by { |e| e.size } # finds the minimun-size array.
+      end
+    end
+    map.call(0)
   end
 
   def self.cut_rod(prices, lengths, length)
