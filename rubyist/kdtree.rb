@@ -148,7 +148,7 @@ def test_small_world
     end
   end
 
-  open("kd-points.out") do |io|
+  open("kd-points.out", "w") do |io|
     tree = KDTree.new(points)
     points.each do |e|
       nearest_50 = tree.nearest_k(e, 50)
