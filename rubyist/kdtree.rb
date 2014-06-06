@@ -52,40 +52,6 @@ class KDPoint
   attr_reader :tuple, :data, :x, :y, :z
 end
 
-class TestCases < Test::Unit::TestCase
-  def test_small_world
-    test_case_uri = 'https://raw.githubusercontent.com/henry4j/-/master/rubyist/small-world-testcases/input00.txt'
-    points = []
-    open(test_case_uri) do |io|
-      until io.eof?
-        n, x, y = io.readline.split
-        points << KDPoint.new([x.to_f, y.to_f], n.to_i)
-      end
-    end
-
-    tree = KDTree.new(points)
-    points.each do |e|
-      nearest_4 = tree.nearest_k(e, 4)
-      nearest_4.shift
-      puts "#{e.data} #{nearest_4.map{ |p| p.data}.join(',') }"
-    end
-  end
-
-  def test_quickfind
-    a = [9, -7, 5, -3, 1, 8, 6, 4, 2]
-    a = a.quickfind_k!(1) { |l, r| l.abs <=> r.abs }
-    assert_equal 2, a[1]
-    assert_equal -3, a[2]
-
-    a.quickfind_k!(1)
-    assert_equal -3, a[1]
-
-    s = ['microsoft', 'abc', 'mn', 'x', 'wxyz', 'facebook', 'amazon', 'bingo!!']
-    s.quicksort_k!(4) { |a, b| a.size <=> b.size }
-    assert_equal ["x", "mn", "abc", "wxyz", "amazon"], s[0..4]
-  end
-end
-
 class BinaryHeap # min-heap by default, http://en.wikipedia.org/wiki/Binary_heap
   # http://docs.oracle.com/javase/7/docs/api/java/util/PriorityQueue.html
   # a binary heap is a complete binary tree, where all levels but the last one are fully filled, and
@@ -170,5 +136,22 @@ class Array
     end
     self[pivot], self[right] = self[right], self[pivot]
     pivot
+  end
+end
+
+def test_small_world
+  points = []
+  open("kd-points.txt") do |io|
+    until io.eof?
+      n, x, y = io.readline.split
+      points << KDPoint.new([x.to_f, y.to_f], n.to_i)
+    end
+  end
+
+  tree = KDTree.new(points)
+  points.each do |e|
+    nearest_50 = tree.nearest_k(e, 50)
+    nearest_50.shift
+    puts "#{e.data} #{nearest_50.map{ |p| p.data}.join(',') }"
   end
 end
