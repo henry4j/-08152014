@@ -2135,7 +2135,6 @@ class TestCases < Test::Unit::TestCase
 # 17_2 Write a program to determine if someone has won a game of tic-tac-toe.
 # 17_3 Write a method to compute the number of trailing zeros in n factorial.
 # 17_4 Write a method to find the maximum of two numbers.
-# 
 
   def test_17_3_trailing_zeros
     count_trailing_zeros = lambda do |n|
