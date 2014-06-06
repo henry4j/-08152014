@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-%w{test/unit open-uri}.each { |e| require e }
+%w{open-uri}.each { |e| require e }
 
 class KDTree
   def nearest_k(query, k, mins = BinaryHeap.new(proc { |a, b| b[1] <=> a[1] }), reduce = true)
@@ -155,3 +155,5 @@ def test_small_world
     puts "#{e.data} #{nearest_50.map{ |p| p.data}.join(',') }"
   end
 end
+
+test_small_world
