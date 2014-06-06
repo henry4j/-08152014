@@ -2122,7 +2122,7 @@ class TestCases < Test::Unit::TestCase
 # 18_2 Write a method to shuffle a deck of cards. Each of the 52! permutations of the deck has to be equally probable.
 # 18_3 Write a method to randomly sample a set of m integers from an array of size n. Each element must have equal probability of being chosen.
 # 18_4 Write a function to count the number of 2s that appear in all the numbers between 0 and n (inclusive), e.g., input: 25, output: 9 (2, 12, 20, 21, 22, 23, 24, and 25); note that 22 counts for two 2s.
-# 18_5 Given a large text file containing words, find the shortest distance between them in terms of the number of words. How about k words? What is the time and space complexity?
+# 18_5 Given a large text file containing words, find the shortest distance between two or k words in terms of the number of words. What is the time and space complexity?
 # 18_7 Given a list of words, write a program that returns the longest word made of other words., e.g., return "doityourself" given a list, "doityourself", "do", "it", "yourself", "motherinlaw", "mother", "in", "law".
 # 18_8 Given a string s and an array of smaller strings Q, write a program to search s for each small string in Q.
 # 18_9 Write a program that can quickly answer a median value, while random numbers are being generated and offered (a median bag). 
