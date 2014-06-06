@@ -141,18 +141,20 @@ end
 
 def test_small_world
   points = []
-  open("kd-points.txt") do |io|
+  open("kd-points.in") do |io|
     until io.eof?
       n, x, y = io.readline.split
       points << KDPoint.new([x.to_f, y.to_f], n.to_i)
     end
   end
 
-  tree = KDTree.new(points)
-  points.each do |e|
-    nearest_50 = tree.nearest_k(e, 50)
-    nearest_50.shift
-    puts "#{e.data} #{nearest_50.map{ |p| p.data}.join(',') }"
+  open("kd-points.out") do |io|
+    tree = KDTree.new(points)
+    points.each do |e|
+      nearest_50 = tree.nearest_k(e, 50)
+      nearest_50.shift
+      io.puts "#{e.data} #{nearest_50.map{ |p| p.data}.join(',') }"
+    end
   end
 end
 
