@@ -1664,10 +1664,6 @@ module Numbers # discrete maths and bit twiddling http://graphics.stanford.edu/~
     end
     reversed
   end
-
-  def self.fibonacci(k, memos = [0, 1]) # F0 = 0, F1 = 1, ...
-    memos[k] ||= fibonacci(k - 1, memos) + fibonacci(k - 2, memos) if k >= 0
-  end
 end
 
 class Queueable
@@ -3785,13 +3781,17 @@ HERE
     assert_equal 'ABC', Numbers.to_excel_column(731)
     assert_equal 731, Numbers.from_excel_column(Numbers.to_excel_column(731))
   end
-  
+
   def test_fibonacci
-    assert_equal 0, Numbers.fibonacci(0)
-    assert_equal 1, Numbers.fibonacci(1)
-    assert_equal 8, Numbers.fibonacci(6)
+    fibonacci = lambda do |k, memos| # F0 = 0, F1 = 1, ...
+      memos[k] ||= fibonacci(k - 1, memos) + fibonacci(k - 2, memos) if k >= 0
+    end
+
+    assert_equal 0, fibonacci.call(0, [0, 1])
+    assert_equal 1, fibonacci.call(1)
+    assert_equal 8, fibonacci.call(6)
   end
-  
+
   def test_manual_1_28_divide
     # 1-28. Write a function to perform integer division w/o using either the / or * operators.
     assert_equal 85, Numbers.divide(255, 3)
