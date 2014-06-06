@@ -2128,6 +2128,60 @@ class TestCases < Test::Unit::TestCase
 # 18_8 Given a string s and an array of smaller strings Q, write a program to search s for each small string in Q.
 # 18_9 Write a program that can quickly answer a median value, while random numbers are being generated and offered (a median bag). 
 # 18_10 Given two words of equal length that are in a dictionary, write a method to transform one word into another word by changing only one letter at a time. The new word you get in each step must be in the dictionary.
+# 18_11 Given a square matrix of black and white cells, write a program to find the maximum sub-square such that all four borders are filled with black pixels.
+# 18_12 Given a square matrix of positive and negatives integers, write a program to find the sub-matrix with the largest possible sum.
+# 18_13 Given millions of words, write a program to create the largest possible rectangle of letters such that every row forms a word (reading left to right) and every column forms a word (reading top to bottom).
+
+  def test_18_13_largest_rectangle_of_letters
+    # d = 
+  end
+
+  def test_18_12_maxsum_submatrix
+    m = [ # 4 x 3 matrix
+      [ 1,  0, 1], 
+      [ 0, -1, 0], 
+      [ 1,  0, 1], 
+      [-5,  2, 5]
+    ]
+
+    maxsum_submatrix = lambda do |m|
+      prefix_sums_v = Array.new(m.size) { Array.new(m[0].size, 0) } # vertically
+      m.size.times do |r|
+        m[0].size.times do |c|
+          prefix_sums_v[r][c] = (r > 0 ? prefix_sums_v[r - 1][c] : 0) + m[r][c]
+        end
+      end
+
+      max_top = 0, max_left = 0, max_bottom = 0, max_right = 0; max_sum = m[0][0];
+      m.size.times do |top| # O (n*(n+1)/2) * O(m) for n * m matrix
+        (top...m.size).each do |bottom|
+          sum = 0;
+          left = 0;
+          m[0].size.times do |right| # O(m) given m columns
+            sum_v = prefix_sums_v[bottom][right] - (top > 0 ? prefix_sums_v[top-1][right] : 0)
+            if sum > 0
+              sum += sum_v
+            else
+              sum = sum_v; left = right
+            end
+
+            if sum >= max_sum
+              max_top = top;
+              max_bottom = bottom;
+              max_left = left;
+              max_right = right;
+              max_sum = sum;
+            end
+          end
+        end
+      end
+
+      [max_sum, [max_top, max_left, max_bottom, max_right]]
+    end
+
+    assert_equal [8, [2, 1, 3, 2]], maxsum_submatrix.call(m)
+    assert_equal [3, [0, 0, 0, 1]], maxsum_submatrix.call([[1, 2, -1], [-3, -1, -4], [1, -5, 2]])
+  end
 
   def test_18_11_max_subsquare
     # Imagine you have a square matrix, where each cell is filled with either black (1) or white (0).
@@ -2177,53 +2231,6 @@ class TestCases < Test::Unit::TestCase
     end
 
     assert_equal [3, [3, 2]], max_subsquare.call(m)
-  end
-
-  def test_18_12_maxsum_submatrix
-    m = [ # 4 x 3 matrix
-      [ 1,  0, 1], 
-      [ 0, -1, 0], 
-      [ 1,  0, 1], 
-      [-5,  2, 5]
-    ]
-
-    maxsum_submatrix = lambda do |m|
-      prefix_sums_v = Array.new(m.size) { Array.new(m[0].size, 0) } # vertically
-      m.size.times do |r|
-        m[0].size.times do |c|
-          prefix_sums_v[r][c] = (r > 0 ? prefix_sums_v[r - 1][c] : 0) + m[r][c]
-        end
-      end
-
-      max_top = 0, max_left = 0, max_bottom = 0, max_right = 0; max_sum = m[0][0];
-      m.size.times do |top| # O (n*(n+1)/2) * O(m) for n * m matrix
-        (top...m.size).each do |bottom|
-          sum = 0;
-          left = 0;
-          m[0].size.times do |right| # O(m) given m columns
-            sum_v = prefix_sums_v[bottom][right] - (top > 0 ? prefix_sums_v[top-1][right] : 0)
-            if sum > 0
-              sum += sum_v
-            else
-              sum = sum_v; left = right
-            end
-
-            if sum >= max_sum
-              max_top = top;
-              max_bottom = bottom;
-              max_left = left;
-              max_right = right;
-              max_sum = sum;
-            end
-          end
-        end
-      end
-
-      [max_sum, [max_top, max_left, max_bottom, max_right]]
-    end
-
-    assert_equal [8, [2, 1, 3, 2]], maxsum_submatrix.call(m)
-    assert_equal [3, [0, 0, 0, 1]], maxsum_submatrix.call([[1, 2, -1], [-3, -1, -4], [1, -5, 2]])
   end
 
   def test_18_10_trans_steps_of_2_words
@@ -2434,33 +2441,6 @@ class TestCases < Test::Unit::TestCase
     assert_equal 3059, count_2s_upto.call(6789)
   end
 
-  def test_18_1_addition
-    sum = lambda do |a, b|
-      if 0 == b
-        a
-      else
-        units = (a ^ b)
-        carry = (a & b) << 1
-        sum.call(units, carry)
-      end
-    end
-
-    assert_equal 1110 + 323, sum.call(1110, 323)
-  end
-
-  def test_18_2_knuth_shuffle
-    knuth_suffle = lambda do |ary|
-      ary.each_index do |i|
-        j = i + rand(n - i) # to index: i + ary.size - i - 1
-        ary[j], ary[i] = ary[i], ary[j]
-      end
-      ary
-    end
-
-    ary = knuth_suffle.call((1..52).to_a) # shuffles a deck of 52 cards
-    assert_equal 52, ary.size
-  end
-
   def test_18_3_reservoir_samples_n_weighted_choice
     io = StringIO.new("a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\n")
     reservoir_samples = lambda do |io, k|
@@ -2489,6 +2469,33 @@ class TestCases < Test::Unit::TestCase
     end
 
     assert -1 < weighted_choice.call([10, 20, 30, 40])
+  end
+
+  def test_18_2_knuth_shuffle
+    knuth_suffle = lambda do |ary|
+      ary.each_index do |i|
+        j = i + rand(n - i) # to index: i + ary.size - i - 1
+        ary[j], ary[i] = ary[i], ary[j]
+      end
+      ary
+    end
+
+    ary = knuth_suffle.call((1..52).to_a) # shuffles a deck of 52 cards
+    assert_equal 52, ary.size
+  end
+
+  def test_18_1_addition
+    sum = lambda do |a, b|
+      if 0 == b
+        a
+      else
+        units = (a ^ b)
+        carry = (a & b) << 1
+        sum.call(units, carry)
+      end
+    end
+
+    assert_equal 1110 + 323, sum.call(1110, 323)
   end
 
   def test_4_1_balanced_n_4_5_binary_search_tree?
