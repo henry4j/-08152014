@@ -153,7 +153,7 @@ def test_small_world
     points.each do |e|
       nearest_50 = tree.nearest_k(e, 50)
       nearest_50.shift
-      io.puts "#{e.data} #{nearest_50.map{ |p| p.data}.join(',') }"
+      io.puts "#{e.data}\t#{nearest_50.map{ |p| p.data}.join(',') }"
     end
   end
 end
