@@ -2212,6 +2212,7 @@ class TestCases < Test::Unit::TestCase
     assert_equal [3, [0, 0, 0, 1]], maxsum_submatrix.call([[1, 2, -1], [-3, -1, -4], [1, -5, 2]])
   end
 
+
   def test_18_11_max_subsquare
     # Imagine you have a square matrix, where each cell is filled with either black (1) or white (0).
     # Design an algorithm to find the maximum sub-square such that all four borders are filled with black pixels.
@@ -2398,14 +2399,11 @@ class TestCases < Test::Unit::TestCase
     assert_equal 'doityourself', s
   end
 
+  # Given a search string of three words, find the smallest snippet of the document that contains all three of 
+  # the search words --- i.e., the snippet with smallest number of words in it. You are given the index positions 
+  # where these words occur in search strings, such as word1: (1, 4, 5), word2: (3, 9, 10), word3: (2, 6, 15). 
+  # Each of the lists are in sorted order as above.
   def test_18_5_smallest_snippet_of_k_words
-    # Given a search string of three words, find the smallest snippet of the document that contains all three of 
-    # the search words --- i.e., the snippet with smallest number of words in it. You are given the index positions 
-    # where these words occur in search strings, such as word1: (1, 4, 5), word2: (3, 9, 10), word3: (2, 6, 15). 
-    # Each of the lists are in sorted order as above.
-    # http://rcrezende.blogspot.com/2010/08/smallest-relevant-text-snippet-for.html
-    # http://blog.panictank.net/tag/algorithm-design-manual/
-
     min_window = lambda do |positions| # e.g. [[0, 89, 130], [95, 123, 177, 199], [70, 105, 117]], O(L*logK)
       min_window = window = positions.map { |e| e.shift } # [0, 95, 70]
       heap = BinaryHeap.new(lambda { |a, b| a[1] <=> b[1] })
