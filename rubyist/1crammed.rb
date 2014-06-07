@@ -2030,7 +2030,7 @@ class TestCases < Test::Unit::TestCase
 # 17_13 Write a method to convert a binary tree to a doubly linked list. Keep the values in order while converting in-place.
 
 # 9_6 Implement an algorithm to print all valid (e.g. properly opened and closed) combinations of n-pairs of parenthesis, e.g., input: 6, output: ((())), (()()), (())(), ()(()), ()()()
-# 9_1  A child is running up a staircase with n steps, and can hop either 1 step, 2 steps, or 3 steps at a time. Implement a method to count how many possible ways the child can run up the stairs.
+# 9_1 Given a staircase with n steps, write a program to count the number of possible ways to climb it, when one can hop either 1, 2, or 3 steps at a time.
 
   def test_9_1_staircase
     climb = lambda do |n, memos| # n staircases.
