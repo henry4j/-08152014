@@ -2032,6 +2032,19 @@ class TestCases < Test::Unit::TestCase
 # 9_6 Implement an algorithm to print all valid (e.g. properly opened and closed) combinations of n-pairs of parenthesis, e.g., input: 6, output: ((())), (()()), (())(), ()(()), ()()()
 # 9_1  A child is running up a staircase with n steps, and can hop either 1 step, 2 steps, or 3 steps at a time. Implement a method to count how many possible ways the child can run up the stairs.
 
+  def test_9_1_staircase
+    climb = lambda do |n, memos|
+      memos[n] ||= case
+      when n == 1 then 1
+      when n == 2 then 2
+      when n == 3 then 4
+      else
+        [n-1, n-2, n-3].map { |e| climb.call(e, memos) }.reduce(:+)
+      end
+    end
+    climb.call(5, [])
+  end
+
   def test_9_6_combine_parenthesis
     combine_parentheses = lambda do |o, c|
       case
