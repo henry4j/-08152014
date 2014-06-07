@@ -2072,7 +2072,7 @@ class TestCases < Test::Unit::TestCase
     end
 
     reduce_off = lambda do |a|
-      r, c = a[-1][0]
+      r, c = a[-1]
       answers << a.dup if r == n-1 && c == m-1
     end
 
