@@ -2067,7 +2067,7 @@ class TestCases < Test::Unit::TestCase
       (entered[r] ||= [])[c] = true
       [[r-1, c], [r+1, c], [r, c-1], [r, c+1]].
         select(&within_bounds).
-        select(&not_offlimits)
+        select(&not_offlimits).
         select(&not_entered)
     end
 
@@ -2096,7 +2096,7 @@ class TestCases < Test::Unit::TestCase
       end
     end
 
-    def self.combine_parens(n)
+    combine_parens = lambda do |n|
       answers = []
       expand_out = lambda do |a|
         opens = a.last[1]
