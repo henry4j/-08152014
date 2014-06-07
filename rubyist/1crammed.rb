@@ -65,35 +65,6 @@ module Partitions
       end
     end
   end
-
-  def self.set_partition(ary = [])
-    # http://oeis.org/wiki/User:Peter_Luschny/SetPartitions
-    prefix_maximums = Array.new(ary.size, 0)
-    restricted_keys = Array.new(ary.size, 0)
-    partitions = []
-    while succ!(restricted_keys, prefix_maximums)
-      partitions << ary.each_index.reduce([]) do |p, i|
-        (p[restricted_keys[i]] ||= []) << ary[i]; p
-      end
-    end
-    partitions
-  end
-
-  def self.succ!(restricted_keys, prefix_maximums)
-    k = (restricted_keys.size - 1).downto(0) do |k|
-      break k if 0 == k || restricted_keys[k] < prefix_maximums[k - 1] + 1
-    end
-
-    if k > 0 # else nil
-      restricted_keys[k] += 1
-      prefix_maximums[k] = [prefix_maximums[k], restricted_keys[k]].max
-      (k + 1).upto(restricted_keys.size - 1) do |i|
-        restricted_keys[i] = 0
-        prefix_maximums[i] = prefix_maximums[i - 1]
-      end
-      restricted_keys
-    end
-  end
 end
 
 module Strings
@@ -2032,6 +2003,7 @@ class TestCases < Test::Unit::TestCase
 # 9_6 Implement an algorithm to print all valid (e.g. properly opened and closed) combinations of n-pairs of parenthesis, e.g., input: 6, output: ((())), (()()), (())(), ()(()), ()()()
 # 9_1 Given a staircase with n steps, write a program to count the number of possible ways to climb it, when one can hop either 1, 2, or 3 steps at a time.
 # 9_2 Imagine a robot sitting on the upper left corner of NxM grid. The robot can only move in two directions.
+# 9_3 Given an array of sorted integers, write a program to find a magic index, that is defined to be an index such that A[i] = i.
 
   def test_9_1_staircase
     climb = lambda do |n, memos| # n staircases.
@@ -2079,6 +2051,56 @@ class TestCases < Test::Unit::TestCase
     Search.backtrack([[0, 0]], expand_out, reduce_off)
     assert_equal 1, answers.size
     assert_equal [5, 5], answers.last.last
+  end
+
+  def test_9_3_magic_index
+  end
+
+  def test_manual_7_14_permutate
+    # 7-14. Write a function to find all permutations of the letters in a particular string.
+    permutations = ["aabb", "abab", "abba", "baab", "baba", "bbaa"]
+    assert_equal permutations, Search.permutate('aabb'.chars.to_a).map { |p| p.join }.sort
+    assert_equal permutations, Search.permutation('aabb'.chars.to_a).map { |p| p.join }.sort
+  end
+  
+  def test_manual_7_15_k_element_subsets
+    # 7-15. Implement an efficient algorithm for listing all k-element subsets of n items.
+    assert_equal ['abc'], Search.combination('abc'.chars.to_a, 3).map { |e| e.join }
+    assert_equal ['ab', 'ac', 'bc'], Search.combination('abc'.chars.to_a, 2).map { |e| e.join }
+    assert_equal [''], Search.combination('cba'.chars.to_a, 0).map { |e| e.join }
+    assert_equal ['abb', 'ab', 'a', 'bb', 'b', ''], Search.combination('abb'.chars.to_a).map { |e| e.join }
+  end
+
+  def test_9_3_all_subsets
+    lambda = succ(restricted_keys, prefix_maximums)
+      k = (restricted_keys.size - 1).downto(0) do |k|
+        break k if 0 == k || restricted_keys[k] < prefix_maximums[k - 1] + 1
+      end
+  
+      if k > 0 # else nil
+        restricted_keys[k] += 1
+        prefix_maximums[k] = [prefix_maximums[k], restricted_keys[k]].max
+        (k + 1).upto(restricted_keys.size - 1) do |i|
+          restricted_keys[i] = 0
+          prefix_maximums[i] = prefix_maximums[i - 1]
+        end
+        restricted_keys
+      end
+    end
+
+    partition_set = lambda do |ary|
+      # http://oeis.org/wiki/User:Peter_Luschny/SetPartitions
+      prefix_maximums = Array.new(ary.size, 0)
+      restricted_keys = Array.new(ary.size, 0)
+      partitions = []
+      while succ.call(restricted_keys, prefix_maximums)
+        partitions << ary.each_index.reduce([]) do |p, i|
+          (p[restricted_keys[i]] ||= []) << ary[i]; p
+        end
+      end
+      partitions
+    end
+
   end
 
   def test_9_6_combine_parenthesis
@@ -3741,8 +3763,6 @@ HERE
 #    assert_equal [[3], [2, 1], [1, 1, 1]], Partitions.int_partition(3)
 #    assert_equal [[4], [3, 1], [2, 2], [2, 1, 1], [1, 1, 1, 1]], Partitions.int_partition(4)
 #  
-#    assert_equal ['{a,b}, {c}', '{a,c}, {b}', '{a}, {b,c}', '{a}, {b}, {c}'], 
-#      Partitions.set_partition(['a', 'b', 'c']).map {|p| p.map {|a| "{#{a.join(',')}}"}.join(', ') }
   
     # http://code.activestate.com/recipes/577211-generate-the-partitions-of-a-set-by-index/history/1/
     # http://oeis.org/wiki/User:Peter_Luschny/SetPartitions
@@ -3892,21 +3912,6 @@ HERE
   # 4-45. Given 12 coins. One of them is heavier or lighter than the rest. Identify this coin in just three weightings.
   # http://learntofish.wordpress.com/2008/11/30/solution-of-the-12-balls-problem/
 
-  def test_manual_7_14_permutate
-    # 7-14. Write a function to find all permutations of the letters in a particular string.
-    permutations = ["aabb", "abab", "abba", "baab", "baba", "bbaa"]
-    assert_equal permutations, Search.permutate('aabb'.chars.to_a).map { |p| p.join }.sort
-    assert_equal permutations, Search.permutation('aabb'.chars.to_a).map { |p| p.join }.sort
-  end
-  
-  def test_manual_7_15_k_element_subsets
-    # 7-15. Implement an efficient algorithm for listing all k-element subsets of n items.
-    assert_equal ['abc'], Search.combination('abc'.chars.to_a, 3).map { |e| e.join }
-    assert_equal ['ab', 'ac', 'bc'], Search.combination('abc'.chars.to_a, 2).map { |e| e.join }
-    assert_equal [''], Search.combination('cba'.chars.to_a, 0).map { |e| e.join }
-    assert_equal ['abb', 'ab', 'a', 'bb', 'b', ''], Search.combination('abb'.chars.to_a).map { |e| e.join }
-  end
-  
   # 7-16. An anagram is a rearrangement of the letters in a given string into a sequence of dictionary words,
   #       like Steven Skiena into Vainest Knees. Propose an algorithm to construct all the anagrams of a given string.
   
