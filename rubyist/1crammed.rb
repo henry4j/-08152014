@@ -1611,17 +1611,6 @@ module Numbers # discrete maths and bit twiddling http://graphics.stanford.edu/~
     x > 0 && (0 == x & x - 1)
   end
 
-  def self.rand7()
-    begin
-      rand21 = 5 * (rand5 - 1) + rand5
-    end until rand21 <= 21
-    rand21 % 7 + 1 # 1, 2, ..., 7
-  end
-
-  def self.rand5()
-    rand(5) + 1
-  end
-
   def self.from_excel_column(s)
     columns = 0; cases = 26
     (s.size - 1).times do
@@ -1972,22 +1961,6 @@ module Arrays
     [max_profit, [max_left, max_right]]
   end
 
-  def self.maxsum_subarray(a)
-    # Kadane's algorithm http://en.wikipedia.org/wiki/Maximum_subarray_problem
-    left = 0; max_left = max_right = -1; sum = max_sum = 0
-    a.size.times do |right|
-      if sum > 0
-        sum = sum + a[right]
-      else
-        left = right; sum = a[right]
-      end
-      if sum >= max_sum
-        max_left = left; max_right = right; max_sum = sum
-      end
-    end
-    [max_sum, [max_left, max_right]]
-  end
-
   def self.peak(ary, range = 0...ary.size)
     if range.min # nil otherwise
       k = (range.min + range.max) / 2
@@ -2135,6 +2108,44 @@ class TestCases < Test::Unit::TestCase
 # 17_2 Write a program to determine if someone has won a game of tic-tac-toe.
 # 17_3 Write a method to compute the number of trailing zeros in n factorial.
 # 17_4 Write a method to find the maximum of two numbers.
+# 17_8 Given an array of integers (both positive and negative), write a program to find the max sum sub-array (contiguous sequence).
+# 17_11 Given a method rand5() that generates a random number between 1 and 5 (inclusive), write a method that generates a random number between 1 and 7 (inclusive).
+
+  def test_17_8_maxsum_subarray
+    maxsum_subarray = lambda do |a|
+      # Kadane's algorithm http://en.wikipedia.org/wiki/Maximum_subarray_problem
+      max_left = max_right = -1 
+      sum = max_sum = left = 0
+      for right in 0...a.size
+        if sum > 0
+          sum = sum + a[right]
+        else
+          left = right; sum = a[right]
+        end
+        max_left, max_right, max_sum = left, right, sum if sum >= max_sum
+      end
+      [max_sum, a[max_left..max_right]]
+    end
+
+    assert_equal [5, [1, 3, -3, 4, -2, -1, 3]], Arrays.maxsum_subarray([-2, 1, 3, -3, 4, -2, -1, 3])
+  end
+
+  def test_17_11_rand7
+    rand5 = lambda { rand(5) + 1 }
+    rand7 = lambda do
+      begin
+        rand21 = 5 * (rand5.call - 1) + rand5.call
+      end until rand21 <= 21
+      rand21 % 7 + 1 # 1, 2, ..., 7
+    end
+    100.times { r = rand7.call; raise "'r' must be 1..7." if r < 1 || r > 7 }
+  end
+
+  def test_19_11_pairs_of_sum
+    pairs = Arrays.pairs_of_sum([1, 2, 1, 5, 5, 5, 3, 9, 9, 8], 10)
+    expected = [[5, 5], [1, 9], [2, 8]]
+    assert expected.eql?(pairs)
+  end
 
   def test_17_3_trailing_zeros
     count_trailing_zeros = lambda do |n|
@@ -3650,20 +3661,6 @@ HERE
 
   def test_19_2_is_tic_tac_toe_over
     # Design an algorithm to figure out if someone has won in a game of tic-tac-toe.
-  end
-
-  def test_19_7_maxsum_subarray
-    assert_equal [5, [1, 7]], Arrays.maxsum_subarray([-2, 1, 3, -3, 4, -2, -1, 3])
-  end
-
-  def test_19_10_test_rand7
-    100.times { r = Numbers.rand7; raise "'r' must be 1..7." unless r >= 1 && r <= 7 }
-  end
-
-  def test_19_11_pairs_of_sum
-    pairs = Arrays.pairs_of_sum([1, 2, 1, 5, 5, 5, 3, 9, 9, 8], 10)
-    expected = [[5, 5], [1, 9], [2, 8]]
-    assert expected.eql?(pairs)
   end
 
   def test_one_sided_binary_search # algorithm design manual 4.9.2
