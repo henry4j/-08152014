@@ -2591,6 +2591,7 @@ class TestCases < Test::Unit::TestCase
 
   def test_18_2_knuth_shuffle
     knuth_suffle = lambda do |ary|
+      n = ary.size
       ary.each_index do |i|
         j = i + rand(n - i) # to index: i + ary.size - i - 1
         ary[j], ary[i] = ary[i], ary[j]
