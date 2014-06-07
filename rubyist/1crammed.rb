@@ -194,60 +194,6 @@ module Strings
     a.empty?
   end
 
-  def self.combine_parentheses(o, c, s = '')
-    case
-    when o == 0 && c == 0
-      [s]
-    when o == c
-      combine_parentheses(o-1, c, s + '(')
-    when o == 0
-      combine_parentheses(o, c-1, s + ')')
-    else
-      combine_parentheses(o-1, c, s + '(') +
-      combine_parentheses(o, c-1, s + ')')
-    end
-  end
-
-  def self.combine_parens(n)
-    answers = []
-    expand_out = lambda do |a|
-      opens = a.last[1]
-      case
-      when a.size == 2*opens then [['(', 1+opens]] # open
-      when n == opens then [[')', opens]] # close
-      else [['(', 1+opens], [')', opens]]  # open, or close
-      end
-    end
-
-    reduce_off = lambda do |a|
-      answers << a.map { |e| e[0] }.join if a.size == 2*n
-    end
-
-    Search.backtrack([['(', 1]], expand_out, reduce_off)
-    answers
-  end
-
-  def self.interleave(a, b)
-    answers = []
-    expand_out = lambda do |s|
-      e = s.last
-      [ [e[0]+1, e[1]], [e[0], e[1]+1] ].select { |e| e[0] < a.size && e[1] < b.size }
-    end
-
-    reduce_off = lambda do |s|
-      if s.size-1 == a.size + b.size
-        answers << (1...s.size).reduce('') { |z,i|
-          z += a[s[i][0], 1] if s[i-1][0] != s[i][0]
-          z += b[s[i][1], 1] if s[i-1][1] != s[i][1]
-          z
-        }
-      end
-    end
-
-    Search.backtrack([[-1, -1]], expand_out, reduce_off)
-    answers
-  end
-
   def self.anagram?(lhs, rhs) # left- and right-hand sides
     return true if lhs.equal?(rhs) # reference-equals
     return false unless lhs.size == rhs.size # value-equals
@@ -2083,6 +2029,80 @@ class TestCases < Test::Unit::TestCase
 # 17_11 Given a method rand5() that generates a random number between 1 and 5 (inclusive), write a method that generates a random number between 1 and 7 (inclusive).
 # 17_13 Write a method to convert a binary tree to a doubly linked list. Keep the values in order while converting in-place.
 
+# 9_6 Implement an algorithm to print all valid (e.g. properly opened and closed) combinations of n-pairs of parenthesis, e.g., input: 6, output: ((())), (()()), (())(), ()(()), ()()()
+# 9_1  A child is running up a staircase with n steps, and can hop either 1 step, 2 steps, or 3 steps at a time. Implement a method to count how many possible ways the child can run up the stairs.
+
+  def test_9_6_combine_parenthesis
+    combine_parentheses = lambda do |o, c|
+      case
+      when o == 0 && c == 0
+        ['']
+      when o == c
+        combine_parentheses(o-1, c).map { |e| '(' + e }
+      when o == 0
+        combine_parentheses(o, c-1).map { |e| ')' + e }
+      else
+        combine_parentheses(o-1, c, s).map { |e| '(' + e } +
+        combine_parentheses(o, c-1, s).map { |e| ')' + e }
+      end
+    end
+
+    def self.combine_parens(n)
+      answers = []
+      expand_out = lambda do |a|
+        opens = a.last[1]
+        case
+        when a.size == 2*opens then [['(', 1+opens]] # open
+        when n == opens then [[')', opens]] # close
+        else [['(', 1+opens], [')', opens]]  # open, or close
+        end
+      end
+
+      reduce_off = lambda do |a|
+        answers << a.map { |e| e[0] }.join if a.size == 2*n
+      end
+
+      Search.backtrack([['(', 1]], expand_out, reduce_off)
+      answers
+    end
+
+    interleave = lambda do |a, b|
+      answers = []
+      expand_out = lambda do |s|
+        e = s.last
+        [ [e[0]+1, e[1]], [e[0], e[1]+1] ].select { |e| e[0] < a.size && e[1] < b.size }
+      end
+
+      reduce_off = lambda do |s|
+        if s.size-1 == a.size + b.size
+          answers << (1...s.size).reduce('') { |z,i|
+            z += a[s[i][0], 1] if s[i-1][0] != s[i][0]
+            z += b[s[i][1], 1] if s[i-1][1] != s[i][1]
+            z
+          }
+        end
+      end
+    
+      Search.backtrack([[-1, -1]], expand_out, reduce_off)
+      answers
+    end
+
+    # Write a program that returns all valid combinations of n-pairs of parentheses that are properly opened and closed.
+    # input: 3 (e.g., 3 pairs of parentheses)
+    # output: ()()(), ()(()), (())(), ((()))
+    assert_equal ["((()))", "(()())", "(())()", "()(())", "()()()"], combine_parens.call(3)
+    assert_equal ["ab12", "a1b2", "a12b", "1ab2", "1a2b", "12ab"], interleave.call('ab', '12')
+    assert_equal 20, interleave.call('abc', '123').size
+  end
+
+  def test_17_3_trailing_zeros
+    count_trailing_zeros = lambda do |n|
+      count, five = 0, 5
+      count, n = count + n/five, n/5 while n > five
+      count
+    end
+    assert_equal 5, count_trailing_zeros.call(26)
+  end
 
   def test_17_8_maxsum_subarray
     maxsum_subarray = lambda do |a|
@@ -2130,7 +2150,7 @@ class TestCases < Test::Unit::TestCase
     # tree:   1
     #       2    3
     #      4 5  6 7
-    to_linked_list = lambda |v|
+    to_linked_list = lambda do |v|
       head = pred = nil
       exit = lambda do |v|
         if pred
@@ -2152,15 +2172,6 @@ class TestCases < Test::Unit::TestCase
     values = []
     values, curr = values.push(read.value), curr.right while curr
     assert_equal [1, 2, 3, 4, 5, 6, 7], values
-  end
-
-  def test_17_3_trailing_zeros
-    count_trailing_zeros = lambda do |n|
-      count, five = 0, 5
-      count, n = count + n/five, n/5 while n > five
-      count
-    end
-    assert_equal 5, count_trailing_zeros.call(26)
   end
 
   def test_18_13_largest_rectangle_of_letters
@@ -3508,15 +3519,6 @@ HERE
 #  def test_7_7_kth_integer_of_prime_factors_3_5_n_7
 #    assert_equal 45, Math.integer_of_prime_factors(10)
 #  end
-
-  def test_8_5_combine_parenthesis
-    # Write a program that returns all valid combinations of n-pairs of parentheses that are properly opened and closed.
-    # input: 3 (e.g., 3 pairs of parentheses)
-    # output: ()()(), ()(()), (())(), ((()))
-    assert_equal ["((()))", "(()())", "(())()", "()(())", "()()()"], Strings.combine_parens(3)
-    assert_equal ["ab12", "a1b2", "a12b", "1ab2", "1a2b", "12ab"], Strings.interleave('ab', '12')
-    assert_equal 20, Strings.interleave('abc', '123').size
-  end
 
   def test_9_3_min_n_index_out_of_cycle
     assert_equal 10, Arrays.index_out_of_cycle([10, 14, 15, 16, 19, 20, 25, 1, 3, 4, 5, 7], 5)
