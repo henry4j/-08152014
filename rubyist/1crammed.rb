@@ -2083,35 +2083,6 @@ class TestCases < Test::Unit::TestCase
 # 17_11 Given a method rand5() that generates a random number between 1 and 5 (inclusive), write a method that generates a random number between 1 and 7 (inclusive).
 # 17_13 Write a method to convert a binary tree to a doubly linked list. Keep the values in order while converting in-place.
 
-  def test_convert_binary_tree_to_doubly_linked_list
-    # http://www.youtube.com/watch?v=WJZtqZJpSlQ
-    # http://codesam.blogspot.com/2011/04/convert-binary-tree-to-double-linked.html
-    # tree:   1
-    #       2    3
-    #      4 5  6 7
-    to_linked_list = lambda |v|
-      head = pred = nil
-      exit = lambda do |v|
-        if pred
-          pred.right = v
-        else
-          head = v
-        end
-        v.left = pred
-        v.right = nil
-        pred = v
-      end
-      bfs(v, nil, exit)
-      head
-    end
-
-    tree = BNode.tree([4, 2, 5, 1, 6, 3, 7])
-    head = curr = to_linked_list.call(tree)
-    assert_equal nil, head.left
-    values = []
-    values, curr = values.push(read.value), curr.right while curr
-    assert_equal [1, 2, 3, 4, 5, 6, 7], values
-  end
 
   def test_17_8_maxsum_subarray
     maxsum_subarray = lambda do |a|
@@ -2151,6 +2122,36 @@ class TestCases < Test::Unit::TestCase
     pairs = Arrays.pairs_of_sum([1, 2, 1, 5, 5, 5, 3, 9, 9, 8], 10)
     expected = [[5, 5], [1, 9], [2, 8]]
     assert expected.eql?(pairs)
+  end
+
+  def test_17_13_convert_binary_search_tree_to_doubly_linked_list
+    # http://www.youtube.com/watch?v=WJZtqZJpSlQ
+    # http://codesam.blogspot.com/2011/04/convert-binary-tree-to-double-linked.html
+    # tree:   1
+    #       2    3
+    #      4 5  6 7
+    to_linked_list = lambda |v|
+      head = pred = nil
+      exit = lambda do |v|
+        if pred
+          pred.right = v
+        else
+          head = v
+        end
+        v.left = pred
+        v.right = nil
+        pred = v
+      end
+      bfs(v, nil, exit)
+      head
+    end
+
+    tree = BNode.tree([4, 2, 5, 1, 6, 3, 7])
+    head = curr = to_linked_list.call(tree)
+    assert_equal nil, head.left
+    values = []
+    values, curr = values.push(read.value), curr.right while curr
+    assert_equal [1, 2, 3, 4, 5, 6, 7], values
   end
 
   def test_17_3_trailing_zeros
