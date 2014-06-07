@@ -2169,7 +2169,7 @@ class TestCases < Test::Unit::TestCase
       [max_sum, a[max_left..max_right]]
     end
 
-    assert_equal [5, [1, 3, -3, 4, -2, -1, 3]], Arrays.maxsum_subarray([-2, 1, 3, -3, 4, -2, -1, 3])
+    assert_equal [5, [1, 3, -3, 4, -2, -1, 3]], maxsum_subarray.call([-2, 1, 3, -3, 4, -2, -1, 3])
   end
 
   def test_17_11_rand7
@@ -2185,10 +2185,10 @@ class TestCases < Test::Unit::TestCase
 
   def test_17_12_pairs_of_sum
     pairs_of_sum = lambda do |ary, sum|
-      ary.each_with_object({}) { |e, h| h[sum - e] = h.key?(e) ? e : false }.select { |k, v| v }
+      ary.each_with_object({}) { |e, h| h[sum - e] = h.key?(e) ? e : false }.select { |k, v| v }.to_a
     end
 
-    pairs = Arrays.pairs_of_sum([1, 2, 1, 5, 5, 5, 3, 9, 9, 8], 10)
+    pairs = pairs_of_sum.call([1, 2, 1, 5, 5, 5, 3, 9, 9, 8], 10)
     expected = [[5, 5], [1, 9], [2, 8]]
     assert expected.eql?(pairs)
   end
@@ -2211,7 +2211,7 @@ class TestCases < Test::Unit::TestCase
         v.right = nil
         pred = v
       end
-      bfs(v, nil, exit)
+      BNode.bfs(v, nil, exit)
       head
     end
 
@@ -2219,12 +2219,12 @@ class TestCases < Test::Unit::TestCase
     head = curr = to_linked_list.call(tree)
     assert_equal nil, head.left
     values = []
-    values, curr = values.push(read.value), curr.right while curr
+    values, curr = values.push(curr.value), curr.right while curr
     assert_equal [1, 2, 3, 4, 5, 6, 7], values
   end
 
   def test_18_13_largest_rectangle_of_letters
-    rectable = lambda do |words|
+    rectangle = lambda do |words|
       d = words.each_with_object({}) { |e, d| l = e.length; (d[l] ||= {})[e] = true }
       w = d.keys.max # w = 11
       a = w ** 2 # a = w * w = 121
@@ -2323,11 +2323,7 @@ class TestCases < Test::Unit::TestCase
       s == prefix_sums_v[r+s-1][c+s-1] - (r > 0 ? prefix_sums_v[r-1][c+s-1] : 0)
     end
 
-    max_subsquare = lambda do m
-      m.size.times do |r|
-        raise "row[#{r}].size must be '#{m.size}'." unless m.size == m[r].size
-      end
-
+    max_subsquare = lambda do |m|
       prefix_sums_v = Array.new(m.size) { [] } # vertically
       prefix_sums_h = Array.new(m.size) { [] } # horizontally
       m.size.times do |r|
@@ -2355,7 +2351,7 @@ class TestCases < Test::Unit::TestCase
   end
 
   def test_18_10_trans_steps_of_2_words
-    d = %w{CAMP DAMP LAMP RAMP LIMP LUMP LIMO LITE LIME LIKE}.each_with_object({}) { |w, d| d[k] = true }
+    d = %w{CAMP DAMP LAMP RAMP LIMP LUMP LIMO LITE LIME LIKE}.each_with_object({}) { |w, d| d[w] = true }
     entered = {}
     solutions = []
     branch_out = lambda do |a|
