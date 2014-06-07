@@ -3846,12 +3846,12 @@ HERE
 
   def test_fibonacci
     fibonacci = lambda do |k, memos| # F0 = 0, F1 = 1, ...
-      memos[k] ||= fibonacci(k - 1, memos) + fibonacci(k - 2, memos) if k >= 0
+      memos[k] ||= fibonacci.call(k-1, memos) + fibonacci.call(k-2, memos) if k >= 0
     end
 
     assert_equal 0, fibonacci.call(0, [0, 1])
-    assert_equal 1, fibonacci.call(1)
-    assert_equal 8, fibonacci.call(6)
+    assert_equal 1, fibonacci.call(1, [0, 1])
+    assert_equal 8, fibonacci.call(6, [0, 1])
   end
 
   def test_manual_1_28_divide
