@@ -2046,6 +2046,41 @@ class TestCases < Test::Unit::TestCase
     assert_equal 24, climb.call(6, [])
   end
 
+  def test_9_2_maze
+    maze = []
+    maze[0] = [1, 1, 1, 1, 1, 0]
+    maze[1] = [1, 0, 1, 0, 1, 1]
+    maze[2] = [1, 1, 1, 0, 0, 1]
+    maze[3] = [1, 0, 0, 1, 1, 1]
+    maze[4] = [1, 1, 0, 1, 0, 0]
+    maze[5] = [1, 1, 0, 1, 1, 1]
+    n, m = maze.size, maze[0].size # n x m grid
+
+    answers = []
+    entered = [] # keyed by r * maze.size + c
+
+    within_bounds = lambda { |(r, c)| 0 <= r && r < n && 0 <= c && c < m }
+    not_entered = lambda { |(r, c)| !(entered[r] ||= [])[c] }
+    not_offlimits = lambda { |(r, c)| maze[r][c] == 1 }
+    expand_out = lambda do |a|
+      r, c = a[-1]
+      (entered[r] ||= [])[c] = true
+      [[r-1, c], [r+1, c], [r, c-1], [r, c+1]].
+        select(&within_bounds).
+        select(&not_offlimits)
+        select(&not_entered)
+    end
+
+    reduce_off = lambda do |a|
+      r, c = a[-1][0]
+      answers << a.dup if r == n-1 && c == m-1
+    end
+
+    Search.backtrack([[0, 0]], expand_out, reduce_off)
+    assert_equal 1, answers.size
+    assert_equal [5, 5], answers.last.last
+  end
+
   def test_9_6_combine_parenthesis
     combine_parentheses = lambda do |o, c|
       case
@@ -3153,34 +3188,6 @@ class TestCases < Test::Unit::TestCase
     probs = [0.22, 0.18, 0.20, 0.05, 0.25, 0.02, 0.08]
     assert_equal 1000, (1000 * probs.reduce(:+)).to_i
     assert_equal 2150, (1000 * DP.optimal_binary_search_tree(keys, probs)).to_i
-  end
-
-  def test_maze
-    maze = []
-    maze[0] = [1, 1, 1, 1, 1, 0]
-    maze[1] = [1, 0, 1, 0, 1, 1]
-    maze[2] = [1, 1, 1, 0, 0, 1]
-    maze[3] = [1, 0, 0, 1, 1, 1]
-    maze[4] = [1, 1, 0, 1, 0, 0]
-    maze[5] = [1, 1, 0, 1, 1, 1]
-
-    answers = []
-    entered = [] # maze.size * r + c, e.g. 6*r + c
-    expand_out = lambda do |a|
-      r, c = a[-1]
-      (entered[r] ||= [])[c] = true
-      [[r-1, c], [r+1, c], [r, c-1], [r, c+1]].select { |p|
-        p[0] > -1 && p[0] < maze.size && p[1] > -1 && p[1] < maze[0].size
-      }.select { |p| !(entered[p[0]] ||= [])[p[1]] && 1 == maze[p[0]][p[1]] }
-    end
-
-    reduce_off = lambda do |a|
-      answers << a.dup if a[-1][0] == maze.size-1 && a[-1][1] == maze[0].size-1
-    end
-
-    Search.backtrack([[0, 0]], expand_out, reduce_off) # a, i, input, branch, reduce
-    assert_equal 1, answers.size
-    assert_equal [5, 5], answers.last.last
   end
 
   def test_minmax_by_divide_n_conquer
