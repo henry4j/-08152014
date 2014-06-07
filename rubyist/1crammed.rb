@@ -2449,6 +2449,7 @@ class TestCases < Test::Unit::TestCase
     assert_equal ["the", "their", "them", "they", "they're"], trie.path("the").values.sort
     assert_equal "they", trie["they"]
 
+    require 'JSON'
     # longest common substring, or palindrome
     longest_common_substring = lambda do |ary| # of k strings
       suffix_tree = ary.each_index.reduce(Trie.new) do |trie, k| 
@@ -2471,7 +2472,6 @@ class TestCases < Test::Unit::TestCase
     assert_equal ["aba", "bab"], longest_common_substring.call(['abab', 'baba']).sort
     assert_equal ["ab"], longest_common_substring.call(['abab', 'baba', 'aabb'])
     assert_equal ["ab"], longest_common_substring.call(['abab', 'baba', 'aabb'])
-    assert_equal "abc", longest_common_substring.call('abcabcbb')
   end
 
   def test_18_7_find_longest_compound_words
