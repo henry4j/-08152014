@@ -2052,9 +2052,6 @@ class TestCases < Test::Unit::TestCase
     assert_equal permutations, Search.permutate('aabb'.chars.to_a).map { |p| p.join }.sort
     assert_equal permutations, Search.permutation('aabb'.chars.to_a).map { |p| p.join }.sort
   end
-  
-  def test_manual_7_15_k_element_subsets
-  end
 
   def test_9_3_all_subsets
     # a k-combination of a set S is a subset of k distinct elements of S, and 
