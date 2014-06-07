@@ -2033,7 +2033,7 @@ class TestCases < Test::Unit::TestCase
 # 9_1  A child is running up a staircase with n steps, and can hop either 1 step, 2 steps, or 3 steps at a time. Implement a method to count how many possible ways the child can run up the stairs.
 
   def test_9_1_staircase
-    climb = lambda do |n, memos|
+    climb = lambda do |n, memos| # n staircases.
       memos[n] ||= case
       when n == 1 then 1
       when n == 2 then 2
@@ -2042,7 +2042,8 @@ class TestCases < Test::Unit::TestCase
         [n-1, n-2, n-3].map { |e| climb.call(e, memos) }.reduce(:+)
       end
     end
-    climb.call(5, [])
+    assert_equal 13, climb.call(5, [])
+    assert_equal 24, climb.call(6, [])
   end
 
   def test_9_6_combine_parenthesis
