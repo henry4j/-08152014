@@ -1894,19 +1894,6 @@ module Arrays
     end
   end
 
-  def self.pairs_of_sum(ary, sum)
-    h = {}
-    ary.each do |x|
-      if h.has_key?(x)
-        h[sum - x] = x
-      else
-        h[sum - x] = nil unless h.has_key?(sum - x)
-      end
-    end
-
-    h.each.select { |k, v| v }
-  end
-
   def self.indexes_out_of_matrix(m, x)
     row = 0
     col = m[0].size - 1
@@ -2141,7 +2128,11 @@ class TestCases < Test::Unit::TestCase
     100.times { r = rand7.call; raise "'r' must be 1..7." if r < 1 || r > 7 }
   end
 
-  def test_19_11_pairs_of_sum
+  def test_17_12_pairs_of_sum
+    pairs_of_sum = lambda do |ary, sum|
+      ary.each_with_object({}) { |e, h| h[sum - e] = h.key?(e) ? e : false }.select { |k, v| v }
+    end
+
     pairs = Arrays.pairs_of_sum([1, 2, 1, 5, 5, 5, 3, 9, 9, 8], 10)
     expected = [[5, 5], [1, 9], [2, 8]]
     assert expected.eql?(pairs)
