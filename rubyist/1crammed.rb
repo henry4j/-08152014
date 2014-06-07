@@ -2031,6 +2031,7 @@ class TestCases < Test::Unit::TestCase
 
 # 9_6 Implement an algorithm to print all valid (e.g. properly opened and closed) combinations of n-pairs of parenthesis, e.g., input: 6, output: ((())), (()()), (())(), ()(()), ()()()
 # 9_1 Given a staircase with n steps, write a program to count the number of possible ways to climb it, when one can hop either 1, 2, or 3 steps at a time.
+# 9_2 Imagine a robot sitting on the upper left corner of NxM grid. The robot can only move in two directions.
 
   def test_9_1_staircase
     climb = lambda do |n, memos| # n staircases.
@@ -2049,25 +2050,24 @@ class TestCases < Test::Unit::TestCase
   def test_9_2_maze
     maze = []
     maze[0] = [1, 1, 1, 1, 1, 0]
-    maze[1] = [1, 0, 1, 0, 1, 1]
-    maze[2] = [1, 1, 1, 0, 0, 1]
+    maze[1] = [1, 0, 1, 0, 1, 0]
+    maze[2] = [1, 1, 1, 0, 1, 0]
     maze[3] = [1, 0, 0, 1, 1, 1]
-    maze[4] = [1, 1, 0, 1, 0, 0]
+    maze[4] = [1, 1, 0, 0, 1, 0]
     maze[5] = [1, 1, 0, 1, 1, 1]
     n, m = maze.size, maze[0].size # n x m grid
 
     answers = []
-    entered = [] # keyed by r * maze.size + c
-
+    entered = Array.new(n) { Array.new(m) { nil } }
     within_bounds = lambda { |(r, c)| 0 <= r && r < n && 0 <= c && c < m }
-    not_entered = lambda { |(r, c)| !(entered[r] ||= [])[c] }
-    not_offlimits = lambda { |(r, c)| maze[r][c] == 1 }
+    within_limits = lambda { |(r, c)| maze[r][c] == 1 }
+    not_entered = lambda { |(r, c)| !entered[r][c] }
     expand_out = lambda do |a|
       r, c = a[-1]
-      (entered[r] ||= [])[c] = true
-      [[r-1, c], [r+1, c], [r, c-1], [r, c+1]].
+      entered[r][c] = true
+      [[r+1, c], [r, c+1]].
         select(&within_bounds).
-        select(&not_offlimits).
+        select(&within_limits).
         select(&not_entered)
     end
 
