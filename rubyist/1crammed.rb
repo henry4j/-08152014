@@ -964,16 +964,6 @@ module Search
     words
   end
 
-  # a k-combination of a set S is a subset of k distinct elements of S, and 
-  # the # of k-combinations is equals to the binomial coefficient, n! / (k! * (n-k)!).
-  def self.combination(ary, k = nil, n = ary.size)
-    nCk = []
-    expand_out = lambda { |c| [ary[c.size], nil] }
-    reduce_off = lambda { |c| nCk << c.compact if c.size == n }
-    Search.backtrack([], expand_out, reduce_off)
-    (k ? nCk.select { |c| c.size == k } : nCk).uniq
-  end
-
   # a k-permutation of a set S is an ordered sequence of k distinct elements of S, and 
   # the # of k-permutation of n objects is denoted variously nPk, and P(n,k), and its value is given by n! / (n-k)!.
   def self.permutation(ary, n = ary.size)
@@ -2064,19 +2054,30 @@ class TestCases < Test::Unit::TestCase
   end
   
   def test_manual_7_15_k_element_subsets
-    # 7-15. Implement an efficient algorithm for listing all k-element subsets of n items.
-    assert_equal ['abc'], Search.combination('abc'.chars.to_a, 3).map { |e| e.join }
-    assert_equal ['ab', 'ac', 'bc'], Search.combination('abc'.chars.to_a, 2).map { |e| e.join }
-    assert_equal [''], Search.combination('cba'.chars.to_a, 0).map { |e| e.join }
-    assert_equal ['abb', 'ab', 'a', 'bb', 'b', ''], Search.combination('abb'.chars.to_a).map { |e| e.join }
   end
 
   def test_9_3_all_subsets
-    lambda = succ(restricted_keys, prefix_maximums)
+    # a k-combination of a set S is a subset of k distinct elements of S, and 
+    # the # of k-combinations is equals to the binomial coefficient, n! / (k! * (n-k)!).
+    combination = lambda do |ary, k|
+      nCk, n = [], ary.size
+      expand_out = lambda { |c| [ary[c.size], nil] }
+      reduce_off = lambda { |c| nCk << c.compact if c.size == n }
+      Search.backtrack([], expand_out, reduce_off)
+      (k ? nCk.select { |c| c.size == k } : nCk).uniq
+    end
+
+    # 7-15. Implement an efficient algorithm for listing all k-element subsets of n items.
+    assert_equal ['abc'], combination.call('abc'.chars.to_a, 3).map { |e| e.join }
+    assert_equal ['ab', 'ac', 'bc'], combination.call('abc'.chars.to_a, 2).map { |e| e.join }
+    assert_equal [''], combination.call('cba'.chars.to_a, 0).map { |e| e.join }
+    assert_equal ['abb', 'ab', 'a', 'bb', 'b', ''], combination.call('abb'.chars.to_a).map { |e| e.join }
+
+    succ = lambda do |restricted_keys, prefix_maximums|
       k = (restricted_keys.size - 1).downto(0) do |k|
         break k if 0 == k || restricted_keys[k] < prefix_maximums[k - 1] + 1
       end
-  
+
       if k > 0 # else nil
         restricted_keys[k] += 1
         prefix_maximums[k] = [prefix_maximums[k], restricted_keys[k]].max
@@ -2324,7 +2325,6 @@ class TestCases < Test::Unit::TestCase
     assert_equal [8, [2, 1, 3, 2]], maxsum_submatrix.call(m)
     assert_equal [3, [0, 0, 0, 1]], maxsum_submatrix.call([[1, 2, -1], [-3, -1, -4], [1, -5, 2]])
   end
-
 
   def test_18_11_max_subsquare
     # Imagine you have a square matrix, where each cell is filled with either black (1) or white (0).
