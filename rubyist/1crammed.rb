@@ -646,22 +646,6 @@ class BNode
       bnode
     end
   end
-
-  def self.to_doubly_linked_list(v)
-    head = pred = nil
-    exit = lambda do |v|
-      if pred
-        pred.right = v
-      else
-        head = v
-      end
-      v.left = pred
-      v.right = nil
-      pred = v
-    end
-    bfs(v, nil, exit)
-    head
-  end
 end
 
 class Graph
@@ -2097,6 +2081,37 @@ class TestCases < Test::Unit::TestCase
 # 17_4 Write a method to find the maximum of two numbers.
 # 17_8 Given an array of integers (both positive and negative), write a program to find the max sum sub-array (contiguous sequence).
 # 17_11 Given a method rand5() that generates a random number between 1 and 5 (inclusive), write a method that generates a random number between 1 and 7 (inclusive).
+# 17_13 Write a method to convert a binary tree to a doubly linked list. Keep the values in order while converting in-place.
+
+  def test_convert_binary_tree_to_doubly_linked_list
+    # http://www.youtube.com/watch?v=WJZtqZJpSlQ
+    # http://codesam.blogspot.com/2011/04/convert-binary-tree-to-double-linked.html
+    # tree:   1
+    #       2    3
+    #      4 5  6 7
+    to_linked_list = lambda |v|
+      head = pred = nil
+      exit = lambda do |v|
+        if pred
+          pred.right = v
+        else
+          head = v
+        end
+        v.left = pred
+        v.right = nil
+        pred = v
+      end
+      bfs(v, nil, exit)
+      head
+    end
+
+    tree = BNode.tree([4, 2, 5, 1, 6, 3, 7])
+    head = curr = to_linked_list.call(tree)
+    assert_equal nil, head.left
+    values = []
+    values, curr = values.push(read.value), curr.right while curr
+    assert_equal [1, 2, 3, 4, 5, 6, 7], values
+  end
 
   def test_17_8_maxsum_subarray
     maxsum_subarray = lambda do |a|
@@ -3439,23 +3454,6 @@ HERE
     assert_equal nil, tree.right.right
     assert_equal nil, tree.right.left.left
     assert_equal nil, tree.right.left.right
-  end
-
-  def test_convert_binary_tree_to_doubly_linked_list
-    # http://www.youtube.com/watch?v=WJZtqZJpSlQ
-    # http://codesam.blogspot.com/2011/04/convert-binary-tree-to-double-linked.html
-    # tree:   1
-    #       2    3
-    #      4 5  6 7
-    tree = BNode.tree([4, 2, 5, 1, 6, 3, 7])
-    head = read = BNode.to_doubly_linked_list(tree)
-    assert_equal nil, head.left
-    values = []
-    while read
-      values << read.value
-      read = read.right
-    end
-    assert_equal [1, 2, 3, 4, 5, 6, 7], values
   end
 
   def test_dfs_in_binary_trees
