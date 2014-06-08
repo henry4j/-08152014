@@ -1954,6 +1954,11 @@ class TestCases < Test::Unit::TestCase
 # 9_8 Write a program to find the number of ways to represent n cents given an infinite number of quarters (25 cents), dimes (10 cents), nickels (5 cents), and pennies (1 cents).
 # 9_9 Write a program to find all ways of arranging eight queens on an 8x8 chess board so that none of them share the same row, column, or diagonal. In this case, "diagonal" means all diagonals, not just the two that bisect the board.
 # 9_10 Write a program to compute the tallest possible stack where the the height of a stack is the same of the heights of each box.
+# 9_11 Write a program to count the number of ways to parenthesize a boolean equation. , e.g., INPUT: 1^0|0|1, the desired result: 0 (false). OUTPUT: 1^((0|0)|1) and 1^(0|(0|1)).
+
+  def test_9_11_parenthesize_boolean_equation
+    
+  end
 
   def test_9_10_tallest_possible_stack_of_boxes
     
