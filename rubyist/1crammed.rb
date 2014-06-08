@@ -1958,41 +1958,31 @@ class TestCases < Test::Unit::TestCase
 
   def test_9_11_parenthesize_boolean_equation
     express = lambda do |equation|
-      expression, boolean = equation
+      expression, bit = equation
       n = expression.length / 2
       case
       when n < 2 then
-        f == eval(expression) ? 1 : 0
+        bit == eval(expression) ? 1 : 0
       else
         (0...n).map do |p|
-          pref, op, suff = expression[0...p], expresion[p], expression[p+1..-1]
-          pref_t, pref_f = [[pref, true], [pref, false]].map { |e, b| express.call(e, b) }
-          suff_t, suff_f = [[suff, true], [suff, false]].map { |e, b| express.call(e, b) }
-          if boolean
-            case op
-            when '|'
-              pref_t * pref_f + pref_f * suff_t + pref_t * suff_t
-            when '&'
-              pref_t * suff_t
-            when '^'
-              pref_t * pref_f + pref_f * suff_t
-            end
-          else
-            case op
-            when '|'
-              pref_f * suff_f
-            when '&'
-              pref_t * pref_f + pref_f * suff_t + pref_t * suff_t
-            when '^'
-              pref_t * pref_t + pref_f * suff_f
-            end
+          opr, opd1, opd2 = expression[2*p+1, 1], expression[0..2*p], expression[2*p+2..-1]
+          opd1_1, opd1_0 = [[opd1, 1], [opd1, 0]].map { |e, b| express.call([e, b]) }
+          opd2_1, opd2_0 = [[opd2, 1], [opd2, 0]].map { |e, b| express.call([e, b]) }
+          case opr
+          when '|'
+            bit == 1 ? (opd1_1 * opd2_1 + opd1_1 * opd2_0 + opd1_0 * opd2_1) : (opd1_0 * opd2_0)
+          when '&'
+            bit == 1 ? (opd1_1 * opd2_1) : (opd1_1 * opd2_0 + opd1_0 * opd2_1 + opd1_0 * opd2_0)
+          when '^'
+            bit == 1 ? (opd1_1 * opd2_0 + opd1_0 * opd2_1) : (opd1_1 * opd2_1 + opd1_0 * opd2_0)
           end
-        end
+        end.reduce(:+)
       end
     end
 
     equation = ["1^0|0|1", 0]
-    assert_equal [], express.call(equation)
+    expressions = express.call(equation)
+    assert_equal [], expressions
 
 #    def test_make_equation
 #      # Given N numbers, 1 _ 2 _ 3 _ 4 _ 5 = 10,
