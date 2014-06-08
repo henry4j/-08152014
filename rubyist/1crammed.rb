@@ -973,25 +973,6 @@ module Search
     end
     (n/2).times { |j| ary[j], ary[n-1-j] = ary[n-1-j], ary[j] }
   end
-
-  # http://www.youtube.com/watch?v=p4_QnaTIxkQ
-  def self.queens_in_peace(n)
-    answers = []
-    peaceful_at = lambda do |queens, c|
-      queens.each_with_index { |e, i| e != c && queens.size - i != (e - c).abs }
-    end
-
-    expand_out = lambda do |queens|
-      n.times.select { |c| peaceful_at.call(queens, c) }
-    end
-
-    reduce_off = lambda do |queens|
-      answers << queens.dup if queens.size == n
-    end
-
-    Search.backtrack([], expand_out, reduce_off)
-    answers
-  end
 end
 
 module DP # http://basicalgos.blogspot.com/search/label/dynamic%20programming
@@ -1973,6 +1954,29 @@ class TestCases < Test::Unit::TestCase
 # 9_8 Write a program to find the number of ways to represent n cents given an infinite number of quarters (25 cents), dimes (10 cents), nickels (5 cents), and pennies (1 cents).
 # 9_9 Write a program to find all ways of arranging eight queens on an 8x8 chess board so that none of them share the same row, column, or diagonal. In this case, "diagonal" means all diagonals, not just the two that bisect the board.
 # 9_10 
+
+  def test_saurab_peaceful_queens
+    # http://www.youtube.com/watch?v=p4_QnaTIxkQ
+    queens_in_peace = lambda do |n|
+      answers = []
+      peaceful_at = lambda do |queens, c|
+        queens.each_with_index { |e, i| e != c && queens.size - i != (e - c).abs }
+      end
+  
+      expand_out = lambda do |queens|
+        n.times.select { |c| peaceful_at.call(queens, c) }
+      end
+  
+      reduce_off = lambda do |queens|
+        answers << queens.dup if queens.size == n
+      end
+  
+      Search.backtrack([], expand_out, reduce_off)
+      answers
+    end
+
+    assert_equal [[1, 3, 0, 2], [2, 0, 3, 1]], Search.queens_in_peace(4)
+  end
 
   def test_9_1_staircase
     climb = lambda do |n, memos| # n staircases.
@@ -3285,10 +3289,6 @@ class TestCases < Test::Unit::TestCase
     assert Numbers.prime?(101)
     assert_equal 11, Numbers.prime(9)
   end
-
-#  def test_saurab_peaceful_queens
-#    assert_equal [[1, 3, 0, 2], [2, 0, 3, 1]], Search.queens_in_peace(4)
-#  end
 
   def test_order_matrix_chain_multiplication
     assert_equal [4500, [0, 1]], DP.order_matrix_chain_multiplication([10, 30, 5, 60])
