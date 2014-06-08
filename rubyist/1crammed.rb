@@ -2119,7 +2119,6 @@ class TestCases < Test::Unit::TestCase
       end
       partitions
     end
-
   end
 
   def test_9_6_combine_parenthesis
