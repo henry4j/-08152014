@@ -1968,7 +1968,11 @@ class TestCases < Test::Unit::TestCase
 # 9_3 Given an array of sorted integers, write a program to find a magic index, that is defined to be an index such that A[i] = i.
 # 9_4 Write a program to generate all subsets of an array; nCk: a k-combination of a set S is a subset of k distinct elements of S.
 # 9_5 Write a program to generate all permutations of an array; nPk: a k-permutation of a set S is an ordered sequence of k distinct elements of S.
-# 9_6 Implement an algorithm to print all valid (e.g. properly opened and closed) combinations of n-pairs of parenthesis, e.g., input: 6, output: ((())), (()()), (())(), ()(()), ()()()
+# 9_6 Write a program to print all valid (e.g. properly opened and closed) combinations of n-pairs of parenthesis, e.g., input: 6, output: ((())), (()()), (())(), ()(()), ()()()
+# 9_7 Write a program to flood-fill in the surrounding area until the color changes from the original color.
+# 9_8 Write a program to find the number of ways to represent n cents given an infinite number of quarters (25 cents), dimes (10 cents), nickels (5 cents), and pennies (1 cents).
+# 9_9 Write a program to find all ways of arranging eight queens on an 8x8 chess board so that none of them share the same row, column, or diagonal. In this case, "diagonal" means all diagonals, not just the two that bisect the board.
+# 9_10 
 
   def test_9_1_staircase
     climb = lambda do |n, memos| # n staircases.
