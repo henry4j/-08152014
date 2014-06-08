@@ -58,7 +58,6 @@ module CodeJam
           q << [r+1, c] if map[r+1] && map[r+1][c] == s
         end
       end
-      print '.'
     end
     map
   end
