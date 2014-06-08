@@ -85,7 +85,7 @@ class TestCases < Test::Unit::TestCase
   end
 
   def test_main
-    test_case_uri = 'https://raw.github.com/henry4j/-/master/algorist/rubyist/lawnmower-testcases/B-small-practice.in'
+    test_case_uri = '2013-lawnmower.in'
     open(test_case_uri) { |io| CodeJam.main(io) }
   end
 end
