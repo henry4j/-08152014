@@ -1954,21 +1954,45 @@ class TestCases < Test::Unit::TestCase
 # 9_8 Write a program to find the number of ways to represent n cents given an infinite number of quarters (25 cents), dimes (10 cents), nickels (5 cents), and pennies (1 cents).
 # 9_9 Write a program to return all ways of arranging eight queens on an 8x8 chess board so that none of them share the same row, column, or diagonal. In this case, "diagonal" means all diagonals, not just the two that bisect the board.
 # 9_10 Write a program to compute the tallest possible stack where the the height of a stack is the same of the heights of each box.
-# 9_11 Write a program to count the number of ways to parenthesize a boolean equation. , e.g., INPUT: 1^0|0|1, the desired result: 0 (false). OUTPUT: 1^((0|0)|1) and 1^(0|(0|1)).
+# 9_11 Write a program to count the number of ways to parenthesize a boolean equation, e.g., INPUT: 1^0|0|1, the desired result: 0 (false). OUTPUT: 1^((0|0)|1) and 1^(0|(0|1)).
 
   def test_9_11_parenthesize_boolean_equation
-    expression, desired = "1^0|0|1", 0
-
-    order_ops = lambda do |expr, s, e, output|
-      ops = (e - s)/2
+    express = lambda do |equation|
+      expression, boolean = equation
+      n = expression.length / 2
       case
-      when 1 == ops then
-        output == eval(expr[s...e]) ? 1 : 0
+      when n < 2 then
+        f == eval(expression) ? 1 : 0
       else
-        (0...ops).map do |e|
+        (0...n).map do |p|
+          pref, op, suff = expression[0...p], expresion[p], expression[p+1..-1]
+          pref_t, pref_f = [[pref, true], [pref, false]].map { |e, b| express.call(e, b) }
+          suff_t, suff_f = [[suff, true], [suff, false]].map { |e, b| express.call(e, b) }
+          if boolean
+            case op
+            when '|'
+              pref_t * pref_f + pref_f * suff_t + pref_t * suff_t
+            when '&'
+              pref_t * suff_t
+            when '^'
+              pref_t * pref_f + pref_f * suff_t
+            end
+          else
+            case op
+            when '|'
+              pref_f * suff_f
+            when '&'
+              pref_t * pref_f + pref_f * suff_t + pref_t * suff_t
+            when '^'
+              pref_t * pref_t + pref_f * suff_f
+            end
+          end
         end
       end
     end
+
+    equation = ["1^0|0|1", 0]
+    assert_equal [], express.call(equation)
 
 #    def test_make_equation
 #      # Given N numbers, 1 _ 2 _ 3 _ 4 _ 5 = 10,
