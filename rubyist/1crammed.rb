@@ -2187,6 +2187,45 @@ class TestCases < Test::Unit::TestCase
     assert_equal 20, interleave.call('abc', '123').size
   end
 
+  def test_9_7_flood_fill
+    flood_fill = lambda do |map, n, s, t| # fills 's' color with 't' color from node 'n'
+      q = [n]
+      while n = q.shift
+        r, c = n
+        if map[r][c] == s
+          w = e = c
+          w -= 1 while map[r][w-1] == s # west
+          e += 1 while map[r][e+1] == s # east
+          for c in w..e
+            map[r][c] = t
+            q << [r-1, c] if map[r-1] && map[r-1][c] == s
+            q << [r+1, c] if map[r+1] && map[r+1][c] == s
+          end
+        end
+      end
+      map
+    end
+
+    m = [
+      [1, 1, 1, 1],
+      [1, 0, 0, 1],
+      [0, 1, 0, 1],
+      [1, 1, 1, 1]
+    ]
+    assert_equal [
+      [1, 1, 1, 1],
+      [1, 2, 2, 1],
+      [0, 1, 2, 1],
+      [1, 1, 1, 1]
+    ], flood_fill.call(m.map(&:dup), [1, 1], 0, 2)
+    assert_equal [
+      [1, 1, 1, 1],
+      [1, 0, 0, 1],
+      [2, 1, 0, 1],
+      [1, 1, 1, 1]
+    ], flood_fill.call(m.map(&:dup), [2, 0], 0, 2)
+  end
+
   def test_17_3_trailing_zeros
     count_trailing_zeros = lambda do |n|
       count, five = 0, 5
