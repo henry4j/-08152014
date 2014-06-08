@@ -2070,6 +2070,27 @@ class TestCases < Test::Unit::TestCase
     assert_equal [''], combination.call('cba'.chars.to_a, 0).map { |e| e.join }
     assert_equal ['abb', 'ab', 'a', 'bb', 'b', ''], combination.call('abb'.chars.to_a).map { |e| e.join }
 
+#combine_parentheses = lambda do |o, c|
+#  case
+#  when o == 0 && c == 0
+#    ['']
+#  when o == c
+#    combine_parentheses(o-1, c).map { |e| '(' + e }
+#  when o == 0
+#    combine_parentheses(o, c-1).map { |e| ')' + e }
+#  else
+#    combine_parentheses(o-1, c, s).map { |e| '(' + e } +
+#    combine_parentheses(o, c-1, s).map { |e| ')' + e }
+#  end
+#end
+
+    subsets = lambda do |ary, n|
+      n == 0 ? [] : subsets.call(ary, n-1).reduce([]) do |a, e|
+        a << e << e + [ara[n-1]]
+      end
+    end
+    
+
     succ = lambda do |restricted_keys, prefix_maximums|
       k = (restricted_keys.size - 1).downto(0) do |k|
         break k if 0 == k || restricted_keys[k] < prefix_maximums[k - 1] + 1
