@@ -1953,29 +1953,29 @@ class TestCases < Test::Unit::TestCase
 # 9_7 Write a program to flood-fill in the surrounding area until the color changes from the original color.
 # 9_8 Write a program to find the number of ways to represent n cents given an infinite number of quarters (25 cents), dimes (10 cents), nickels (5 cents), and pennies (1 cents).
 # 9_9 Write a program to find all ways of arranging eight queens on an 8x8 chess board so that none of them share the same row, column, or diagonal. In this case, "diagonal" means all diagonals, not just the two that bisect the board.
-# 9_10 
+# 9_10 Write a program to compute the tallest possible stack where the the height of a stack is the same of the heights of each box.
 
-  def test_saurab_peaceful_queens
+  def test_9_10_tallest_possible_stack_of_boxes
+    
+  end
+
+  def test_9_9_saurab_peaceful_queens
     # http://www.youtube.com/watch?v=p4_QnaTIxkQ
     queens_in_peace = lambda do |n|
       answers = []
       peaceful_at = lambda do |queens, c|
-        queens.each_with_index { |e, i| e != c && queens.size - i != (e - c).abs }
+        queens.each_with_index { |e, i| e != c && queens.size-i != (c-e).abs }
       end
-  
       expand_out = lambda do |queens|
-        n.times.select { |c| peaceful_at.call(queens, c) }
+        (0...n).select { |c| peaceful_at.call(queens, c) }
       end
-  
       reduce_off = lambda do |queens|
         answers << queens.dup if queens.size == n
       end
-  
       Search.backtrack([], expand_out, reduce_off)
       answers
     end
-
-    assert_equal [[1, 3, 0, 2], [2, 0, 3, 1]], Search.queens_in_peace(4)
+    assert_equal [[1, 3, 0, 2], [2, 0, 3, 1]], queens_in_peace.call(4)
   end
 
   def test_9_1_staircase
