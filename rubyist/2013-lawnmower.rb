@@ -44,17 +44,17 @@ module CodeJam
     "Case ##{tc}: #{lawn.all? { |a| a.all? { |e| e == keys[-1] } } ? 'YES' : 'NO'}"
   end
 
-  def self.flood_fill(m, n, s, t) # fills 's' color with 't' color from node 'n'
+  def self.flood_fill(map, n, s, t) # fills 's' color with 't' color from node 'n'
     q = [n]
-    while n = q.shift
-      if m[n[0]][n[1]] == s
+    while (r, c) = n = q.shift
+      if map[r][c] == s
         w = e = n
-        w = [w[0], w[1]-1] while m[w[0]][w[1]-1] == s
-        e = [e[0], e[1]+1] while m[e[0]][e[1]+1] == s
+        w = [r, c-1] while map[r][c-1] == s
+        e = [r, c+1] while map[r][c+1] == s
         w[1].upto(e[1]) do |c|
-          m[n[0]][c] = t
-          q << [n[0]-1, c] if m[n[0]-1] && m[n[0]-1][c] == s
-          q << [n[0]+1, c] if m[n[0]+1] && m[n[0]+1][c] == s
+          map[r][c] = t
+          q << [r-1, c] if map[r-1] && map[r-1][c] == s
+          q << [r+1, c] if map[r+1] && map[r+1][c] == s
         end
       end
     end
@@ -70,8 +70,18 @@ class TestCases < Test::Unit::TestCase
       [0, 1, 0, 1],
       [1, 1, 1, 1]
     ]
-    assert_equal [[1, 1, 1, 1], [1, 2, 2, 1], [0, 1, 2, 1], [1, 1, 1, 1]], CODE_JAM.flood_fill(m.map(&:dup), [1, 1], 0, 2)
-    assert_equal [[1, 1, 1, 1], [1, 0, 0, 1], [2, 1, 0, 1], [1, 1, 1, 1]], CODE_JAM.flood_fill(m.map(&:dup), [2, 0], 0, 2)
+    assert_equal [
+      [1, 1, 1, 1],
+      [1, 2, 2, 1],
+      [0, 1, 2, 1],
+      [1, 1, 1, 1]
+    ], CODE_JAM.flood_fill(m.map(&:dup), [1, 1], 0, 2)
+    assert_equal [
+      [1, 1, 1, 1],
+      [1, 0, 0, 1],
+      [2, 1, 0, 1],
+      [1, 1, 1, 1]
+    ], CODE_JAM.flood_fill(m.map(&:dup), [2, 0], 0, 2)
   end
 
   def test_main

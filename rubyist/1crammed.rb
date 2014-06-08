@@ -1963,12 +1963,12 @@ class TestCases < Test::Unit::TestCase
 # 17_11 Given a method rand5() that generates a random number between 1 and 5 (inclusive), write a method that generates a random number between 1 and 7 (inclusive).
 # 17_13 Write a method to convert a binary tree to a doubly linked list. Keep the values in order while converting in-place.
 
-# 9_6 Implement an algorithm to print all valid (e.g. properly opened and closed) combinations of n-pairs of parenthesis, e.g., input: 6, output: ((())), (()()), (())(), ()(()), ()()()
 # 9_1 Given a staircase with n steps, write a program to count the number of possible ways to climb it, when one can hop either 1, 2, or 3 steps at a time.
 # 9_2 Imagine a robot sitting on the upper left corner of NxM grid. The robot can only move in two directions.
 # 9_3 Given an array of sorted integers, write a program to find a magic index, that is defined to be an index such that A[i] = i.
 # 9_4 Write a program to generate all subsets of an array; nCk: a k-combination of a set S is a subset of k distinct elements of S.
 # 9_5 Write a program to generate all permutations of an array; nPk: a k-permutation of a set S is an ordered sequence of k distinct elements of S.
+# 9_6 Implement an algorithm to print all valid (e.g. properly opened and closed) combinations of n-pairs of parenthesis, e.g., input: 6, output: ((())), (()()), (())(), ()(()), ()()()
 
   def test_9_1_staircase
     climb = lambda do |n, memos| # n staircases.
