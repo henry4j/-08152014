@@ -1,4 +1,4 @@
-#!/usr/bin/env /usr/local/bin/ruby
+#!/usr/bin/env /usr/bin/ruby
 
 %w{test/unit open-uri}.each { |e| require e }
 
@@ -46,19 +46,21 @@ module CodeJam
 
   def self.flood_fill(map, n, s, t) # fills 's' color with 't' color from node 'n'
     q = [n]
-    while (r, c) = n = q.shift
+    while n = q.shift
+      r, c = n
       if map[r][c] == s
-        w = e = n
-        w = [r, c-1] while map[r][c-1] == s
-        e = [r, c+1] while map[r][c+1] == s
-        w[1].upto(e[1]) do |c|
+        w = e = c
+        w -= 1 while map[r][w-1] == s # west
+        e += 1 while map[r][e+1] == s # east
+        for c in w..e
           map[r][c] = t
           q << [r-1, c] if map[r-1] && map[r-1][c] == s
           q << [r+1, c] if map[r+1] && map[r+1][c] == s
         end
       end
+      print '.'
     end
-    m
+    map
   end
 end
 
@@ -75,19 +77,19 @@ class TestCases < Test::Unit::TestCase
       [1, 2, 2, 1],
       [0, 1, 2, 1],
       [1, 1, 1, 1]
-    ], CODE_JAM.flood_fill(m.map(&:dup), [1, 1], 0, 2)
+    ], CodeJam.flood_fill(m.map(&:dup), [1, 1], 0, 2)
     assert_equal [
       [1, 1, 1, 1],
       [1, 0, 0, 1],
       [2, 1, 0, 1],
       [1, 1, 1, 1]
-    ], CODE_JAM.flood_fill(m.map(&:dup), [2, 0], 0, 2)
+    ], CodeJam.flood_fill(m.map(&:dup), [2, 0], 0, 2)
   end
 
-  def test_main
-    test_case_uri = '2013-lawnmower.in'
-    open(test_case_uri) { |io| CodeJam.main(io) }
-  end
+#  def test_main
+#    test_case_uri = '2013-lawnmower.in'
+#    open(test_case_uri) { |io| CodeJam.main(io) }
+#  end
 end
 
 # CodeJam.main(STDIN)
