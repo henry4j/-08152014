@@ -1957,7 +1957,23 @@ class TestCases < Test::Unit::TestCase
 # 9_11 Write a program to count the number of ways to parenthesize a boolean equation. , e.g., INPUT: 1^0|0|1, the desired result: 0 (false). OUTPUT: 1^((0|0)|1) and 1^(0|(0|1)).
 
   def test_9_11_parenthesize_boolean_equation
-    
+    expression, desired = "1^0|0|1", 0
+
+    order_ops = lambda do |expr, s, e, output|
+      ops = (e - s)/2
+      case
+      when 1 == ops then
+        output == eval(expr[s...e]) ? 1 : 0
+      else
+        (0...ops).map do |e|
+        end
+      end
+    end
+
+#    def test_make_equation
+#      # Given N numbers, 1 _ 2 _ 3 _ 4 _ 5 = 10,
+#      # Find how many ways to fill blanks with + or - to make valid equation.
+#    end
   end
 
   def test_9_10_tallest_possible_stack_of_boxes
@@ -3263,11 +3279,6 @@ class TestCases < Test::Unit::TestCase
     assert_equal [[2, 5], [3, 4], [1, 2, 4]], DP.subset_of_sum([1, 2, 3, 4, 5], 7)
     assert_equal [[1, 2, 3]], DP.ordinal_of_sum(6, 3)
     assert_equal [[1, 5], [2, 4]], DP.ordinal_of_sum(6, 2)
-  end
-
-  def test_make_equation
-    # Given N numbers, 1 _ 2 _ 3 _ 4 _ 5 = 10,
-    # Find how many ways to fill blanks with + or - to make valid equation.
   end
 
   def test_bookshelf_partition
