@@ -2047,11 +2047,11 @@ class TestCases < Test::Unit::TestCase
 
     subsets = lambda do |ary|
       n = ary.size
-      values_at = lambda do |ary, q|
+      values_at = lambda do |ary, d|
         subset, i = [], 0
-        while q > 0
-          subset << ary[i] if 1 == q & 1
-          q, i = q >> 1, i + 1
+        while d > 0
+          subset << ary[i] if 1 == d & 1
+          d, i = d >> 1, i + 1
         end
         subset
       end
