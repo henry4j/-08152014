@@ -2068,7 +2068,7 @@ class TestCases < Test::Unit::TestCase
     assert_equal ['abc'], combination.call('abc'.chars.to_a, 3).map { |e| e.join }
     assert_equal ['ab', 'ac', 'bc'], combination.call('abc'.chars.to_a, 2).map { |e| e.join }
     assert_equal [''], combination.call('cba'.chars.to_a, 0).map { |e| e.join }
-    assert_equal ['abb', 'ab', 'a', 'bb', 'b', ''], combination.call('abb'.chars.to_a).map { |e| e.join }
+    assert_equal ['abb', 'ab', 'a', 'bb', 'b', ''], combination.call('abb'.chars.to_a, nil).map { |e| e.join }
 
     subsets = lambda do |ary, n|
       n == 0 ? [[]] : subsets.call(ary, n-1).reduce([]) do |a, e|
@@ -2080,13 +2080,10 @@ class TestCases < Test::Unit::TestCase
     subsets = lambda do |ary|
       n = ary.size
       values_at = lambda do |ary, q|
-        i = 0
-        subset = []
+        subset, i = [], 0
         while q > 0
-          p q
-          subset << ary[i] unless (q & 1).zero?
-          q = q >> 1
-          i += 1
+          subset << ary[i] if 1 == q & 1
+          q, i = q >> 1, i + 1
         end
         subset
       end
