@@ -2053,7 +2053,7 @@ class TestCases < Test::Unit::TestCase
     assert_equal permutations, Search.permutation('aabb'.chars.to_a).map { |p| p.join }.sort
   end
 
-  def test_9_3_all_subsets
+  def test_9_4_all_subsets
     # a k-combination of a set S is a subset of k distinct elements of S, and 
     # the # of k-combinations is equals to the binomial coefficient, n! / (k! * (n-k)!).
     combination = lambda do |ary, k|
