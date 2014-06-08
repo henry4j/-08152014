@@ -964,33 +964,6 @@ module Search
     words
   end
 
-  # a k-permutation of a set S is an ordered sequence of k distinct elements of S, and 
-  # the # of k-permutation of n objects is denoted variously nPk, and P(n,k), and its value is given by n! / (n-k)!.
-  def self.permutation(ary, n = ary.size)
-    nPn = []
-    indices = (0...n).to_a
-    expand_out = lambda { |p| indices - p }
-    reduce_off = lambda { |p| nPn << p.map { |i| ary[i] } if p.size == n }
-    Search.backtrack([], expand_out, reduce_off)
-    nPn.uniq
-  end
-
-  def self.permutate(ary, n = ary.size)
-    if 1 == n
-      [ ary.dup ]
-    else
-      h = {}
-      (0...n).
-        select { |i| h[ary[i]] = true unless h[ary[i]] }.
-        map do |i|
-          ary[n-1], ary[i] = ary[i], ary[n-1]
-          p = permutate(ary, n-1)
-          ary[n-1], ary[i] = ary[i], ary[n-1]
-          p
-        end.reduce(:+)
-    end
-  end
-
   def self.permutate_succ(ary, n = ary.size)
     (n-1).downTo(1) do |i|
       if ary[i] > ary[i-1]
@@ -1994,6 +1967,8 @@ class TestCases < Test::Unit::TestCase
 # 9_1 Given a staircase with n steps, write a program to count the number of possible ways to climb it, when one can hop either 1, 2, or 3 steps at a time.
 # 9_2 Imagine a robot sitting on the upper left corner of NxM grid. The robot can only move in two directions.
 # 9_3 Given an array of sorted integers, write a program to find a magic index, that is defined to be an index such that A[i] = i.
+# 9_4 Write a program to generate all subsets of an array; nCk: a k-combination of a set S is a subset of k distinct elements of S.
+# 9_5 Write a program to generate all permutations of an array; nPk: a k-permutation of a set S is an ordered sequence of k distinct elements of S.
 
   def test_9_1_staircase
     climb = lambda do |n, memos| # n staircases.
@@ -2046,13 +2021,6 @@ class TestCases < Test::Unit::TestCase
   def test_9_3_magic_index
   end
 
-  def test_manual_7_14_permutate
-    # 7-14. Write a function to find all permutations of the letters in a particular string.
-    permutations = ["aabb", "abab", "abba", "baab", "baba", "bbaa"]
-    assert_equal permutations, Search.permutate('aabb'.chars.to_a).map { |p| p.join }.sort
-    assert_equal permutations, Search.permutation('aabb'.chars.to_a).map { |p| p.join }.sort
-  end
-
   def test_9_4_all_subsets
     # a k-combination of a set S is a subset of k distinct elements of S, and 
     # the # of k-combinations is equals to the binomial coefficient, n! / (k! * (n-k)!).
@@ -2071,8 +2039,8 @@ class TestCases < Test::Unit::TestCase
     assert_equal ['abb', 'ab', 'a', 'bb', 'b', ''], combination.call('abb'.chars.to_a, nil).map { |e| e.join }
 
     subsets = lambda do |ary, n|
-      n == 0 ? [[]] : subsets.call(ary, n-1).reduce([]) do |a, e|
-        a << e << e + [ary[n-1]]
+      n == 0 ? [[]] : subsets.call(ary, n-1).reduce([]) do |nCn, e|
+        nCn << e << e + [ary[n-1]]
       end
     end
     assert_equal [[], [3], [2], [2, 3], [1], [1, 3], [1, 2], [1, 2, 3]], subsets.call([1, 2, 3], 3)
@@ -2087,7 +2055,7 @@ class TestCases < Test::Unit::TestCase
         end
         subset
       end
-      (2**n).times.reduce([]) { |subsets, d| subsets << values_at.call(ary, d) }
+      (2**n).times.reduce([]) { |nCn, d| nCn << values_at.call(ary, d) }
     end
     assert_equal [[], [1], [2], [1, 2], [3], [1, 3], [2, 3], [1, 2, 3]], subsets.call(ary = [1, 2, 3])
 
@@ -2119,6 +2087,41 @@ class TestCases < Test::Unit::TestCase
       end
       partitions
     end
+  end
+
+  def test_9_5_all_permutations # test_manual_7_14_permutate
+    # a k-permutation of a set S is an ordered sequence of k distinct elements of S, and 
+    # the # of k-permutation of n objects is denoted variously nPk, and P(n,k), and its value is given by n! / (n-k)!.
+    permutation = lambda do |ary|
+      nPn, n = [], ary.size
+      indices = (0...n).to_a
+      expand_out = lambda { |p| indices - p }
+      reduce_off = lambda { |p| nPn << p.map { |i| ary[i] } if p.size == n }
+      Search.backtrack([], expand_out, reduce_off)
+      nPn.uniq
+    end
+
+    permutate = lambda do |ary, n| # n = ary.size
+      if 1 == n
+        [ ary.dup ]
+      else
+        h = {}
+        (0...n).
+          select do |i|
+            h[ary[i]] ? false : h[ary[i]] = true
+          end.map do |i|
+            ary[n-1], ary[i] = ary[i], ary[n-1]
+            p = permutate.call(ary, n-1)
+            ary[n-1], ary[i] = ary[i], ary[n-1]
+            p
+          end.reduce(:+)
+      end
+    end
+
+    # 7-14. Write a function to find all permutations of the letters in a particular string.
+    permutations = ["aabb", "abab", "abba", "baab", "baba", "bbaa"]
+    assert_equal permutations, permutate.call('aabb'.chars.to_a, 4).map { |p| p.join }.sort
+    assert_equal permutations, permutation.call('aabb'.chars.to_a).map { |p| p.join }.sort
   end
 
   def test_9_6_combine_parenthesis
