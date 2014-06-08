@@ -2077,6 +2077,23 @@ class TestCases < Test::Unit::TestCase
     end
     subsets.call([1, 2, 3], 3)
 
+    subsets = lambda do |ary|
+      n = ary.size
+      values_at = lambda do |ary, q|
+        i = 0
+        subset = []
+        while q > 0
+          p q
+          subset << ary[i] unless (q & 1).zero?
+          q = q >> 1
+          i += 1
+        end
+        subset
+      end
+      (2**n).times.reduce([]) { |subsets, d| subsets << values_at.call(ary, d) }
+    end
+    assert_equal [[], [1], [2], [1, 2], [3], [1, 3], [2, 3], [1, 2, 3]], subsets.call(ary = [1, 2, 3])
+
     succ = lambda do |restricted_keys, prefix_maximums|
       k = (restricted_keys.size - 1).downto(0) do |k|
         break k if 0 == k || restricted_keys[k] < prefix_maximums[k - 1] + 1
