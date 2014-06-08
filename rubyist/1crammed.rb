@@ -2075,7 +2075,7 @@ class TestCases < Test::Unit::TestCase
         a << e << e + [ary[n-1]]
       end
     end
-    subsets.call([1, 2, 3], 3)
+    assert_equal [[], [3], [2], [2, 3], [1], [1, 3], [1, 2], [1, 2, 3]], subsets.call([1, 2, 3], 3)
 
     subsets = lambda do |ary|
       n = ary.size
