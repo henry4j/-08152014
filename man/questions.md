@@ -106,20 +106,17 @@ INPUT: `a -> b -> c -> d -> e -> c`, and OUTPUT: `c`.
 
 #### 9. Recursion and DP
 
-1. A child is running up a staircase with n steps, and can hop either 1 step, 2 steps, or 3 steps at a time. Implement a method to count how many possible ways the child can run up the stairs.
-2. Imagine a robot sitting on the upper left corner of an X by Y grid. The robot can only move in two directions: right and down. How many possible paths are there for the robot to go from (0.0) to (x, y)? FOLLOW UP: Imagine certain spots are "off limits", such that the robot cannot step on them. Design an algorithm to find a path for the robot from the top left to the bottom right.
-3. A magic index in an array A[0..n-1] is defined to be an index such that A[i] = i. Given a sorted array, write a method to find a magic index, if one exists, in an array A. FOLLOW UP: What if the values are not distinct?
-4. Write a method to return all subsets of a set.
-5. Write a method to compute all permutations of a string.
-6. Implement an algorithm to print all valid (e.g. properly opened and closed) combinations of n-pairs of parenthesis. e.g.  
-INPUT: 6, OUTPUT: ((())), (()()), (())(), ()(()), ()()()
-7. Implement the paint fill function that one might see on many image editing programs. That is given a screen (represented by a 2D array of colors), a point, and a new color, fill in the surrounding area until the color changes from the original color.
-8. Given an infinite number of quarters (25 cents), dimes (10 cents), nickels (5 cents), and pennies (1 cents), write code to calculate the number of ways of representing n cents.
-9. Write an algorithm to print all ways of arranging eight queens on an 8x8 chess board so that none of them share the same row, column, or diagonal. In this case, "diagonal" means all diagonals, not just the two that bisect the board.
-10. You have a stack of n boxes, with widths w(i), heights h(i), and depths d(i). The boxes cannot be rotated and can only be stacked on top of one another if each box in the stack is strictly larger than the box above it in width, height, and depth. Implement a method to build the tallest stack possible, where the height of a stack is the sum of the heights of each box.
-11. Given a boolean expression consisting of the symbols `0, 1, &, |, and ^`, and a desired boolean result value result, implement a function to count the number of ways of parenthesizing the expression such that evalutes to result. e.g.  
-INPUT: Expression: `1^0|0|1`, Desired Result: `false(0)`  
-OUTPUT: 2 ways: `1^((0|0)|1)` and `1^(0|(0|1))`.
+9.1 Given a staircase with n steps, write a program to count the number of possible ways to climb it, when one can hop either 1, 2, or 3 steps at a time.  
+9.2 Given NxM grid, write a program to route a robot from (0, 0) to (N, M). How many possible ways are there, when the robot can move in two directions: right, and down. What if there are some spots of off-limits?  
+9.3 Given an array of sorted integers, write a method to find a magic index where A[i] = i. What if integers are not distinct?  
+9.4 Write a method to generate all subsets of a set.  
+9.5 Write a method to generate all permutations of a string.  
+9.6 Write a program to generate all possible, valid combinations of n-pairs of parenthesis, e.g., INPUT: 3, OUTPUT: ((())), (()()), (())(), ()(()), ()()().  
+9.7 Write a flood-fill method to fill in a new color until the color changes from the original color; given a point and a new color.  
+9.8 Given infinite # of coins (25, 10, 5, and 1 cents), write a method to count the number of ways to represent n cents.  
+9.9 Given an NxN chessboard, write a program to place eight queens so that none of them share the same row, column, or diagonal.  
+9.10 Given n boxes that cannot be rotated, but can only be stacked up, write a method to find the tallest possible stack, where the height of a stack is the sum of height of each box.  
+9.11 Given a boolean equation, write a program to count the number of ways to parenthesize the expression such that equation is true, e.g., INPUT: Expression: 1^0|0|1, Desired Result: false(0), OUTPUT: 2 ways: 1^((0|0)|1) and 1^(0|(0|1)).  
 
 #### 10. Scalability and Memory Limits
 
