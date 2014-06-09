@@ -2060,8 +2060,26 @@ class TestCases < Test::Unit::TestCase
     assert_equal [5, 5], answers[0].last
   end
 
-  def test_9_3_magic_index
-    
+  def test_9_3_find_magic_key
+    magic_key = lambda do |ary, range|
+      if range.count > 1
+        mid = range.minmax.reduce(:+) / 2
+        if mid == ary[mid]
+          mid
+        else
+          max = [mid-1, ary[mid]].min
+          key = magic_key.call(ary, range.min..max)
+          if -1 != key
+            key
+          else
+            min = [mid-1, ary[mid]].min
+            magic_key.call(ary, min..range.max)
+          end
+        end
+      else
+        -1
+      end
+    end
   end
 
   def test_9_4_all_subsets
@@ -2217,7 +2235,7 @@ class TestCases < Test::Unit::TestCase
           }
         end
       end
-    
+
       Search.backtrack([[-1, -1]], expand_out, reduce_off)
       answers
     end
