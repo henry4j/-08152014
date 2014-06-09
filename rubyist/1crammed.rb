@@ -1937,92 +1937,21 @@ class TestCases < Test::Unit::TestCase
 # 17_11 Given a method rand5() that generates a random number between 1 and 5 (inclusive), write a method that generates a random number between 1 and 7 (inclusive).
 # 17_13 Write a method to convert a binary tree to a doubly linked list. Keep the values in order while converting in-place.
 
-# 9_1 Given a staircase with n steps, write a program to count the number of possible ways to climb it, when one can hop either 1, 2, or 3 steps at a time.
-# 9_2 Imagine a robot sitting on the upper left corner of NxM grid. The robot can only move in two directions.
-# 9_3 Given an array of sorted integers, write a program to find a magic index, that is defined to be an index such that A[i] = i.
-# 9_4 Write a program to generate all subsets of an array; nCk: a k-combination of a set S is a subset of k distinct elements of S.
-# 9_5 Write a program to generate all permutations of an array; nPk: a k-permutation of a set S is an ordered sequence of k distinct elements of S.
-# 9_6 Write a program to print all valid (e.g. properly opened and closed) combinations of n-pairs of parenthesis, e.g., input: 6, output: ((())), (()()), (())(), ()(()), ()()()
-# 9_7 Write a program to flood-fill in the surrounding area until the color changes from the original color.
-# 9_8 Write a program to find the number of ways to represent n cents given an infinite number of quarters (25 cents), dimes (10 cents), nickels (5 cents), and pennies (1 cents).
-# 9_9 Write a program to return all ways of arranging eight queens on an 8x8 chess board so that none of them share the same row, column, or diagonal. In this case, "diagonal" means all diagonals, not just the two that bisect the board.
-# 9_10 Write a program to compute the tallest possible stack where the the height of a stack is the same of the heights of each box.
-# 9_11 Write a program to count the number of ways to parenthesize a boolean equation, e.g., INPUT: 1^0|0|1, the desired result: 0 (false). OUTPUT: 1^((0|0)|1) and 1^(0|(0|1)).
+=begin
+9.1 Given a staircase with n steps, write a program to count the number of possible ways to climb it, when one can hop either 1, 2, or 3 steps at a time.
+9.2 Given NxM grid, Write a program to route a robot from (0, 0) to (N, M). How many possible ways are there, when the robot can move in two directions: right, and down. What if there are some spots of off-limits?
+9.3 Given an array of sorted integers, write a method to find a magic index where A[i] = i. What if integers are not distinct?
+9.4 Write a method to generate all subsets of a set.
+9.5 Write a method to generate all permutations of a string.
+9.6 Write a program to generate all possible, valid combinations of n-pairs of parenthesis, e.g., INPUT: 3, OUTPUT: ((())), (()()), (())(), ()(()), ()()().
+9.7 Write a flood-fill method to fill in a new color until the color changes from the original color; given a point and a new color.
+9.8 Given infinite # of coins (25, 10, 5, and 1 cents), write a method to count the number of ways to represent n cents.
+9.9 Given an NxN chessboard, write a program to place eight queens so that none of them share the same row, column, or diagonal.
+9.10 Given n boxes that cannot be rotated, but can only be stacked up, write a method to find the tallest possible stack, where the height of a stack is the sum of height of each box.
+9.11 Given a boolean equation, write a program to count the number of ways to parenthesize the expression such that equation is true, e.g., INPUT: Expression: 1^0|0|1, Desired Result: false(0), OUTPUT: 2 ways: 1^((0|0)|1) and 1^(0|(0|1)).
+=end
 
-  def test_9_11_parenthesize_boolean_equation
-    express = lambda do |equation|
-      expression, bit = equation
-      n = expression.length / 2
-      case
-      when n < 2 then
-        bit == eval(expression) ? 1 : 0
-      else
-        (0...n).map do |p|
-          opr, opd1, opd2 = expression[2*p+1, 1], expression[0..2*p], expression[2*p+2..-1]
-          opd1_1, opd1_0 = [[opd1, 1], [opd1, 0]].map { |e, b| express.call([e, b]) }
-          opd2_1, opd2_0 = [[opd2, 1], [opd2, 0]].map { |e, b| express.call([e, b]) }
-          case opr
-          when '|'
-            bit == 1 ? (opd1_1 * opd2_1 + opd1_1 * opd2_0 + opd1_0 * opd2_1) : (opd1_0 * opd2_0)
-          when '&'
-            bit == 1 ? (opd1_1 * opd2_1) : (opd1_1 * opd2_0 + opd1_0 * opd2_1 + opd1_0 * opd2_0)
-          when '^'
-            bit == 1 ? (opd1_1 * opd2_0 + opd1_0 * opd2_1) : (opd1_1 * opd2_1 + opd1_0 * opd2_0)
-          end
-        end.reduce(:+)
-      end
-    end
-
-    equation = ["1^0|0|1", 0]
-    expressions = express.call(equation)
-    assert_equal [], expressions
-
-#    def test_make_equation
-#      # Given N numbers, 1 _ 2 _ 3 _ 4 _ 5 = 10,
-#      # Find how many ways to fill blanks with + or - to make valid equation.
-#    end
-  end
-
-  def test_9_10_tallest_possible_stack_of_boxes
-    
-  end
-
-  def test_9_9_saurab_peaceful_queens
-    # http://www.youtube.com/watch?v=p4_QnaTIxkQ
-    queens_in_peace = lambda do |n|
-      answers = []
-      peaceful_at = lambda do |queens, c| # queens contains column indices in rows.
-        queens.each_with_index.all? { |e, i| e!=c && queens.size-i != (c-e).abs }
-      end
-      expand_out = lambda do |queens|
-        (0...n).select { |c| peaceful_at.call(queens, c) }
-      end
-      reduce_off = lambda do |queens|
-        answers << queens.dup if queens.size == n
-      end
-      Search.backtrack([], expand_out, reduce_off)
-      answers
-    end
-    queens_in_boards = queens_in_peace.call(4)
-    assert_equal [[1, 3, 0, 2], [2, 0, 3, 1]], queens_in_boards
-  end
-
-  def test_9_8_make_change
-    minimal_coins = lambda do |k, denominations, memos|
-      memos[k] ||= denominations.
-        select { |d| d <= k }.
-        map { |d| [d] + minimal_coins.call(k-d, denominations, memos) }.
-        min_by { |coins| coins.size }
-    end
-
-    # 8-24. Given a set of coin denominators, find the minimum number of coins to make a certain amount of change.
-    assert_equal [], minimal_coins.call(0, [1, 5, 7], {0 => []})
-    assert_equal [5, 5], minimal_coins.call(10, [1, 5, 7], {0 => []})
-    assert_equal [1, 5, 7], minimal_coins.call(13, [1, 5, 7], {0 => []})
-    assert_equal [7, 7], minimal_coins.call(14, [1, 5, 7], {0 => []})
-  end
-
-  def test_9_1_staircase
+  def test_9_1_climb_staircase
     climb = lambda do |n, memos| # n staircases.
       memos[n] ||= case
       when n == 1 then 1
@@ -2035,7 +1964,7 @@ class TestCases < Test::Unit::TestCase
     assert_equal 24, climb.call(6, [])
   end
 
-  def test_9_2_solve_maze
+  def test_9_2_route_a_robot
     maze = []
     maze[0] = [1, 1, 1, 1, 1, 0]
     maze[1] = [1, 0, 1, 0, 1, 0]
@@ -2294,6 +2223,95 @@ class TestCases < Test::Unit::TestCase
       [2, 1, 0, 1],
       [1, 1, 1, 1]
     ], flood_fill.call(m.map(&:dup), [2, 0], 0, 2)
+  end
+
+  def test_9_9_saurab_peaceful_queens
+    # http://www.youtube.com/watch?v=p4_QnaTIxkQ
+    queens_in_peace = lambda do |n|
+      answers = []
+      peaceful_at = lambda do |queens, c|
+        queens.each_with_index.all? { |e, i| e!=c && queens.size-i != (c-e).abs }
+      end
+      expand_out = lambda do |queens| # queens contains column indices in rows.
+        (0...n).select { |c| peaceful_at.call(queens, c) }
+      end
+      reduce_off = lambda do |queens|
+        answers << queens.dup if queens.size == n
+      end
+      Search.backtrack([], expand_out, reduce_off)
+      answers
+    end
+    queens_in_boards = queens_in_peace.call(4)
+    assert_equal [[1, 3, 0, 2], [2, 0, 3, 1]], queens_in_boards
+  end
+
+  def test_9_8_make_coin_change
+    memos = {}
+    make_amount = lambda do |k, denominations, memos|
+      d = denominations[0]
+      memos[d] ||= {}
+      memos[d][k] ||= if d == 1
+        1
+      else
+        (0..k/d).map do |m|
+          make_amount.call(k-m*d, denominations[1..-1], memos)
+        end.reduce(:+)
+      end
+    end
+    assert_equal 1, make_amount.call(4, [25, 10, 5, 1], memos)
+    assert_equal 2, make_amount.call(5, [25, 10, 5, 1], memos)
+    assert_equal 4, make_amount.call(10, [25, 10, 5, 1], memos)
+    assert_equal 13, make_amount.call(20, [25, 10, 5, 1], memos) # 13 ways to make 25 cents.
+
+    minimal_coins = lambda do |k, denominations, memos|
+      memos[k] ||= denominations.
+        select { |d| d <= k }.
+        map { |d| [d] + minimal_coins.call(k-d, denominations, memos) }.
+        min_by { |coins| coins.size }
+    end
+
+    # 8-24. Given a set of coin denominators, find the minimum number of coins to make a certain amount of change.
+    assert_equal [], minimal_coins.call(0, [1, 5, 7], {0 => []})
+    assert_equal [5, 5], minimal_coins.call(10, [1, 5, 7], {0 => []})
+    assert_equal [1, 5, 7], minimal_coins.call(13, [1, 5, 7], {0 => []})
+    assert_equal [7, 7], minimal_coins.call(14, [1, 5, 7], {0 => []})
+  end
+
+  def test_9_10_tallest_possible_stack_of_boxes
+  end
+
+  def test_9_11_parenthesize_boolean_expression
+    express = lambda do |equation|
+      expression, bit = equation
+      n = expression.length / 2
+      case
+      when n < 2 then
+        bit == eval(expression) ? 1 : 0
+      else
+        (0...n).map do |p|
+          opr, opd1, opd2 = expression[2*p+1, 1], expression[0..2*p], expression[2*p+2..-1]
+          opd1_1, opd1_0 = [[opd1, 1], [opd1, 0]].map { |e, b| express.call([e, b]) }
+          opd2_1, opd2_0 = [[opd2, 1], [opd2, 0]].map { |e, b| express.call([e, b]) }
+          case opr
+          when '|'
+            bit == 1 ? (opd1_1 * opd2_1 + opd1_1 * opd2_0 + opd1_0 * opd2_1) : (opd1_0 * opd2_0)
+          when '&'
+            bit == 1 ? (opd1_1 * opd2_1) : (opd1_1 * opd2_0 + opd1_0 * opd2_1 + opd1_0 * opd2_0)
+          when '^'
+            bit == 1 ? (opd1_1 * opd2_0 + opd1_0 * opd2_1) : (opd1_1 * opd2_1 + opd1_0 * opd2_0)
+          end
+        end.reduce(:+)
+      end
+    end
+  
+    equation = ["1^0|0|1", 0]
+    expressions = express.call(equation)
+    assert_equal [], expressions
+  
+  #    def test_make_equation
+  #      # Given N numbers, 1 _ 2 _ 3 _ 4 _ 5 = 10,
+  #      # Find how many ways to fill blanks with + or - to make valid equation.
+  #    end
   end
 
   def test_17_3_trailing_zeros
