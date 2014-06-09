@@ -2245,7 +2245,7 @@ class TestCases < Test::Unit::TestCase
     assert_equal [[1, 3, 0, 2], [2, 0, 3, 1]], queens_in_boards
   end
 
-  def test_9_8_make_coin_change
+  def test_9_8_make_amount_n_coin_change
     memos = {}
     make_amount = lambda do |k, denominations, memos|
       d = denominations[0]
@@ -2260,21 +2260,21 @@ class TestCases < Test::Unit::TestCase
     end
     assert_equal 1, make_amount.call(4, [25, 10, 5, 1], memos)
     assert_equal 2, make_amount.call(5, [25, 10, 5, 1], memos)
-    assert_equal 4, make_amount.call(10, [25, 10, 5, 1], memos)
+    assert_equal 4, make_amount.call(10, [25, 10, 5, 1], memos) # 4 ways to make 10 cents
     assert_equal 13, make_amount.call(20, [25, 10, 5, 1], memos) # 13 ways to make 25 cents.
 
-    minimal_coins = lambda do |k, denominations, memos|
+    make_change = lambda do |k, denominations, memos|
       memos[k] ||= denominations.
         select { |d| d <= k }.
-        map { |d| [d] + minimal_coins.call(k-d, denominations, memos) }.
+        map { |d| [d] + make_change.call(k-d, denominations, memos) }.
         min_by { |coins| coins.size }
     end
 
     # 8-24. Given a set of coin denominators, find the minimum number of coins to make a certain amount of change.
-    assert_equal [], minimal_coins.call(0, [1, 5, 7], {0 => []})
-    assert_equal [5, 5], minimal_coins.call(10, [1, 5, 7], {0 => []})
-    assert_equal [1, 5, 7], minimal_coins.call(13, [1, 5, 7], {0 => []})
-    assert_equal [7, 7], minimal_coins.call(14, [1, 5, 7], {0 => []})
+    assert_equal [], make_change.call(0, [1, 5, 7], {0 => []})
+    assert_equal [5, 5], make_change.call(10, [1, 5, 7], {0 => []})
+    assert_equal [1, 5, 7], make_change.call(13, [1, 5, 7], {0 => []})
+    assert_equal [7, 7], make_change.call(14, [1, 5, 7], {0 => []})
   end
 
   def test_9_10_tallest_possible_stack_of_boxes
