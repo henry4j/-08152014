@@ -2019,15 +2019,14 @@ class TestCases < Test::Unit::TestCase
       when n == 1 then 1
       when n == 2 then 2
       when n == 3 then 4
-      else
-        [n-1, n-2, n-3].map { |e| climb.call(e, memos) }.reduce(:+)
+      else [n-1, n-2, n-3].map { |e| climb.call(e, memos) }.reduce(:+)
       end
     end
     assert_equal 13, climb.call(5, [])
     assert_equal 24, climb.call(6, [])
   end
 
-  def test_9_2_maze
+  def test_9_2_solve_maze
     maze = []
     maze[0] = [1, 1, 1, 1, 1, 0]
     maze[1] = [1, 0, 1, 0, 1, 0]
@@ -2058,10 +2057,11 @@ class TestCases < Test::Unit::TestCase
 
     Search.backtrack([[0, 0]], expand_out, reduce_off)
     assert_equal 1, answers.size
-    assert_equal [5, 5], answers.last.last
+    assert_equal [5, 5], answers[0].last
   end
 
   def test_9_3_magic_index
+    
   end
 
   def test_9_4_all_subsets
