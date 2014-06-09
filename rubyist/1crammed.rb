@@ -2007,7 +2007,7 @@ class TestCases < Test::Unit::TestCase
     assert_equal [[1, 3, 0, 2], [2, 0, 3, 1]], queens_in_boards
   end
 
-  def test_manual_9_8_make_change
+  def test_9_8_make_change
     minimal_coins = lambda do |k, denominations, memos|
       memos[k] ||= denominations.
         select { |d| d <= k }.
