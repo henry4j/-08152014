@@ -1253,13 +1253,6 @@ module DP # http://basicalgos.blogspot.com/search/label/dynamic%20programming
     map.call(0, s.size-1)
   end
 
-  def self.minimal_coins(k, denominations, memos = {0 => []})
-    memos[k] ||= denominations.
-      select { |d| d <= k }.
-      map { |d| [d] + minimal_coins(k-d, denominations, memos) }.
-      min_by { |coins| coins.size }
-  end
-
   def self.knapsack_unbounded(skus, capacity)
     memos = [] # maximum values by k capacity.
     map = lambda do |w|
@@ -2011,6 +2004,21 @@ class TestCases < Test::Unit::TestCase
       answers
     end
     assert_equal [[1, 3, 0, 2], [2, 0, 3, 1]], queens_in_peace.call(4)
+  end
+
+  def test_manual_9_8_make_change
+    minimal_coins = lambda do |k, denominations, memos|
+      memos[k] ||= denominations.
+        select { |d| d <= k }.
+        map { |d| [d] + minimal_coins.call(k-d, denominations, memos) }.
+        min_by { |coins| coins.size }
+    end
+
+    # 8-24. Given a set of coin denominators, find the minimum number of coins to make a certain amount of change.
+    assert_equal [], minimal_coins.call(0, [1, 5, 7], {0 => []})
+    assert_equal [5, 5], minimal_coins.call(10, [1, 5, 7], {0 => []})
+    assert_equal [1, 5, 7], minimal_coins.call(13, [1, 5, 7], {0 => []})
+    assert_equal [7, 7], minimal_coins.call(14, [1, 5, 7], {0 => []})
   end
 
   def test_9_1_staircase
@@ -4036,15 +4044,7 @@ HERE
   # 7-19. Use a random number generator (rng04) that generates numbers from {0, 1, 2, 3, 4} with equal probability 
   #       to write a random number generator that generates numbers from 0 to 7 (rng07) with equal probability.
   #       What are expected number of calls to rng04 per call of rng07?
-  
-  # 8-24. Given a set of coin denominators, find the minimum number of coins to make a certain amount of change.
-  def test_manual_8_24_make_change
-    assert_equal [], DP.minimal_coins(0, [1, 5, 7])
-    assert_equal [5, 5], DP.minimal_coins(10, [1, 5, 7])
-    assert_equal [1, 5, 7], DP.minimal_coins(13, [1, 5, 7])
-    assert_equal [7, 7], DP.minimal_coins(14, [1, 5, 7])
-  end
-  
+
   # 8-25. You are given an array of n numbers, each of which may be positive, negative,
   #       or zero. Give an efficient algorithm to identify the index positions i and j to the
   #       maximum sum of the ith through jth numbers.
