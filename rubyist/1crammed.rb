@@ -1992,7 +1992,7 @@ class TestCases < Test::Unit::TestCase
     queens_in_peace = lambda do |n|
       answers = []
       peaceful_at = lambda do |queens, c|
-        queens.each_with_index { |e, i| e != c && queens.size-i != (c-e).abs }
+        queens.each_with_index.all? { |e, i| e!=c && queens.size-i != (c-e).abs }
       end
       expand_out = lambda do |queens|
         (0...n).select { |c| peaceful_at.call(queens, c) }
@@ -2003,7 +2003,8 @@ class TestCases < Test::Unit::TestCase
       Search.backtrack([], expand_out, reduce_off)
       answers
     end
-    assert_equal [[1, 3, 0, 2], [2, 0, 3, 1]], queens_in_peace.call(4)
+    queens_in_boards = queens_in_peace.call(4)
+    assert_equal [[1, 3, 0, 2], [2, 0, 3, 1]], queens_in_boards
   end
 
   def test_manual_9_8_make_change
