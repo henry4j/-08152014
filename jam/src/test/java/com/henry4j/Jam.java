@@ -5,22 +5,17 @@ import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
 import java.util.function.Function;
-import java.util.function.BiFunction;
-import java.util.function.IntFunction;
-import java.util.function.Consumer;
-import java.util.function.BiConsumer;
 import java.util.function.IntConsumer;
+import java.util.function.IntPredicate;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Predicate;
-import java.util.function.BiPredicate;
-import java.util.function.IntPredicate;
-import java.util.function.Supplier;
-import java.util.function.IntSupplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lombok.AllArgsConstructor;
@@ -55,6 +50,12 @@ public class Jam {
         int[] even = Arrays.stream(ints).filter(i -> i % 2 == 0).toArray();
         System.out.println(Joiner.on(", ").join(Ints.asList(even)));
         Function<Double, Double> f = (Double d) -> d * d;
+
+        Function<String, String> sortChars = s -> s.chars().sorted().collect(StringBuilder::new, StringBuilder::appendCodePoint, null).toString();
+        Comparator<String> compareByLength = (Comparator<String>)((a, b) -> a.length() - b.length());
+        Comparator<String> compareByAnagram = compareByLength.thenComparing((a, b) -> sortChars.apply(a).compareTo(sortChars.apply(b)));
+        List<String> anagrams = null;
+        anagrams = anagrams.stream().sorted().collect(Collectors.toList());
     }
 
     @Test
