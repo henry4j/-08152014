@@ -1991,7 +1991,7 @@ class TestCases < Test::Unit::TestCase
     # http://www.youtube.com/watch?v=p4_QnaTIxkQ
     queens_in_peace = lambda do |n|
       answers = []
-      peaceful_at = lambda do |queens, c|
+      peaceful_at = lambda do |queens, c| # queens contains column indices in rows.
         queens.each_with_index.all? { |e, i| e!=c && queens.size-i != (c-e).abs }
       end
       expand_out = lambda do |queens|
