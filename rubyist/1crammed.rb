@@ -1676,29 +1676,6 @@ module Arrays
     end
   end
 
-  def self.index_out_of_cycle(ary, key, left = 0, right = ary.size-1)
-    while left <= right
-      pivot = (left + right) / 2
-      if key == ary[pivot]
-        return pivot
-      else
-        if ary[left] <= ary[pivot]
-          if ary[pivot] < key || key < ary[left]
-            left = pivot + 1
-          else
-            right = pivot - 1
-          end
-        else
-          if key < ary[pivot] || key > ary[left]
-            right = pivot - 1
-          else
-            left = pivot + 1
-          end
-        end
-      end
-    end
-  end
-
   def self.find_occurences(ary, key)
     first_index = first_index(ary, key)
     if first_index
@@ -1961,11 +1938,34 @@ class TestCases < Test::Unit::TestCase
 
 =end
 
-  def test_9_3_min_n_index_out_of_cycle
-    assert_equal 10, Arrays.index_out_of_cycle([10, 14, 15, 16, 19, 20, 25, 1, 3, 4, 5, 7], 5)
-    assert_equal 7, Arrays.index_out_of_cycle([16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14, 15], 5)
-    assert_equal 0, Arrays.index_out_of_cycle([5, 7, 10, 14, 15, 16, 19, 20, 25, 1, 3, 4], 5)
-    assert_equal 5, Arrays.index_out_of_cycle([20, 25, 1, 3, 4, 5, 7, 10, 14, 15, 16, 19], 5)
+  def test_11_2_min_n_index_out_of_cycle
+    index_out_of_cycle = lambda do |ary, key, left, right|
+      while left <= right
+        pivot = (left + right) / 2
+        if key == ary[pivot]
+          return pivot
+        else
+          if ary[left] <= ary[pivot]
+            if ary[pivot] < key || key < ary[left]
+              left = pivot + 1
+            else
+              right = pivot - 1
+            end
+          else
+            if ary[pivot] > key || key > ary[left]
+              right = pivot - 1
+            else
+              left = pivot + 1
+            end
+          end
+        end
+      end
+    end
+
+    assert_equal 10, index_out_of_cycle.call([10, 14, 15, 16, 19, 20, 25, 1, 3, 4, 5, 7], 5, 0, 11)
+    assert_equal 7, index_out_of_cycle.call([16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14, 15], 5, 0, 11)
+    assert_equal 0, index_out_of_cycle.call([5, 7, 10, 14, 15, 16, 19, 20, 25, 1, 3, 4], 5, 0, 11)
+    assert_equal 5, index_out_of_cycle.call([20, 25, 1, 3, 4, 5, 7, 10, 14, 15, 16, 19], 5, 0, 11)
 
     assert_equal 6, Arrays.min_out_of_cycle([6])
     assert_equal 6, Arrays.min_out_of_cycle([6, 7])
@@ -2310,7 +2310,7 @@ class TestCases < Test::Unit::TestCase
     assert_equal 1, make_amount.call(4, [25, 10, 5, 1], memos)
     assert_equal 2, make_amount.call(5, [25, 10, 5, 1], memos)
     assert_equal 4, make_amount.call(10, [25, 10, 5, 1], memos) # 4 ways to make 10 cents
-    assert_equal 13, make_amount.call(20, [25, 10, 5, 1], memos) # 13 ways to make 25 cents.
+    assert_equal 9, make_amount.call(20, [25, 10, 5, 1], memos) # 13 ways to make 25 cents.
 
     make_change = lambda do |k, denominations, memos|
       memos[k] ||= denominations.
@@ -2355,7 +2355,7 @@ class TestCases < Test::Unit::TestCase
   
     equation = ["1^0|0|1", 0]
     expressions = express.call(equation)
-    assert_equal [], expressions
+    assert_equal 2, expressions
   
   #    def test_make_equation
   #      # Given N numbers, 1 _ 2 _ 3 _ 4 _ 5 = 10,
