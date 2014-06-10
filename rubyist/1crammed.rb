@@ -1968,7 +1968,7 @@ class TestCases < Test::Unit::TestCase
     assert_equal nil, find_occurences.call([1, 3, 3, 5, 5, 5, 7, 7, 9], 10)
   end
 
-  def test_11_6_indexes_out_of_matrix
+  def test_11_6_indices_out_of_matrix
     m = [
       [11, 23, 35, 47],
       [22, 34, 38, 58],
@@ -1976,7 +1976,7 @@ class TestCases < Test::Unit::TestCase
       [44, 45, 61, 69]
     ]
 
-    indexes_out_of_matrix = lambda do |g, x|
+    indices_out_of_matrix = lambda do |g, x|
       row = 0
       col = g[0].size - 1
       while row < g.size && col >= 0
@@ -1990,12 +1990,12 @@ class TestCases < Test::Unit::TestCase
       [-1, -1]
     end
 
-    assert_equal [0, 3], indexes_out_of_matrix.call(m, 47)
-    assert_equal [3, 3], indexes_out_of_matrix.call(m, 69)
-    assert_equal [0, 0], indexes_out_of_matrix.call(m, 11)
-    assert_equal [3, 0], indexes_out_of_matrix.call(m, 44)
-    assert_equal [2, 1], indexes_out_of_matrix.call(m, 39)
-    assert_equal [3, 2], indexes_out_of_matrix.call(m, 61)
+    assert_equal [0, 3], indices_out_of_matrix.call(m, 47)
+    assert_equal [3, 3], indices_out_of_matrix.call(m, 69)
+    assert_equal [0, 0], indices_out_of_matrix.call(m, 11)
+    assert_equal [3, 0], indices_out_of_matrix.call(m, 44)
+    assert_equal [2, 1], indices_out_of_matrix.call(m, 39)
+    assert_equal [3, 2], indices_out_of_matrix.call(m, 61)
   end
 
   def test_9_1_climb_staircase
