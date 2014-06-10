@@ -1949,8 +1949,57 @@ class TestCases < Test::Unit::TestCase
 9.9 Given an NxN chessboard, write a program to place eight queens so that none of them share the same row, column, or diagonal.
 9.10 Given n boxes that cannot be rotated, but can only be stacked up, write a method to find the tallest possible stack, where the height of a stack is the sum of height of each box.
 9.11 Given a boolean equation, write a program to count the number of ways to parenthesize the expression such that equation is true, e.g., INPUT: Expression: 1^0|0|1, Desired Result: false(0), OUTPUT: 2 ways: 1^((0|0)|1) and 1^(0|(0|1)).
+
+11.1 Given two sorted arrays, A and B, where A has a large enough buffer at the end to hold B, write a method to merge B into A.
+11.2 Write a method to sort an array of string such that all anagrams are next to each other.
+11.3 Given an array of sorted integers that has been rotated a number of times, write code to find an element in the array.
+11.4 Given a 20 GB file with a string per line, how would you sort the file.
+11.5 Given an array of sort strings, which is interspersed with empty strings, write a method to find the location of a given string, e.g., find 'ball' in ['at', '', 'ball', '', '', 'car', '', 'dad', '', ''}.
+11.6 Given an NxM matrix in which each row and each column is sorted in ascending order, write a method to find an element.
+11.7 Write a program to design a circus of the largest tower of people standing atop one another's shoulders. For practical and aesthetic reasons, each person must be both shorter and lighter than the person below him or her.
+11.8 Design and implement a data structure and an algorithm that can track a stream of numbers, and tell the rank of a value x (the number of values less than or equal to x).
+
 =end
 
+  def test_9_3_min_n_index_out_of_cycle
+    assert_equal 10, Arrays.index_out_of_cycle([10, 14, 15, 16, 19, 20, 25, 1, 3, 4, 5, 7], 5)
+    assert_equal 7, Arrays.index_out_of_cycle([16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14, 15], 5)
+    assert_equal 0, Arrays.index_out_of_cycle([5, 7, 10, 14, 15, 16, 19, 20, 25, 1, 3, 4], 5)
+    assert_equal 5, Arrays.index_out_of_cycle([20, 25, 1, 3, 4, 5, 7, 10, 14, 15, 16, 19], 5)
+
+    assert_equal 6, Arrays.min_out_of_cycle([6])
+    assert_equal 6, Arrays.min_out_of_cycle([6, 7])
+    assert_equal 6, Arrays.min_out_of_cycle([7, 6])
+    assert_equal 6, Arrays.min_out_of_cycle([38, 40, 55, 89, 6, 13, 20, 23, 36])
+    assert_equal 6, Arrays.min_out_of_cycle([6, 13, 20, 23, 36, 38, 40, 55, 89])
+    assert_equal 6, Arrays.min_out_of_cycle([13, 20, 23, 36, 38, 40, 55, 89, 6])
+
+    assert_equal 5, Arrays.last_index([1, 3, 3, 5, 5, 5, 7, 7, 9], 5)
+    assert_equal 3, Arrays.first_index([1, 3, 3, 5, 5, 5, 7, 7, 9], 5)
+    assert_equal 1..2, Arrays.find_occurences([1, 3, 3, 5, 5, 5, 7, 7, 9], 3)
+    assert_equal 6..7, Arrays.find_occurences([1, 3, 3, 5, 5, 5, 7, 7, 9], 7)
+    assert_equal 0..0, Arrays.find_occurences([1, 3, 3, 5, 5, 5, 7, 7, 9], 1)
+    assert_equal nil, Arrays.find_occurences([1, 3, 3, 5, 5, 5, 7, 7, 9], 0)
+    assert_equal nil, Arrays.find_occurences([1, 3, 3, 5, 5, 5, 7, 7, 9], 10)
+  end
+
+  def test_9_6_indexes_out_of_matrix
+    m = [
+      [11, 23, 35, 47],
+      [22, 34, 38, 58],
+      [33, 39, 57, 62],
+      [44, 45, 61, 69]
+    ]
+
+    assert_equal [0, 3], Arrays.indexes_out_of_matrix(m, 47)
+    assert_equal [3, 3], Arrays.indexes_out_of_matrix(m, 69)
+    assert_equal [0, 0], Arrays.indexes_out_of_matrix(m, 11)
+    assert_equal [3, 0], Arrays.indexes_out_of_matrix(m, 44)
+    assert_equal [2, 1], Arrays.indexes_out_of_matrix(m, 39)
+    assert_equal [3, 2], Arrays.indexes_out_of_matrix(m, 61)
+  end
+
+  
   def test_9_1_climb_staircase
     climb = lambda do |n, memos| # n staircases.
       memos[n] ||= case
@@ -3697,44 +3746,6 @@ HERE
 #  def test_7_7_kth_integer_of_prime_factors_3_5_n_7
 #    assert_equal 45, Math.integer_of_prime_factors(10)
 #  end
-
-  def test_9_3_min_n_index_out_of_cycle
-    assert_equal 10, Arrays.index_out_of_cycle([10, 14, 15, 16, 19, 20, 25, 1, 3, 4, 5, 7], 5)
-    assert_equal 7, Arrays.index_out_of_cycle([16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14, 15], 5)
-    assert_equal 0, Arrays.index_out_of_cycle([5, 7, 10, 14, 15, 16, 19, 20, 25, 1, 3, 4], 5)
-    assert_equal 5, Arrays.index_out_of_cycle([20, 25, 1, 3, 4, 5, 7, 10, 14, 15, 16, 19], 5)
-
-    assert_equal 6, Arrays.min_out_of_cycle([6])
-    assert_equal 6, Arrays.min_out_of_cycle([6, 7])
-    assert_equal 6, Arrays.min_out_of_cycle([7, 6])
-    assert_equal 6, Arrays.min_out_of_cycle([38, 40, 55, 89, 6, 13, 20, 23, 36])
-    assert_equal 6, Arrays.min_out_of_cycle([6, 13, 20, 23, 36, 38, 40, 55, 89])
-    assert_equal 6, Arrays.min_out_of_cycle([13, 20, 23, 36, 38, 40, 55, 89, 6])
-
-    assert_equal 5, Arrays.last_index([1, 3, 3, 5, 5, 5, 7, 7, 9], 5)
-    assert_equal 3, Arrays.first_index([1, 3, 3, 5, 5, 5, 7, 7, 9], 5)
-    assert_equal 1..2, Arrays.find_occurences([1, 3, 3, 5, 5, 5, 7, 7, 9], 3)
-    assert_equal 6..7, Arrays.find_occurences([1, 3, 3, 5, 5, 5, 7, 7, 9], 7)
-    assert_equal 0..0, Arrays.find_occurences([1, 3, 3, 5, 5, 5, 7, 7, 9], 1)
-    assert_equal nil, Arrays.find_occurences([1, 3, 3, 5, 5, 5, 7, 7, 9], 0)
-    assert_equal nil, Arrays.find_occurences([1, 3, 3, 5, 5, 5, 7, 7, 9], 10)
-  end
-
-  def test_9_6_indexes_out_of_matrix
-    m = [
-      [11, 23, 35, 47],
-      [22, 34, 38, 58],
-      [33, 39, 57, 62],
-      [44, 45, 61, 69]
-    ]
-
-    assert_equal [0, 3], Arrays.indexes_out_of_matrix(m, 47)
-    assert_equal [3, 3], Arrays.indexes_out_of_matrix(m, 69)
-    assert_equal [0, 0], Arrays.indexes_out_of_matrix(m, 11)
-    assert_equal [3, 0], Arrays.indexes_out_of_matrix(m, 44)
-    assert_equal [2, 1], Arrays.indexes_out_of_matrix(m, 39)
-    assert_equal [3, 2], Arrays.indexes_out_of_matrix(m, 61)
-  end
 
 #  def test_10_4_arithmetic_operations
 #    # 10-4. Write a method to implement *, - , / operations. You should use only the + operator.
