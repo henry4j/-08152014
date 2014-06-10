@@ -1662,20 +1662,6 @@ module Arrays
     a
   end
 
-  def self.min_out_of_cycle(ary, left = 0, right = ary.size - 1)
-    # also called the smallest from a rotated list of sorted numbers.
-    if right == left
-      ary[left]
-    else
-      pivot = (left + right)/2
-      if ary[right] < ary[pivot]
-        min_out_of_cycle(ary, pivot + 1, right)
-      else
-        min_out_of_cycle(ary, left, pivot)
-      end
-    end
-  end
-
   def self.find_occurences(ary, key)
     first_index = first_index(ary, key)
     if first_index
@@ -1935,7 +1921,6 @@ class TestCases < Test::Unit::TestCase
 11.6 Given an NxM matrix in which each row and each column is sorted in ascending order, write a method to find an element.
 11.7 Write a program to design a circus of the largest tower of people standing atop one another's shoulders. For practical and aesthetic reasons, each person must be both shorter and lighter than the person below him or her.
 11.8 Design and implement a data structure and an algorithm that can track a stream of numbers, and tell the rank of a value x (the number of values less than or equal to x).
-
 =end
 
   def test_11_2_min_n_index_out_of_cycle
@@ -1967,12 +1952,26 @@ class TestCases < Test::Unit::TestCase
     assert_equal 0, index_out_of_cycle.call([5, 7, 10, 14, 15, 16, 19, 20, 25, 1, 3, 4], 5, 0, 11)
     assert_equal 5, index_out_of_cycle.call([20, 25, 1, 3, 4, 5, 7, 10, 14, 15, 16, 19], 5, 0, 11)
 
-    assert_equal 6, Arrays.min_out_of_cycle([6])
-    assert_equal 6, Arrays.min_out_of_cycle([6, 7])
-    assert_equal 6, Arrays.min_out_of_cycle([7, 6])
-    assert_equal 6, Arrays.min_out_of_cycle([38, 40, 55, 89, 6, 13, 20, 23, 36])
-    assert_equal 6, Arrays.min_out_of_cycle([6, 13, 20, 23, 36, 38, 40, 55, 89])
-    assert_equal 6, Arrays.min_out_of_cycle([13, 20, 23, 36, 38, 40, 55, 89, 6])
+    min_out_of_cycle = lambda do |ary, left, right|
+      # also called the smallest from a rotated list of sorted numbers.
+      if right == left
+        ary[left]
+      else
+        pivot = (left + right)/2
+        if ary[right] < ary[pivot]
+          min_out_of_cycle.call(ary, pivot + 1, right)
+        else
+          min_out_of_cycle.call(ary, left, pivot)
+        end
+      end
+    end
+
+    assert_equal 6, min_out_of_cycle.call([6], 0, 0)
+    assert_equal 6, min_out_of_cycle.call([6, 7], 0, 1)
+    assert_equal 6, min_out_of_cycle.call([7, 6], 0, 1)
+    assert_equal 6, min_out_of_cycle.call([38, 40, 55, 89, 6, 13, 20, 23, 36], 0, 8)
+    assert_equal 6, min_out_of_cycle.call([6, 13, 20, 23, 36, 38, 40, 55, 89], 0, 8)
+    assert_equal 6, min_out_of_cycle.call([13, 20, 23, 36, 38, 40, 55, 89, 6], 0, 8)
 
     assert_equal 5, Arrays.last_index([1, 3, 3, 5, 5, 5, 7, 7, 9], 5)
     assert_equal 3, Arrays.first_index([1, 3, 3, 5, 5, 5, 7, 7, 9], 5)
