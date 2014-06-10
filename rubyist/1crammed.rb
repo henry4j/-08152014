@@ -1662,21 +1662,6 @@ module Arrays
     a
   end
 
-  def self.indexes_out_of_matrix(m, x)
-    row = 0
-    col = m[0].size - 1
-    while row < m.size && col >= 0
-      return [row, col] if x == m[row][col]
-      if (m[row][col] > x)
-        col -= 1
-      else
-        row += 1
-      end
-    end
-
-    [-1, -1]
-  end
-
   def self.merge_sort!(ary = [], range = 0...ary.size, tmp = Array.new(ary.size))
     if range.max - range.min > 0
       pivot = (range.min + range.max) / 2
@@ -1991,12 +1976,26 @@ class TestCases < Test::Unit::TestCase
       [44, 45, 61, 69]
     ]
 
-    assert_equal [0, 3], Arrays.indexes_out_of_matrix(m, 47)
-    assert_equal [3, 3], Arrays.indexes_out_of_matrix(m, 69)
-    assert_equal [0, 0], Arrays.indexes_out_of_matrix(m, 11)
-    assert_equal [3, 0], Arrays.indexes_out_of_matrix(m, 44)
-    assert_equal [2, 1], Arrays.indexes_out_of_matrix(m, 39)
-    assert_equal [3, 2], Arrays.indexes_out_of_matrix(m, 61)
+    indexes_out_of_matrix = lambda do |m, x|
+      row = 0
+      col = m[0].size - 1
+      while row < m.size && col >= 0
+        return [row, col] if x == m[row][col]
+        if (m[row][col] > x)
+          col -= 1
+        else
+          row += 1
+        end
+      end
+      [-1, -1]
+    end
+
+    assert_equal [0, 3], indexes_out_of_matrix.call(m, 47)
+    assert_equal [3, 3], indexes_out_of_matrix.call(m, 69)
+    assert_equal [0, 0], indexes_out_of_matrix.call(m, 11)
+    assert_equal [3, 0], indexes_out_of_matrix.call(m, 44)
+    assert_equal [2, 1], indexes_out_of_matrix.call(m, 39)
+    assert_equal [3, 2], indexes_out_of_matrix.call(m, 61)
   end
 
   def test_9_1_climb_staircase
