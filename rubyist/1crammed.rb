@@ -1975,27 +1975,28 @@ class TestCases < Test::Unit::TestCase
       [33, 39, 57, 62],
       [44, 45, 61, 69]
     ]
-
-    indices_out_of_matrix = lambda do |g, x|
-      row = 0
-      col = g[0].size - 1
-      while row < g.size && col >= 0
-        return [row, col] if x == g[row][col]
-        if g[row][col] > x
-          col -= 1
+    indices_out_of_grid = lambda do |g, q, rows, cols|
+      if rows.count > 0 && cols.count > 0
+        r, c = [rows, cols].map { |e| e.minmax.reduce(:+) / 2 }
+        case 
+        when g[r][c] < q
+          indices_out_of_grid.call(g, q, r+1..rows.max, cols) ||
+          indices_out_of_grid.call(g, q, rows.min..r, c+1..cols.max)
+        when g[r][c] > q
+          indices_out_of_grid.call(g, q, rows.min..r-1, cols) ||
+          indices_out_of_grid.call(g, q, r..rows.max, cols.min..c-1)
         else
-          row += 1
+          [r, c]
         end
       end
-      [-1, -1]
     end
 
-    assert_equal [0, 3], indices_out_of_matrix.call(g, 47)
-    assert_equal [3, 3], indices_out_of_matrix.call(g, 69)
-    assert_equal [0, 0], indices_out_of_matrix.call(g, 11)
-    assert_equal [3, 0], indices_out_of_matrix.call(g, 44)
-    assert_equal [2, 1], indices_out_of_matrix.call(g, 39)
-    assert_equal [3, 2], indices_out_of_matrix.call(g, 61)
+    assert_equal [0, 3], indices_out_of_grid.call(g, 47, 0...g.size, 0...g[0].size)
+    assert_equal [3, 3], indices_out_of_grid.call(g, 69, 0...g.size, 0...g[0].size)
+    assert_equal [0, 0], indices_out_of_grid.call(g, 11, 0...g.size, 0...g[0].size)
+    assert_equal [3, 0], indices_out_of_grid.call(g, 44, 0...g.size, 0...g[0].size)
+    assert_equal [2, 1], indices_out_of_grid.call(g, 39, 0...g.size, 0...g[0].size)
+    assert_equal [3, 2], indices_out_of_grid.call(g, 61, 0...g.size, 0...g[0].size)
   end
 
   def test_9_1_climb_staircase
