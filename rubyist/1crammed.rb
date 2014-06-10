@@ -1976,12 +1976,12 @@ class TestCases < Test::Unit::TestCase
       [44, 45, 61, 69]
     ]
 
-    indexes_out_of_matrix = lambda do |m, x|
+    indexes_out_of_matrix = lambda do |g, x|
       row = 0
-      col = m[0].size - 1
-      while row < m.size && col >= 0
-        return [row, col] if x == m[row][col]
-        if (m[row][col] > x)
+      col = g[0].size - 1
+      while row < g.size && col >= 0
+        return [row, col] if x == g[row][col]
+        if g[row][col] > x
           col -= 1
         else
           row += 1
