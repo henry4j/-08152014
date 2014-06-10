@@ -1662,39 +1662,6 @@ module Arrays
     a
   end
 
-  def self.find_occurences(ary, key)
-    first_index = first_index(ary, key)
-    if first_index
-      first_index .. last_index(ary, key, first_index...ary.size)
-    end
-  end
-
-  def self.first_index(ary, key, range = 0...ary.size)
-    if range.count > 1
-      pivot = range.minmax.reduce(:+) / 2
-      case key <=> ary[pivot]
-      when -1 then first_index(ary, key, range.min..pivot-1)
-      when 1 then first_index(ary, key, pivot+1..range.max)
-      else first_index(ary, key, range.min..pivot) # up to pivot index
-      end
-    else
-      range.min if key == ary[range.min] # nil otherwise
-    end
-  end
-
-  def self.last_index(ary, key, range = 0...ary.size)
-    if range.count > 1
-      pivot = (1 + range.minmax.reduce(:+)) / 2
-      case key <=> ary[pivot]
-      when -1 then last_index(ary, key, range.min..pivot-1)
-      when 1 then last_index(ary, key, pivot+1..range.max)
-      else last_index(ary, key, pivot..range.max)
-      end
-    else
-      key == ary[range.min] ? range.min : nil
-    end
-  end
-
   def self.indexes_out_of_matrix(m, x)
     row = 0
     col = m[0].size - 1
@@ -1973,13 +1940,44 @@ class TestCases < Test::Unit::TestCase
     assert_equal 0, min_out_of_cycle.call([6, 13, 20, 23, 36, 38, 40, 55, 89], 0, 8)
     assert_equal 8, min_out_of_cycle.call([13, 20, 23, 36, 38, 40, 55, 89, 6], 0, 8)
 
-    assert_equal 5, Arrays.last_index([1, 3, 3, 5, 5, 5, 7, 7, 9], 5)
-    assert_equal 3, Arrays.first_index([1, 3, 3, 5, 5, 5, 7, 7, 9], 5)
-    assert_equal 1..2, Arrays.find_occurences([1, 3, 3, 5, 5, 5, 7, 7, 9], 3)
-    assert_equal 6..7, Arrays.find_occurences([1, 3, 3, 5, 5, 5, 7, 7, 9], 7)
-    assert_equal 0..0, Arrays.find_occurences([1, 3, 3, 5, 5, 5, 7, 7, 9], 1)
-    assert_equal nil, Arrays.find_occurences([1, 3, 3, 5, 5, 5, 7, 7, 9], 0)
-    assert_equal nil, Arrays.find_occurences([1, 3, 3, 5, 5, 5, 7, 7, 9], 10)
+    first_index = lambda do |ary, key, range|
+      if range.count > 1
+        pivot = range.minmax.reduce(:+) / 2
+        case key <=> ary[pivot]
+        when -1 then first_index.call(ary, key, range.min..pivot-1)
+        when 1 then first_index.call(ary, key, pivot+1..range.max)
+        else first_index.call(ary, key, range.min..pivot) # up to pivot index
+        end
+      else
+        range.min if key == ary[range.min] # nil otherwise
+      end
+    end
+
+    last_index = lambda do |ary, key, range|
+      if range.count > 1
+        pivot = (1 + range.minmax.reduce(:+)) / 2
+        case key <=> ary[pivot]
+        when -1 then last_index.call(ary, key, range.min..pivot-1)
+        when 1 then last_index.call(ary, key, pivot+1..range.max)
+        else last_index.call(ary, key, pivot..range.max)
+        end
+      else
+        key == ary[range.min] ? range.min : nil
+      end
+    end
+
+    find_occurences = lambda do |ary, key|
+      min_index = first_index.call(ary, key, 0...ary.size)
+      min_index..last_index.call(ary, key, min_index...ary.size) if min_index
+    end
+
+    assert_equal 3, first_index.call([1, 3, 3, 5, 5, 5, 7, 7, 9], 5, 0...9)
+    assert_equal 5, last_index.call([1, 3, 3, 5, 5, 5, 7, 7, 9], 5, 0...9)
+    assert_equal 1..2, find_occurences.call([1, 3, 3, 5, 5, 5, 7, 7, 9], 3)
+    assert_equal 6..7, find_occurences.call([1, 3, 3, 5, 5, 5, 7, 7, 9], 7)
+    assert_equal 0..0, find_occurences.call([1, 3, 3, 5, 5, 5, 7, 7, 9], 1)
+    assert_equal nil, find_occurences.call([1, 3, 3, 5, 5, 5, 7, 7, 9], 0)
+    assert_equal nil, find_occurences.call([1, 3, 3, 5, 5, 5, 7, 7, 9], 10)
   end
 
   def test_9_6_indexes_out_of_matrix
