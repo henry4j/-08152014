@@ -1980,7 +1980,7 @@ class TestCases < Test::Unit::TestCase
     assert_equal nil, find_occurences.call([1, 3, 3, 5, 5, 5, 7, 7, 9], 10)
   end
 
-  def test_9_6_indexes_out_of_matrix
+  def test_11_6_indexes_out_of_matrix
     m = [
       [11, 23, 35, 47],
       [22, 34, 38, 58],
@@ -1996,7 +1996,6 @@ class TestCases < Test::Unit::TestCase
     assert_equal [3, 2], Arrays.indexes_out_of_matrix(m, 61)
   end
 
-  
   def test_9_1_climb_staircase
     climb = lambda do |n, memos| # n staircases.
       memos[n] ||= case
