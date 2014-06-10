@@ -1890,7 +1890,10 @@ class TestCases < Test::Unit::TestCase
 11.8 Design and implement a data structure and an algorithm that can track a stream of numbers, and tell the rank of a value x (the number of values less than or equal to x).
 =end
 
-  def test_11_2_min_n_index_out_of_cycle
+  def test_11_2_sort_by_anagram
+  end
+
+  def test_11_3_min_n_index_out_of_cycle
     index_out_of_cycle = lambda do |ary, key, left, right|
       while left <= right
         pivot = (left + right) / 2
@@ -4031,13 +4034,13 @@ HERE
     assert Numbers.opposite_in_sign?(-10, 10)
     assert !Numbers.opposite_in_sign?(-2, -8)
   end
-  
+
   # 1-29. There are 25 horses. At most, 5 horses can race together at a time. You must determine the fastest, second fastest, and third fastest horses. Find the minimum number of races in which this can be done.
   
   # 2-43. You are given a set S of n numbers. You must pick a subset S' of k numbers from S such that the probability of each element of S occurring in S' is equal (i.e., each is selected with probability k / n). You may make only one pass over the numbers. What if n is unknown?
   # 2-47. You are given 10 bags of gold coins. Nine bags contain coins that each weigh 10 grams. One bag contains all false coins that weigh one gram less. You must identify this bag in just one weighing. You have a digital balance that reports the weight of what is placed on it.
   # 2-51. Six pirates must divide $300 dollars among themselves. The division is to proceed as follows. The senior pirate proposes a way to divide the money. Then the pirates vote. If the senior pirate gets at least half the votes he wins, and that division remains. If he doesn't, he is killed and then the next senior-most pirate gets a chance to do the division. Now you have to tell what will happen and why (i.e., how many pirates survive and how the division is done)? All the pirates are intelligent and the first priority is to stay alive and the next priority is to get as much money as possible.
-  
+
   # 3-21. Write a function to compare whether two binary trees are identical. Identical trees have the same key value at each position and the same structure.
   # 3-22. Write a program to convert a binary search tree into a linked list.
   # 3-28. You have an unordered array X of n integers. Find the array M containing n elements where Mi is the product of all integers in X except for Xi. You may not use division. You can use extra memory. (Hint: There are solutions faster than O(n2).)
@@ -4059,14 +4062,14 @@ HERE
 
   # 7-16. An anagram is a rearrangement of the letters in a given string into a sequence of dictionary words,
   #       like Steven Skiena into Vainest Knees. Propose an algorithm to construct all the anagrams of a given string.
-  
+
   # 7-17. Telephone keypads have letters on each numerical key. Write a program that generates all possible words 
   #       resulting from translating a given digit sequence (e.g., 145345) into letters.
-  
+
   # 7-18. You start with an empty room and a group of n people waiting outside. At each step, 
   #       you may either admit one person into the room, or let one out. Can you arrange a sequence of 2n steps,
   #       so that every possible combination of people is achieved exactly once?
-  
+
   # 7-19. Use a random number generator (rng04) that generates numbers from {0, 1, 2, 3, 4} with equal probability 
   #       to write a random number generator that generates numbers from 0 to 7 (rng07) with equal probability.
   #       What are expected number of calls to rng04 per call of rng07?
