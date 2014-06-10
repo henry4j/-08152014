@@ -2662,7 +2662,6 @@ class TestCases < Test::Unit::TestCase
     assert_equal ["the", "their", "them", "they", "they're"], trie.path("the").values.sort
     assert_equal "they", trie["they"]
 
-    require 'JSON'
     # longest common substring, or palindrome
     longest_common_substring = lambda do |ary| # of k strings
       suffix_tree = ary.each_index.reduce(Trie.new) do |trie, k| 
