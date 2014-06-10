@@ -1867,6 +1867,10 @@ class TestCases < Test::Unit::TestCase
 
 11.1 Given two sorted arrays, A and B, where A has a large enough buffer at the end to hold B, write a method to merge B into A.
 11.2 Write a method to sort an array of string such that all anagrams are next to each other.
+Function<String, String> anagram = s -> s.chars().sorted().collect(StringBuilder::new, StringBuilder::appendCodePoint, null).toString();
+Comparator<String> compareByLength = (Comparator<String>)((a, b) -> a.length() - b.length());
+Comparator<String> compareByAnagram = compareByLength.thenComparing((a, b) -> anagram.apply(a).compareTo(anagram.apply(b)))
+anagrams = anagrams.stream().sorted().collect(Collectors.toList());
 11.3 Given an array of sorted integers that has been rotated a number of times, write code to find an element in the array.
 11.4 Given a 20 GB file with a string per line, how would you sort the file.
 11.5 Given an array of sort strings, which is interspersed with empty strings, write a method to find the location of a given string, e.g., find 'ball' in ['at', '', 'ball', '', '', 'car', '', 'dad', '', ''}.
@@ -1874,9 +1878,6 @@ class TestCases < Test::Unit::TestCase
 11.7 Write a program to design a circus of the largest tower of people standing atop one another's shoulders. For practical and aesthetic reasons, each person must be both shorter and lighter than the person below him or her.
 11.8 Design and implement a data structure and an algorithm that can track a stream of numbers, and tell the rank of a value x (the number of values less than or equal to x).
 =end
-
-  def test_11_2_sort_by_anagram
-  end
 
   def test_11_3_min_n_index_out_of_cycle
     index_out_of_cycle = lambda do |ary, key, left, right|
