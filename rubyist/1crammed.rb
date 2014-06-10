@@ -1975,6 +1975,7 @@ class TestCases < Test::Unit::TestCase
       [33, 39, 57, 62],
       [44, 45, 61, 69]
     ]
+
     indices_out_of_grid = lambda do |g, q, rows, cols|
       if rows.count > 0 && cols.count > 0
         r, c = [rows, cols].map { |e| e.minmax.reduce(:+) / 2 }
