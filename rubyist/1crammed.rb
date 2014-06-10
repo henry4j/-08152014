@@ -1955,7 +1955,7 @@ class TestCases < Test::Unit::TestCase
     min_out_of_cycle = lambda do |ary, left, right|
       # also called the smallest from a rotated list of sorted numbers.
       if right == left
-        ary[left]
+        left
       else
         pivot = (left + right)/2
         if ary[right] < ary[pivot]
@@ -1966,12 +1966,12 @@ class TestCases < Test::Unit::TestCase
       end
     end
 
-    assert_equal 6, min_out_of_cycle.call([6], 0, 0)
-    assert_equal 6, min_out_of_cycle.call([6, 7], 0, 1)
-    assert_equal 6, min_out_of_cycle.call([7, 6], 0, 1)
-    assert_equal 6, min_out_of_cycle.call([38, 40, 55, 89, 6, 13, 20, 23, 36], 0, 8)
-    assert_equal 6, min_out_of_cycle.call([6, 13, 20, 23, 36, 38, 40, 55, 89], 0, 8)
-    assert_equal 6, min_out_of_cycle.call([13, 20, 23, 36, 38, 40, 55, 89, 6], 0, 8)
+    assert_equal 0, min_out_of_cycle.call([6], 0, 0)
+    assert_equal 0, min_out_of_cycle.call([6, 7], 0, 1)
+    assert_equal 1, min_out_of_cycle.call([7, 6], 0, 1)
+    assert_equal 4, min_out_of_cycle.call([38, 40, 55, 89, 6, 13, 20, 23, 36], 0, 8)
+    assert_equal 0, min_out_of_cycle.call([6, 13, 20, 23, 36, 38, 40, 55, 89], 0, 8)
+    assert_equal 8, min_out_of_cycle.call([13, 20, 23, 36, 38, 40, 55, 89, 6], 0, 8)
 
     assert_equal 5, Arrays.last_index([1, 3, 3, 5, 5, 5, 7, 7, 9], 5)
     assert_equal 3, Arrays.first_index([1, 3, 3, 5, 5, 5, 7, 7, 9], 5)
