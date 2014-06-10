@@ -3861,13 +3861,13 @@ HERE
     # sale = $1100; formula = formulas.floorEntry(sale);
     # fees = 0.5 /* insertion */ + formula.value().first() /* final base */ + formula.value().second() * (sale - formula.key()) /* final addition */
   end
-  
+
   def test_reverse_decimal
     assert_equal 321, Numbers.reverse_decimal(123)
     assert_equal 21, Numbers.reverse_decimal(120)
     assert_equal 1, Numbers.reverse_decimal(100)
   end
-  
+
   #  def test_circular_buffer
   #    buffer = CircularBuffer.new(3)
   #    assert buffer.empty? && !buffer.full?
@@ -3881,23 +3881,23 @@ HERE
   #    assert_raise(RuntimeError) { buffer.deq }
   #    assert buffer.empty?
   #  end
-  
+
   def test_non_repeated
     assert_equal 'abc', Strings.non_repeated('abc')
     assert_equal 'a', Strings.non_repeated('abcbcc')
   end
-  
+
   def test_transpose_matrix_in_1d_array
     assert_equal [0, 3, 6, 1, 4, 7, 2, 5, 8], Arrays.transpose_to_v1((0...9).to_a, 3) # square matrix
     assert_equal [0, 4, 1, 5, 2, 6, 3, 7], Arrays.transpose_to((0...8).to_a, 2)
     assert_equal [0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11], Arrays.transpose_to((0...12).to_a, 3)
     assert_equal [0, 3, 6, 9, 1, 4, 7, 10, 2, 5, 8, 11], Arrays.transpose_to((0...12).to_a, 4)
   end
-  
+
   def test_exclusive_products
     assert_equal [120, 60, 40, 30, 24], Arrays.exclusive_products([1, 2, 3, 4, 5])
   end
-  
+
   def test_partition
 #    assert_equal [[5]], Partitions.int_composition(5, 1)
 #    assert_equal [[1,4],[2,3],[3,2],[4,1]], Partitions.int_composition(5, 2)
@@ -3910,15 +3910,14 @@ HERE
 #    assert_equal [[2], [1, 1]], Partitions.int_partition(2)
 #    assert_equal [[3], [2, 1], [1, 1, 1]], Partitions.int_partition(3)
 #    assert_equal [[4], [3, 1], [2, 2], [2, 1, 1], [1, 1, 1, 1]], Partitions.int_partition(4)
-#  
-  
+
     # http://code.activestate.com/recipes/577211-generate-the-partitions-of-a-set-by-index/history/1/
     # http://oeis.org/wiki/User:Peter_Luschny/SetPartitions
     # http://en.wikipedia.org/wiki/Partition_(number_theory)
     # http://mathworld.wolfram.com/RestrictedGrowthString.html
     # http://oeis.org/wiki/User:Peter_Luschny
   end
-  
+
   def test_knapsack
     skus = [[2, 2], [1, 1], [10, 4], [2, 1],  [4, 12]]
     assert_equal [36, [2, 2, 2, 3, 3, 3]], DP.knapsack_unbounded(skus, 15) # max sum = 36
@@ -3964,7 +3963,7 @@ HERE
     # http://en.wikipedia.org/wiki/Merge_sort
     assert_equal [0, 2, 3, 5, 6, 8, 9], Arrays.merge_sort!([3, 6, 9, 2, 5, 8, 0])
   end
-  
+
   def test_bsearch
     a = [1, 1, 2, 3, 3, 3, 4, 4, 4, 4]
     assert_equal 5, a.bsearch_last_by { |e| 3 <=> e }
@@ -3980,7 +3979,7 @@ HERE
     assert_equal 0..1, a.bsearch_range_by { |e| 1 <=> e }
     assert_equal nil, a.bsearch_range_by { |e| 0 <=> e }
   end
-  
+
   def test_bracket_n_wildcard_match?
     assert !Strings.regex_match?('c', 'a')
     assert !Strings.regex_match?('aa', 'a')
@@ -4036,7 +4035,7 @@ HERE
   end
 
   # 1-29. There are 25 horses. At most, 5 horses can race together at a time. You must determine the fastest, second fastest, and third fastest horses. Find the minimum number of races in which this can be done.
-  
+
   # 2-43. You are given a set S of n numbers. You must pick a subset S' of k numbers from S such that the probability of each element of S occurring in S' is equal (i.e., each is selected with probability k / n). You may make only one pass over the numbers. What if n is unknown?
   # 2-47. You are given 10 bags of gold coins. Nine bags contain coins that each weigh 10 grams. One bag contains all false coins that weigh one gram less. You must identify this bag in just one weighing. You have a digital balance that reports the weight of what is placed on it.
   # 2-51. Six pirates must divide $300 dollars among themselves. The division is to proceed as follows. The senior pirate proposes a way to divide the money. Then the pirates vote. If the senior pirate gets at least half the votes he wins, and that division remains. If he doesn't, he is killed and then the next senior-most pirate gets a chance to do the division. Now you have to tell what will happen and why (i.e., how many pirates survive and how the division is done)? All the pirates are intelligent and the first priority is to stay alive and the next priority is to get as much money as possible.
@@ -4045,7 +4044,7 @@ HERE
   # 3-22. Write a program to convert a binary search tree into a linked list.
   # 3-28. You have an unordered array X of n integers. Find the array M containing n elements where Mi is the product of all integers in X except for Xi. You may not use division. You can use extra memory. (Hint: There are solutions faster than O(n2).)
   # 3-29. Give an algorithm for finding an ordered word pair (e.g., New York) occurring with the greatest frequency in a given webpage. Which data structures would you use? Optimize both time and space.
-  
+
   def test_manual_4_45_smallest_snippet_of_k_words
     # Given a search string of three words, find the smallest snippet of the document that contains all three of 
     # the search words --- i.e. the snippet with smallest number of words in it. You are given the index positions 
