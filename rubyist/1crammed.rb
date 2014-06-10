@@ -1969,7 +1969,7 @@ class TestCases < Test::Unit::TestCase
   end
 
   def test_11_6_indices_out_of_matrix
-    m = [
+    g = [
       [11, 23, 35, 47],
       [22, 34, 38, 58],
       [33, 39, 57, 62],
@@ -1990,12 +1990,12 @@ class TestCases < Test::Unit::TestCase
       [-1, -1]
     end
 
-    assert_equal [0, 3], indices_out_of_matrix.call(m, 47)
-    assert_equal [3, 3], indices_out_of_matrix.call(m, 69)
-    assert_equal [0, 0], indices_out_of_matrix.call(m, 11)
-    assert_equal [3, 0], indices_out_of_matrix.call(m, 44)
-    assert_equal [2, 1], indices_out_of_matrix.call(m, 39)
-    assert_equal [3, 2], indices_out_of_matrix.call(m, 61)
+    assert_equal [0, 3], indices_out_of_matrix.call(g, 47)
+    assert_equal [3, 3], indices_out_of_matrix.call(g, 69)
+    assert_equal [0, 0], indices_out_of_matrix.call(g, 11)
+    assert_equal [3, 0], indices_out_of_matrix.call(g, 44)
+    assert_equal [2, 1], indices_out_of_matrix.call(g, 39)
+    assert_equal [3, 2], indices_out_of_matrix.call(g, 61)
   end
 
   def test_9_1_climb_staircase
