@@ -1891,7 +1891,7 @@ anagrams = anagrams.stream().sorted().collect(Collectors.toList());
         end
       end
     end
-#    assert_equal 1, find.call("abc", ["", "abc", "dos", "", "", "ijk", "xyz"], 0..6)
+    assert_equal 1, find.call("abc", ["", "abc", "dos", "", "", "ijk", "xyz"], 0..6)
     assert_equal 6, find.call("xyz", ["", "abc", "dos", "", "", "ijk", "xyz"], 0..6)
   end
 
