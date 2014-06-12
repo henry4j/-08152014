@@ -1871,6 +1871,30 @@ anagrams = anagrams.stream().sorted().collect(Collectors.toList());
     assert_equal nil, find_occurences.call([1, 3, 3, 5, 5, 5, 7, 7, 9], 10)
   end
 
+  def test_11_5_find_out_of_sorted_strings_in_empty_strings
+    find = lambda do |s, strings, range|
+      if range.count > 0
+        mid = range.minmax.reduce(:+) / 2
+        if strings[mid].empty?
+          head, tail = mid-1, mid+1
+          mid = loop do
+            return if head < range.min && head > range.max
+            break head if head >= range.min && !strings[head].empty?
+            break tail if tail <= range.max && !strings[tail].empty?
+            head, tail = head-1, tail+1
+          end
+          case s <=> strings[mid]
+          when 1  then find.call(s, strings, mid+1..range.max)
+          when -1 then find.call(s, strings, range.min..mid-1)
+          else mid
+          end
+        end
+      end
+    end
+    assert_equal 1, find.call("abc", ["", "abc", "dos", "", "", "ijk", "xyz", 0, 7])
+    assert_equal 5, find.call("xyz", ["", "abc", "dos", "", "", "ijk", "xyz", 0, 7])
+  end
+
   def test_11_6_indices_out_of_matrix
     g = [
       [11, 23, 35, 47],
