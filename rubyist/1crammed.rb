@@ -1883,16 +1883,16 @@ anagrams = anagrams.stream().sorted().collect(Collectors.toList());
             break tail if tail <= range.max && !strings[tail].empty?
             head, tail = head-1, tail+1
           end
-          case s <=> strings[mid]
-          when 1  then find.call(s, strings, mid+1..range.max)
-          when -1 then find.call(s, strings, range.min..mid-1)
-          else mid
-          end
+        end
+        case s <=> strings[mid]
+        when 1  then find.call(s, strings, mid+1..range.max)
+        when -1 then find.call(s, strings, range.min..mid-1)
+        else mid
         end
       end
     end
-    assert_equal 1, find.call("abc", ["", "abc", "dos", "", "", "ijk", "xyz"], 0..7)
-    assert_equal nil, find.call("xyz", ["", "abc", "dos", "", "", "ijk", "xyz"], 0..7)
+#    assert_equal 1, find.call("abc", ["", "abc", "dos", "", "", "ijk", "xyz"], 0..6)
+    assert_equal 6, find.call("xyz", ["", "abc", "dos", "", "", "ijk", "xyz"], 0..6)
   end
 
   def test_11_6_indices_out_of_matrix
