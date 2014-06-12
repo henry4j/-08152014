@@ -1149,45 +1149,6 @@ module DP # http://basicalgos.blogspot.com/search/label/dynamic%20programming
     end
   end
 
-  # http://en.wikipedia.org/wiki/Longest_common_substring_problem
-  def self.longest_common_substring(a, b) # best solved by suffix tree
-    n, m = a.size, b.size
-    memos = []
-    longest = []
-    1.upto(n) do |i|
-      1.upto(m) do |j|
-        if a[i-1] == b[j-1]
-          l = memos[i][j] = 1 + (memos[i-1][j-1] || 0)
-          s = a[i-l, l]
-          longest << s if longest.empty? || l == longest[0].size
-          longest.replace([s]) if l > longest[0].size
-        end
-      end
-    end
-    longest
-  end
-
-  # http://wn.com/programming_interview_longest_palindromic_subsequence_dynamic_programming
-  # http://tristan-interview.blogspot.com/2011/11/longest-palindrome-substring-manachers.html
-  def self.longest_palindromic_subsequence(s)
-    memos = []
-    map = lambda do |i, j| # map i, j to longest.
-      memos[i] ||= []
-      memos[i][j] ||= case
-      when j == i
-        1
-      when j == i+1
-        s[i] == s[j] ? 2 : 1
-      when s[i] == s[j]
-        map.call(i+1, j-1) + 2
-      else
-        [ map.call(i, j-1), map.call(i+1, j) ].max
-      end
-    end
-
-    map.call(0, s.size-1)
-  end
-
   def self.knapsack_unbounded(skus, capacity)
     memos = [] # maximum values by k capacity.
     map = lambda do |w|
@@ -1905,10 +1866,6 @@ anagrams = anagrams.stream().sorted().collect(Collectors.toList());
   end
 
   def test_11_7_longest_common_n_increasing_subsequences
-#    assert_equal ["aba", "bab"], DP.longest_common_substring('abab', 'baba')
-#    assert_equal ["abacd", "dcaba"], DP.longest_common_substring('abacdfgdcaba', 'abacdgfdcaba')
-#    assert_equal 5, DP.longest_palindromic_subsequence('xaybzba')
-
     # http://www.algorithmist.com/index.php/Longest_Increasing_Subsequence
     # http://en.wikipedia.org/wiki/Longest_increasing_subsequence
     # http://stackoverflow.com/questions/4938833/find-longest-increasing-sequence/4974062#4974062
@@ -1941,6 +1898,48 @@ anagrams = anagrams.stream().sorted().collect(Collectors.toList());
       answer
     end
     assert_equal [1, 5, 6], longest_increasing_subsequence_v2.call([7, 8, 1, 5, 6, 2, 3])
+
+    # http://en.wikipedia.org/wiki/Longest_common_substring_problem
+    longest_common_substring = lambda do |a, b| # best solved by suffix tree
+      n, m = a.size, b.size
+      memos = Array.new(n+1) { [] }
+      longest = []
+      1.upto(n) do |i|
+        1.upto(m) do |j|
+          if a[i-1] == b[j-1]
+            l = memos[i][j] = 1 + (memos[i-1][j-1] || 0)
+            s = a[i-l, l]
+            longest << s if longest.empty? || l == longest[0].size
+            longest.replace([s]) if l > longest[0].size
+          end
+        end
+      end
+      longest
+    end
+
+    assert_equal ["aba", "bab"], longest_common_substring.call('abab', 'baba')
+    assert_equal ["abacd", "dcaba"], longest_common_substring.call('abacdfgdcaba', 'abacdgfdcaba')
+
+    # http://wn.com/programming_interview_longest_palindromic_subsequence_dynamic_programming
+    # http://tristan-interview.blogspot.com/2011/11/longest-palindrome-substring-manachers.html
+    longest_palindromic_subsequence = lambda do |s|
+      memos = []
+      map = lambda do |i, j| # map i, j to longest.
+        memos[i] ||= []
+        memos[i][j] ||= case
+        when j == i
+          1
+        when j == i+1
+          s[i] == s[j] ? 2 : 1
+        when s[i] == s[j]
+          map.call(i+1, j-1) + 2
+        else
+          [ map.call(i, j-1), map.call(i+1, j) ].max
+        end
+      end
+      map.call(0, s.size-1)
+    end
+    assert_equal 5, longest_palindromic_subsequence.call('xaybzba')
 
     # http://www.algorithmist.com/index.php/Longest_Common_Subsequence
     # http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
