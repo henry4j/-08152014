@@ -1149,38 +1149,6 @@ module DP # http://basicalgos.blogspot.com/search/label/dynamic%20programming
     end
   end
 
-  # http://www.algorithmist.com/index.php/Longest_Increasing_Subsequence
-  # http://en.wikipedia.org/wiki/Longest_increasing_subsequence
-  # http://stackoverflow.com/questions/4938833/find-longest-increasing-sequence/4974062#4974062
-  # http://wordaligned.org/articles/patience-sort
-  def self.longest_increasing_subsequence(ary)
-    memos = ary.each_index.reduce([]) do |memos, i|
-      j = memos.rindex { |m| m.last <= ary[i] } || -1 
-      memos[j+1] = -1 != j ? memos[j] + [ary[i]] : [ary[i]]
-      memos
-    end
-    memos.last # e.g. memos: [[1], [1, 2], [1, 3, 3]]
-  end
-
-  def self.longest_increasing_subsequence_v2(ary)
-    memos = []
-    map = lambda do |i|
-      memos[i] ||= (0...i).
-        map { |k| v = map.call(k)[1]; [k, 1 + v] }.
-        select { |e| ary[e[0]] <= ary[i] }.
-        max_by { |e| e[1] } || [nil, 1]
-    end
-
-    map.call(ary.size-1)
-    k = memos.each_index.to_a.max_by { |k| memos[k][1] }
-    answer = []
-    while k
-      answer.unshift(ary[k])
-      k = memos[k][0]
-    end
-    answer
-  end
-
   # http://en.wikipedia.org/wiki/Longest_common_substring_problem
   def self.longest_common_substring(a, b) # best solved by suffix tree
     n, m = a.size, b.size
@@ -1967,6 +1935,49 @@ anagrams = anagrams.stream().sorted().collect(Collectors.toList());
     assert_equal 0..0, find_occurences.call([1, 3, 3, 5, 5, 5, 7, 7, 9], 1)
     assert_equal nil, find_occurences.call([1, 3, 3, 5, 5, 5, 7, 7, 9], 0)
     assert_equal nil, find_occurences.call([1, 3, 3, 5, 5, 5, 7, 7, 9], 10)
+  end
+
+  def test_11_7_longest_common_n_increasing_subsequences
+#    assert_equal ["eca"], DP.longest_common_subsequence('democrat', 'republican')
+#    assert_equal ["1", "a"], DP.longest_common_subsequence('a1', '1a').sort
+#    assert_equal ["ac1", "ac2", "bc1", "bc2"], DP.longest_common_subsequence('abc12', 'bac21').sort
+#
+#    assert_equal ["aba", "bab"], DP.longest_common_substring('abab', 'baba')
+#    assert_equal ["abacd", "dcaba"], DP.longest_common_substring('abacdfgdcaba', 'abacdgfdcaba')
+#    assert_equal 5, DP.longest_palindromic_subsequence('xaybzba')
+
+    # http://www.algorithmist.com/index.php/Longest_Increasing_Subsequence
+    # http://en.wikipedia.org/wiki/Longest_increasing_subsequence
+    # http://stackoverflow.com/questions/4938833/find-longest-increasing-sequence/4974062#4974062
+    # http://wordaligned.org/articles/patience-sort
+    longest_increasing_subsequence = lambda do |ary|
+      memos = ary.each_index.each_with_object([]) do |i, memos|
+        j = memos.rindex { |m| m[-1] <= ary[i] } || -1
+        memos[j+1] = -1 != j ? memos[j] + [ary[i]] : [ary[i]]
+      end
+      memos[-1] # e.g. memos: [[1], [1, 2], [1, 2, 3]]
+    end
+    assert_equal [1, 2, 3], longest_increasing_subsequence.call([7, 8, 1, 5, 6, 2, 3])
+
+    longest_increasing_subsequence_v2 = lambda do |ary|
+      memos = []
+      map = lambda do |i|
+        memos[i] ||= (0...i).
+          map { |k| v = map.call(k)[1]; [k, 1 + v] }.
+          select { |e| ary[e[0]] <= ary[i] }.
+          max_by { |e| e[1] } || [nil, 1]
+      end
+
+      map.call(ary.size-1)
+      k = memos.each_index.to_a.max_by { |k| memos[k][1] }
+      answer = []
+      while k
+        answer.unshift(ary[k])
+        k = memos[k][0]
+      end
+      answer
+    end
+    assert_equal [1, 5, 6], longest_increasing_subsequence_v2.call([7, 8, 1, 5, 6, 2, 3])
   end
 
   def test_11_6_indices_out_of_matrix
@@ -3418,18 +3429,6 @@ anagrams = anagrams.stream().sorted().collect(Collectors.toList());
     assert_equal [4500, [0, 1]], DP.order_matrix_chain_multiplication([10, 30, 5, 60])
     assert_equal [3500, [1, 0]], DP.order_matrix_chain_multiplication([50, 10, 20, 5])
   end
-
-#  def test_longest_common_n_increasing_subsequences
-#    assert_equal ["eca"], DP.longest_common_subsequence('democrat', 'republican')
-#    assert_equal ["1", "a"], DP.longest_common_subsequence('a1', '1a').sort
-#    assert_equal ["ac1", "ac2", "bc1", "bc2"], DP.longest_common_subsequence('abc12', 'bac21').sort
-#    assert_equal ["aba", "bab"], DP.longest_common_substring('abab', 'baba')
-#    assert_equal ["abacd", "dcaba"], DP.longest_common_substring('abacdfgdcaba', 'abacdgfdcaba')
-#    assert_equal 5, DP.longest_palindromic_subsequence('xaybzba')
-#    assert_equal [1, 3, 3], DP.longest_increasing_subsequence([1, 3, 3, 2])
-#    assert_equal [1, 2, 3], DP.longest_increasing_subsequence([7, 8, 1, 5, 6, 2, 3])
-#    assert_equal [1, 5, 6], DP.longest_increasing_subsequence_v2([7, 8, 1, 5, 6, 2, 3])
-#  end
 
 #  def test_edit_distance
 #    assert_equal [3, "SMMMSMI"], DP.edit('kitten', 'sitting')
