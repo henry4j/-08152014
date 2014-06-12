@@ -1775,6 +1775,12 @@ anagrams = anagrams.stream().sorted().collect(Collectors.toList());
 11.8 Design and implement a data structure and an algorithm that can track a stream of numbers, and tell the rank of a value x (the number of values less than or equal to x).
 =end
 
+  def test_one_sided_binary_search # algorithm design manual 4.9.2
+    # find the exact point of transition within an array that contains a run of 0's and an unbounded run of 1's.
+    # 1 if 1 == ary[1]
+    # 1..(2..31-1) { |n| break (Arrays.first_index(ary, 2**(n-1)+1, 2**n) if 1 == ary[2**n]) }
+  end
+
   def test_11_3_min_n_index_out_of_cycle
     index_out_of_cycle = lambda do |ary, key, left, right|
       while left <= right
@@ -1864,6 +1870,38 @@ anagrams = anagrams.stream().sorted().collect(Collectors.toList());
     assert_equal nil, find_occurences.call([1, 3, 3, 5, 5, 5, 7, 7, 9], 0)
     assert_equal nil, find_occurences.call([1, 3, 3, 5, 5, 5, 7, 7, 9], 10)
   end
+
+  def test_11_6_indices_out_of_matrix
+    g = [
+      [11, 23, 35, 47],
+      [22, 34, 38, 58],
+      [33, 39, 57, 62],
+      [44, 45, 61, 69]
+    ]
+
+    indices_out_of_grid = lambda do |g, q, rows, cols|
+      if rows.count > 0 && cols.count > 0
+        r, c = [rows, cols].map { |e| e.minmax.reduce(:+) / 2 }
+        case 
+        when g[r][c] < q
+          indices_out_of_grid.call(g, q, r+1..rows.max, cols) ||
+          indices_out_of_grid.call(g, q, rows.min..r, c+1..cols.max)
+        when g[r][c] > q
+          indices_out_of_grid.call(g, q, rows.min..r-1, cols) ||
+          indices_out_of_grid.call(g, q, r..rows.max, cols.min..c-1)
+        else
+          [r, c]
+        end
+      end
+    end
+
+    assert_equal [0, 3], indices_out_of_grid.call(g, 47, 0...g.size, 0...g[0].size)
+    assert_equal [3, 3], indices_out_of_grid.call(g, 69, 0...g.size, 0...g[0].size)
+    assert_equal [0, 0], indices_out_of_grid.call(g, 11, 0...g.size, 0...g[0].size)
+    assert_equal [3, 0], indices_out_of_grid.call(g, 44, 0...g.size, 0...g[0].size)
+    assert_equal [2, 1], indices_out_of_grid.call(g, 39, 0...g.size, 0...g[0].size)
+    assert_equal [3, 2], indices_out_of_grid.call(g, 61, 0...g.size, 0...g[0].size)
+  end  
 
   def test_11_7_longest_common_n_increasing_subsequences
     # http://www.algorithmist.com/index.php/Longest_Increasing_Subsequence
@@ -1977,38 +2015,6 @@ anagrams = anagrams.stream().sorted().collect(Collectors.toList());
     assert_equal ["eca"], longest_common_subsequence.call('democrat', 'republican')
     assert_equal ["1", "a"], longest_common_subsequence.call('a1', '1a').sort
     assert_equal ["ac1", "ac2", "bc1", "bc2"], longest_common_subsequence.call('abc12', 'bac21').sort
-  end
-
-  def test_11_6_indices_out_of_matrix
-    g = [
-      [11, 23, 35, 47],
-      [22, 34, 38, 58],
-      [33, 39, 57, 62],
-      [44, 45, 61, 69]
-    ]
-
-    indices_out_of_grid = lambda do |g, q, rows, cols|
-      if rows.count > 0 && cols.count > 0
-        r, c = [rows, cols].map { |e| e.minmax.reduce(:+) / 2 }
-        case 
-        when g[r][c] < q
-          indices_out_of_grid.call(g, q, r+1..rows.max, cols) ||
-          indices_out_of_grid.call(g, q, rows.min..r, c+1..cols.max)
-        when g[r][c] > q
-          indices_out_of_grid.call(g, q, rows.min..r-1, cols) ||
-          indices_out_of_grid.call(g, q, r..rows.max, cols.min..c-1)
-        else
-          [r, c]
-        end
-      end
-    end
-
-    assert_equal [0, 3], indices_out_of_grid.call(g, 47, 0...g.size, 0...g[0].size)
-    assert_equal [3, 3], indices_out_of_grid.call(g, 69, 0...g.size, 0...g[0].size)
-    assert_equal [0, 0], indices_out_of_grid.call(g, 11, 0...g.size, 0...g[0].size)
-    assert_equal [3, 0], indices_out_of_grid.call(g, 44, 0...g.size, 0...g[0].size)
-    assert_equal [2, 1], indices_out_of_grid.call(g, 39, 0...g.size, 0...g[0].size)
-    assert_equal [3, 2], indices_out_of_grid.call(g, 61, 0...g.size, 0...g[0].size)
   end
 
   def test_9_1_climb_staircase
@@ -3840,12 +3846,6 @@ HERE
 
   def test_19_2_is_tic_tac_toe_over
     # Design an algorithm to figure out if someone has won in a game of tic-tac-toe.
-  end
-
-  def test_one_sided_binary_search # algorithm design manual 4.9.2
-    # find the exact point of transition within an array that contains a run of 0's and an unbounded run of 1's.
-    # return 1 if 1 == ary[1]
-    # return 1..∞ { |n| break (Arrays.first_index(ary, 2 ** (n-1) + 1, 2 ** n) if 1 == ary[2 ** n]) }
   end
 
   def test_ebay_sales_fee
