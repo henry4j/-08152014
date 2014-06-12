@@ -1891,8 +1891,8 @@ anagrams = anagrams.stream().sorted().collect(Collectors.toList());
         end
       end
     end
-    assert_equal 1, find.call("abc", ["", "abc", "dos", "", "", "ijk", "xyz", 0, 7])
-    assert_equal 5, find.call("xyz", ["", "abc", "dos", "", "", "ijk", "xyz", 0, 7])
+    assert_equal 1, find.call("abc", ["", "abc", "dos", "", "", "ijk", "xyz"], 0..7)
+    assert_equal nil, find.call("xyz", ["", "abc", "dos", "", "", "ijk", "xyz"], 0..7)
   end
 
   def test_11_6_indices_out_of_matrix
