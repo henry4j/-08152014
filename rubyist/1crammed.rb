@@ -1167,39 +1167,6 @@ module DP # http://basicalgos.blogspot.com/search/label/dynamic%20programming
     longest
   end
 
-  # http://www.algorithmist.com/index.php/Longest_Common_Subsequence
-  # http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
-  # http://wordaligned.org/articles/longest-common-subsequence
-  # http://rosettacode.org/wiki/Longest_common_subsequence#Dynamic_Programming_7
-  def self.longest_common_subsequence(s, t)
-    memos = []
-    map = lambda do |i, j|
-      memos[i] ||= []
-      memos[i][j] ||= case
-      when 0 == i || 0 == j then 0
-      when s[i-1] == t[j-1] then 1 + map.call(i-1, j-1)
-      else [map.call(i, j-1), map.call(i-1, j)].max
-      end
-    end
-
-    sequences = []
-    reduce = lambda do |i, j|
-      (sequences[i] ||= {})[j] ||= case
-      when 0 == i || 0 == j then ['']
-      when s[i-1] == t[j-1]
-        reduce.call(i-1,j-1).product([s[i-1, 1]]).map { |e| e.join }
-      when memos[i-1][j] > memos[i][j-1] then reduce.call(i-1, j)
-      when memos[i-1][j] < memos[i][j-1] then reduce.call(i, j-1)
-      else
-        a = reduce.call(i-1, j) + reduce.call(i, j-1)
-        a.reduce({}) { |h,k| h.merge(k => nil) }.keys
-      end
-    end
-
-    map.call(s.size, t.size)
-    reduce.call(s.size, t.size) 
-  end
-
   # http://wn.com/programming_interview_longest_palindromic_subsequence_dynamic_programming
   # http://tristan-interview.blogspot.com/2011/11/longest-palindrome-substring-manachers.html
   def self.longest_palindromic_subsequence(s)
@@ -1938,10 +1905,6 @@ anagrams = anagrams.stream().sorted().collect(Collectors.toList());
   end
 
   def test_11_7_longest_common_n_increasing_subsequences
-#    assert_equal ["eca"], DP.longest_common_subsequence('democrat', 'republican')
-#    assert_equal ["1", "a"], DP.longest_common_subsequence('a1', '1a').sort
-#    assert_equal ["ac1", "ac2", "bc1", "bc2"], DP.longest_common_subsequence('abc12', 'bac21').sort
-#
 #    assert_equal ["aba", "bab"], DP.longest_common_substring('abab', 'baba')
 #    assert_equal ["abacd", "dcaba"], DP.longest_common_substring('abacdfgdcaba', 'abacdgfdcaba')
 #    assert_equal 5, DP.longest_palindromic_subsequence('xaybzba')
@@ -1978,6 +1941,43 @@ anagrams = anagrams.stream().sorted().collect(Collectors.toList());
       answer
     end
     assert_equal [1, 5, 6], longest_increasing_subsequence_v2.call([7, 8, 1, 5, 6, 2, 3])
+
+    # http://www.algorithmist.com/index.php/Longest_Common_Subsequence
+    # http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
+    # http://wordaligned.org/articles/longest-common-subsequence
+    # http://rosettacode.org/wiki/Longest_common_subsequence#Dynamic_Programming_7
+    longest_common_subsequence = lambda do |s, t|
+      memos = []
+      map = lambda do |i, j|
+        memos[i] ||= []
+        memos[i][j] ||= case
+        when 0 == i || 0 == j then 0
+        when s[i-1] == t[j-1] then 1 + map.call(i-1, j-1)
+        else [map.call(i, j-1), map.call(i-1, j)].max
+        end
+      end
+
+      sequences = []
+      reduce = lambda do |i, j|
+        (sequences[i] ||= {})[j] ||= case
+        when 0 == i || 0 == j then ['']
+        when s[i-1] == t[j-1]
+          reduce.call(i-1,j-1).product([s[i-1, 1]]).map { |e| e.join }
+        when memos[i-1][j] > memos[i][j-1] then reduce.call(i-1, j)
+        when memos[i-1][j] < memos[i][j-1] then reduce.call(i, j-1)
+        else
+          a = reduce.call(i-1, j) + reduce.call(i, j-1)
+          a.reduce({}) { |h,k| h.merge(k => nil) }.keys
+        end
+      end
+
+      map.call(s.size, t.size)
+      reduce.call(s.size, t.size) 
+    end
+
+    assert_equal ["eca"], longest_common_subsequence.call('democrat', 'republican')
+    assert_equal ["1", "a"], longest_common_subsequence.call('a1', '1a').sort
+    assert_equal ["ac1", "ac2", "bc1", "bc2"], longest_common_subsequence.call('abc12', 'bac21').sort
   end
 
   def test_11_6_indices_out_of_matrix
