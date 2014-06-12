@@ -2038,6 +2038,35 @@ anagrams = anagrams.stream().sorted().collect(Collectors.toList());
     assert_equal ["ac1", "ac2", "bc1", "bc2"], longest_common_subsequence.call('abc12', 'bac21').sort
   end
 
+  def test_11_8_track_and_rank
+    track = lambda do |bnode, value|
+      if value <= bnode.value
+        if bnode.left
+          track.call(bnode.left, value)
+        else
+          bnode.left = BNode.new([value, 0])
+        end
+        bnode.value[1] += 1
+      else
+        if bnode.right
+          track.call(bnode.right, value)
+        else
+          bnode.right = BNode.new([value, 0])
+        end
+      end
+    end
+    rank = lambda do |bnode, value|
+      if value == bnode.value[0]
+        1 + bnode.value[0]
+      elsif value < bnode.value[0]
+        bnode.left ? rank(bnode.left) : -1
+      else
+        right_rank = bnode.right ? rank(bnode.right) : -1
+        right_rank == -1 ? -1 : bnode.value[1] + right_rank
+      end
+    end
+  end
+
   def test_9_1_climb_staircase
     climb = lambda do |n, memos| # n staircases.
       memos[n] ||= case
