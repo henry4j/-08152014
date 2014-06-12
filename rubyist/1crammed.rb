@@ -2040,7 +2040,7 @@ anagrams = anagrams.stream().sorted().collect(Collectors.toList());
 
   def test_11_8_track_and_rank
     track = lambda do |bnode, value|
-      if value <= bnode.value
+      if value <= bnode.value[0]
         if bnode.left
           track.call(bnode.left, value)
         else
@@ -2057,14 +2057,22 @@ anagrams = anagrams.stream().sorted().collect(Collectors.toList());
     end
     rank = lambda do |bnode, value|
       if value == bnode.value[0]
-        1 + bnode.value[0]
+        1 + bnode.value[1]
       elsif value < bnode.value[0]
-        bnode.left ? rank(bnode.left) : -1
+        bnode.left ? rank.call(bnode.left, value) : -1
       else
-        right_rank = bnode.right ? rank(bnode.right) : -1
-        right_rank == -1 ? -1 : bnode.value[1] + right_rank
+        right_rank = bnode.right ? rank.call(bnode.right, value) : -1
+        right_rank == -1 ? -1 : 1 + bnode.value[1] + right_rank
       end
     end
+    bst = BNode.new([2**31, 0])
+    track.call(bst, 1)
+    track.call(bst, 3)
+    track.call(bst, 2)
+    track.call(bst, 3)
+    assert_equal 1, rank.call(bst, 1)
+    assert_equal 2, rank.call(bst, 2)
+    assert_equal 4, rank.call(bst, 3)
   end
 
   def test_9_1_climb_staircase
