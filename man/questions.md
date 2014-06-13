@@ -4,11 +4,6 @@
 <img src="http://upload.wikimedia.org/math/9/a/6/9a6cc88202ee96f8165c4be5ab42ec00.png" />
 <img src="http://upload.wikimedia.org/math/a/c/d/acd2938d1c482f5247654e6822ec06ad.png" />
 <img src="http://upload.wikimedia.org/math/6/c/8/6c88e10b6c07b86c33deac72ba33cf6f.png" />
-* Given a 2D graph with points on it, find a line, which passes the most number of points.
-* discrete math: 
-  * a _k_-combination of a set S is a subset of _k_ distinct elements of S, and the # of k-combinations is equals to the binomial coefficient, <b>n! / (k! * (n-k)!)</b>.
-  * a _k_-permutation of a set S is an ordered sequence of k distinct elements of S, and the # of _k_-permutation of n objects is denoted variously <sub>n</sub>P<sub>k</sub>, P<sub>n,k</sub>, and P(n,k), and its value is given by <b>n! / (n-k)!</b>.
-  * [how many ways are there to merge N companies](http://placementsindia.blogspot.jp/2007/12/solutions-to-few-google-top-interview.html)? `C(n,2)*C(n-1,2)*...*C(2,2) = n!*(n-1)!/(2**(n-1))`
 
 ##### 5. Bit Operations
 
