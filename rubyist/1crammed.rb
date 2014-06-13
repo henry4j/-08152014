@@ -1692,63 +1692,42 @@ class TestCases < Test::Unit::TestCase
   # https://gist.github.com/henry4j/35002f63b3e9b6a13b78
   # http://xaviershay.github.io/writing/docs/ruby_style_guide.html
 
-# 1_1 Write a program to determine if a string has all unique characters.
-#     What if you cannot use additional data structures? http://ideone.com/sYfu9m
-# 1_2 Write a function, void reverse(char* str), which reverses a null-terminated string. http://ideone.com/YcU4fh
-# 1_3 Write a program to determine if a string is a permutation of the other. http://ideone.com/F8z77b
-# 1_4 Write a method to replace all spaces in a string with %20. http://ideone.com/7mILyX
-# 1_5 Write a method to compress a string using counts of repeated chars, e.g. aabcccccaaa becomes a2b1c5a3.
-# 1_6 Given an image represented by an NxN matrix, write a method to rotate the image by 90 degrees; in-place, in O(1) space. http://ideone.com/N48c72
-# 1_7 Given an NxN matrix, write a program to set entire row and column to 0 if an element has a value of 0. http://ideone.com/HX28Ok
-# 1_8 Given two strings, write a program to determine if a string is a rotation of the other using isSubstring method. http://ideone.com/iIhGT4
-
-# 2_1 Write a program to remove duplicates from an unsorted linked list. What if you cannot use additional memory? http://ideone.com/fMom0l
-# 2_2 Write a program to find the k-th to last element of a singly linked list. http://ideone.com/WAiYVn
-# 2_3 Given a node, implement an algorithm to delete that node in the middle of a singly linked list. http://ideone.com/YDjYUu
-# 2_4 Write a program to partition a linked list around a value of x, such that all nodes less than x come before all nodes greater than or equal to x. http://ideone.com/F7PWKX
-# 2_5 There are two decimal numbers represented by a linked list, where each node contains a single digit. The digits are stored in reverse order, such that the 1's digit is at the head of the list. Write a function that adds the two numbers and returns the sum as a linked list.
-# 2_6 Given a circular linked list, write a program that returns the node at the beginning of the loop.
-# 2_7 Write a program to determine if a linked list is a palindrome.
-
-# 3_1 Design and implement three stacks using a single array.
-# 3_2 Design and implement a stack of integers that has an additional operation 'minimum' besides 'push' and 'pop', that all run in constant time. http://ideone.com/VtFtJc
-# 3_4 Write a program that solves the tower of Hanoi puzzle of N disks between three rods.
-# 3_5 Implement a queue using two stacks.
-# 3_6 Write a program to sort a stack in ascending order with biggest items on top. 
-# 3_7 Write a program to enqueue and dequeue dogs and cats at animal shelter.
-
-# 4_1 Write a program to determine if a binary tree is balanced.
-# 4_2 Write a program to determine if there is a route between two nodes in a directed graph.
-# 4_3 Write a program to create a binary search tree given a sorted (increasing order) array.
-# 4_4 Write a program to create an linked list of all nodes at each depth given a binary tree. D linked lists given a tree of depth D.
-# 4_5 Write a program to determine if a binary tree is a binary search tree.
-# 4_6 Write a program to find the successor given a node in a binary search tree where each node has a link to its parent.
-# 4_7 Write a program to find the lowest common ancestor of two nodes in a binary tree.
-# 4_8 Given two very large trees T1 and T2, determine if T1 is a subtree of T2.
-# 4_9 Given a binary tree where each node has a value, write a program to print all paths that sum to a given value.
-
-# 18_1 Write a method that adds two numbers. You should not use the addition (+) arithmetic operator.
-# 18_2 Write a method to shuffle a deck of cards. Each of the 52! permutations of the deck has to be equally probable.
-# 18_3 Write a method to randomly sample a set of m integers from an array of size n. Each element must have equal probability of being chosen.
-# 18_4 Write a function to count the number of 2s that appear in all the numbers between 0 and n (inclusive), e.g., input: 25, output: 9 (2, 12, 20, 21, 22, 23, 24, and 25); note that 22 counts for two 2s.
-# 18_5 Given a large text file containing words, find the shortest distance between two or k words in terms of the number of words. What is the time and space complexity?
-# 18_6 Write a program to find the smallest one million numbers in one billion numbers. Assume that the computer memory can hold all one billion numbers.
-# 18_7 Given a list of words, write a program that returns the longest word made of other words., e.g., return "doityourself" given a list, "doityourself", "do", "it", "yourself", "motherinlaw", "mother", "in", "law".
-# 18_8 Given a string s and an array of smaller strings Q, write a program to search s for each small string in Q.
-# 18_9 Write a program that can quickly answer a median value, while random numbers are being generated and offered (a median bag). 
-# 18_10 Given two words of equal length that are in a dictionary, write a method to transform one word into another word by changing only one letter at a time. The new word you get in each step must be in the dictionary.
-# 18_11 Given a square matrix of black and white cells, write a program to find the maximum sub-square such that all four borders are filled with black pixels.
-# 18_12 Given a square matrix of positive and negatives integers, write a program to find the sub-matrix with the largest possible sum.
-# 18_13 Given millions of words, write a program to create the largest possible rectangle of letters such that every row forms a word (reading left to right) and every column forms a word (reading top to bottom).
-
-# 17_2 Write a program to determine if someone has won a game of tic-tac-toe.
-# 17_3 Write a method to compute the number of trailing zeros in n factorial.
-# 17_4 Write a method to find the maximum of two numbers.
-# 17_8 Given an array of integers (both positive and negative), write a program to find the max sum sub-array (contiguous sequence).
-# 17_11 Given a method rand5() that generates a random number between 1 and 5 (inclusive), write a method that generates a random number between 1 and 7 (inclusive).
-# 17_13 Write a method to convert a binary tree to a doubly linked list. Keep the values in order while converting in-place.
-
 =begin
+1_1 Write a program to determine if a string has all unique characters.
+    What if you cannot use additional data structures? http://ideone.com/sYfu9m
+1_2 Write a function, void reverse(char* str), which reverses a null-terminated string. http://ideone.com/YcU4fh
+1_3 Write a program to determine if a string is a permutation of the other. http://ideone.com/F8z77b
+1_4 Write a method to replace all spaces in a string with %20. http://ideone.com/7mILyX
+1_5 Write a method to compress a string using counts of repeated chars, e.g. aabcccccaaa becomes a2b1c5a3.
+1_6 Given an image represented by an NxN matrix, write a method to rotate the image by 90 degrees; in-place, in O(1) space. http://ideone.com/N48c72
+1_7 Given an NxN matrix, write a program to set entire row and column to 0 if an element has a value of 0. http://ideone.com/HX28Ok
+1_8 Given two strings, write a program to determine if a string is a rotation of the other using isSubstring method. http://ideone.com/iIhGT4
+
+2_1 Write a program to remove duplicates from an unsorted linked list. What if you cannot use additional memory? http://ideone.com/fMom0l
+2_2 Write a program to find the k-th to last element of a singly linked list. http://ideone.com/WAiYVn
+2_3 Given a node, implement an algorithm to delete that node in the middle of a singly linked list. http://ideone.com/YDjYUu
+2_4 Write a program to partition a linked list around a value of x, such that all nodes less than x come before all nodes greater than or equal to x. http://ideone.com/F7PWKX
+2_5 There are two decimal numbers represented by a linked list, where each node contains a single digit. The digits are stored in reverse order, such that the 1's digit is at the head of the list. Write a function that adds the two numbers and returns the sum as a linked list.
+2_6 Given a circular linked list, write a program that returns the node at the beginning of the loop.
+2_7 Write a program to determine if a linked list is a palindrome.
+
+3_1 Design and implement three stacks using a single array.
+3_2 Design and implement a stack of integers that has an additional operation 'minimum' besides 'push' and 'pop', that all run in constant time. http://ideone.com/VtFtJc
+3_4 Write a program that solves the tower of Hanoi puzzle of N disks between three rods.
+3_5 Implement a queue using two stacks.
+3_6 Write a program to sort a stack in ascending order with biggest items on top. 
+3_7 Write a program to enqueue and dequeue dogs and cats at animal shelter.
+
+4_1 Write a program to determine if a binary tree is balanced.
+4_2 Write a program to determine if there is a route between two nodes in a directed graph.
+4_3 Write a program to create a binary search tree given a sorted (increasing order) array.
+4_4 Write a program to create an linked list of all nodes at each depth given a binary tree. D linked lists given a tree of depth D.
+4_5 Write a program to determine if a binary tree is a binary search tree.
+4_6 Write a program to find the successor given a node in a binary search tree where each node has a link to its parent.
+4_7 Write a program to find the lowest common ancestor of two nodes in a binary tree.
+4_8 Given two very large trees T1 and T2, determine if T1 is a subtree of T2.
+4_9 Given a binary tree where each node has a value, write a program to print all paths that sum to a given value.
+
 9.1 Given a staircase with n steps, write a program to count the number of possible ways to climb it, when one can hop either 1, 2, or 3 steps at a time.
 9.2 Given NxM grid, Write a program to route a robot from (0, 0) to (N, M). How many possible ways are there, when the robot can move in two directions: right, and down. What if there are some spots of off-limits?
 9.3 Given an array of sorted integers, write a method to find a magic index where A[i] = i. What if integers are not distinct?
@@ -1773,6 +1752,27 @@ anagrams = anagrams.stream().sorted().collect(Collectors.toList());
 11.6 Given an NxM matrix in which each row and each column is sorted in ascending order, write a method to find an element.
 11.7 Write a program to design a circus of the largest tower of people standing atop one another's shoulders. For practical and aesthetic reasons, each person must be both shorter and lighter than the person below him or her.
 11.8 Design and implement a data structure and an algorithm that can track a stream of numbers, and tell the rank of a value x (the number of values less than or equal to x).
+
+17_2 Write a program to determine if someone has won a game of tic-tac-toe.
+17_3 Write a method to compute the number of trailing zeros in n factorial.
+17_4 Write a method to find the maximum of two numbers.
+17_8 Given an array of integers (both positive and negative), write a program to find the max sum sub-array (contiguous sequence).
+17_11 Given a method rand5() that generates a random number between 1 and 5 (inclusive), write a method that generates a random number between 1 and 7 (inclusive).
+17_13 Write a method to convert a binary tree to a doubly linked list. Keep the values in order while converting in-place.
+
+18_1 Write a method that adds two numbers. You should not use the addition (+) arithmetic operator.
+18_2 Write a method to shuffle a deck of cards. Each of the 52! permutations of the deck has to be equally probable.
+18_3 Write a method to randomly sample a set of m integers from an array of size n. Each element must have equal probability of being chosen.
+18_4 Write a function to count the number of 2s that appear in all the numbers between 0 and n (inclusive), e.g., input: 25, output: 9 (2, 12, 20, 21, 22, 23, 24, and 25); note that 22 counts for two 2s.
+18_5 Given a large text file containing words, find the shortest distance between two or k words in terms of the number of words. What is the time and space complexity?
+18_6 Write a program to find the smallest one million numbers in one billion numbers. Assume that the computer memory can hold all one billion numbers.
+18_7 Given a list of words, write a program that returns the longest word made of other words., e.g., return "doityourself" given a list, "doityourself", "do", "it", "yourself", "motherinlaw", "mother", "in", "law".
+18_8 Given a string s and an array of smaller strings Q, write a program to search s for each small string in Q.
+18_9 Write a program that can quickly answer a median value, while random numbers are being generated and offered (a median bag). 
+18_10 Given two words of equal length that are in a dictionary, write a method to transform one word into another word by changing only one letter at a time. The new word you get in each step must be in the dictionary.
+18_11 Given a square matrix of black and white cells, write a program to find the maximum sub-square such that all four borders are filled with black pixels.
+18_12 Given a square matrix of positive and negatives integers, write a program to find the sub-matrix with the largest possible sum.
+18_13 Given millions of words, write a program to create the largest possible rectangle of letters such that every row forms a word (reading left to right) and every column forms a word (reading top to bottom).
 =end
 
   def test_one_sided_binary_search # algorithm design manual 4.9.2
