@@ -10,57 +10,6 @@
   * a _k_-permutation of a set S is an ordered sequence of k distinct elements of S, and the # of _k_-permutation of n objects is denoted variously <sub>n</sub>P<sub>k</sub>, P<sub>n,k</sub>, and P(n,k), and its value is given by <b>n! / (n-k)!</b>.
   * [how many ways are there to merge N companies](http://placementsindia.blogspot.jp/2007/12/solutions-to-few-google-top-interview.html)? `C(n,2)*C(n-1,2)*...*C(2,2) = n!*(n-1)!/(2**(n-1))`
 
-##### 1. Arrays and Strings
-
-1. Implement an algorithm to determine if a string has all unique characters. What if you cannot use additional data structures?  
-2. Implement a function `void reverse(char* str)` in C or C++ which reverses a null-terminated string.  
-3. Given two strings, write a method to determine if one is a permutation of the other.
-4. Given a string and its actual length, write a method to replace all spaces in a string with `%20`. You may assume that the string has sufficient space at the end of the string to hold the additional characters (note: if implementing in Java, please use a character array so that you can perform this operation in place). e.g.,  
-INPUT: "Mr John Smith", and OUTPUT: "Mr%20John%20Smith".
-5. Write a method to perform basic string compression using the counts of repeated characters. For example, the string `aabcccccaaa` would become `a2b1c5a3`. If the 'compressed' string would not become smaller than the original string, your method should return the original string.
-6. Given an image represented by an NxN matrix, where each pixel in the image is 4 bytes, write a method to rotate the image by 90 degrees. Can you do this in place?
-7. Implement an algorithm such that if an element in an NxN matrix is 0, its entire row and column are set to 0.
-8. Assume you have a method `isSubstring` which checks if a string is a substring of another. Given two strings, s1 and s2, write a method to check if s2 is a rotation of s1 using only one call to isSubstring, e.g., "waterbottle" is a rotation of "erbottlewat".
-
-##### 2. Linked Lists
-
-1. Write code to remove duplicates from an unsorted linked list. What if you cannot use a temporary buffer?
-2. Implement an algorithm to find the k-th to last element of a singly linked list.
-3. Given access only to a node, implement an algorithm to delete that node in the middle of a singly linked list. e.g.,  
-INPUT: node c from a linked list, `a -> b -> c -> d -> e`  
-OUTPUT: nothing is returned, but the new linked list looks like `a -> b -> d -> e`.
-4. Write code to partition a linked list around a value x, such that all nodes less than x come before all nodes greater than or equal to x.
-5. There are two decimal numbers represented by a linked list, where each node contains a single digit. The digits are stored in reverse order, such that the 1's digit is at the head of the list. Write a function that adds the two numbers and returns the sum as a linked list.
-6. Given a circular linked list, implement an algorithm which returns the node at the beginning of the loop. e.g.,  
-INPUT: `a -> b -> c -> d -> e -> c`, and OUTPUT: `c`.
-7. Implement a method to check if a linked list is a palindrome.
-
-##### 3. Stacks and Queues
-
-1. Implement three stacks using a single array.
-2. Design a stack that has a `min` function that returns the minimum element in addition to `push` and `pop`. Push, pop, and min should all operate in O(1) time.
-3. Imagine a literal stack of plates. If the stack gets too high, it might topple. Therefore, in real life, we would likely start a new stack when the previous stack exceeds some threshold. Implement a data structure SetOfStacks that mimics this. SetOfStacks should be composed of several stacks and should create a new stack once the previous one exceeds capacity. SetOfStacks.push() and SetOfStacks.pop() should behave identically to a single stack (that is, pop() should return the same values as it would if there were just a single stack). Implement a function popAt(int index) which performs a pop operation on a specific sub-stack.
-4. In the classic problem of the towers of Hanoi, you have 3 towers and N disks of different sizes which can slide onto any tower. The puzzle starts with disks sorted in ascending order of size from top to bottom. i.e., each disk sits on top of an even larger one. You have the following constraints:  
-   (1) only one disk can be moved a a time.
-   (2) a disk is slid off the top of one tower onto the next tower.
-   (3) a disk can only be placed on top of a larger disk.
-   Write a program to move the disks from the first tower to the last using stacks.
-5. Implement a queue using two stacks.
-6. Write a program to sort a stack in ascending order with biggest items on top. You may use additional stacks to hold items, but you may not copy the elements into any other dsta structure such as an array. The stack supports the following operations: push, pop, peek, and isEmpty.
-7. An animal shelter holds only dogs and cats, and operations on a strictly "first in, first out" basis. People must adopt either the oldest (based on the arrival time) of all animals at the shelter, or they can select whether they would prefer a dog or a cat (and will receive the oldest animal of that type). They cannot select which speicific animal they would like. Create the data structures to maintain this system and implement operations such as enqueue, dequeueAny, dequeueDog, and dequeueCat. You may use the LinkedList data structure.
-
-##### 4. Trees and Graphs
-
-1. Implement a function to check if a binary tree is balanced. For the purposes of this question, a balanced tree is defined to be a tree such that the heights of two subtrees of any node never differ by more than one.
-2. Given a directed graph, design an algorithm to find out whether there is a route between two nodes.
-3. Given a sorted (increasing order) array, implement an algorithm to create a binary search tree with minimal height.
-4. Given a binary tree, design an algorithm which creates a linked list of all the nodes at each depth, e.g., if you have a tree with depth D, you will have D linked lists.
-5. Implement a function to check if a binary tree is a binary search tree.
-6. Design an algorithm to find the next node (i.e., in-order successor) of a given node in a binary search tree. You may assume that each node has a link to its parents.
-7. Design an algorithm to find the first common ancestor of the nodes in a binary tree. Avoid storing additional nodes in a data structure. Note: this is not necessarily a binary search tree.
-8. You have two very large binary trees: T1 with millions of nodes, and T2 with hundreds of nodes. Design an algorithm to decide if T2 is a subtree of T1. A tree T2 is a subtree of T1 if there exists a node in T1 such that the subtree of n is identical to T2. i.e., if you cut off the tree at node n, the two trees would be identical.
-9. Given a binary tree in which each node contains a value. Design an algorithm to print all paths which sum to a given value. Note that a path can start or end anywhere in the tree.
-
 ##### 5. Bit Operations
 
 1. You are given two 32-bit numbers, N and M, and two bit positions, i and j. Write a method to insert M into N such that M starts at bit j and ends at bit i. You can assume that the bits j through i have enough space to fit all of M. That is, if M = 10011, you can assume that there are at least 5 bits between j and i. You would not, for example, have j = 3 and i = 3, because M couldn't be fully fit beween bit 3 and bit 2. e.g., INPUT: n = 10000000000, m = 10011, i = 2, j = 6, and OUTPUT: n = 10001001100.
