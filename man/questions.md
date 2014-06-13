@@ -363,8 +363,6 @@ the string "jesslookedjustliketimherbrother" would be optimally parsed as "JESS 
 
 #### 18. Hard Problems
 
-5. You have a large text file containing words. Given any two words, find the shortest distance (in terms of number of words) between them in the file. Can you make the searching operation in O(1) time? What about the space complexity for your solution?
-6. Describe an algorithm to find the smallest one million numbers in one billion numbers. Assume that the computer memory can hold all one billion numbers.
 7. Given a list of words, write a program to find the longest word made of other words in the list. e.g.  
 INPUT: car, banana, dog, nana, walk, walker, dogwalker  
 OUTPUT: dogwalker
