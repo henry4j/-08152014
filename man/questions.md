@@ -360,8 +360,3 @@ The data structure BiNode could be used to represent both a binary tree (where n
 14. Oh, no! You have just completed a lengthy document when you have an unfortunate Find/Replace mishap. You have accidently removed all spaces, punctuation, and capitalization in the document. A sentence like "I reset the computer. It still didn't boot!" would become "iresetthecomputeritstillldidntboot". You figure that you can add back in the punctuation and capitalization later, once you get the individual words properly separated. Most of the words will be in a dictionary, but some strings, like proper names, will not.  
 Given a dictionary (a list of words) design an algorithm to find the optimal way of un-concatenating a sequence of words. In this case, "optimal" is defined to be the parsing which minimizes the number of unrecognized sequences of characters. e.g.  
 the string "jesslookedjustliketimherbrother" would be optimally parsed as "JESS looked just like TIM her brother". This parsing has seven unrecognized characters, which we have capitalized for clarity.
-
-#### 18. Hard Problems
-
-12. Given an NxN matrix of positive and negatives integers, write code to find the submatrix with the largest possible sum.
-13. Given a list of millions of words, design an algorithm to create the largest possible rectangle of letters such that every row forms a word (reading left to right) and every column forms a word (reading top to bottom). The words need not be chosen consecutively from the list, but all rows must be the same length and all columns must be the same height.
