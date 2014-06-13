@@ -36,15 +36,6 @@
 `aligned_free()` will free memory allocated by align_malloc.
 10. Write a function in C called my2DAlloc which allocates a 2D array. Minimize the number of calls to malloc and make sure that the memory is accessible by the notation arr[i][j].
 
-#### 14. Java
-
-1. In terms of inheritance, what is the effect of keeping a constructor private?
-2. In Java, does the finally block get executed if we insert a return statement inside the try block of a try-catch-finally?
-3. What is the difference between final, finally, and finalize?
-4. Explain the difference between templates in C++ and generics in Java.
-5. Explain what object reflection is in Java and why it is useful.
-6. Implement a `CircularArray` class that supports an array-like data structure, which can be effectively rotated. The class should use a generic type, and should support iteration via the standard for (Object o : circularArray) notation.
-
 <table>
   <thead>
     <tr>
