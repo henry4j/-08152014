@@ -142,22 +142,6 @@
 6. Draw an entity-relationship diagram for a database with companies, people, and professionals (people who work for companies).
 7. Imagine a simple database storing information for students' grade. Design what this database might look like and provide a SQL query to return a list of the honor roll student (top 10%) sorted by their grade point average.
 
-#### 16. Threads & Locks
-
-1. What's the difference between a thread and a process?
-2. How would you measure the time spent in a context switch?
-3. In the famous dining philosophers problem, a bunch of philosophers are sitting around a circular table with one chopstick between each of them. A philosopher needs both chopsticks to eat and always picks up the left chopstick before the right one. A deadlock could potentially occur if all the philosophers reached for the left chopstick at the same time. Using threads and locks, implement a simulation of the dining philosophers problem that prevents deadlocks.
-4. Design a class which provides a lock only if there are no possible deadlocks.
-5. Suppose we have the following code:  
-`public class Foo {`  
-`__public Foo() { ... }`  
-`__public void first() { ... }`  
-`__public void second() { ... }`  
-`__public void third() { ... }`  
-`}`
-The same instance of Foo will be passed to three different threads. ThreadA will call first, threadB will call second, and threadC will call third. Design a mechanism to ensure that first is called before second, and second is called before third.
-6. You are given a class with synchronized method `A` and a normal method `C`. If you have two threads in one instance of a problem, can they both execute A at the same? Can they execute A and C at the same time?
-
 #### 17. Moderate Problems
 
 17.10 Since XML is very verbose, you are given a way of encoding it where each tag gets mapped to a pre-defined integer value. The language/grammar is as follows:  
