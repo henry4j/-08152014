@@ -104,52 +104,6 @@ INPUT: `a -> b -> c -> d -> e -> c`, and OUTPUT: `c`.
 9. Explain the data structures and algorithms that you would use to design an in-memory file system. Illustrate with an example in code where possible.
 10. Design and implement a hash table, which uses chaining (linked lists) to handle collisions.
 
-#### 9. Recursion and DP
-
-9.1 Given a staircase with n steps, write a program to count the number of possible ways to climb it, when one can hop either 1, 2, or 3 steps at a time.  
-9.2 Given NxM grid, write a program to route a robot from (0, 0) to (N, M). How many possible ways are there, when the robot can move in two directions: right, and down. What if there are some spots of off-limits?  
-9.3 Given an array of sorted integers, write a method to find a magic index where A[i] = i. What if integers are not distinct?  
-9.4 Write a method to generate all subsets of a set.  
-9.5 Write a method to generate all permutations of a string.  
-9.6 Write a program to generate all possible, valid combinations of n-pairs of parenthesis, e.g., INPUT: 3, OUTPUT: ((())), (()()), (())(), ()(()), ()()().  
-9.7 Write a flood-fill method to fill in a new color until the color changes from the original color; given a point and a new color.  
-9.8 Given infinite # of coins (25, 10, 5, and 1 cents), write a method to count the number of ways to represent n cents.  
-9.9 Given an NxN chessboard, write a program to place eight queens so that none of them share the same row, column, or diagonal.  
-9.10 Given n boxes that cannot be rotated, but can only be stacked up, write a method to find the tallest possible stack, where the height of a stack is the sum of height of each box.  
-9.11 Given a boolean equation, write a program to count the number of ways to parenthesize the expression such that equation is true, e.g., INPUT: Expression: 1^0|0|1, Desired Result: false(0), OUTPUT: 2 ways: 1^((0|0)|1) and 1^(0|(0|1)).  
-
-#### 10. Scalability and Memory Limits
-
-1. Imagine you are building some sort of service that will be called by up to 1000 client apps to get simple end-of-day stock price information (open, close, high, low). You may assume that you already have the data, and you can store it in any format you wish. How would you design the client-facing service, which provides the information to client apps? You are responsible for the development, rollout, and ongoing monitoring, and maintenance of feed. Describe the different methods you considered and why you would recommend your approach. Your service can use any technologies you wish, and can distribute the information to the client app in any mechanism you choose.
-2. How would you design the data structures for a very large social network like Facebook or LinkedIn? Describe how you would design an algorithm to show the connection, or path, between two people, e.g. Me -> Bob -> Susan -> Jason -> You.
-3. Given an input file with four billion non-negative integers, provide an algorithm to generate an integer, which is not contained in the file. Assume you have 1 GB of memory available for this task. FOLLOW UP: What if you have only 10 MB of memory? Assume that all the values are distinct.
-4. You have an array with all the numbers from 1 to N, where N is at most 32,000. The array may have duplicate entries and you do not know what N is. With only 4 KB of memory available, how would you print all duplicate elements in the array?
-5. If you were designing a web crawler, how would you avoid getting into infinite loops?
-6. You have 10 billion URLs. How do you detect the duplicate documents? In this case, assume that "duplicate" means that the URLs are identical.
-7. Imagine a web server for a simplified search engine. This system has 100 machines to respond to search queries, which may then call out using processSearch(String query) to another cluster of machines to actually get the result. The machine which responds to a given query is chosen at random, so you cannot guarantee that the same machine will always response to the same request. The method processSearch is very expensive. Design a caching mechanism for the most recent queries. Be sure to explain how you would update the cache when data changes.
-
-#### 11. Sorting and Searching
-
-1. You are given two sorted arrays, A and B, where A has a large enough buffer at the end to hold B. Write a method to merge B into A in sorted order.
-2. Write a method to sort an array of strings so that all the anagrams are next to each other.
-3. Given a sorted array of n integers that has been rotated an unknown number of times, write code to find an element in the array. You may assume that the array was originally sotrted in increasing order. e.g.  
-INPUT: find 5 in {15, 16, 19, 20, 25, 1, 3, 4, 5, 7, 10, 14}  
-OUTPUT: 8 (the index of 5 in the array)
-4. Imagine you have a 20 GB file with one string per line. Explain how you would sort the file.
-5. Given a sorted array of strings, which is interspersed with empty strings, write a method to find the location of a given string. e.g.  
-INPUT: find "ball" in {"at", "", "", "", "ball", "", "", "car", "", "", "dad", "", ""}  
-OUTPUT: 4
-6. Given an M x N matrix in which each row and each column is sorted in ascending order, write a method to find an element.
-7. A circus is designing a tower routine consisting of people standing atop one another's shoulders. For practical and aesthetic reasons, each person must be both shorter and lighter than the person below him or her. Given the heights and weights of each person in the circus, write a method to compute the largest possible number of people in such a tower. e.g.  
-INPUT: (ht, wt): (65, 100) (90, 150) (50, 120) (56, 90) (75, 190) (60, 95) (68, 110) (80, 92).  
-OUTPUT: the longest tower is length 5 and includes from top to bottom: (56, 90), (60, 95), (65, 100), (68, 110), (90, 150).
-
-8. Imagine you are reading in a stream of integers. Periodically, you wish to be able to look up the rank of a number x (number of values less than or equal to x). Implement the data structures and algorithms to support these operations. That is, implement the method track(int x), which is called when each number is generated, and the method getRankOfNumber(int x), which returns the number of values less than or equal to x (not including x itself). e.g.  
-Stream (in order of appearance): 5, 1, 4, 4, 5, 9, 7, 13, 3.  
-getRankOfNumber(1) = 0  
-getRankOfNumber(3) = 1  
-getRankOfNumber(4) = 3
-
 #### 13. C and C++
 
 1. Write a method to print the last K lines of an input file using C++.
