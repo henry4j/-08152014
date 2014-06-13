@@ -21,7 +21,7 @@
 7. An array A contains all the integers from 0 to n, except for one number which is missing. In this problem, we cannot access an entire integer in A with a single operation. The elements of A are represented in binary, and the only operation we can use to access them is "fetch the jth bit of A[i]" which takes constant time. Write code to find the missing integer. Can you do it in O(n) time?
 8. A monochrome screen is stored as a single array of bytes allowing eight consecutive pixels to be stored in one byte. The screen has width w, where w is divisible by 8 (this is no byte will be split across rows). The height of the screen of course can be derived from the length of the array and the width. Implement a function drawHorizontalLine(byte[] screen, int width, int x1, int x2, int y) which draws a horizonal line from (x1, y) to (x2, y).
 
-#### 13. C and C++
+##### 13. C and C++
 
 1. Write a method to print the last K lines of an input file using C++.
 2. Compare and contrast a hash table and an STL map. How is a hash table implemented? If the number of inputs is small, which data structure options can be used instead of a hash table?
@@ -123,7 +123,7 @@
   </tbody>
 </table>
 
-#### 15. Databases
+##### 15. Databases
 
 1. Write a SQL query to get a list of tenants who are renting more than on apartment.
 2. Write a SQL query to get a list all buildings and the number of open requests (Requests in which status equals 'Open').
@@ -133,7 +133,7 @@
 6. Draw an entity-relationship diagram for a database with companies, people, and professionals (people who work for companies).
 7. Imagine a simple database storing information for students' grade. Design what this database might look like and provide a SQL query to return a list of the honor roll student (top 10%) sorted by their grade point average.
 
-#### 17. Moderate Problems
+##### 17. Moderate Problems
 
 17.10 Since XML is very verbose, you are given a way of encoding it where each tag gets mapped to a pre-defined integer value. The language/grammar is as follows:  
 <table>
