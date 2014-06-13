@@ -81,29 +81,6 @@ INPUT: `a -> b -> c -> d -> e -> c`, and OUTPUT: `c`.
 5. There is a building of 100 floors. If an egg drops from the Nth floor or above, it will break. If it's dropped from any floor below, it will not break. You're given two eggs. Find N, while minimizing the number of drops for the worse case.
 6. There are 100 closed lockers in a hallway. A man begins by opening all 100 lockers. Next, he closes every second locker. Then, on his third pass, he toggles every third locker (closes it if it is open or opens it if it is closed). This process continues for 100 passes, such that on each pass i, the man toggles every i-th locker. After his 100th pass in the hallway, in which he toggles only locker #100, how many lockers are open?
 
-#### 7. Math and Probability
-
-1. You have a basketball hoop and someone says that you can ply one of two games. Game 1: You get one shot to make the hoop. Game 2: You get three shoots and you have to make two of three shots. If p is the probability of making a particular shot, for which values of p should you pick one game or the other?
-2. There are three ants on different vertices of a triangle. What is the probability of collision (between any two or all of them) if they start walking on the sides of the triangle? Assume that each ant randomly picks a direction, which either direction being equally like to be chosen, and that they walk at the same speed. Similarly, find the probability of collision with n ants on an n-vertex polygon.
-3. Given two lines on a Cartesian plane, determine whether the two lines would intersect.
-4. Write methods to implement the multiply, subtract, and divide operations for integer. Use only the add operator.
-5. Given two squares on a 2D plane, find a line that would cut these two squares in half. Assume that the top and bottom sides of the square run parallel to the x-axis.
-6. Given a 2D graph with points on it, find a line, which passes the most number of points.
-7. Deign an algorithm to find the k-th number such that the only prime factors are 3, 5, and 7.
-
-#### 8. Object-Oriented Design
-
-1. Design the data structure for a generic deck of cards. Explain how you would subclass the data structures to implement blackjack.
-2. Imagine you have a call center with three levels of employees: respondent, manager, and director. An incoming telephone call must be first allocated to a respondent who is free. If the respondent can't handle the call, he or she must escalate the call to a manager. If the manager is not free or not able to handle it, then the call should be escalated to a director. Design the classes and data structures for this problem. Implement a method dispatchCall() which assigns a call to the first available employee.
-3. Design a musical jukebox using OO principles.
-4. Design a parking lot using OO principles.
-5. Design the data structures for an online book reader system.
-6. Implement a jigsaw puzzle. Design the data structures and explain an algorithm to solve the puzzle. You can assume that you have a fitsWith method which when passed two puzzle pieces return true if the two pieces belong together.
-7. Explain how you would design a chat server. In particular, provide details about the various backend components, classes, and methods. What would be the hardest problems to solve?
-8. Othello is played as follows. Each Othello piece is white on one side and black on the other. When a piece is surrounded by its opponents on both the left and right sides, or both the top and bottom, it is said to be captured and its color is flipped. On your turn, you must capture at least one of your opponent's pieces. The game ends when either user has no more valid moves. The win is assigned to the person with the most pieces. Implement the OOD for Othello.
-9. Explain the data structures and algorithms that you would use to design an in-memory file system. Illustrate with an example in code where possible.
-10. Design and implement a hash table, which uses chaining (linked lists) to handle collisions.
-
 #### 13. C and C++
 
 1. Write a method to print the last K lines of an input file using C++.
