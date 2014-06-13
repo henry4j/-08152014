@@ -1783,9 +1783,8 @@ anagrams = anagrams.stream().sorted().collect(Collectors.toList());
 18_13 Given millions of words, write a program to create the largest possible rectangle of letters such that every row forms a word (reading left to right) and every column forms a word (reading top to bottom).
 =end
 
-  def test_10_3_n_10_6_line_of_most_points
+  def test_7_6_line_on_most_points
     # 10-3. Given two lines on a Cartesian plane, determine whether the two lines'd intersect.
-    # 10-6. Given a two dimensional graph with points on it, find a line which passes the most number of points.
     to_line = lambda do |p, q|
       x, y = p[0]-q[0], p[1]-q[1]
       case
@@ -1819,15 +1818,15 @@ anagrams = anagrams.stream().sorted().collect(Collectors.toList());
     r1, r2 = [4, 0, 0, 6], [6, 0, 0, 4] # top, left, bottom, right
     center_of = lambda { |r| [(r[1] + r[3])/2.0, (r[0] + r[2])/2.0] }
     center1, center2 = center_of[r1], center_of[r2]
-    line_of = lambda do |p, q|
+    to_line = lambda do |p, q|
       x, y = p[0]-q[0], p[1]-q[1]
       case
       when x == 0 && y == 0 then nil
       when x == 0 then [p[0], nil]
       when y == 0 then [nil, p[1]]
       else
-        slope = y / x.to_f
-        [p[0] - p[1] * 1/scope, p[1] - p[0] * scope]
+        scope = y.to_f / x # e.g., 2.0
+        [scope, p[1] - scope * p[0]]
       end
     end
     assert_equal [5.0, 5.0], line_of[center1, center2]
@@ -3901,14 +3900,6 @@ HERE
   #   the receiver immediately sends an acknowledgment (ACK), with the ACK number set to the sequence number that seems to be missing.
   #   The receiver sends another ACK for that sequence number for each additional TCP segment in the incoming stream 
   #   that arrives with a sequence number higher than the missing one.
-
-  def test_18_3_singleton
-    # double-check locking
-  end
-
-  def test_19_2_is_tic_tac_toe_over
-    # Design an algorithm to figure out if someone has won in a game of tic-tac-toe.
-  end
 
   def test_ebay_sales_fee
     # http://pages.ebay.com/help/sell/fees.html
