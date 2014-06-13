@@ -72,15 +72,6 @@ INPUT: `a -> b -> c -> d -> e -> c`, and OUTPUT: `c`.
 7. An array A contains all the integers from 0 to n, except for one number which is missing. In this problem, we cannot access an entire integer in A with a single operation. The elements of A are represented in binary, and the only operation we can use to access them is "fetch the jth bit of A[i]" which takes constant time. Write code to find the missing integer. Can you do it in O(n) time?
 8. A monochrome screen is stored as a single array of bytes allowing eight consecutive pixels to be stored in one byte. The screen has width w, where w is divisible by 8 (this is no byte will be split across rows). The height of the screen of course can be derived from the length of the array and the width. Implement a function drawHorizontalLine(byte[] screen, int width, int x1, int x2, int y) which draws a horizonal line from (x1, y) to (x2, y).
 
-#### 6. Brain Teasers
-
-1. You have 20 bottles of pills. 19 bottles have 1-gram pills, but one has pills of weight 1.1 grams. Given a scale that provides an exact measurement, how would you find the heavy bottle? You can only use the scale once.
-2. There is an 8x8 chessboard in which two diagonally opposite domino can cover exactly two squares. Can you use the 31 dominos to cover the entire board? Prove your answer (by providing an example or showing why it's impossible).
-3. You have a five-quart jug, a three-quart jug, and an unlimited supply of water (but no measuring cups). How would you come up with exactly four quarts of water? Note that the jugs are oddly shaped, such that filling up exactly "half" of the jug would be impossible.
-4. A bunch of people is living on an island, when a visitor comes with a strange order: all blue-eyed people must leave the island as soon as possible. There will be a flight out at 8:00 pm every evening. Each person can see everyone else’s eye color, but they do not know his or her own (nor is anyone allowed to tell them). Additionally, they do not know how many people have blue eyes, although they do know that at least one person does. How many days will it take the blue-eyed people to leave?
-5. There is a building of 100 floors. If an egg drops from the Nth floor or above, it will break. If it's dropped from any floor below, it will not break. You're given two eggs. Find N, while minimizing the number of drops for the worse case.
-6. There are 100 closed lockers in a hallway. A man begins by opening all 100 lockers. Next, he closes every second locker. Then, on his third pass, he toggles every third locker (closes it if it is open or opens it if it is closed). This process continues for 100 passes, such that on each pass i, the man toggles every i-th locker. After his 100th pass in the hallway, in which he toggles only locker #100, how many lockers are open?
-
 #### 13. C and C++
 
 1. Write a method to print the last K lines of an input file using C++.
