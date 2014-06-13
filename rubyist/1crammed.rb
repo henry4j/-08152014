@@ -1728,6 +1728,14 @@ class TestCases < Test::Unit::TestCase
 4_8 Given two very large trees T1 and T2, determine if T1 is a subtree of T2.
 4_9 Given a binary tree where each node has a value, write a program to print all paths that sum to a given value.
 
+7.1 You have a basketball hoop and someone says that you can ply one of two games. Game 1: You get one shot to make the hoop. Game 2: You get three shoots and you have to make two of three shots. If p is the probability of making a particular shot, for which values of p should you pick one game or the other? p > 3*p2(1-p).
+7.2 There are three ants on different vertices of a triangle. What is the probability of collision (between any two or all of them) if they start walking on the sides of the triangle? Assume that each ant randomly picks a direction, which either direction being equally like to be chosen, and that they walk at the same speed. Similarly, find the probability of collision with n ants on an n-vertex polygon. p(collision) = 1-p(no-collision) = 1-2/8.
+7.3 Given two lines on a Cartesian plane, determine whether the two lines would intersect.
+7.4 Write methods to implement the multiply, subtract, and divide operations for integer. Use only the add operator.
+7.5 Given two squares on a 2D plane, find a line that would cut these two squares in half. Assume that the top and bottom sides of the square run parallel to the x-axis.
+7.6 Given a 2D graph with points on it, find a line, which passes the most number of points.
+7.7 Deign an algorithm to find the k-th number such that the only prime factors are 3, 5, and 7.
+
 9.1 Given a staircase with n steps, write a program to count the number of possible ways to climb it, when one can hop either 1, 2, or 3 steps at a time.
 9.2 Given NxM grid, Write a program to route a robot from (0, 0) to (N, M). How many possible ways are there, when the robot can move in two directions: right, and down. What if there are some spots of off-limits?
 9.3 Given an array of sorted integers, write a method to find a magic index where A[i] = i. What if integers are not distinct?
@@ -1774,6 +1782,56 @@ anagrams = anagrams.stream().sorted().collect(Collectors.toList());
 18_12 Given a square matrix of positive and negatives integers, write a program to find the sub-matrix with the largest possible sum.
 18_13 Given millions of words, write a program to create the largest possible rectangle of letters such that every row forms a word (reading left to right) and every column forms a word (reading top to bottom).
 =end
+
+  def test_10_3_n_10_6_line_of_most_points
+    # 10-3. Given two lines on a Cartesian plane, determine whether the two lines'd intersect.
+    # 10-6. Given a two dimensional graph with points on it, find a line which passes the most number of points.
+    to_line = lambda do |p, q|
+      x, y = p[0]-q[0], p[1]-q[1]
+      case
+      when x == 0 && y == 0 then nil
+      when x == 0 then [p[0], nil]
+      when y == 0 then [nil, p[1]]
+      else
+        scope = y.to_f / x # e.g., 2.0
+        [scope, p[1] - scope * p[0]]
+      end
+    end
+    assert_equal [4.0, -7.0], to_line.call([3, 5], [2, 1])
+
+    a = [[1, 2], [2, 4], [6, 12], [3, 2], [4, 0], [3, 2], [5, -2]]
+    n = a.size
+    points_by_line = {}
+    (0...n).each do |i|
+      (i+1...n).each do |j|
+        if line = to_line.call(a[i], a[j])
+          points = points_by_line[line] ||= {}
+          points[a[i]] = points[a[j]] = true;
+        end
+      end
+    end
+    points = points_by_line.values.map { |e| e.keys }.
+      group_by { |e| e.size }.max.last
+    assert_equal [[[3, 2], [2, 4], [4, 0], [5, -2]]], points
+  end
+
+  def test_7_5_line_of_cutting_two_squares
+    r1, r2 = [4, 0, 0, 6], [6, 0, 0, 4] # top, left, bottom, right
+    center_of = lambda { |r| [(r[1] + r[3])/2.0, (r[0] + r[2])/2.0] }
+    center1, center2 = center_of[r1], center_of[r2]
+    line_of = lambda do |p, q|
+      x, y = p[0]-q[0], p[1]-q[1]
+      case
+      when x == 0 && y == 0 then nil
+      when x == 0 then [p[0], nil]
+      when y == 0 then [nil, p[1]]
+      else
+        slope = y / x.to_f
+        [p[0] - p[1] * 1/scope, p[1] - p[0] * scope]
+      end
+    end
+    assert_equal [5.0, 5.0], line_of[center1, center2]
+  end
 
   def test_one_sided_binary_search # algorithm design manual 4.9.2
     # find the exact point of transition within an array that contains a run of 0's and an unbounded run of 1's.
@@ -3820,60 +3878,6 @@ HERE
 #    assert_equal -3, Math.divide(11, -3)
 #    assert_equal 3, Math.divide(-11, -3)
 #  end
-
-  def test_10_5_line_of_cutting_two_squares
-    # 10-5. Given two squares on a two dimensional plane, find a line that would cut these two squares in half.
-    r1, r2 = [4, 0, 0, 6], [6, 0, 0, 4] # top, left, bottom, right
-    center_of = proc { |r| [(r[1] + r[3])/2.0, (r[0] + r[2])/2.0] }
-    center1, center2 = center_of[r1], center_of[r2]
-    line_of = proc { |p, q|
-      x, y = p[0] - q[0], p[1] - q[1]
-      case
-      when x == 0 && y == 0 then nil
-      when x == 0 then [p[0], nil]
-      when y == 0 then [nil, p[1]]
-      else
-        s = y * 1.0 / x # scope
-        [p[0] - p[1] * 1/s, p[1] - p[0] * s]
-      end
-    }
-    assert_equal [5.0, 5.0], line_of[center1, center2]
-  end
-
-  def test_10_3_n_10_6_line_of_most_points
-    # 10-3. Given two lines on a Cartesian plane, determine whether the two lines'd intersect.
-    # 10-6. Given a two dimensional graph with points on it, find a line which passes the most number of points.
-    a = [[1, 2], [2, 4], [6, 12], [3, 2], [4, 0], [3, 2], [5, -2]]
-    n = a.size
-    h = {}
-    line_of = proc do |p, q|
-      x, y = p[0] - q[0], p[1] - q[1]
-      case
-      when x == 0 && y == 0 then nil
-      when x == 0 then [p[0], nil]
-      when y == 0 then [nil, p[1]]
-      else
-        s = y * 1.0 / x # scope
-        [p[0] - p[1] * 1/s, p[1] - p[0] * s]
-      end
-    end
-
-    assert_equal [1.75, -7.0], line_of[[3, 5], [2, 1]]
-    (0...n).each do |i|
-      (i+1...n).each do |j|
-        line = line_of[a[i], a[j]]
-        (h[line] ||= {})[a[i]] = 1;
-        (h[line] ||= {})[a[j]] = 1;
-      end
-    end
-
-    h = h.values.
-      reject { |s| s.size == 2 }.
-      map { |h| h.keys }.
-      map { |z| [z.size, z] }
-    h = h.group_by { |e| e[0] }.max.last
-    assert_equal [[4, [[2, 4], [3, 2], [4, 0], [5, -2]]]], h
-  end
 
   def test_10_7_kth_number_of_prime_factors
     # 10-7. Design an algorithm to find the kth number such that the only prime factors are 3, 5, and 7.
