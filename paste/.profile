@@ -50,6 +50,7 @@ alias mbp13="ssh -X 3c075447ffae.ant.$DOMAINNAME"
 alias alpha="ssh jaschen-1.desktop.$DOMAINNAME"
 alias gamma="ssh acme-snapshot-gamma-na-1a-i-13e86d71.us-east-1.$DOMAINNAME"
 alias prod="ssh acme-snapshot-na-1a-i-263f645f.us-east-1.$DOMAINNAME"
+alias ipython3='ipython3 notebook --pylab inline'
 
 # cd aliases
 alias ..='cd ..'
