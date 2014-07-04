@@ -16,9 +16,9 @@ export GROOVY_HOME=/usr/lib/groovy
 export JAVA_HOME=/Library/Java/Home
 export M3_HOME=/usr/local/Cellar/maven/3.0.4 # previously, /usr/share/maven
 export SWIFTMQ_HOME=/workspace/swiftmq-7.5.3
-export PATH=$HOME/bin:/usr/local/bin:/usr/local/sbin:$PATH
-export PATH=$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH
-export PATH=/workspace/mahout/bin:$PATH
+export PATH=$PATH:$HOME/anaconda/bin
+export PATH=$PATH:$HOME/bin:/usr/local/bin:/usr/local/sbin
+export PATH=$PATH:/workspace/mahout/bin
 
 # app settings
 export GREP_OPTIONS='--color=auto --exclude=*\.svn --exclude=*\.svn-base --binary-files=without-match'
@@ -50,6 +50,7 @@ alias mbp13="ssh -X 3c075447ffae.ant.$DOMAINNAME"
 alias alpha="ssh jaschen-1.desktop.$DOMAINNAME"
 alias gamma="ssh acme-snapshot-gamma-na-1a-i-13e86d71.us-east-1.$DOMAINNAME"
 alias prod="ssh acme-snapshot-na-1a-i-263f645f.us-east-1.$DOMAINNAME"
+alias notebook='nohup ipython3 notebook --pylab inline &'
 
 # cd aliases
 alias ..='cd ..'
@@ -82,4 +83,3 @@ export HADOOP_WORK=/workspace/hadoop-work
 export MAHOUT_WORK=/workspace/mahout-work
 [ ! -d $MAHOUT_WORK ] && mkdir -p $MAHOUT_WORK
 export PATH=$MAHOUT_WORK:$PATH
-
