@@ -51,6 +51,7 @@ alias alpha="ssh jaschen-1.desktop.$DOMAINNAME"
 alias gamma="ssh acme-snapshot-gamma-na-1a-i-13e86d71.us-east-1.$DOMAINNAME"
 alias prod="ssh acme-snapshot-na-1a-i-263f645f.us-east-1.$DOMAINNAME"
 alias pylab='nohup ipython3 notebook --pylab inline &'
+alias ipython='ipython3 --pylab'
 alias ipython3='ipython3 --pylab'
 
 # cd aliases
