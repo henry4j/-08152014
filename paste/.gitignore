@@ -7,6 +7,7 @@
 .gitignore
 .pmd
 .ruleset
+.ipynb_checkpoints/
 .settings/
 apollo-overrides/
 bin/
