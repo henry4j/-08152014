@@ -44,7 +44,7 @@ alias wget='wget --no-check-certificate'
 
 # ssh-aliases
 alias hylee="ssh -X hylee.desktop.$DOMAINNAME"
-alias hylee-ubuntu="ssh -X hylee-ubuntu.aka.$DOMAINNAME"
+alias ubuntu="ssh -X hylee-ubuntu.aka.$DOMAINNAME"
 alias startvm="ssh hylee-ubuntu.aka.$DOMAINNAME \"vboxmanage startvm 'RHEL5 64-bit desktop' --type headless\""
 alias mbp13="ssh -X 3c075447ffae.ant.$DOMAINNAME"
 alias prod="ssh pp-offline-recs-build-na-71001.iad55.$DOMAINNAME"
